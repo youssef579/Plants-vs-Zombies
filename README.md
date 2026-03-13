@@ -12,3 +12,9 @@
 
 3. Run the game `./build/bin/main`
 4. Check this [guide](https://www.sfml-dev.org/tutorials/3.0/getting-started/cmake/) for further details
+
+## Project structure
+
+- /src: Implementation files (.cpp)
+- /include: Declaration files (.hpp)
+- /assets: Resources (images, fonts and sounds)
