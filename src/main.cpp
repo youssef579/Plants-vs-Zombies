@@ -1,20 +1,34 @@
+#include <Game.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Window/VideoMode.hpp>
+#include <globals.hpp>
+
+sf::RenderWindow window(sf::VideoMode({1150, 606}), "Plants vs Zombies",
+                        sf::Style::Close | sf::Style::Titlebar);
 
 int main() {
-  sf::RenderWindow window(sf::VideoMode({900, 600}), "Plants vs Zombies",
-                          sf::Style::Close | sf::Style::Titlebar);
   window.setFramerateLimit(60);
 
-  sf::CircleShape shape(100.f);
-  shape.setFillColor(sf::Color::Green);
+  sf::Image cursorImage("assets/cursor.png");
+  sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
+                    sf::Vector2u(0, 0));
+  window.setMouseCursor(cursor);
 
-  const auto onClose = [&window](const sf::Event::Closed &) { window.close(); };
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+  window.setPosition(sf::Vector2i((desktop.size.x - window.getSize().x) / 2,
+                                  (desktop.size.y - window.getSize().y) / 2));
+
+  sf::Image icon("assets/icon.png");
+  window.setIcon(icon.getSize(), icon.getPixelsPtr());
+
+  const auto onClose = [](const sf::Event::Closed &) { window.close(); };
 
   while (window.isOpen()) {
     window.handleEvents(onClose);
 
     window.clear();
-    window.draw(shape);
+    updateGame();
     window.display();
   }
 }

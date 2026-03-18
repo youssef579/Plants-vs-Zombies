@@ -12,7 +12,8 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*.cpp")
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 add_executable(main ${SOURCES})
 target_compile_features(main PRIVATE cxx_std_17)
