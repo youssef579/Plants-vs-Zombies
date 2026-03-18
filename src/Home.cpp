@@ -7,8 +7,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <globals.hpp>
-#include <iostream>
-#include <ostream>
 
 sf::Texture backgroundTexture("assets/home.png");
 sf::Sprite backgroundSprite(backgroundTexture);
@@ -16,33 +14,36 @@ sf::Sprite backgroundSprite(backgroundTexture);
 sf::Texture headerTexture("assets/home_header.png");
 sf::Sprite headerSprite(headerTexture);
 
-sf::Text startButton(font, "Play", 50);
-sf::Text exitButton(font, "Exit", 50);
+sf::Text playButton(font, "Play", 40);
+sf::Text creditsButton(font, "Credits", 40);
+sf::Text exitButton(font, "Exit", 40);
 
 void hoverOnButton(sf::Text &button, sf::Vector2f &mousePosition) {
   if (button.getGlobalBounds().contains(mousePosition))
-    button.setStyle(sf::Text::Underlined);
+    button.setStyle(sf::Text::Bold);
   else
     button.setStyle(sf::Text::Regular);
 }
 
 void updateHome() {
   static bool init = false;
-
   if (!init) {
     headerSprite.setPosition(
         {(window.getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
+    playButton.setPosition({920, 420});
+    creditsButton.setPosition({860, 470});
     exitButton.setPosition({920, 520});
-    startButton.setPosition({920, 460});
 
     init = true;
   }
+
   sf::Vector2f mousePosition =
       window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-  hoverOnButton(startButton, mousePosition);
+  hoverOnButton(playButton, mousePosition);
   hoverOnButton(exitButton, mousePosition);
+  hoverOnButton(creditsButton, mousePosition);
 
   static bool canClick = false;
   bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
@@ -59,5 +60,6 @@ void updateHome() {
   window.draw(backgroundSprite);
   window.draw(headerSprite);
   window.draw(exitButton);
-  window.draw(startButton);
+  window.draw(playButton);
+  window.draw(creditsButton);
 }
