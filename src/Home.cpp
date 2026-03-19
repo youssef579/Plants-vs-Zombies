@@ -1,22 +1,7 @@
+#include <AssetsManager.hpp>
 #include <Home.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics.hpp>
 #include <globals.hpp>
-
-sf::Texture backgroundTexture("assets/home.png");
-sf::Sprite backgroundSprite(backgroundTexture);
-
-sf::Texture headerTexture("assets/home_header.png");
-sf::Sprite headerSprite(headerTexture);
-
-sf::Text playButton(font, "Play", 40);
-sf::Text creditsButton(font, "Credits", 40);
-sf::Text exitButton(font, "Exit", 40);
 
 void hoverOnButton(sf::Text &button, sf::Vector2f &mousePosition) {
   if (button.getGlobalBounds().contains(mousePosition))
@@ -26,10 +11,20 @@ void hoverOnButton(sf::Text &button, sf::Vector2f &mousePosition) {
 }
 
 void updateHome() {
+  static sf::Texture backgroundTexture = getTexture("assets/home.png");
+  static sf::Texture headerTexture = getTexture("assets/home_header.png");
+
+  static sf::Sprite backgroundSprite(backgroundTexture);
+  static sf::Sprite headerSprite(headerTexture);
+
+  static sf::Text playButton(assets->font, "Play", 40);
+  static sf::Text creditsButton(assets->font, "Credits", 40);
+  static sf::Text exitButton(assets->font, "Exit", 40);
+
   static bool init = false;
   if (!init) {
     headerSprite.setPosition(
-        {(window.getSize().x - headerTexture.getSize().x) / 2.0f, 20});
+        {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
     playButton.setPosition({920, 420});
     creditsButton.setPosition({860, 470});
@@ -39,7 +34,7 @@ void updateHome() {
   }
 
   sf::Vector2f mousePosition =
-      window.mapPixelToCoords(sf::Mouse::getPosition(window));
+      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
   hoverOnButton(playButton, mousePosition);
   hoverOnButton(exitButton, mousePosition);
@@ -53,13 +48,13 @@ void updateHome() {
 
   if (isPressed && canClick) {
     if (exitButton.getGlobalBounds().contains(mousePosition))
-      window.close();
+      window->close();
     canClick = false;
   }
 
-  window.draw(backgroundSprite);
-  window.draw(headerSprite);
-  window.draw(exitButton);
-  window.draw(playButton);
-  window.draw(creditsButton);
+  window->draw(backgroundSprite);
+  window->draw(headerSprite);
+  window->draw(exitButton);
+  window->draw(playButton);
+  window->draw(creditsButton);
 }
