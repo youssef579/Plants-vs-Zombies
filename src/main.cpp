@@ -6,7 +6,7 @@
 sf::RenderWindow *window = nullptr;
 
 int main() {
-  window = new sf::RenderWindow(sf::VideoMode({1150, 606}), "PvZ Clone",
+  window = new sf::RenderWindow(sf::VideoMode({1150, 606}), "Plants vs Zombies",
                                 sf::Style::Close | sf::Style::Titlebar);
   window->setFramerateLimit(60);
 
