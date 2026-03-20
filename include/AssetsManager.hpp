@@ -1,15 +1,18 @@
 #pragma once
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 
-struct TextureResource {
-  sf::Texture texture;
+const int MAX_RESOURCES = 256;
+
+template <typename T> struct Resource {
+  T resource;
   std::string path;
 };
 
 struct AssetsManager {
-  TextureResource *textures[256];
+  Resource<sf::Texture> *textures[MAX_RESOURCES]{};
+  Resource<sf::SoundBuffer> *sounds[MAX_RESOURCES]{};
   sf::Font font;
 };
 
@@ -20,3 +23,5 @@ void throwLoadingError(std::string);
 void initAssets();
 
 sf::Texture &getTexture(std::string);
+
+sf::SoundBuffer &getSound(std::string);

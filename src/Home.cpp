@@ -11,8 +11,8 @@ void hoverOnButton(sf::Text &button, sf::Vector2f &mousePosition) {
 }
 
 void updateHome() {
-  static sf::Texture backgroundTexture = getTexture("assets/home.png");
-  static sf::Texture headerTexture = getTexture("assets/home_header.png");
+  static sf::Texture &backgroundTexture = getTexture("assets/home.png");
+  static sf::Texture &headerTexture = getTexture("assets/home_header.png");
 
   static sf::Sprite backgroundSprite(backgroundTexture);
   static sf::Sprite headerSprite(headerTexture);

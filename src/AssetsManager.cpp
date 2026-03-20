@@ -1,4 +1,5 @@
 #include <AssetsManager.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <iostream>
 
 AssetsManager *assets = nullptr;
@@ -14,9 +15,6 @@ void initAssets() {
   if (assets == nullptr) {
     assets = new AssetsManager();
 
-    for (int i = 0; i < 256; i++)
-      assets->textures[i] = nullptr;
-
     std::string fontPath = "assets/font.ttf";
     if (!assets->font.openFromFile(fontPath))
       throwLoadingError(fontPath);
@@ -24,18 +22,35 @@ void initAssets() {
 }
 
 sf::Texture &getTexture(std::string path) {
-  for (int i = 0; i < 256; i++) {
+  for (int i = 0; i < MAX_RESOURCES; i++) {
     if (assets->textures[i] == nullptr) {
-      assets->textures[i] = new TextureResource();
-      if (!assets->textures[i]->texture.loadFromFile(path))
+      assets->textures[i] = new Resource<sf::Texture>();
+      if (!assets->textures[i]->resource.loadFromFile(path))
         throwLoadingError(path);
 
       assets->textures[i]->path = path;
-      return assets->textures[i]->texture;
+      return assets->textures[i]->resource;
     } else if (assets->textures[i]->path == path)
-      return assets->textures[i]->texture;
+      return assets->textures[i]->resource;
   }
 
-  std::cerr << "FATAL ERROR: Asset manager is full (256/256)!" << std::endl;
+  std::cerr << "FATAL ERROR: Asset manager is full !" << std::endl;
+  exit(1);
+}
+
+sf::SoundBuffer &getSound(std::string path) {
+  for (int i = 0; i < MAX_RESOURCES; i++) {
+    if (assets->sounds[i] == nullptr) {
+      assets->sounds[i] = new Resource<sf::SoundBuffer>();
+      if (!assets->sounds[i]->resource.loadFromFile(path))
+        throwLoadingError(path);
+
+      assets->sounds[i]->path = path;
+      return assets->sounds[i]->resource;
+    } else if (assets->sounds[i]->path == path)
+      return assets->sounds[i]->resource;
+  }
+
+  std::cerr << "FATAL ERROR: Asset manager is full !" << std::endl;
   exit(1);
 }
