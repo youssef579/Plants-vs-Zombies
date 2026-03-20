@@ -1,12 +1,18 @@
 #include <AssetsManager.hpp>
 #include <Home.hpp>
 #include <SFML/Graphics.hpp>
+#include <functional>
 #include <globals.hpp>
 
-void hoverOnButton(sf::Text &button, sf::Vector2f &mousePosition) {
-  if (button.getGlobalBounds().contains(mousePosition))
+void onClick(sf::Text &button, std::function<void()> action) {
+  sf::Vector2f mousePosition =
+      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+  if (button.getGlobalBounds().contains(mousePosition)) {
     button.setStyle(sf::Text::Bold);
-  else
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+      action();
+  } else
     button.setStyle(sf::Text::Regular);
 }
 
@@ -21,40 +27,27 @@ void updateHome() {
   static sf::Text creditsButton(assets->font, "Credits", 40);
   static sf::Text exitButton(assets->font, "Exit", 40);
 
-  static bool init = false;
-  if (!init) {
+  static bool isInit = false;
+  if (!isInit) {
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
     playButton.setPosition({920, 420});
     creditsButton.setPosition({860, 470});
     exitButton.setPosition({920, 520});
+    sf::Mouse::setPosition({0, 0}, *window);
 
-    init = true;
+    isInit = true;
   }
 
-  sf::Vector2f mousePosition =
-      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-
-  hoverOnButton(playButton, mousePosition);
-  hoverOnButton(exitButton, mousePosition);
-  hoverOnButton(creditsButton, mousePosition);
-
-  static bool canClick = false;
-  bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-
-  if (!isPressed)
-    canClick = true;
-
-  if (isPressed && canClick) {
-    if (exitButton.getGlobalBounds().contains(mousePosition))
-      window->close();
-    canClick = false;
-  }
+  // onClick(playButton, mousePosition);
+  // onClick(creditsButton, mousePosition);
+  onClick(exitButton, []() { window->close(); });
 
   window->draw(backgroundSprite);
   window->draw(headerSprite);
-  window->draw(exitButton);
+
   window->draw(playButton);
   window->draw(creditsButton);
+  window->draw(exitButton);
 }
