@@ -4,4 +4,4 @@ out
 .idea
 .vs
 .vscode
-.sh
+run.sh
