@@ -3,18 +3,21 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 
-using TextStyle = std::function<void(sf::Text&)>;
-
-const int MAX_LINES = 16;
+const int MAX_LINES = 7;
 
 struct Overlay {
-  int numberOfLines = 0;
-  sf::RectangleShape *overlaycolor = nullptr;
-  sf::Text *Title = nullptr, *strings[MAX_LINES]{}, *OK = nullptr;
+  int nLines;
+  sf::RectangleShape overlayRect;
+  sf::Text title, lines[MAX_LINES], greenButton, redButton;
 };
 
 extern Overlay *overlay;
 
-void updateOverlay(const int &numberStrings, std::string arr[], const std::string &title, TextStyle changeText = nullptr);
+void initOverlay();
 
-void printOverlay();
+void updateOverlay(int, std::string[], std::string,
+                   std::function<void(sf::Text &)> = nullptr,
+                   std::function<void()> = nullptr, std::string = "",
+                   std::function<void()> = nullptr, std::string = "");
+
+void drawOverlay();

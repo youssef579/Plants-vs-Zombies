@@ -11,8 +11,8 @@ template <typename T> struct Resource {
 };
 
 struct AssetsManager {
-  Resource<sf::Texture> *textures[MAX_RESOURCES]{};
-  Resource<sf::SoundBuffer> *sounds[MAX_RESOURCES]{};
+  Resource<sf::Texture> textures[MAX_RESOURCES];
+  Resource<sf::SoundBuffer> sounds[MAX_RESOURCES];
   sf::Font font;
 };
 

@@ -1,23 +1,9 @@
 #include <AssetsManager.hpp>
 #include <Home.hpp>
+#include <Overlay.hpp>
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <globals.hpp>
-#include <Overlay.hpp>
-
-int homeState = 0;
-
-void onClick(sf::Text &button, std::function<void()> action) {
-  sf::Vector2f mousePosition =
-      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-
-  if (button.getGlobalBounds().contains(mousePosition)) {
-    button.setStyle(sf::Text::Bold);
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-      action();
-  } else
-    button.setStyle(sf::Text::Regular);
-}
 
 void updateHome() {
   static sf::Texture &backgroundTexture = getTexture("assets/home.png");
@@ -30,6 +16,7 @@ void updateHome() {
   static sf::Text creditsButton(assets->font, "Credits", 40);
   static sf::Text exitButton(assets->font, "Exit", 40);
 
+  static int homeState = 0;
   static bool isInit = false;
   if (!isInit) {
     headerSprite.setPosition(
@@ -42,16 +29,23 @@ void updateHome() {
 
     isInit = true;
   }
-  
-  if (homeState == 0){
+
+  switch (homeState) {
+  case 0:
     // onClick(playButton, mousePosition);
     onClick(exitButton, []() { window->close(); });
-  
-    onClick(creditsButton, [&]() {
-      homeState = 1;
-      std::string credits[7] = {"Anton", "Youssef", "Ali", "Ather", "Halimo", "Mohamed", "MSoliman"};
-      updateOverlay(7, credits, "Credits");
-    });
+    onClick(creditsButton, []() { homeState = 1; });
+    break;
+  case 1:
+    std::string names[] = {"Youssef Ragaey (Team Lead)",
+                           "Anton Bakhet",
+                           "Ali Assem",
+                           "Mohammed Abdelhalim",
+                           "Mohammed Ahmed",
+                           "Ather Hossam",
+                           "Mohammed Soliman"};
+    updateOverlay(7, names, "Credits", nullptr, []() { homeState = 0; }, "OK");
+    break;
   }
 
   window->draw(backgroundSprite);
@@ -60,8 +54,6 @@ void updateHome() {
   window->draw(creditsButton);
   window->draw(exitButton);
 
-  if (homeState == 1) {
-    onClick(*overlay->OK, [&]() {homeState = 0;});
-    printOverlay();
-  }
+  if (homeState == 1)
+    drawOverlay();
 }
