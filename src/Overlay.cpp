@@ -6,53 +6,60 @@
 #include <Overlay.hpp>
 #include <Home.hpp>
 #include <iostream>
+#include <functional>
+
+using TextStyle = std::function<void(sf::Text&)>;
 
 Overlay *overlay = nullptr;
 
-void update_overlay(const int &sz, std::string arr[], const std::string &header){
+void updateOverlay(const int &nLines, std::string arr[], const std::string &title, TextStyle changeText){
   if (overlay == nullptr) {
     overlay = new Overlay();
   }
 
-  overlay->number_of_strings = sz;
+  overlay->numberOfLines = nLines;
 
   if (overlay->overlaycolor == nullptr) {
     overlay->overlaycolor = new sf::RectangleShape({1150, 606});
     overlay->overlaycolor->setFillColor(sf::Color({0, 0, 0, 200}));
   }
   
-  int font_sz = 40, header_sz = 55;
+  int font_size = 40, title_size = 55;
   float space = 0;
   
-  overlay->Header = new sf::Text(assets->font, header, header_sz);
-  space += overlay->Header->getLocalBounds().size.y + 35;
+  overlay->Title = new sf::Text(assets->font, title, title_size);
+  space += overlay->Title->getLocalBounds().size.y + 35;
   
-  for (int i = 0; i < sz; i++){
-    overlay->strings[i] = new sf::Text(assets->font, arr[i], font_sz);
+  for (int i = 0; i < nLines; i++){
+    overlay->strings[i] = new sf::Text(assets->font, arr[i], font_size);
+    if (changeText) {
+      changeText(*overlay->strings[i]);
+    }
     space += overlay->strings[i]->getLocalBounds().size.y + 15;
   }
 
-  overlay->OK = new sf::Text(assets->font, "OK", header_sz);
+  overlay->OK = new sf::Text(assets->font, "OK", title_size);
   space += overlay->OK->getLocalBounds().size.y + 20;
 
   float y = (606 - space) / 2;
 
-  overlay->Header->setPosition({1150 / 2 - (overlay->Header->getLocalBounds().size.x / 2), y});
-  y += overlay->Header->getLocalBounds().size.y + 35;
+  overlay->Title->setPosition({1150 / 2 - (overlay->Title->getLocalBounds().size.x / 2), y});
+  y += overlay->Title->getLocalBounds().size.y + 35;
   
-  for (int i = 0; i < sz; i++){
+  for (int i = 0; i < nLines; i++){
     overlay->strings[i]->setPosition({1150 / 2 - (overlay->strings[i]->getLocalBounds().size.x / 2), y});
     y += overlay->strings[i]->getLocalBounds().size.y + 15;
   }
   y += 20;
+
   overlay->OK->setPosition({1150 / 2 - (overlay->OK->getLocalBounds().size.x / 2), y});
   overlay->OK->setFillColor(sf::Color::Green);
 }
 
-void print_overlay(){
+void printOverlay(){
   window->draw(*overlay->overlaycolor);
-  window->draw(*overlay->Header);
-  for (int i = 0; i < overlay->number_of_strings; i++){
+  window->draw(*overlay->Title);
+  for (int i = 0; i < overlay->numberOfLines; i++){
     window->draw(*overlay->strings[i]);
   }
   window->draw(*overlay->OK);

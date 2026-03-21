@@ -50,7 +50,7 @@ void updateHome() {
     onClick(creditsButton, [&]() {
       homeState = 1;
       std::string credits[7] = {"Anton", "Youssef", "Ali", "Ather", "Halimo", "Mohamed", "MSoliman"};
-      update_overlay(7, credits, "Credits");
+      updateOverlay(7, credits, "Credits");
     });
   }
 
@@ -62,6 +62,6 @@ void updateHome() {
 
   if (homeState == 1) {
     onClick(*overlay->OK, [&]() {homeState = 0;});
-    print_overlay();
+    printOverlay();
   }
 }

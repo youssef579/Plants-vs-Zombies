@@ -1,17 +1,20 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <functional>
 
-const int mx_size_in_overlay = 16;
+using TextStyle = std::function<void(sf::Text&)>;
+
+const int MAX_LINES = 16;
 
 struct Overlay {
-  int number_of_strings = 0;
+  int numberOfLines = 0;
   sf::RectangleShape *overlaycolor = nullptr;
-  sf::Text *Header = nullptr, *strings[mx_size_in_overlay]{}, *OK = nullptr;
+  sf::Text *Title = nullptr, *strings[MAX_LINES]{}, *OK = nullptr;
 };
 
 extern Overlay *overlay;
 
-void update_overlay(const int &sz, std::string arr[], const std::string &header);
+void updateOverlay(const int &numberStrings, std::string arr[], const std::string &title, TextStyle changeText = nullptr);
 
-void print_overlay();
+void printOverlay();
