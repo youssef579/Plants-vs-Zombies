@@ -1,5 +1,6 @@
 #include <Game.hpp>
 #include <Home.hpp>
+#include <Overlay.hpp>
 
 int gameState = 0;
 /*

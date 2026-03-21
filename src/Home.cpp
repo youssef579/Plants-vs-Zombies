@@ -3,6 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <globals.hpp>
+#include <Overlay.hpp>
+
+int homeState = 0;
 
 void onClick(sf::Text &button, std::function<void()> action) {
   sf::Vector2f mousePosition =
@@ -39,15 +42,26 @@ void updateHome() {
 
     isInit = true;
   }
-
-  // onClick(playButton, mousePosition);
-  // onClick(creditsButton, mousePosition);
-  onClick(exitButton, []() { window->close(); });
+  
+  if (homeState == 0){
+    // onClick(playButton, mousePosition);
+    onClick(exitButton, []() { window->close(); });
+  
+    onClick(creditsButton, [&]() {
+      homeState = 1;
+      std::string credits[7] = {"Anton", "Youssef", "Ali", "Ather", "Halimo", "Mohamed", "MSoliman"};
+      updateOverlay(7, credits, "Credits");
+    });
+  }
 
   window->draw(backgroundSprite);
   window->draw(headerSprite);
-
   window->draw(playButton);
   window->draw(creditsButton);
   window->draw(exitButton);
+
+  if (homeState == 1) {
+    onClick(*overlay->OK, [&]() {homeState = 0;});
+    printOverlay();
+  }
 }

@@ -2,6 +2,7 @@
 #include <Game.hpp>
 #include <SFML/Graphics.hpp>
 #include <globals.hpp>
+#include <Overlay.hpp>
 
 sf::RenderWindow *window = nullptr;
 
@@ -25,7 +26,6 @@ int main() {
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
 
   const auto onClose = [](const sf::Event::Closed &) { window->close(); };
-
   while (window->isOpen()) {
     window->handleEvents(onClose);
 
