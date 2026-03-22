@@ -2,17 +2,18 @@
 #include <Overlay.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <functional>
 #include <globals.hpp>
 
 Overlay *overlay;
+bool isOverlayChanged = false;
 
 void initOverlay() {
   sf::RectangleShape rect((sf::Vector2f)window->getSize());
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
   int medium = 40, big = 55;
-
   overlay = new Overlay(
       {0,
        rect,
@@ -28,62 +29,74 @@ void initOverlay() {
   overlay->redButton.setFillColor(sf::Color::Red);
 }
 
+void handleEvents(std::function<void()> &greenButtonAction,
+                  std::function<void()> &redButtonAction) {
+  if (!overlay->greenButton.getString().isEmpty())
+    onClick(overlay->greenButton, greenButtonAction);
+  if (!overlay->redButton.getString().isEmpty())
+    onClick(overlay->redButton, redButtonAction);
+}
+
 void updateOverlay(int nLines, std::string lines[], std::string title,
                    std::function<void(sf::Text &)> handleLine,
-                   std::function<void()> greenButtonHandle,
+                   std::function<void()> greenButtonAction,
                    std::string greenButtonText,
-                   std::function<void()> redButtonHandle,
+                   std::function<void()> redButtonAction,
                    std::string redButtonText) {
-  overlay->nLines = nLines;
-  overlay->greenButton.setString(greenButtonText);
-  overlay->redButton.setString(redButtonText);
-  sf::Vector2<float> greenButtonSize =
-                         overlay->greenButton.getLocalBounds().size,
-                     redButtonSize = overlay->redButton.getLocalBounds().size;
+  if (isOverlayChanged) { // Update and place the content
+    overlay->nLines = nLines;
 
-  float gapY = 60, titleExtraGap = 20, bias = 10,
-        contentHeight = (nLines + 1) * gapY + titleExtraGap + greenButtonSize.y,
-        offsetY = (window->getSize().y - contentHeight) / 2 - bias;
+    overlay->greenButton.setString(greenButtonText);
+    overlay->redButton.setString(redButtonText);
+    overlay->title.setString(title);
 
-  auto centerX = [](sf::Text &text) {
-    return (window->getSize().x - text.getLocalBounds().size.x) / 2.f;
-  };
+    sf::Vector2<float> greenButtonSize =
+                           overlay->greenButton.getLocalBounds().size,
+                       redButtonSize = overlay->redButton.getLocalBounds().size;
+    sf::Vector2u windowSize = window->getSize();
 
-  overlay->title.setString(title);
-  overlay->title.setPosition({centerX(overlay->title), offsetY});
+    float gapY = 60, titleExtraGap = 20, bias = 10,
+          contentHeight =
+              (nLines + 1) * gapY + titleExtraGap + greenButtonSize.y,
+          offsetY = (windowSize.y - contentHeight) / 2 - bias;
 
-  for (int i = 0; i < nLines; i++) {
-    overlay->lines[i].setString(lines[i]);
-    overlay->lines[i].setPosition(
-        {centerX(overlay->lines[i]), (i + 1) * gapY + titleExtraGap + offsetY});
+    auto centerX = [&](sf::Text &text) {
+      return (windowSize.x - text.getLocalBounds().size.x) / 2.f;
+    };
 
-    if (handleLine)
-      handleLine(overlay->lines[i]);
-  }
+    overlay->title.setPosition({centerX(overlay->title), offsetY});
 
-  overlay->greenButton.setPosition(
-      {centerX(overlay->greenButton),
-       (nLines + 1) * gapY + titleExtraGap + offsetY});
-  overlay->redButton.setPosition(
-      {centerX(overlay->redButton),
-       (nLines + 1) * gapY + titleExtraGap + offsetY});
+    for (int i = 0; i < nLines; i++) {
+      overlay->lines[i].setString(lines[i]);
+      overlay->lines[i].setPosition({centerX(overlay->lines[i]),
+                                     (i + 1) * gapY + titleExtraGap + offsetY});
 
-  if (!greenButtonText.empty() && !redButtonText.empty()) {
+      if (handleLine)
+        handleLine(overlay->lines[i]);
+    }
 
-    float gapX = 50, offsetX = (window->getSize().x -
-                                (greenButtonSize.x + redButtonSize.x + gapX)) /
-                               2;
     overlay->greenButton.setPosition(
-        {offsetX, (nLines + 1) * gapY + titleExtraGap + offsetY});
-    overlay->redButton.setPosition(
-        {greenButtonSize.x + gapX + offsetX,
+        {centerX(overlay->greenButton),
          (nLines + 1) * gapY + titleExtraGap + offsetY});
+    overlay->redButton.setPosition(
+        {centerX(overlay->redButton),
+         (nLines + 1) * gapY + titleExtraGap + offsetY});
+
+    if (!greenButtonText.empty() && !redButtonText.empty()) {
+      float gapX = 50,
+            offsetX =
+                (windowSize.x - (greenButtonSize.x + redButtonSize.x + gapX)) /
+                2;
+      overlay->greenButton.setPosition(
+          {offsetX, (nLines + 1) * gapY + titleExtraGap + offsetY});
+      overlay->redButton.setPosition(
+          {greenButtonSize.x + gapX + offsetX,
+           (nLines + 1) * gapY + titleExtraGap + offsetY});
+    }
+    isOverlayChanged = false;
   }
 
-  if (!greenButtonText.empty())
-    onClick(overlay->greenButton, greenButtonHandle);
-  if (!redButtonText.empty())
-    onClick(overlay->redButton, greenButtonHandle);
+  handleEvents(greenButtonAction, redButtonAction);
 }
 
 void drawOverlay() {
