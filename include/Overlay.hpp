@@ -5,6 +5,8 @@
 
 const int MAX_LINES = 7;
 
+extern bool isOverlayChanged;
+
 struct Overlay {
   int nLines;
   sf::RectangleShape overlayRect;

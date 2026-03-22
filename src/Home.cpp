@@ -5,6 +5,14 @@
 #include <functional>
 #include <globals.hpp>
 
+std::string names[] = {"Youssef Ragaey (Team Lead)",
+                       "Anton Bakhet",
+                       "Ali Assem",
+                       "Mohammed Abdelhalim",
+                       "Mohammed Ahmed",
+                       "Ather Hossam",
+                       "Mohammed Soliman"};
+
 void updateHome() {
   static sf::Texture &backgroundTexture = getTexture("assets/home.png");
   static sf::Texture &headerTexture = getTexture("assets/home_header.png");
@@ -17,8 +25,14 @@ void updateHome() {
   static sf::Text exitButton(assets->font, "Exit", 40);
 
   static int homeState = 0;
-  static bool isInit = false;
-  if (!isInit) {
+  /*
+    0 -> Home menu
+    1 -> Credits
+    2 -> Level Selector
+  */
+
+  static bool runOnce = true;
+  if (runOnce) {
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
@@ -27,23 +41,19 @@ void updateHome() {
     exitButton.setPosition({920, 520});
     sf::Mouse::setPosition({0, 0}, *window);
 
-    isInit = true;
+    runOnce = false;
   }
 
   switch (homeState) {
   case 0:
     // onClick(playButton, mousePosition);
     onClick(exitButton, []() { window->close(); });
-    onClick(creditsButton, []() { homeState = 1; });
+    onClick(creditsButton, []() {
+      homeState = 1;
+      isOverlayChanged = true;
+    });
     break;
   case 1:
-    std::string names[] = {"Youssef Ragaey (Team Lead)",
-                           "Anton Bakhet",
-                           "Ali Assem",
-                           "Mohammed Abdelhalim",
-                           "Mohammed Ahmed",
-                           "Ather Hossam",
-                           "Mohammed Soliman"};
     updateOverlay(7, names, "Credits", nullptr, []() { homeState = 0; }, "OK");
     break;
   }
