@@ -1,8 +1,6 @@
 #include <AssetsManager.hpp>
 #include <Overlay.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <functional>
 #include <globals.hpp>
 
@@ -13,7 +11,7 @@ void initOverlay() {
   sf::RectangleShape rect((sf::Vector2f)window->getSize());
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
-  int medium = 40, big = 55;
+  int medium = 40, big = 60;
   overlay = new Overlay(
       {0,
        rect,
@@ -55,7 +53,7 @@ void updateOverlay(int nLines, std::string lines[], std::string title,
                        redButtonSize = overlay->redButton.getLocalBounds().size;
     sf::Vector2u windowSize = window->getSize();
 
-    float gapY = 60, titleExtraGap = 20, bias = 10,
+    float gapY = 60, titleExtraGap = 30, bias = 10,
           contentHeight =
               (nLines + 1) * gapY + titleExtraGap + greenButtonSize.y,
           offsetY = (windowSize.y - contentHeight) / 2 - bias;

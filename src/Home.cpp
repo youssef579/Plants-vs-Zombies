@@ -54,7 +54,8 @@ void updateHome() {
     });
     break;
   case 1:
-    updateOverlay(7, names, "Credits", nullptr, []() { homeState = 0; }, "OK");
+    updateOverlay(
+        7, names, "Team Members", nullptr, []() { homeState = 0; }, "Okay");
     break;
   }
 
