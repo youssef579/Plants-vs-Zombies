@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <globals.hpp>
+#include <vector>
 
 Overlay *overlay;
 bool isOverlayChanged = false;
@@ -12,19 +13,16 @@ void initOverlay() {
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
   int medium = 40, big = 60;
-  overlay = new Overlay(
-      {0,
-       rect,
-       sf::Text(assets->font, "", big),
-       {sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium)},
-       sf::Text(assets->font, "", medium),
-       sf::Text(assets->font, "", medium)});
+  sf::Text title(assets->font, "", big), greenButton(assets->font, "", medium),
+      redButton(assets->font, "", medium);
 
-  overlay->greenButton.setFillColor(sf::Color::Green);
-  overlay->redButton.setFillColor(sf::Color::Red);
+  greenButton.setFillColor(sf::Color::Green);
+  redButton.setFillColor(sf::Color::Red);
+
+  std::vector<sf::Text> lines =
+      std::vector<sf::Text>(MAX_LINES, sf::Text(assets->font, "", medium));
+
+  overlay = new Overlay({0, rect, title, greenButton, redButton, lines});
 }
 
 void handleEvents(std::function<void()> &greenButtonAction,

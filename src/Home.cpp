@@ -2,8 +2,10 @@
 #include <Home.hpp>
 #include <Overlay.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <functional>
 #include <globals.hpp>
+#include <vector>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
