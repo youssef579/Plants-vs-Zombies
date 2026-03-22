@@ -40,7 +40,8 @@ void updateOverlay(int nLines, std::string lines[], std::string title,
                    std::function<void()> greenButtonAction,
                    std::string greenButtonText,
                    std::function<void()> redButtonAction,
-                   std::string redButtonText) {
+                   std::string redButtonText,
+                   sf::Color lineColors[]) {
   if (isOverlayChanged) { // Update and place the content
     overlay->nLines = nLines;
 
@@ -64,13 +65,29 @@ void updateOverlay(int nLines, std::string lines[], std::string title,
 
     overlay->title.setPosition({centerX(overlay->title), offsetY});
 
-    for (int i = 0; i < nLines; i++) {
-      overlay->lines[i].setString(lines[i]);
-      overlay->lines[i].setPosition({centerX(overlay->lines[i]),
-                                     (i + 1) * gapY + titleExtraGap + offsetY});
+    if (lineColors == nullptr) {
+      for (int i = 0; i < nLines; i++) {
+        overlay->lines[i].setString(lines[i]);
+        overlay->lines[i].setPosition({ centerX(overlay->lines[i]),
+                                       (i + 1) * gapY + titleExtraGap + offsetY });
 
-      if (handleLine)
-        handleLine(overlay->lines[i]);
+
+        if (handleLine)
+          handleLine(overlay->lines[i]);
+
+      }
+    }
+    else {
+      for (int i = 0; i < nLines; i++) {
+        overlay->lines[i].setString(lines[i]);
+        overlay->lines[i].setPosition({ centerX(overlay->lines[i]),
+                                       (i + 1) * gapY + titleExtraGap + offsetY });
+        overlay->lines[i].setFillColor(lineColors[i]);
+
+
+        if (handleLine)
+          handleLine(overlay->lines[i]);
+      }
     }
 
     overlay->greenButton.setPosition(
@@ -85,10 +102,10 @@ void updateOverlay(int nLines, std::string lines[], std::string title,
             offsetX =
                 (windowSize.x - (greenButtonSize.x + redButtonSize.x + gapX)) /
                 2;
-      overlay->greenButton.setPosition(
-          {offsetX, (nLines + 1) * gapY + titleExtraGap + offsetY});
       overlay->redButton.setPosition(
-          {greenButtonSize.x + gapX + offsetX,
+          {offsetX, (nLines + 1) * gapY + titleExtraGap + offsetY});
+      overlay->greenButton.setPosition(
+          {redButtonSize.x + gapX + offsetX,
            (nLines + 1) * gapY + titleExtraGap + offsetY});
     }
     isOverlayChanged = false;

@@ -30,6 +30,9 @@ void updateHome() {
     1 -> Credits
     2 -> Level Selector
   */
+  //static int levelSelectionPage = 1;
+  //static int maxLevelSelectionPage = 4;
+ 
 
   static bool runOnce = true;
   if (runOnce) {
@@ -47,15 +50,38 @@ void updateHome() {
   switch (homeState) {
   case 0:
     // onClick(playButton, mousePosition);
-    onClick(exitButton, []() { window->close(); });
+    onClick(playButton, []() {
+      homeState = 2;
+      isOverlayChanged = true;
+    });
     onClick(creditsButton, []() {
       homeState = 1;
       isOverlayChanged = true;
     });
+    onClick(exitButton, []() { window->close(); });
     break;
   case 1:
     updateOverlay(
         7, names, "Team Members", nullptr, []() { homeState = 0; }, "Okay");
+    break;
+  case 2:
+    updateOverlay(
+      5, levelSelectorNames[levelSelectorCurrentPage], "Select Your Level",
+      nullptr,
+      []() {
+        isOverlayChanged = true;
+        if (levelSelectorCurrentPage != (MAX_LEVELS + LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE - 1)
+          / LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE) levelSelectorCurrentPage++;
+
+      }, "Next",
+      []() {
+        isOverlayChanged = true;
+        if (levelSelectorCurrentPage == 1) homeState = 0;
+        else levelSelectorCurrentPage--;
+        }, (levelSelectorCurrentPage==1) ? "Back" : "Prev",
+        levelSelectorColors[levelSelectorCurrentPage]
+
+    );
     break;
   }
 
@@ -65,6 +91,6 @@ void updateHome() {
   window->draw(creditsButton);
   window->draw(exitButton);
 
-  if (homeState == 1)
+  if (homeState == 1 || homeState == 2) // homeState != 0 w 5las?
     drawOverlay();
 }

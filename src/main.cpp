@@ -3,12 +3,16 @@
 #include <Overlay.hpp>
 #include <SFML/Graphics.hpp>
 #include <globals.hpp>
+#include <files.hpp>
 
 sf::RenderWindow *window;
+
+bool buttonWasClicked = false;
 
 int main() {
   window = new sf::RenderWindow(sf::VideoMode({1150, 606}), "Plants vs Zombies",
                                 sf::Style::Close | sf::Style::Titlebar);
+  initFiles(); //load data from storage
   initAssets();
   initOverlay();
 
@@ -35,6 +39,7 @@ int main() {
     window->display();
   }
 
+  updateFiles(); //write needed data to storage
   delete window;
   delete assets;
   delete overlay;
