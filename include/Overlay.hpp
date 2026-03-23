@@ -21,6 +21,7 @@ void initOverlay();
 void updateOverlay(int, std::string[], std::string,
                    std::function<void(sf::Text &)> = nullptr,
                    std::function<void()> = nullptr, std::string = "",
-                   std::function<void()> = nullptr, std::string = "");
+                   std::function<void()> = nullptr, std::string = "",
+  sf::Color[] = nullptr);
 
 void drawOverlay();

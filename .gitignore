@@ -5,3 +5,4 @@ out
 .vs
 .vscode
 run.sh
+storage/levels.txt
