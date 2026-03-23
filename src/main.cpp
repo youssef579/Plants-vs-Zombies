@@ -1,13 +1,9 @@
 #include <AssetsManager.hpp>
+#include <Files.hpp>
 #include <Game.hpp>
 #include <Overlay.hpp>
-#include <globals.hpp>
-#include <files.hpp>
 #include <Window.hpp>
-
-sf::RenderWindow *window;
-
-bool buttonWasClicked = false;
+#include <globals.hpp>
 
 int main() {
   initWindow();

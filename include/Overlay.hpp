@@ -18,10 +18,14 @@ extern Overlay *overlay;
 
 void initOverlay();
 
-void updateOverlay(int, std::string[], std::string,
-                   std::function<void(sf::Text &)> = nullptr,
-                   std::function<void()> = nullptr, std::string = "",
-                   std::function<void()> = nullptr, std::string = "",
-  sf::Color[] = nullptr);
+void handleOverlayEvents(
+    std::function<void(sf::Text &, int)> updateLine = nullptr,
+    std::function<void()> greenButtonAction = nullptr,
+    std::function<void()> redButtonAction = nullptr);
+
+void setOverlayData(int nLines, std::string title,
+                    std::function<void(sf::Text &, int)> setupLine,
+                    std::string greenButtonText = "",
+                    std::string redButtonText = "");
 
 void drawOverlay();

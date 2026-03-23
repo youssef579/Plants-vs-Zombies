@@ -1,9 +1,10 @@
 #include <AssetsManager.hpp>
+#include <Files.hpp>
+#include <Game.hpp>
 #include <Home.hpp>
 #include <Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
-#include <Files.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -24,13 +25,35 @@ void updateHome() {
   static sf::Text creditsButton(assets->font, "Credits", 40);
   static sf::Text exitButton(assets->font, "Exit", 40);
 
+  static auto isLastPage = []() {
+    return levelSelectorCurrentPage * LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE >=
+           MAX_LEVELS;
+  };
+  static auto updateLevelsMenu = []() {
+    setOverlayData(
+        std::min(LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE,
+                 MAX_LEVELS - (levelSelectorCurrentPage - 1) *
+                                  LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE),
+        "Select a Level",
+        [](sf::Text &text, int i) {
+          int currentLevel = (levelSelectorCurrentPage - 1) *
+                                 LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE +
+                             1 + i;
+          text.setString("Level " + std::to_string(currentLevel));
+
+          if (currentLevel > maxLevelUnlocked)
+            text.setFillColor(sf::Color(120, 120, 120));
+        },
+        isLastPage() ? "" : "Next",
+        levelSelectorCurrentPage == 1 ? "Back" : "Prev");
+  };
+
   static int homeState = 0;
   /*
     0 -> Home menu
     1 -> Credits
     2 -> Level Selector
   */
- 
 
   static bool runOnce = true;
   if (runOnce) {
@@ -45,40 +68,48 @@ void updateHome() {
     runOnce = false;
   }
 
-  switch (homeState) {
-  case 0:
+  if (homeState == 0) {
     onClick(playButton, []() {
       homeState = 2;
-      isOverlayChanged = true;
+      updateLevelsMenu();
     });
     onClick(creditsButton, []() {
       homeState = 1;
-      isOverlayChanged = true;
+      setOverlayData(
+          7, "Team Members",
+          [](sf::Text &text, int i) { text.setString(names[i]); }, "Okay");
     });
     onClick(exitButton, []() { window->close(); });
-    break;
-  case 1:
-    updateOverlay(
-        7, names, "Team Members", nullptr, []() { homeState = 0; }, "Okay");
-    break;
-  case 2:
-    updateOverlay(
-      5, levelSelectorNames[levelSelectorCurrentPage], "Select Your Level",
-      nullptr,
-      []() {
-        isOverlayChanged = true;
-        if (isLastPage()) levelSelectorCurrentPage++;
+  }
 
-      }, (!isLastPage()) ? "" : "Next",
-      []() {
-        isOverlayChanged = true;
-        if (levelSelectorCurrentPage == 1) homeState = 0;
-        else levelSelectorCurrentPage--;
-        }, (levelSelectorCurrentPage==1) ? "Back" : "Prev",
-        levelSelectorColors[levelSelectorCurrentPage]
+  if (homeState == 1)
+    handleOverlayEvents(nullptr, []() { homeState = 0; });
+  else if (homeState == 2) {
+    handleOverlayEvents(
+        [](sf::Text &text, int) {
+          int currentLevel =
+              std::stoi(text.getString().substring(6).toAnsiString());
 
-    );
-    break;
+          if (currentLevel <= maxLevelUnlocked)
+            onClick(text, [&]() {
+              gameState = currentLevel;
+              homeState = 0;
+            });
+        },
+        []() {
+          if (!isLastPage()) {
+            levelSelectorCurrentPage++;
+            updateLevelsMenu();
+          }
+        },
+        []() {
+          if (levelSelectorCurrentPage == 1)
+            homeState = 0;
+          else {
+            levelSelectorCurrentPage--;
+            updateLevelsMenu();
+          }
+        });
   }
 
   window->draw(backgroundSprite);
@@ -89,10 +120,4 @@ void updateHome() {
 
   if (homeState != 0)
     drawOverlay();
-}
-
-static bool isLastPage() {
-  if (levelSelectorCurrentPage != (MAX_LEVELS + LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE - 1)
-    / LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE) return true;
-  return false;
 }
