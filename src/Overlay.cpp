@@ -1,5 +1,6 @@
 #include <AssetsManager.hpp>
 #include <Overlay.hpp>
+#include <Window.hpp>
 #include <globals.hpp>
 
 Overlay *overlay;

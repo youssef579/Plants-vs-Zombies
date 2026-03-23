@@ -1,6 +1,7 @@
 #include <AssetsManager.hpp>
 #include <Home.hpp>
 #include <Overlay.hpp>
+#include <Window.hpp>
 #include <globals.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",

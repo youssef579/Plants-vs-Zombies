@@ -1,0 +1,7 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
+
+extern sf::RenderWindow *window;
+
+void initWindow();
