@@ -10,16 +10,19 @@ void initOverlay() {
   sf::RectangleShape rect((sf::Vector2f)window->getSize());
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
-  int medium = 40, big = 60;
-  sf::Text title(assets->font, "", big), greenButton(assets->font, "", medium),
-      redButton(assets->font, "", medium);
+  int mediumSize = 40, largeSize = 60;
+  auto createText = [&]() { return sf::Text(assets->font, "", mediumSize); };
 
+  sf::Text title = createText(), greenButton = createText(),
+           redButton = createText();
+
+  title.setCharacterSize(largeSize);
   greenButton.setFillColor(sf::Color::Green);
   redButton.setFillColor(sf::Color::Red);
 
   overlay = new Overlay({0, rect, title, greenButton, redButton});
   for (int i = 0; i < MAX_LINES; i++)
-    overlay->lines[i] = sf::Text(assets->font, "", medium);
+    overlay->lines[i] = createText();
 }
 
 void handleEvents(std::function<void()> &greenButtonAction,
