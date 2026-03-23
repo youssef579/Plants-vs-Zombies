@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <globals.hpp>
+#include <Files.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -30,8 +31,6 @@ void updateHome() {
     1 -> Credits
     2 -> Level Selector
   */
-  //static int levelSelectionPage = 1;
-  //static int maxLevelSelectionPage = 4;
  
 
   static bool runOnce = true;
@@ -49,7 +48,6 @@ void updateHome() {
 
   switch (homeState) {
   case 0:
-    // onClick(playButton, mousePosition);
     onClick(playButton, []() {
       homeState = 2;
       isOverlayChanged = true;
@@ -70,10 +68,9 @@ void updateHome() {
       nullptr,
       []() {
         isOverlayChanged = true;
-        if (levelSelectorCurrentPage != (MAX_LEVELS + LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE - 1)
-          / LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE) levelSelectorCurrentPage++;
+        if (isLastPage()) levelSelectorCurrentPage++;
 
-      }, "Next",
+      }, (!isLastPage()) ? "" : "Next",
       []() {
         isOverlayChanged = true;
         if (levelSelectorCurrentPage == 1) homeState = 0;
@@ -91,6 +88,12 @@ void updateHome() {
   window->draw(creditsButton);
   window->draw(exitButton);
 
-  if (homeState == 1 || homeState == 2) // homeState != 0 w 5las?
+  if (homeState != 0)
     drawOverlay();
+}
+
+static bool isLastPage() {
+  if (levelSelectorCurrentPage != (MAX_LEVELS + LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE - 1)
+    / LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE) return true;
+  return false;
 }
