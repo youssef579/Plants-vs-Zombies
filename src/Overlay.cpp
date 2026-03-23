@@ -1,9 +1,6 @@
 #include <AssetsManager.hpp>
 #include <Overlay.hpp>
-#include <SFML/Graphics.hpp>
-#include <functional>
 #include <globals.hpp>
-#include <vector>
 
 Overlay *overlay;
 bool isOverlayChanged = false;
@@ -19,10 +16,9 @@ void initOverlay() {
   greenButton.setFillColor(sf::Color::Green);
   redButton.setFillColor(sf::Color::Red);
 
-  std::vector<sf::Text> lines =
-      std::vector<sf::Text>(MAX_LINES, sf::Text(assets->font, "", medium));
-
-  overlay = new Overlay({0, rect, title, greenButton, redButton, lines});
+  overlay = new Overlay({0, rect, title, greenButton, redButton});
+  for (int i = 0; i < MAX_LINES; i++)
+    overlay->lines[i] = sf::Text(assets->font, "", medium);
 }
 
 void handleEvents(std::function<void()> &greenButtonAction,
@@ -63,12 +59,13 @@ void updateOverlay(int nLines, std::string lines[], std::string title,
     overlay->title.setPosition({centerX(overlay->title), offsetY});
 
     for (int i = 0; i < nLines; i++) {
-      overlay->lines[i].setString(lines[i]);
-      overlay->lines[i].setPosition({centerX(overlay->lines[i]),
-                                     (i + 1) * gapY + titleExtraGap + offsetY});
+      overlay->lines[i]->setString(lines[i]);
+      overlay->lines[i]->setPosition(
+          {centerX(overlay->lines[i].value()),
+           (i + 1) * gapY + titleExtraGap + offsetY});
 
       if (handleLine)
-        handleLine(overlay->lines[i]);
+        handleLine(overlay->lines[i].value());
     }
 
     overlay->greenButton.setPosition(
@@ -99,7 +96,7 @@ void drawOverlay() {
   window->draw(overlay->overlayRect);
   window->draw(overlay->title);
   for (int i = 0; i < overlay->nLines; i++)
-    window->draw(overlay->lines[i]);
+    window->draw(overlay->lines[i].value());
 
   if (!overlay->greenButton.getString().isEmpty())
     window->draw(overlay->greenButton);
