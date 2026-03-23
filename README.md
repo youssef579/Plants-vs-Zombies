@@ -20,6 +20,7 @@
 - /src: Implementation files (.cpp)
 - /include: Declaration files (.hpp)
 - /assets: Resources (images, fonts and sounds)
+- /storage: Save files (levels and settings)
 
 ## Code style guidelines
 
