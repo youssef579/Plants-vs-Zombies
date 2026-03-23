@@ -1,3 +1,4 @@
+#include <Window.hpp>
 #include <globals.hpp>
 
 void onClick(sf::Text& button, std::function<void()> action) {

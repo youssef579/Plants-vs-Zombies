@@ -1,7 +1,6 @@
 #include <AssetsManager.hpp>
 #include <Overlay.hpp>
-#include <SFML/Graphics.hpp>
-#include <functional>
+#include <Window.hpp>
 #include <globals.hpp>
 
 Overlay *overlay;
@@ -11,20 +10,19 @@ void initOverlay() {
   sf::RectangleShape rect((sf::Vector2f)window->getSize());
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
-  int medium = 40, big = 60;
-  overlay = new Overlay(
-      {0,
-       rect,
-       sf::Text(assets->font, "", big),
-       {sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium), sf::Text(assets->font, "", medium),
-        sf::Text(assets->font, "", medium)},
-       sf::Text(assets->font, "", medium),
-       sf::Text(assets->font, "", medium)});
+  int mediumSize = 40, largeSize = 60;
+  auto createText = [&]() { return sf::Text(assets->font, "", mediumSize); };
 
-  overlay->greenButton.setFillColor(sf::Color::Green);
-  overlay->redButton.setFillColor(sf::Color::Red);
+  sf::Text title = createText(), greenButton = createText(),
+           redButton = createText();
+
+  title.setCharacterSize(largeSize);
+  greenButton.setFillColor(sf::Color::Green);
+  redButton.setFillColor(sf::Color::Red);
+
+  overlay = new Overlay({0, rect, title, greenButton, redButton});
+  for (int i = 0; i < MAX_LINES; i++)
+    overlay->lines[i] = createText();
 }
 
 void handleEvents(std::function<void()> &greenButtonAction,
@@ -118,7 +116,7 @@ void drawOverlay() {
   window->draw(overlay->overlayRect);
   window->draw(overlay->title);
   for (int i = 0; i < overlay->nLines; i++)
-    window->draw(overlay->lines[i]);
+    window->draw(overlay->lines[i].value());
 
   if (!overlay->greenButton.getString().isEmpty())
     window->draw(overlay->greenButton);

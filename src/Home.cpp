@@ -1,8 +1,7 @@
 #include <AssetsManager.hpp>
 #include <Home.hpp>
 #include <Overlay.hpp>
-#include <SFML/Graphics.hpp>
-#include <functional>
+#include <Window.hpp>
 #include <globals.hpp>
 #include <Files.hpp>
 

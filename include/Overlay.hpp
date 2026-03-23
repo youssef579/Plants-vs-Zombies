@@ -10,7 +10,8 @@ extern bool isOverlayChanged;
 struct Overlay {
   int nLines;
   sf::RectangleShape overlayRect;
-  sf::Text title, lines[MAX_LINES], greenButton, redButton;
+  sf::Text title, greenButton, redButton;
+  std::optional<sf::Text> lines[MAX_LINES];
 };
 
 extern Overlay *overlay;

@@ -1,34 +1,19 @@
 #include <AssetsManager.hpp>
 #include <Game.hpp>
 #include <Overlay.hpp>
-#include <SFML/Graphics.hpp>
 #include <globals.hpp>
 #include <files.hpp>
+#include <Window.hpp>
 
 sf::RenderWindow *window;
 
 bool buttonWasClicked = false;
 
 int main() {
-  window = new sf::RenderWindow(sf::VideoMode({1150, 606}), "Plants vs Zombies",
-                                sf::Style::Close | sf::Style::Titlebar);
-  initFiles(); //load data from storage
+  initWindow();
   initAssets();
+  initFiles();
   initOverlay();
-
-  window->setFramerateLimit(60);
-
-  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  window->setPosition(sf::Vector2i((desktop.size.x - window->getSize().x) / 2,
-                                   (desktop.size.y - window->getSize().y) / 2));
-
-  sf::Image icon("assets/icon.png");
-  window->setIcon(icon.getSize(), icon.getPixelsPtr());
-
-  sf::Image cursorImage("assets/cursor.png");
-  sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
-                    sf::Vector2u(0, 0));
-  window->setMouseCursor(cursor);
 
   const auto onClose = [](const sf::Event::Closed &) { window->close(); };
   while (window->isOpen()) {
@@ -39,7 +24,7 @@ int main() {
     window->display();
   }
 
-  updateFiles(); //write needed data to storage
+  updateFiles();
   delete window;
   delete assets;
   delete overlay;
