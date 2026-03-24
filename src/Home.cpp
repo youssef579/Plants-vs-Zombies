@@ -29,6 +29,10 @@ void updateHome() {
     return levelSelectorCurrentPage * LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE >=
            MAX_LEVELS;
   };
+  static auto getLevelFromIndex = [](int i) {
+    return (levelSelectorCurrentPage - 1) * LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE +
+           1 + i;
+  };
   static auto updateLevelsMenu = []() {
     setOverlayData(
         std::min(LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE,
@@ -36,9 +40,7 @@ void updateHome() {
                                   LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE),
         "Select a Level",
         [](sf::Text &text, int i) {
-          int currentLevel = (levelSelectorCurrentPage - 1) *
-                                 LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE +
-                             1 + i;
+          int currentLevel = getLevelFromIndex(i);
           text.setString("Level " + std::to_string(currentLevel));
 
           if (currentLevel > maxLevelUnlocked)
@@ -86,9 +88,8 @@ void updateHome() {
     handleOverlayEvents(nullptr, []() { homeState = 0; });
   else if (homeState == 2) {
     handleOverlayEvents(
-        [](sf::Text &text, int) {
-          int currentLevel =
-              std::stoi(text.getString().substring(6).toAnsiString());
+        [](sf::Text &text, int i) {
+          int currentLevel = getLevelFromIndex(i);
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {

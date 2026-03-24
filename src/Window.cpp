@@ -16,6 +16,6 @@ void initWindow() {
 
   sf::Image cursorImage("assets/cursor.png");
   static sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
-                           sf::Vector2u(0, 0));
+                           sf::Vector2u(3, 3));
   window->setMouseCursor(cursor);
 }

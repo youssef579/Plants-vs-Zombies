@@ -1,6 +1,7 @@
 #include <AssetsManager.hpp>
 #include <Overlay.hpp>
 #include <Window.hpp>
+#include <algorithm>
 #include <globals.hpp>
 
 Overlay *overlay;
@@ -32,8 +33,8 @@ void placeOverlayContent() {
   sf::Vector2u windowSize = window->getSize();
 
   float gapY = 60, titleExtraGap = 30, bias = 10,
-        contentHeight =
-            (overlay->nLines + 1) * gapY + titleExtraGap + greenButtonSize.y,
+        contentHeight = (overlay->nLines + 1) * gapY + titleExtraGap +
+                        std::max(greenButtonSize.y, redButtonSize.y),
         offsetY = (windowSize.y - contentHeight) / 2 - bias;
 
   auto centerX = [&](sf::Text &text) {
@@ -102,7 +103,7 @@ void drawOverlay() {
   window->draw(overlay->overlayRect);
   window->draw(overlay->title);
   for (int i = 0; i < overlay->nLines; i++)
-    window->draw(overlay->lines[i].value());
+    window->draw(*overlay->lines[i]);
 
   if (!overlay->greenButton.getString().isEmpty())
     window->draw(overlay->greenButton);
