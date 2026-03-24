@@ -14,8 +14,23 @@ void initWindow() {
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
 
-  sf::Image cursorImage("assets/cursor.png");
+  sf::Image cursorImage("assets/cursorMain.png");
   static sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
                            sf::Vector2u(3, 3));
   window->setMouseCursor(cursor);
+}
+
+
+void setCursorMain() {
+  static sf::Image cursorMainImage("assets/cursorMain.png");
+  static sf::Cursor cursorMain(cursorMainImage.getPixelsPtr(), cursorMainImage.getSize(),
+    sf::Vector2u(3, 3));
+  window->setMouseCursor(cursorMain);
+}
+
+void setCursorHover() {
+  sf::Image cursorHoverImage("assets/cursorHover.png");
+  static sf::Cursor cursorHover(cursorHoverImage.getPixelsPtr(), cursorHoverImage.getSize(),
+    sf::Vector2u(3, 3));
+  window->setMouseCursor(cursorHover);
 }
