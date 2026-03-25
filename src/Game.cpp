@@ -9,7 +9,6 @@ int gameState = 0;
 /*
   0 -> Home menu
 */
-bool isPaused = false;
 
 //  a8lb el const mmkn yt3mlo hard-coded b3d ma netefe2 3la el values bs ma7toten
 //  ka placeholder 3shan yb2o more accessible
@@ -31,8 +30,10 @@ sf::Clock drawClock;
 float dt; //Delta Time (time between each frame draw)
 
 
+bool isPaused = false;
 bool runOnce = true;
 bool runOncePause = true;
+bool runOnceUI = true;
 void updateGame() {
   dt = drawClock.restart().asSeconds(); //clock.restart() sets time to 0 and returns the last time before modifying it
   //calling dt = clock.restart() each frame returns the time between frames (dt)
@@ -47,9 +48,9 @@ void updateGame() {
     //Replace with loadLevel() w copy kol el sun logic hnak
     if (isPaused) { updatePause(); break; }
 
-    if (runOnce) { //will be used later (and drawUI() uses runOnce)
-      runOnce = false;
-    }
+    //if (runOnce) { //will be used later (and drawUI() uses runOnce)
+    //  runOnce = false;
+    //}
     manageSuns();
 
     drawUI();
@@ -212,7 +213,10 @@ void updatePause() {
 void drawUI() {
   static sf::Text SunBalanceText(assets->font, std::to_string(SunBalance), 40);
   SunBalanceText.setString(std::to_string(SunBalance));
-  if (runOnce) SunBalanceText.setPosition({ 20.0, 20.0 });
+  if (runOnceUI) {
+    SunBalanceText.setPosition({ 20.0, 20.0 });
+    runOnceUI = false;
+  }
   window->draw(SunBalanceText);
 
 }
