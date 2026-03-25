@@ -11,9 +11,10 @@ int main() {
   initFiles();
   initOverlay();
 
-  const auto onClose = [](const sf::Event::Closed &) { window->close(); };
+  //const auto onClose = [](const sf::Event::Closed &) { window->close(); };
   while (window->isOpen()) {
-    window->handleEvents(onClose);
+    //window->handleEvents(onClose);  //doesn't allow for key presses
+    handleEvents();
 
     window->clear();
     updateGame();

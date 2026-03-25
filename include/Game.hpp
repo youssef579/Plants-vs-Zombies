@@ -13,3 +13,8 @@ void collectSun(Sun* sun); //Changes state to 2(collecting) and calculates initi
 void manageSuns(); //calls all functions related to managing active suns
 void updateSun(); //Handle sun movement/collection according to its state
 void drawSun();
+
+
+
+void updatePause();
+void drawUI();

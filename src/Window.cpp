@@ -1,5 +1,5 @@
 #include <Window.hpp>
-
+#include <globals.hpp>
 sf::RenderWindow *window;
 
 void initWindow() {
@@ -33,4 +33,22 @@ void setCursorHover() {
   static sf::Cursor cursorHover(cursorHoverImage.getPixelsPtr(), cursorHoverImage.getSize(),
     sf::Vector2u(3, 3));
   window->setMouseCursor(cursorHover);
+}
+
+
+void handleEvents() {
+  while (const std::optional event = window->pollEvent())
+  {
+    if (event->is<sf::Event::Closed>()) //Close Game
+      window->close();
+
+    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) //Key Presses
+    {
+      if (key->code == sf::Keyboard::Key::Escape && gameState != 0) //Pause / UnPause
+      {
+        isPaused = !isPaused;
+      }
+    }
+
+  }
 }

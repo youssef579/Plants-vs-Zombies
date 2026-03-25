@@ -14,6 +14,7 @@ struct Sun {
   sf::Vector2f direction;
 };
 extern const sf::Vector2f SUN_COLLECTION_SITE;
-
+extern bool isPaused;
+extern int gameState;
 void onClick(sf::Text &, std::function<void()>);
 bool onClickSun(Sun*& sun, std::function<void(Sun* s)> action); //Handle Sun click detection
