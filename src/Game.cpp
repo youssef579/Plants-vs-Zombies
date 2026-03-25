@@ -32,6 +32,7 @@ float dt; //Delta Time (time between each frame draw)
 
 
 bool runOnce = true;
+bool runOncePause = true;
 void updateGame() {
   dt = drawClock.restart().asSeconds(); //clock.restart() sets time to 0 and returns the last time before modifying it
   //calling dt = clock.restart() each frame returns the time between frames (dt)
@@ -159,36 +160,42 @@ void collectSun(Sun* sun) {
 void updatePause() {
   static sf::Texture& PauseMenuTexture = getTexture("assets/pause-menu-4.png");
   static sf::Sprite PauseMenuSprite(PauseMenuTexture);
-  PauseMenuSprite.setPosition({ 358.5 , 54.5 });
+
 
   //Back to Game button
   static sf::Text PauseMenuBacktoGameButton(assets->font, "Back To Game", 40);
-  PauseMenuBacktoGameButton.setPosition({ 428 , 455 });
-  PauseMenuBacktoGameButton.setFillColor({ 0, 196, 0 });
-  PauseMenuBacktoGameButton.setStyle(sf::Text::Bold);
-  PauseMenuBacktoGameButton.setOutlineColor(sf::Color::Black);
-  PauseMenuBacktoGameButton.setOutlineThickness(1.0);
   onClick(PauseMenuBacktoGameButton, []() {isPaused = false; });
 
   //Main Menu Button
   static sf::Text PauseMenuMainMenuButton(assets->font, "Main Menu", 20);
-  PauseMenuMainMenuButton.setFillColor({ 0, 196, 0 });
-  PauseMenuMainMenuButton.setPosition({ 515 , 389 });
-  PauseMenuMainMenuButton.setOutlineColor(sf::Color::Black);
-  PauseMenuMainMenuButton.setOutlineThickness(1.0);
-
   onClick(PauseMenuMainMenuButton, []() {gameState = 0; isPaused = false; }); //TODO: Handle resetting level data (currently aknk 2flt w rg3t btkml mkank)
 
   //Restart Level Button
   static sf::Text PauseMenuRestartLevelButton(assets->font, "Restart Level", 20);
-  PauseMenuRestartLevelButton.setFillColor({ 0, 196, 0 });
-  PauseMenuRestartLevelButton.setPosition({ 510 , 346 });
-  PauseMenuRestartLevelButton.setOutlineColor(sf::Color::Black);
-  PauseMenuRestartLevelButton.setOutlineThickness(1.0);
-
   onClick(PauseMenuRestartLevelButton, []() {}); //TODO: Add restartLevel()
 
 
+  if (runOncePause) {
+    PauseMenuSprite.setPosition({ 358.5 , 54.5 });
+    //Back to Game
+    PauseMenuBacktoGameButton.setPosition({ 428 , 455 });
+    PauseMenuBacktoGameButton.setFillColor({ 0, 196, 0 });
+    PauseMenuBacktoGameButton.setStyle(sf::Text::Bold);
+    PauseMenuBacktoGameButton.setOutlineColor(sf::Color::Black);
+    PauseMenuBacktoGameButton.setOutlineThickness(1.0);
+    //Main Menu
+    PauseMenuMainMenuButton.setFillColor({ 0, 196, 0 });
+    PauseMenuMainMenuButton.setPosition({ 515 , 389 });
+    PauseMenuMainMenuButton.setOutlineColor(sf::Color::Black);
+    PauseMenuMainMenuButton.setOutlineThickness(1.0);
+    //Restart Level
+    PauseMenuRestartLevelButton.setFillColor({ 0, 196, 0 });
+    PauseMenuRestartLevelButton.setPosition({ 510 , 346 });
+    PauseMenuRestartLevelButton.setOutlineColor(sf::Color::Black);
+    PauseMenuRestartLevelButton.setOutlineThickness(1.0);
+
+    runOncePause = false;
+  }
 
 
   drawUI();
