@@ -29,6 +29,8 @@ const float SUN_SPAWN_INTERVAL = 1.0; //time between each sun spawn (in seconds)
 sf::Clock drawClock;
 float dt; //Delta Time (time between each frame draw)
 
+float Settings_MusicVolume = 0.0f;
+float Settings_SoundFXVolume = 0.0f;
 
 bool isPaused = false;
 bool runOnce = true;
@@ -153,13 +155,14 @@ void collectSun(Sun* sun) {
   sun->direction = SUN_COLLECTION_SITE - sun->sprite.getPosition(); //Vector from sun to collection site
   sun->distFromCollectionSite = sun->direction.length(); //get length before normalizing
   sun->direction = sun->direction.normalized(); //normalize length to control speed
+  sun->sprite.setColor({255, 255, 255, 200});
   sun->state = 2;
 }
 
 
 
 void updatePause() {
-  static sf::Texture& PauseMenuTexture = getTexture("assets/pause-menu-4.png");
+  static sf::Texture& PauseMenuTexture = getTexture("assets/pause-menu-5-NoText.png");
   static sf::Sprite PauseMenuSprite(PauseMenuTexture);
 
 
@@ -174,6 +177,14 @@ void updatePause() {
   //Restart Level Button
   static sf::Text PauseMenuRestartLevelButton(assets->font, "Restart Level", 20);
   onClick(PauseMenuRestartLevelButton, []() {}); //TODO: Add restartLevel()
+
+  static sf::Texture& PauseMenuSliderTexture = getTexture("assets/slider.png");
+  //Music Slider
+  static sf::Sprite PauseMenuMusicSliderSprite(PauseMenuSliderTexture);
+  static Slider PauseMenuMusicSlider = { PauseMenuMusicSliderSprite, 566.0f, 676.0f, 110.0f, false };
+  //SoundFX Slider
+  static sf::Sprite PauseMenuSoundFXSliderSprite(PauseMenuSliderTexture);
+  static Slider PauseMenuSoundFXSlider = { PauseMenuSoundFXSliderSprite, 566.0f, 676.0f, 110.0f, false };
 
 
   if (runOncePause) {
@@ -194,11 +205,20 @@ void updatePause() {
     PauseMenuRestartLevelButton.setPosition({ 510 , 346 });
     PauseMenuRestartLevelButton.setOutlineColor(sf::Color::Black);
     PauseMenuRestartLevelButton.setOutlineThickness(1.0);
+    //Music Slider
+    //PauseMenuMusicSlider.setPosition({566, 178}); //Min Bound
+    //PauseMenuMusicSlider.setPosition({676, 178}); //Max Bound
+    PauseMenuMusicSlider.sprite.setPosition({566, 178}); //Min Bound
+    //Sound FX Slider
+    PauseMenuSoundFXSlider.sprite.setPosition({566, 205 }); //Min Bound
+    
+
 
     runOncePause = false;
   }
 
-
+  Settings_MusicVolume = updateSlider(PauseMenuMusicSlider);
+  Settings_SoundFXVolume = updateSlider(PauseMenuSoundFXSlider);
   drawUI();
   drawSun();
 
@@ -206,6 +226,8 @@ void updatePause() {
   window->draw(PauseMenuBacktoGameButton);
   window->draw(PauseMenuMainMenuButton);
   window->draw(PauseMenuRestartLevelButton);
+  window->draw(PauseMenuMusicSlider.sprite);
+  window->draw(PauseMenuSoundFXSlider.sprite);
 
 }
 
