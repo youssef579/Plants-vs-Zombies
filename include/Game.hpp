@@ -16,5 +16,5 @@ void drawSun();
 
 
 
-void updatePause();
+void updatePause(); //Handles Pause Menu UI and Logic
 void drawUI();

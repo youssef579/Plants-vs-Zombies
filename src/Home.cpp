@@ -4,6 +4,7 @@
 #include <Home.hpp>
 #include <Overlay.hpp>
 #include <Window.hpp>
+#include <Audio.hpp>
 #include <globals.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
@@ -59,6 +60,7 @@ void updateHome() {
 
   static bool runOnce = true;
   if (runOnce) {
+    playMusic("Menu");
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
@@ -93,6 +95,7 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {
+            playMusic("DayStage");
               gameState = currentLevel;
               homeState = 0;
             });

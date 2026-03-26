@@ -2,6 +2,7 @@
 
 void initFiles();
 void loadLevelsFile();
+void loadSettingsFile();
 void updateFiles();
 
 const int MAX_LEVELS = 18;

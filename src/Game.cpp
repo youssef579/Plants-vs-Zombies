@@ -4,7 +4,7 @@
 #include <AssetsManager.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
-#include <random> //lw la2eto tari2a mn8er library feel free bs di azon standard library asln
+#include <Audio.hpp>
 int gameState = 0;
 /*
   0 -> Home menu
@@ -17,20 +17,17 @@ int sunArrayCounter = 0;
 float sunSpawnTimer = 0.0;
 const int MAX_SUN_SIZE = 250;
 Sun* SunArray[MAX_SUN_SIZE] = { nullptr }; //bi size 250 bta5od 76kb memory bs fa looks good
-const float SUN_FALL_SPEED = 50.0;
-const float SUN_GROUND_HEIGHT = 400.0; //y level that sun stops at
-const float SUN_GROUND_TIMER = 3.0; //time the sun stays on the ground before auto-collect (in seconds)
-const sf::Vector2f SUN_COLLECTION_SITE = { 30.0, 30.0 }; //where collected sun will go when clicked
-const float SUN_COLLECTION_SPEED = 300.0;
-const float SUN_COLLECTION_ERROR_MARGIN = 15.0; //Distance from which sun will be considered collected
+const float SUN_FALL_SPEED = 60.0f;
+const float SUN_GROUND_HEIGHT = 450.0f; //y level that sun stops at
+const float SUN_GROUND_TIMER = 3.0f; //time the sun stays on the ground before auto-collect (in seconds)
+const sf::Vector2f SUN_COLLECTION_SITE = { 30.0f, 30.0f }; //where collected sun will go when clicked
+const float SUN_COLLECTION_SPEED = 300.0f;
+const float SUN_COLLECTION_ERROR_MARGIN = 35.0f; //Distance from which sun will be considered collected
 const float SUN_ASSET_SIZE = 77; //needed for spawn bounds
 const float SUN_SPAWN_INTERVAL = 1.0; //time between each sun spawn (in seconds)
 
 sf::Clock drawClock;
 float dt; //Delta Time (time between each frame draw)
-
-float Settings_MusicVolume = 0.0f;
-float Settings_SoundFXVolume = 0.0f;
 
 bool isPaused = false;
 bool runOnce = true;
@@ -41,20 +38,20 @@ void updateGame() {
   //calling dt = clock.restart() each frame returns the time between frames (dt)
 
 
-
   switch (gameState) {
   case 0:
     updateHome();
     break;
   default:
-    //Replace with loadLevel() w copy kol el sun logic hnak
+    //Replace with loadLevel() w copy kol el logic hnak
     if (isPaused) { updatePause(); break; }
 
-    //if (runOnce) { //will be used later (and drawUI() uses runOnce)
-    //  runOnce = false;
-    //}
-    manageSuns();
+    if (runOnce) {
+      playMusic("DayStage");
+      runOnce = false;
+    }
 
+    manageSuns();
     drawUI();
     break;
   }
@@ -85,6 +82,7 @@ void updateSun() {
     if (currSun) {
       switch (currSun->state) {
       case 0: //sun is falling
+        
         currSun->sprite.move({ 0, SUN_FALL_SPEED * dt }); //same thing as currSun->setPosition(currSun->getPosition() + offset)
         if (currSun->sprite.getPosition().y >= SUN_GROUND_HEIGHT) currSun->state = 1; //check if sun has hit the ground
         if (onClickSun(currSun, collectSun)) hovering = true;
@@ -108,6 +106,16 @@ void updateSun() {
           delete currSun;
           currSun = nullptr;
         }
+        else if (currSun->distFromCollectionSite <= 200.0f) {
+          //Second habda of the month:
+          //  let distance = x
+          //  while(0 < x < 200) opacity = (x*factor)^2 / 200
+          //    where factor = 200 / startX
+          //  opacity = x^2 * (factor^2 / 200)                take constant coefficent as fadeFactor
+          //  opacity = x^2 * fadeFactor           (smooth transition from opac. = 200 to opac. = 0)
+          currSun->sprite.setColor({ 255, 255, 255, (uint8_t)(currSun->distFromCollectionSite * currSun->distFromCollectionSite * currSun->fadeFactor) });
+        }
+
         break;
 
 
@@ -130,7 +138,7 @@ void updateSun() {
 void generateSun(float x, float y, int value) {
   static sf::Texture& sunTexture = getTexture("assets/sun.png");
   sf::Sprite sunSprite(sunTexture);
-  Sun* sun = new Sun({ sunSprite, value, 0, SUN_GROUND_TIMER, 0.0, {0.0, 0.0} });
+  Sun* sun = new Sun({ sunSprite, value, 0, SUN_GROUND_TIMER, 0.0, {0.0, 0.0} , 0.0f });
 
   sun->sprite.setPosition({ x, y });
 
@@ -141,28 +149,28 @@ void generateSun(float x, float y, int value) {
 }
 
 void spawnSun(int value) {
-  //random number using normal distribution (asef 3la ma2asy el probability ya shbab)
-  //probably h8yrha b3den li 7aga simpler
-  static std::random_device rd;
-  static std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dist(SUN_ASSET_SIZE, window->getSize().x - SUN_ASSET_SIZE); //bounds to spawn sun in
-
-  generateSun(dist(gen), -70, value);
-
+  float randX = randomRange(SUN_ASSET_SIZE, window->getSize().x - SUN_ASSET_SIZE);
+  generateSun(randX, -70, value);
 }
 
 void collectSun(Sun* sun) {
   sun->direction = SUN_COLLECTION_SITE - sun->sprite.getPosition(); //Vector from sun to collection site
   sun->distFromCollectionSite = sun->direction.length(); //get length before normalizing
   sun->direction = sun->direction.normalized(); //normalize length to control speed
-  sun->sprite.setColor({255, 255, 255, 200});
+  if (sun->distFromCollectionSite >= 200.0f) { //Control fading of sun
+    sun->fadeFactor = (1.0f / 200.0f);
+    sun->sprite.setColor({255, 255, 255, 200});
+  }
+  else
+    sun->fadeFactor = (200.0f / sun->distFromCollectionSite) * (200.0f / sun->distFromCollectionSite) / 200.0f;
   sun->state = 2;
+  playSound("CollectSun");
 }
 
 
 
 void updatePause() {
-  static sf::Texture& PauseMenuTexture = getTexture("assets/pause-menu-5-NoText.png");
+  static sf::Texture& PauseMenuTexture = getTexture("assets/pause-menu.png");
   static sf::Sprite PauseMenuSprite(PauseMenuTexture);
 
 
@@ -172,7 +180,7 @@ void updatePause() {
 
   //Main Menu Button
   static sf::Text PauseMenuMainMenuButton(assets->font, "Main Menu", 20);
-  onClick(PauseMenuMainMenuButton, []() {gameState = 0; isPaused = false; }); //TODO: Handle resetting level data (currently aknk 2flt w rg3t btkml mkank)
+  onClick(PauseMenuMainMenuButton, []() {gameState = 0; playMusic("Menu"); isPaused = false; }); //TODO: Handle resetting level data (currently aknk 2flt w rg3t btkml mkank)
 
   //Restart Level Button
   static sf::Text PauseMenuRestartLevelButton(assets->font, "Restart Level", 20);
@@ -181,10 +189,12 @@ void updatePause() {
   static sf::Texture& PauseMenuSliderTexture = getTexture("assets/slider.png");
   //Music Slider
   static sf::Sprite PauseMenuMusicSliderSprite(PauseMenuSliderTexture);
-  static Slider PauseMenuMusicSlider = { PauseMenuMusicSliderSprite, 566.0f, 676.0f, 110.0f, false };
+  static Slider PauseMenuMusicSlider = { PauseMenuMusicSliderSprite,
+    178.0f, 566.0f, 676.0f, 110.0f, false };
   //SoundFX Slider
   static sf::Sprite PauseMenuSoundFXSliderSprite(PauseMenuSliderTexture);
-  static Slider PauseMenuSoundFXSlider = { PauseMenuSoundFXSliderSprite, 566.0f, 676.0f, 110.0f, false };
+  static Slider PauseMenuSoundFXSlider = { PauseMenuSoundFXSliderSprite,
+    205.0f, 566.0f, 676.0f, 110.0f, false };
 
 
   if (runOncePause) {
@@ -206,11 +216,9 @@ void updatePause() {
     PauseMenuRestartLevelButton.setOutlineColor(sf::Color::Black);
     PauseMenuRestartLevelButton.setOutlineThickness(1.0);
     //Music Slider
-    //PauseMenuMusicSlider.setPosition({566, 178}); //Min Bound
-    //PauseMenuMusicSlider.setPosition({676, 178}); //Max Bound
-    PauseMenuMusicSlider.sprite.setPosition({566, 178}); //Min Bound
+    PauseMenuMusicSlider.sprite.setPosition({PauseMenuMusicSlider.lowerBound + Settings_MusicVolume*PauseMenuMusicSlider.length/100.0f, PauseMenuMusicSlider.y}); //Min Bound
     //Sound FX Slider
-    PauseMenuSoundFXSlider.sprite.setPosition({566, 205 }); //Min Bound
+    PauseMenuSoundFXSlider.sprite.setPosition({PauseMenuSoundFXSlider.lowerBound + Settings_SoundFXVolume* PauseMenuSoundFXSlider.length/100.0f, PauseMenuSoundFXSlider.y}); //Min Bound
     
 
 
@@ -219,6 +227,9 @@ void updatePause() {
 
   Settings_MusicVolume = updateSlider(PauseMenuMusicSlider);
   Settings_SoundFXVolume = updateSlider(PauseMenuSoundFXSlider);
+
+  updateVolume(Settings_MusicVolume, Settings_SoundFXVolume);
+
   drawUI();
   drawSun();
 
@@ -230,7 +241,6 @@ void updatePause() {
   window->draw(PauseMenuSoundFXSlider.sprite);
 
 }
-
 
 void drawUI() {
   static sf::Text SunBalanceText(assets->font, std::to_string(SunBalance), 40);

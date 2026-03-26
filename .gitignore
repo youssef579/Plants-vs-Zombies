@@ -6,3 +6,4 @@ out
 .vscode
 run.sh
 storage/levels.txt
+storage/settings.txt

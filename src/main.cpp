@@ -1,6 +1,7 @@
 #include <AssetsManager.hpp>
 #include <Files.hpp>
 #include <Game.hpp>
+#include <Audio.hpp>
 #include <Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
@@ -9,6 +10,7 @@ int main() {
   initWindow();
   initAssets();
   initFiles();
+  initAudio();
   initOverlay();
 
   //const auto onClose = [](const sf::Event::Closed &) { window->close(); };
