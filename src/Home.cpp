@@ -1,10 +1,10 @@
 #include <AssetsManager.hpp>
+#include <Audio.hpp>
 #include <Files.hpp>
 #include <Game.hpp>
 #include <Home.hpp>
 #include <Overlay.hpp>
 #include <Window.hpp>
-#include <Audio.hpp>
 #include <globals.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
@@ -95,9 +95,8 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {
-            playMusic("DayStage");
+              playMusic("DayStage");
               gameState = currentLevel;
-              homeState = 0;
             });
         },
         []() {
