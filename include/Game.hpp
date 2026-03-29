@@ -18,3 +18,5 @@ void drawSun();
 
 void updatePause(); //Handles Pause Menu UI and Logic
 void drawUI();
+
+void animateSpritesheet(Spritesheet& sheet); //updates timer and tries to set next frame

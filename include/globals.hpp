@@ -3,6 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 
+struct Spritesheet {
+  sf::Sprite* sprite;
+  int frameWidth;
+  int frameHeight;
+  int frameCount;
+  float frameDuration;
+  float timer = 0.0f;
+};
+
 struct Sun {
   sf::Sprite sprite;
   int value;
@@ -13,8 +22,7 @@ struct Sun {
   sf::Vector2f direction;
   float fadeFactor; // Rate of fading according to initial distance (to prevent
                     // sudden fades)
-  int currentFrame = 0;    // Index of the current frame
-  float frameTimer = 0.03; // Frame duration
+  Spritesheet sheet;
 };
 
 struct Slider { // Settings Slider
@@ -22,13 +30,14 @@ struct Slider { // Settings Slider
   float y;          // y position
   float lowerBound; // x position of slider start
   float upperBound; // x position of slider end
-  float length;     // upper-lower (can be automated later)
+  float length;     // upper - lower (can be automated later)
   bool isHolding;   // whether the slider is currently held
 };
 
 extern const sf::Vector2f SUN_COLLECTION_SITE;
 extern bool isPaused;
 extern int gameState;
+extern int homeState;
 void onClick(sf::Text &, std::function<void()>);
 bool onClickSun(
     Sun *&sun,

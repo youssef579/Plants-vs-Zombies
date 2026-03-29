@@ -15,6 +15,13 @@ std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Ather Hossam",
                        "Mohammed Soliman"};
 
+int homeState = 0;
+/*
+  0 -> Home menu
+  1 -> Credits
+  2 -> Level Selector
+*/
+
 void updateHome() {
   static sf::Texture &backgroundTexture = getTexture("assets/home.png");
   static sf::Texture &headerTexture = getTexture("assets/home_header.png");
@@ -51,12 +58,6 @@ void updateHome() {
         levelSelectorCurrentPage == 1 ? "Back" : "Prev");
   };
 
-  static int homeState = 0;
-  /*
-    0 -> Home menu
-    1 -> Credits
-    2 -> Level Selector
-  */
 
   static bool runOnce = true;
   if (runOnce) {

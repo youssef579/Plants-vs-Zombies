@@ -24,7 +24,7 @@ const float SUN_GROUND_HEIGHT = 450.0f; // y level that sun stops at
 const float SUN_GROUND_TIMER =
     3.0f; // time the sun stays on the ground before auto-collect (in seconds)
 const sf::Vector2f SUN_COLLECTION_SITE = {
-    30.0f, 30.0f}; // where collected sun will go when clicked
+    0.0f, 0.0f}; // where collected sun will go when clicked
 const float SUN_COLLECTION_SPEED = 300.0f;
 const float SUN_COLLECTION_ERROR_MARGIN =
     35.0f; // Distance from which sun will be considered collected
@@ -86,32 +86,36 @@ void drawSun() {
   }
 }
 
-void animateFrames(sf::Sprite &sprite, sf::Texture *frames[], int nFrames,
-                   int &currentFrame, float &timer) {
-  timer -= dt;
-  if (timer <= 0) {
-    currentFrame = (currentFrame + 1) % nFrames;
-    sprite.setTexture(*frames[currentFrame]);
-    timer = 0.03;
+//void animateFrames(sf::Sprite &sprite, sf::Texture *frames[], int nFrames,
+//                   int &currentFrame, float &timer) {
+//  timer -= dt;
+//  if (timer <= 0) {
+//    currentFrame = (currentFrame + 1) % nFrames;
+//    sprite.setTexture(*frames[currentFrame]);
+//    timer = 0.03;
+//  }
+//};
+
+void animateSpritesheet(Spritesheet& sheet) {
+  sheet.timer -= dt;
+  if (sheet.timer <= 0) {
+    sf::IntRect rect = sheet.sprite->getTextureRect();
+    rect.position.x = (rect.position.x + sheet.frameWidth)
+      % (sheet.frameCount * sheet.frameWidth);
+    sheet.sprite->setTextureRect(rect);
+    sheet.timer = sheet.frameDuration;
   }
-};
+}
 
 void updateSun() {
   static bool hovering = false, runOnce = true;
-  static const int nFrames = 22;
-  static sf::Texture *frames[nFrames];
-
-  if (runOnce) {
-    for (int i = 0; i < nFrames; i++)
-      frames[i] = &getTexture("assets/Sun/Sun_" + std::to_string(i) + ".png");
-    runOnce = false;
-  }
 
   for (auto &currSun : SunArray) {
     if (currSun) {
-      if (!isPaused)
-        animateFrames(currSun->sprite, frames, nFrames, currSun->currentFrame,
-                      currSun->frameTimer);
+      animateSpritesheet(currSun->sheet);
+      //if (!isPaused)   NOTE: msh lazm if(!isPaused) 3shan kda kda updateSun() mbt7slsh lw paused
+        //animateFrames(currSun->sprite, frames, nFrames, currSun->currentFrame,
+                      //currSun->frameTimer);
       switch (currSun->state) {
       case 0: // sun is falling
 
@@ -178,17 +182,19 @@ void updateSun() {
 }
 
 void generateSun(float x, float y, int value) {
-  static sf::Texture &sunTexture = getTexture("assets/Sun/Sun_0.png");
+  //static sf::Texture &sunTexture = getTexture("assets/Sun/Sun_0.png");
+  static sf::Texture &sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
   sf::Sprite sunSprite(sunTexture);
+  sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
   Sun *sun =
-      new Sun({sunSprite, value, 0, SUN_GROUND_TIMER, 0.0, {0.0, 0.0}, 0.0f});
+      new Sun({sunSprite, value, 0, SUN_GROUND_TIMER, 0.0, {0.0, 0.0}, 0.0f, nullptr});
+  sun->sheet = Spritesheet{&sun->sprite, 77, 77, 30, 0.03f}; //Initialize spritesheet
 
   sun->sprite.setPosition({x, y});
 
   SunArray[sunArrayCounter] = sun;
   sunArrayCounter++;
 
-  return;
 }
 
 void spawnSun(int value) {
@@ -227,6 +233,7 @@ void updatePause() {
   static sf::Text PauseMenuMainMenuButton(assets->font, "Main Menu", 20);
   onClick(PauseMenuMainMenuButton, []() {
     gameState = 0;
+    homeState = 0; //go to home menu not level selector
     playMusic("Menu");
     isPaused = false;
   }); // TODO: Handle resetting level data (currently aknk 2flt w rg3t btkml
@@ -298,10 +305,23 @@ void updatePause() {
 
 void drawUI() {
   static sf::Text SunBalanceText(assets->font, std::to_string(SunBalance), 40);
+  static sf::Texture& sunBankTexture = getTexture("assets/Sun/sun_bank.png");
+  static sf::Sprite sunBank(sunBankTexture);
+
   SunBalanceText.setString(std::to_string(SunBalance));
+  SunBalanceText.setOrigin(SunBalanceText.getLocalBounds().getCenter()); //re-center text
+
   if (runOnceUI) {
-    SunBalanceText.setPosition({20.0, 20.0});
+
+    SunBalanceText.setPosition({37.0, 72.0});
+    SunBalanceText.setFillColor({0, 0, 0, 255});
+    SunBalanceText.setOutlineColor({255, 255, 255, 255});
+    SunBalanceText.setOutlineThickness(1.0f);
+    SunBalanceText.setCharacterSize(20.0f);
+    SunBalanceText.setStyle(sf::Text::Style::Regular);
+    sunBank.setPosition({0, 0});
     runOnceUI = false;
   }
+  window->draw(sunBank); // Draw order matters !!
   window->draw(SunBalanceText);
 }
