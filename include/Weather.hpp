@@ -17,6 +17,7 @@ struct WeatherSystem {
   sf::Clock timer;
   sf::Clock flashClock;
   sf::Clock rainClock;
+  bool isRaining = false;
   float nextStrikeIn = 5.0f;
   bool isFlashing = false;
   sf::RectangleShape flashOverlay;
@@ -34,7 +35,6 @@ struct WeatherSystem {
       if (!rainSound) rainSound = new sf::Sound(rainBuffer);
       rainSound->setLooping(true);
       rainSound->setVolume(20.f);
-      rainSound->play();
     }
     if (thunderBuffer.loadFromFile("assets/thunder.wav")) {
       if (!thunderSound) thunderSound = new sf::Sound(thunderBuffer);
@@ -55,7 +55,19 @@ struct WeatherSystem {
   }
 
   void update(sf::Vector2u size) {
+
+    if (!isRaining) {
+      if (rainSound && rainSound->getStatus() == sf::SoundSource::Status::Playing) {
+        rainSound->stop();
+      }
+      return;
+    }
+    if (rainSound && rainSound->getStatus() != sf::SoundSource::Status::Playing) {
+      rainSound->play();
+    }
+
     float dt = rainClock.restart().asSeconds();
+
 
     for (auto& d : drops) {
       d.shape.move(sf::Vector2f(0.f, d.speed * dt));
@@ -84,6 +96,7 @@ struct WeatherSystem {
   }
 
   void draw(sf::RenderWindow& targetWindow) {
+    if (!isRaining) return;
     for (auto& d : drops) {
       targetWindow.draw(d.shape);
     }

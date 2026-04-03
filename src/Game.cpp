@@ -60,13 +60,17 @@ void updateGame() {
 
 
     //Weather System
-
+    static float x = 0;
     if (!weatherInited) {
-      window->setFramerateLimit(60);
+      //window->setFramerateLimit(60);
       homeWeather.init(window->getSize());
       weatherInited = true;
+      homeWeather.isRaining = true;
     }
     homeWeather.update(window->getSize());
+
+    x += dt;
+    if (x >= 7.0) homeWeather.isRaining = false;
 
 
     if (isPaused) {
