@@ -6,6 +6,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
+#include <Weather.hpp>
+
 int gameState = 0;
 /*
   0 -> Home menu
@@ -35,6 +37,9 @@ const float SUN_SPAWN_INTERVAL = 1.0; // time between each sun spawn (in
 sf::Clock drawClock;
 float dt; // Delta Time (time between each frame draw)
 
+static WeatherSystem homeWeather;
+static bool weatherInited = false;
+
 bool isPaused = false;
 bool runOnce = true;
 bool runOncePause = true;
@@ -52,6 +57,18 @@ void updateGame() {
     break;
   default:
     // Replace with loadLevel() w copy kol el logic hnak
+
+
+    //Weather System
+
+    if (!weatherInited) {
+      window->setFramerateLimit(60);
+      homeWeather.init(window->getSize());
+      weatherInited = true;
+    }
+    homeWeather.update(window->getSize());
+
+
     if (isPaused) {
       updatePause();
       break;
@@ -322,6 +339,10 @@ void drawUI() {
     sunBank.setPosition({0, 0});
     runOnceUI = false;
   }
+
+
+  homeWeather.draw(*window);
+
   window->draw(sunBank); // Draw order matters !!
   window->draw(SunBalanceText);
 }
