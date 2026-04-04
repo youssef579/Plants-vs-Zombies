@@ -1,4 +1,5 @@
 #include <AssetsManager.hpp>
+#include <Audio.hpp>
 #include <Files.hpp>
 #include <Game.hpp>
 #include <Home.hpp>
@@ -13,6 +14,13 @@ std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Mohammed Ahmed",
                        "Ather Hossam",
                        "Mohammed Soliman"};
+
+int homeState = 0;
+/*
+  0 -> Home menu
+  1 -> Credits
+  2 -> Level Selector
+*/
 
 void updateHome() {
   static sf::Texture &backgroundTexture = getTexture("assets/home.png");
@@ -50,15 +58,9 @@ void updateHome() {
         levelSelectorCurrentPage == 1 ? "Back" : "Prev");
   };
 
-  static int homeState = 0;
-  /*
-    0 -> Home menu
-    1 -> Credits
-    2 -> Level Selector
-  */
-
   static bool runOnce = true;
   if (runOnce) {
+    playMusic("Menu");
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
@@ -93,8 +95,8 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {
+              playMusic("DayStage");
               gameState = currentLevel;
-              homeState = 0;
             });
         },
         []() {
