@@ -6,12 +6,12 @@ bool Settings_WeatherActive = true;
 
 WeatherSystem gameWeather;
 
-WeatherSystem::WeatherSystem() {}
+//WeatherSystem::WeatherSystem() {}
 
-WeatherSystem::~WeatherSystem() {
-    if (rainSound) delete rainSound;
-    if (thunderSound) delete thunderSound;
-}
+//WeatherSystem::~WeatherSystem() {
+//    if (rainSound) delete rainSound;
+//    if (thunderSound) delete thunderSound;
+//}
 
 
 // --- Initialization --- 

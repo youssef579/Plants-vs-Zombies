@@ -50,6 +50,7 @@ void handleEvents() {
         if (!isPaused) {
           playSound("Pause");
           gameWeather.isPaused = true;
+          setCursorMain();
         }
         else gameWeather.isPaused = false;
         gameWeather.update(0);

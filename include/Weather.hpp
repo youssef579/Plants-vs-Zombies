@@ -47,9 +47,9 @@ struct WeatherSystem {
     sf::RectangleShape flashOverlay; // White transparent rectangle to simulate lightning flash 
     std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                    // change vector 
 
-    WeatherSystem(); 
+    //WeatherSystem(); 
 
-    ~WeatherSystem(); 
+    //~WeatherSystem(); 
 
     void init();   
     void update(float dt);

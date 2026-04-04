@@ -71,6 +71,7 @@ void updatePause() {
   static sf::Text PauseMenuBacktoGameButton(assets->font, "Back To Game", 40);
   onClick(PauseMenuBacktoGameButton, []() {
     playSound("ButtonClick");
+    setCursorMain();
     gameWeather.isPaused = false;
     isPaused = false; });
 
