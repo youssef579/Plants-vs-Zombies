@@ -22,27 +22,7 @@ void onClick(sf::Text &button, std::function<void()> action) {
     button.setStyle(sf::Text::Regular);
 }
 
-bool onClickSun(Sun *&sun, std::function<void(Sun *s)> action) {
-  static bool wasButtonClicked = false;
-  static bool hovering = false;
-  sf::Vector2f mousePosition =
-      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
-  if (sun->sprite.getGlobalBounds().contains(mousePosition)) {
-    hovering = true;
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-      if (!wasButtonClicked) {
-        action(sun);
-        wasButtonClicked = true;
-      }
-    } else
-      wasButtonClicked = false;
-
-    return true;
-  }
-  return false;
-}
 
 // Returns slider value ranged (0->100)
 float updateSlider(Slider &slider) {
@@ -78,6 +58,33 @@ float updateSlider(Slider &slider) {
   return ((slider.sprite.getPosition().x + 9.0f) / (slider.length) -
           (float)((slider.lowerBound + 9.0f) / slider.length)) *
          100; // Holy Math!
+}
+
+//Checks clicks for Checkbox and updates target
+void updateCheckbox(Checkbox& cb, bool& target) {
+  static bool wasButtonClicked = false;
+  sf::Vector2f mousePosition =
+    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+  if (cb.box.getGlobalBounds().contains(mousePosition)) {
+    //button.setStyle(sf::Text::Bold);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (!wasButtonClicked) {
+        //action();
+        cb.checked = !cb.checked;
+        target = cb.checked;
+
+        if (cb.checked) playSound("Tap1");
+        else playSound("Tap2");
+
+        wasButtonClicked = true;
+      }
+    }
+    else
+      wasButtonClicked = false;
+
+  }
 }
 
 float randomRange(float x, float y) { // random value from x to y

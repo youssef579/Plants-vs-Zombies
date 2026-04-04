@@ -1,6 +1,7 @@
 #include <Audio.hpp>
 #include <iostream>
 #include <globals.hpp>
+#include <Weather.hpp>
 
 const std::string MainMenuMusicPath = "assets/Music_MainMenu.ogg";
 const std::string DayStagePath = "assets/Music_DayStage.ogg";
@@ -9,14 +10,20 @@ const std::string DayStagePath = "assets/Music_DayStage.ogg";
 
 const float DEFAULT_MUSIC_VOLUME = 75.0f;
 const float DEFAULT_SOUNDFX_VOLUME = 75.0f;
+const float DEFAULT_WEATHERFX_VOLUME = 75.0f;
 
 float Settings_MusicVolume = DEFAULT_MUSIC_VOLUME;
 float Settings_SoundFXVolume = DEFAULT_SOUNDFX_VOLUME;
+float Settings_WeatherFXVolume = DEFAULT_WEATHERFX_VOLUME;
 
 sf::Music music;
 
 sf::SoundBuffer soundBuffer_collectSun;
 sf::SoundBuffer soundBuffer_zombiesComing;
+sf::SoundBuffer soundBuffer_pauseSound;
+sf::SoundBuffer soundBuffer_buttonClick;
+sf::SoundBuffer soundBuffer_tap1;
+sf::SoundBuffer soundBuffer_tap2;
 
 const int SFX_ARRAY_SIZE = 255; //max simultaneous sound effects
 sf::Sound* sfxArray[SFX_ARRAY_SIZE] = { nullptr };
@@ -44,17 +51,23 @@ void playMusic(std::string op) {
   music.play();
 }
 
-void updateVolume(float newMusic, float newSoundFX) {
-  music.setVolume(newMusic);
+void updateVolume(WeatherSystem* ws) {
+  music.setVolume(Settings_MusicVolume);
   for (int i = 0; i < sfxArrayCounter; i++) {
-    sfxArray[i]->setVolume(newSoundFX);
+    sfxArray[i]->setVolume(Settings_SoundFXVolume);
   }
+  if (ws) ws->updateVolume();
+  
 }
 
 void initAudio() { //Initialize Sound Buffers for SFX
   bool hasNoError = false;
   hasNoError = soundBuffer_collectSun.loadFromFile("assets/sfx_collectSun.mp3") &&
-    soundBuffer_zombiesComing.loadFromFile("assets/sfx_zombiesComing.mp3");
+    soundBuffer_zombiesComing.loadFromFile("assets/sfx_zombiesComing.mp3") &&
+    soundBuffer_pauseSound.loadFromFile("assets/sfx_pause.ogg") &&
+    soundBuffer_buttonClick.loadFromFile("assets/sfx_buttonClick.ogg") &&
+    soundBuffer_tap1.loadFromFile("assets/sfx_tap1.ogg") &&
+    soundBuffer_tap2.loadFromFile("assets/sfx_tap2.ogg");
   //hasAnyError = sb1.load() && sb2.load() && .... 
   if (!hasNoError) {
     //throwLoadingError(MainMenuMusicPath);
@@ -74,6 +87,10 @@ void playSound(std::string op) {
   //Can be made more modular later
   if (op == "CollectSun") { sound = new sf::Sound(soundBuffer_collectSun); sound->setPitch(randomRange(0.9f, 1.3f)); } //Random pitch for dramatic effect :)
   else if (op == "ZombiesComing") sound = new sf::Sound(soundBuffer_zombiesComing);
+  else if (op == "Pause") sound = new sf::Sound(soundBuffer_pauseSound);
+  else if (op == "ButtonClick") sound = new sf::Sound(soundBuffer_buttonClick);
+  else if (op == "Tap1") sound = new sf::Sound(soundBuffer_tap1);
+  else if (op == "Tap2") sound = new sf::Sound(soundBuffer_tap2);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");

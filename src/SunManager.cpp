@@ -136,6 +136,29 @@ void spawnSun(int value) {
   generateSun(randX, -70, value);
 }
 
+bool onClickSun(Sun*& sun, std::function<void(Sun* s)> action) {
+  static bool wasButtonClicked = false;
+  static bool hovering = false;
+  sf::Vector2f mousePosition =
+    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+  if (sun->sprite.getGlobalBounds().contains(mousePosition)) {
+    hovering = true;
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (!wasButtonClicked) {
+        action(sun);
+        wasButtonClicked = true;
+      }
+    }
+    else
+      wasButtonClicked = false;
+
+    return true;
+  }
+  return false;
+}
+
 void collectSun(Sun* sun) {
   sun->direction =
     SUN_COLLECTION_SITE -

@@ -12,6 +12,7 @@ int main() {
   initFiles();
   initAudio();
   initOverlay();
+  initWeather();
 
   //const auto onClose = [](const sf::Event::Closed &) { window->close(); };
   while (window->isOpen()) {

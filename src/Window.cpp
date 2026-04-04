@@ -1,9 +1,10 @@
 #include <Window.hpp>
+#include <Audio.hpp>
 #include <globals.hpp>
 sf::RenderWindow *window;
-
+const sf::Vector2u WINDOW_SIZE = {1150, 606};
 void initWindow() {
-  window = new sf::RenderWindow(sf::VideoMode({1150, 606}), "Plants vs Zombies",
+  window = new sf::RenderWindow(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies",
                                 sf::Style::Close | sf::Style::Titlebar);
   window->setFramerateLimit(60);
 
@@ -46,6 +47,13 @@ void handleEvents() {
     {
       if (key->code == sf::Keyboard::Key::Escape && gameState != 0) //Pause / UnPause
       {
+        if (!isPaused) {
+          playSound("Pause");
+          gameWeather.isPaused = true;
+        }
+        else gameWeather.isPaused = false;
+        gameWeather.update(0);
+
         isPaused = !isPaused;
       }
     }
