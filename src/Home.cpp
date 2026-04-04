@@ -58,7 +58,6 @@ void updateHome() {
         levelSelectorCurrentPage == 1 ? "Back" : "Prev");
   };
 
-
   static bool runOnce = true;
   if (runOnce) {
     playMusic("Menu");

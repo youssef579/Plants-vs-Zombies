@@ -1,10 +1,11 @@
 #pragma once
-//#include <SunManager.hpp>
-#include <globals.hpp>
-#include <Window.hpp>
+
+// #include <SunManager.hpp>
+#include <Animation.hpp>
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
-#include <Animation.hpp>
+#include <Window.hpp>
+#include <globals.hpp>
 
 struct Sun {
   sf::Sprite sprite;
@@ -19,14 +20,13 @@ struct Sun {
   Spritesheet sheet;
 };
 
-
 extern int SunBalance;
+extern const sf::Vector2f SUN_COLLECTION_SITE;
 
-
-void manageSuns(float dt);
+void manageSuns();
 void drawSun();
-void updateSun(float dt);
+void updateSun();
 void generateSun(float x, float y, int value);
-void spawnSun(int value=25);
-void collectSun(Sun* sun);
-bool onClickSun(Sun*& sun, std::function<void(Sun* s)>);
+void spawnSun(int value = 25);
+void collectSun(Sun *sun);
+bool onClickSun(Sun *&sun, std::function<void(Sun *s)>);
