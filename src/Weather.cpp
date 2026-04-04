@@ -17,13 +17,13 @@ WeatherSystem::~WeatherSystem() {
 // --- Initialization --- 
 // Loads audio assets, sets up the lightning overlay, and generates the initial pool of raindrops.
 void WeatherSystem::init() {
-    if (rainBuffer.loadFromFile("assets/rain.wav")) {
+    if (rainBuffer.loadFromFile("assets/sounds/rain.wav")) {
         if (!rainSound) rainSound = new sf::Sound(rainBuffer);
         rainSound->setLooping(true);                                            // Keep rain playing  
         rainSound->setVolume(Settings_WeatherFXVolume*RAIN_VOLUME_MULTIPLIER);  // Set volume from constant
     }
 
-    if (thunderBuffer.loadFromFile("assets/thunder.wav")) {
+    if (thunderBuffer.loadFromFile("assets/sounds/thunder.wav")) {
         if (!thunderSound) thunderSound = new sf::Sound(thunderBuffer);
         thunderSound->setVolume(Settings_WeatherFXVolume);
     }

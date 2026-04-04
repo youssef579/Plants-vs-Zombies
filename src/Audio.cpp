@@ -3,8 +3,8 @@
 #include <globals.hpp>
 #include <Weather.hpp>
 
-const std::string MainMenuMusicPath = "assets/Music_MainMenu.ogg";
-const std::string DayStagePath = "assets/Music_DayStage.ogg";
+const std::string MainMenuMusicPath = "assets/sounds/Music_MainMenu.ogg";
+const std::string DayStagePath = "assets/sounds/Music_DayStage.ogg";
 
 
 
@@ -62,12 +62,12 @@ void updateVolume(WeatherSystem* ws) {
 
 void initAudio() { //Initialize Sound Buffers for SFX
   bool hasNoError = false;
-  hasNoError = soundBuffer_collectSun.loadFromFile("assets/sfx_collectSun.mp3") &&
-    soundBuffer_zombiesComing.loadFromFile("assets/sfx_zombiesComing.mp3") &&
-    soundBuffer_pauseSound.loadFromFile("assets/sfx_pause.ogg") &&
-    soundBuffer_buttonClick.loadFromFile("assets/sfx_buttonClick.ogg") &&
-    soundBuffer_tap1.loadFromFile("assets/sfx_tap1.ogg") &&
-    soundBuffer_tap2.loadFromFile("assets/sfx_tap2.ogg");
+  hasNoError = soundBuffer_collectSun.loadFromFile("assets/sounds/sfx_collectSun.mp3") &&
+    soundBuffer_zombiesComing.loadFromFile("assets/sounds/sfx_zombiesComing.mp3") &&
+    soundBuffer_pauseSound.loadFromFile("assets/sounds/sfx_pause.ogg") &&
+    soundBuffer_buttonClick.loadFromFile("assets/sounds/sfx_buttonClick.ogg") &&
+    soundBuffer_tap1.loadFromFile("assets/sounds/sfx_tap1.ogg") &&
+    soundBuffer_tap2.loadFromFile("assets/sounds/sfx_tap2.ogg");
   //hasAnyError = sb1.load() && sb2.load() && .... 
   if (!hasNoError) {
     //throwLoadingError(MainMenuMusicPath);
