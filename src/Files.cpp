@@ -40,14 +40,14 @@ void loadSettingsFile() {
     settingsFile.close();
     std::ofstream settingsFile("storage/settings.txt");
     // Load settings from default values
-    settings.musicVolume     =  settings.default.musicVolume;
-    settings.soundFXVolume   =  settings.default.soundFXVolume;
-    settings.weatherFXVolume =  settings.default.weatherFXVolume;
-    settings.weatherActive   =  settings.default.weatherActive;
-    settingsFile << settings.default.musicVolume << "\n";     //Music
-    settingsFile << settings.default.soundFXVolume << "\n";   //Sound FX
-    settingsFile << settings.default.weatherFXVolume << "\n"; //Weather FX
-    settingsFile << settings.default.weatherActive;           //Weather Active
+    settings.musicVolume     =  settings.DEFAULT.musicVolume;
+    settings.soundFXVolume   =  settings.DEFAULT.soundFXVolume;
+    settings.weatherFXVolume =  settings.DEFAULT.weatherFXVolume;
+    settings.weatherActive   =  settings.DEFAULT.weatherActive;
+    settingsFile << settings.DEFAULT.musicVolume << "\n";     //Music
+    settingsFile << settings.DEFAULT.soundFXVolume << "\n";   //Sound FX
+    settingsFile << settings.DEFAULT.weatherFXVolume << "\n"; //Weather FX
+    settingsFile << settings.DEFAULT.weatherActive;           //Weather Active
   }
   settingsFile.close();
 }

@@ -15,7 +15,7 @@ struct Settings {
 
     static constexpr bool  weatherActive   = true;
   };
-  static Default default;
+  static Default DEFAULT;
 
 };
 
