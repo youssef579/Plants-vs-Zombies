@@ -51,12 +51,12 @@ void playMusic(std::string op) {
   music.play();
 }
 
-void updateVolume(WeatherSystem* ws) {
+void updateVolume() {
   music.setVolume(Settings_MusicVolume);
   for (int i = 0; i < sfxArrayCounter; i++) {
     sfxArray[i]->setVolume(Settings_SoundFXVolume);
   }
-  if (ws) ws->updateVolume();
+  gameWeather.updateVolume();
   
 }
 

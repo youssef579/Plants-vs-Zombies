@@ -15,8 +15,9 @@ void Sun::manageSuns(float dt, State s) {
 
   if (s != Paused) {
     for (int i = 0; i < sunArrayCntr; i++) {
-      if (!sunArray[i] || !sunArray[i]->update(dt)) continue;
-      if (sunArray[i]->onClick()) hovering = true;
+      if (!sunArray[i]) continue;
+      if (!sunArray[i]->update(dt)) { i--; continue; }
+      if (sunArray[i]->state != Sun::State::Collecting && sunArray[i]->onClick()) hovering = true;
       sunArray[i]->draw();
     }
 
@@ -101,7 +102,7 @@ void Sun::generate(float x, float y, int val) {
 
 void Sun::spawn(int val) {
   float randX =
-        randomRange(assetWidth, WINDOW_SIZE.x - assetWidth);
+        randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
   Sun::generate(randX, -70, val);
 }
 
@@ -151,12 +152,14 @@ bool Sun::onClick() {
 }
 
 void Sun::destroy(int idx) {
+  //Todo: Replace with dynamic array
   delete sunArray[idx];
-  //sunArray[idx] = nullptr;
-  if (idx != 0) {
-    sunArray[idx] = sunArray[sunArrayCntr - 1];
-    sunArray[idx]->index = idx;
-    sunArray[sunArrayCntr - 1] = nullptr;
+  sunArray[idx] = nullptr;
+  for (int i = idx; i < sunArrayCntr-1; i++) {
+    sunArray[i] = sunArray[i + 1];
+    sunArray[i]->index--;
   }
+  sunArray[sunArrayCntr - 1] = nullptr;
+
   sunArrayCntr--;
 }

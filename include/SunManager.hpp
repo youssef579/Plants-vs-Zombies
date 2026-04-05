@@ -53,7 +53,7 @@ struct Sun {
   bool onClick();        // Returns whether a sun is hovered or not
 
   // Public Functions (Related to all Sun structs)
-  static void manageSuns(float dt, State s=Falling);  // Manages spawning , update , draw and hover
+  static void manageSuns(float dt, State s=Falling); // Manages spawning , update , draw and hover
   static void generate(float x, float y, int val);
   static void spawn(int val=25);
   static void destroy(int idx);

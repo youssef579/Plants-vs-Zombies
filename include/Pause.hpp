@@ -7,6 +7,7 @@
 #include <Window.hpp>
 #include <Overlay.hpp>
 #include <Draw.hpp>
+#include <UI.hpp>
 
 struct PauseMenu {
   sf::Texture backgroundT;

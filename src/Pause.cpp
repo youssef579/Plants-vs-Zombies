@@ -98,7 +98,7 @@ void PauseMenu::update() {
   updateCheckbox(*checkboxWeatherActive, Settings_WeatherActive);
 
 
-  updateVolume(&gameWeather);
+  updateVolume();
 
   drawUI();
 
@@ -107,7 +107,7 @@ void PauseMenu::update() {
 
 void PauseMenu::draw() {
 
-  Sun::manageSuns(0, Sun::State::Paused);
+  Sun::manageSuns(0, Sun::State::Paused); // draw only mode
   drawUI();
 
   window->draw(overlay->overlayRect);
