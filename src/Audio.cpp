@@ -7,15 +7,6 @@ const std::string MainMenuMusicPath = "assets/sounds/Music_MainMenu.ogg";
 const std::string DayStagePath = "assets/sounds/Music_DayStage.ogg";
 
 
-
-const float DEFAULT_MUSIC_VOLUME = 75.0f;
-const float DEFAULT_SOUNDFX_VOLUME = 75.0f;
-const float DEFAULT_WEATHERFX_VOLUME = 75.0f;
-
-float Settings_MusicVolume = DEFAULT_MUSIC_VOLUME;
-float Settings_SoundFXVolume = DEFAULT_SOUNDFX_VOLUME;
-float Settings_WeatherFXVolume = DEFAULT_WEATHERFX_VOLUME;
-
 sf::Music music;
 
 sf::SoundBuffer soundBuffer_collectSun;
@@ -47,14 +38,14 @@ void playMusic(std::string op) {
   }
 
   music.setLooping(true);
-  music.setVolume(Settings_MusicVolume);
+  music.setVolume(settings.musicVolume);
   music.play();
 }
 
 void updateVolume() {
-  music.setVolume(Settings_MusicVolume);
+  music.setVolume(settings.musicVolume);
   for (int i = 0; i < sfxArrayCounter; i++) {
-    sfxArray[i]->setVolume(Settings_SoundFXVolume);
+    sfxArray[i]->setVolume(settings.soundFXVolume);
   }
   gameWeather.updateVolume();
   
@@ -98,7 +89,7 @@ void playSound(std::string op) {
     exit(1);
     return;
   }
-  sound->setVolume(Settings_SoundFXVolume);
+  sound->setVolume(settings.soundFXVolume);
   sound->play();
 
   if (sfxArrayCounter >= SFX_ARRAY_SIZE) { //Prevent possible out of bounds error

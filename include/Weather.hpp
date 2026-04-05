@@ -6,13 +6,12 @@
 
 //struct WeatherSystem;
 
-extern bool Settings_WeatherActive; // If Weather Setting is active
 extern WeatherSystem gameWeather;
 
 
 struct WeatherSystem {
     
-    //  Lightning Volume = Settings_WeatherFXVolume
+    //  Lightning Volume = settings.weatherFXVolume
     //  Rain Volume = Lightning Volume * RAIN_VOLUME_MULTIPLIER
                            
     bool isRaining = false;                              // If the current level contains rain

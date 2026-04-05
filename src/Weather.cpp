@@ -2,7 +2,6 @@
 #include <Window.hpp>
 #include <cmath> 
 
-bool Settings_WeatherActive = true;
 
 WeatherSystem gameWeather;
 
@@ -20,12 +19,12 @@ void WeatherSystem::init() {
     if (rainBuffer.loadFromFile("assets/sounds/rain.wav")) {
         if (!rainSound) rainSound = new sf::Sound(rainBuffer);
         rainSound->setLooping(true);                                            // Keep rain playing  
-        rainSound->setVolume(Settings_WeatherFXVolume*RAIN_VOLUME_MULTIPLIER);  // Set volume from constant
+        rainSound->setVolume(settings.weatherFXVolume*RAIN_VOLUME_MULTIPLIER);  // Set volume from constant
     }
 
     if (thunderBuffer.loadFromFile("assets/sounds/thunder.wav")) {
         if (!thunderSound) thunderSound = new sf::Sound(thunderBuffer);
-        thunderSound->setVolume(Settings_WeatherFXVolume);
+        thunderSound->setVolume(settings.weatherFXVolume);
     }
 
     flashOverlay.setSize(sf::Vector2f(static_cast<float>(WINDOW_SIZE.x), static_cast<float>(WINDOW_SIZE.y)));   // Handle Screen Size
@@ -100,14 +99,14 @@ void WeatherSystem::update(float dt) {
 
 //Updates Volume of currently active weather
 void WeatherSystem::updateVolume() {
-  if (thunderSound) thunderSound->setVolume(Settings_WeatherFXVolume);
-  if (rainSound) rainSound->setVolume(Settings_WeatherFXVolume*RAIN_VOLUME_MULTIPLIER);
+  if (thunderSound) thunderSound->setVolume(settings.weatherFXVolume);
+  if (rainSound) rainSound->setVolume(settings.weatherFXVolume*RAIN_VOLUME_MULTIPLIER);
 }
 
 // --- Rendering ---
 // Draws the raindrops and the lightning effect to the window.
 void WeatherSystem::draw(sf::RenderWindow& targetWindow) {      // Rendering function 
-    if (!isRaining || !Settings_WeatherActive) return;                                     // No draw if no raining 
+    if (!isRaining || !settings.weatherActive) return;                                     // No draw if no raining 
     for (auto& d : drops) {                                     // Draw all raindrops 
         targetWindow.draw(d.shape);
     } 

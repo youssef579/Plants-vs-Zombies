@@ -6,6 +6,12 @@
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
 
+float Settings::musicVolume;
+float Settings::soundFXVolume;
+float Settings::weatherFXVolume;
+bool Settings::weatherActive;
+
+Settings settings;
 
 void loadLevelsFile() {
   std::ifstream levelsFile("storage/levels.txt");
@@ -24,21 +30,24 @@ void loadLevelsFile() {
 void loadSettingsFile() {
   std::ifstream settingsFile("storage/settings.txt");
   if (settingsFile.is_open()) {
-    settingsFile >> Settings_MusicVolume;
-    settingsFile >> Settings_SoundFXVolume;
-    settingsFile >> Settings_WeatherFXVolume;
-    settingsFile >> Settings_WeatherActive;
+    // Load settings from file
+    settingsFile >> settings.musicVolume;
+    settingsFile >> settings.soundFXVolume;
+    settingsFile >> settings.weatherFXVolume;
+    settingsFile >> settings.weatherActive;
   }
   else {
     settingsFile.close();
     std::ofstream settingsFile("storage/settings.txt");
-    Settings_MusicVolume = DEFAULT_MUSIC_VOLUME;
-    Settings_SoundFXVolume = DEFAULT_SOUNDFX_VOLUME;
-    Settings_WeatherFXVolume = DEFAULT_WEATHERFX_VOLUME;
-    settingsFile << DEFAULT_MUSIC_VOLUME << "\n";     //Music
-    settingsFile << DEFAULT_SOUNDFX_VOLUME << "\n";   //Sound FX
-    settingsFile << DEFAULT_WEATHERFX_VOLUME << "\n"; //Weather FX
-    settingsFile << 1;                                //Weather Active
+    // Load settings from default values
+    settings.musicVolume     =  settings.default.musicVolume;
+    settings.soundFXVolume   =  settings.default.soundFXVolume;
+    settings.weatherFXVolume =  settings.default.weatherFXVolume;
+    settings.weatherActive   =  settings.default.weatherActive;
+    settingsFile << settings.default.musicVolume << "\n";     //Music
+    settingsFile << settings.default.soundFXVolume << "\n";   //Sound FX
+    settingsFile << settings.default.weatherFXVolume << "\n"; //Weather FX
+    settingsFile << settings.default.weatherActive;           //Weather Active
   }
   settingsFile.close();
 }
@@ -48,12 +57,13 @@ void updateFiles() {
   std::ofstream levelsFile("storage/levels.txt");
   levelsFile << maxLevelUnlocked;
   levelsFile.close();
-
+  
+  // Write settings to file
   std::ofstream settingsFile("storage/settings.txt");
-  settingsFile << Settings_MusicVolume << "\n";
-  settingsFile << Settings_SoundFXVolume << "\n";
-  settingsFile << Settings_WeatherFXVolume << "\n";
-  settingsFile << Settings_WeatherActive;
+  settingsFile << settings.musicVolume << "\n";
+  settingsFile << settings.soundFXVolume << "\n";
+  settingsFile << settings.weatherFXVolume << "\n";
+  settingsFile << settings.weatherActive;
   settingsFile.close();
 }
 

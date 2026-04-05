@@ -1,13 +1,8 @@
 #pragma once
 
 #include <SFML/Audio.hpp>
+#include <Files.hpp> // To access settings
 
-extern float Settings_MusicVolume;
-extern float Settings_SoundFXVolume;
-extern float Settings_WeatherFXVolume;
-extern const float DEFAULT_MUSIC_VOLUME;
-extern const float DEFAULT_SOUNDFX_VOLUME;
-extern const float DEFAULT_WEATHERFX_VOLUME;
 
 
 struct WeatherSystem; //forward-declaration for needed arguments

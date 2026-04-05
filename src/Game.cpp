@@ -2,7 +2,7 @@
 #include <Audio.hpp>
 #include <Game.hpp>
 #include <Home.hpp>
-#include <Overlay.hpp>
+#include <UI/Overlay.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <Window.hpp>
 #include <globals.hpp>

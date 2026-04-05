@@ -1,5 +1,27 @@
 #pragma once
 
+struct Settings {
+  static float musicVolume;
+  static float soundFXVolume;
+  static float weatherFXVolume;
+
+  static bool weatherActive;
+
+
+  static struct Default { // Default settings values
+    static constexpr float musicVolume     = 75.0f;
+    static constexpr float soundFXVolume   = 75.0f;
+    static constexpr float weatherFXVolume = 75.0f;
+
+    static constexpr bool  weatherActive   = true;
+  };
+  static Default default;
+
+};
+
+extern Settings settings;
+
+
 void initFiles();
 void loadLevelsFile();
 void loadSettingsFile();

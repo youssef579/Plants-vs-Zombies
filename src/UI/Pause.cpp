@@ -27,7 +27,7 @@ void PauseMenu::init() {
   checkboxWeatherActiveS = new sf::Sprite(checkboxBoxT);
   checkboxWeatherActiveM = new sf::Sprite(checkboxMarkT);
   checkboxWeatherActive = new Checkbox({ *checkboxWeatherActiveS ,
-  *checkboxWeatherActiveM, 639.0f, 258.0f, Settings_WeatherActive });
+  *checkboxWeatherActiveM, 639.0f, 258.0f, settings.weatherActive });
 
   backgroundS->setPosition({ 358.5, 54.5 });
   // Back to Game
@@ -49,17 +49,17 @@ void PauseMenu::init() {
   // Music Slider
   sliderMusic->sprite.setPosition(
     { sliderMusic->lowerBound +
-         Settings_MusicVolume * sliderMusic->length / 100.0f,
+         settings.musicVolume * sliderMusic->length / 100.0f,
      sliderMusic->y });
   // Sound FX Slider
   sliderSFX->sprite.setPosition(
     { sliderSFX->lowerBound +
-         Settings_SoundFXVolume * sliderSFX->length / 100.0f,
+         settings.soundFXVolume * sliderSFX->length / 100.0f,
      sliderSFX->y });
   // Weather FX Slider
   sliderWeatherFX->sprite.setPosition(
     { sliderWeatherFX->lowerBound +
-         Settings_WeatherFXVolume * sliderWeatherFX->length / 100.0f,
+         settings.weatherFXVolume * sliderWeatherFX->length / 100.0f,
      sliderWeatherFX->y });
 
   //Weather Active Checkbox
@@ -90,12 +90,12 @@ void PauseMenu::update() {
   
 
   // Update Sliders
-  Settings_MusicVolume = updateSlider(*sliderMusic);
-  Settings_SoundFXVolume = updateSlider(*sliderSFX);
-  Settings_WeatherFXVolume = updateSlider(*sliderWeatherFX);
+  settings.musicVolume     =  updateSlider(*sliderMusic);
+  settings.soundFXVolume   =  updateSlider(*sliderSFX);
+  settings.weatherFXVolume =  updateSlider(*sliderWeatherFX);
 
   //Update Checkboxes
-  updateCheckbox(*checkboxWeatherActive, Settings_WeatherActive);
+  updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
 
 
   updateVolume();

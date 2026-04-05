@@ -1,7 +1,7 @@
 #pragma once
 #include <sfml/Graphics.hpp>
 #include <Window.hpp>
-#include <random>
+
 
 
 struct Slider {      // Settings Slider
@@ -11,10 +11,6 @@ struct Slider {      // Settings Slider
   float upperBound;  // x position of slider end
   float length;      // upper - lower (can be automated later)
   bool isHolding;    // whether the slider is currently held
-
-  //Slider(sf::Sprite s, float Y, float lb, float ub, float l, bool hold)
-    //:sprite(s), y(Y), lowerBound(lb), upperBound(ub), length(l), isHolding(hold)
-  //{}
 };
 
 struct Checkbox {
@@ -23,13 +19,8 @@ struct Checkbox {
   float x;
   float y;
   bool checked;
-
-  //Checkbox(sf::Sprite BOX, sf::Sprite MARK, float X, float Y, bool CHECKED):
-  //box(BOX), mark(MARK), x(X), y(Y), checked(CHECKED)
-  //{}
-
 };
 
-float updateSlider(Slider& slider);
+float updateSlider(Slider& slider); // Check for click & return value (0->100)
 
 void updateCheckbox(Checkbox& cb, bool& target);

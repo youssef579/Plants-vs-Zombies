@@ -5,19 +5,17 @@
 #include <globals.hpp>
 #include <Audio.hpp>
 #include <Window.hpp>
-#include <Overlay.hpp>
-#include <Draw.hpp>
-#include <UI.hpp>
+#include <UI/Overlay.hpp>
+#include <UI/Draw.hpp>
+#include <UI/UI.hpp>
 #include <Files.hpp>
 
 struct PauseMenu {
   sf::Texture backgroundT;
   sf::Sprite* backgroundS;
-
   sf::Text* backToGameBtn;
   sf::Text* mainMenuBtn;
   sf::Text* restartLevelBtn;
-  
   sf::Texture sliderKnobT;
   sf::Sprite* sliderMusicS;
   Slider* sliderMusic;
@@ -25,7 +23,6 @@ struct PauseMenu {
   Slider* sliderSFX;
   sf::Sprite* sliderWeatherFXS;
   Slider* sliderWeatherFX;
-  
   sf::Texture checkboxBoxT;
   sf::Texture checkboxMarkT;
   sf::Sprite* checkboxWeatherActiveS;
