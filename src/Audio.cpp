@@ -62,7 +62,8 @@ void updateVolume(WeatherSystem* ws) {
 
 void initAudio() { //Initialize Sound Buffers for SFX
   bool hasNoError = false;
-  hasNoError = soundBuffer_collectSun.loadFromFile("assets/sounds/sfx_collectSun.mp3") &&
+  hasNoError = 
+    soundBuffer_collectSun.loadFromFile("assets/sounds/sfx_collectSun.mp3") &&
     soundBuffer_zombiesComing.loadFromFile("assets/sounds/sfx_zombiesComing.mp3") &&
     soundBuffer_pauseSound.loadFromFile("assets/sounds/sfx_pause.ogg") &&
     soundBuffer_buttonClick.loadFromFile("assets/sounds/sfx_buttonClick.ogg") &&

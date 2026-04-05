@@ -2,10 +2,10 @@
 
 #include <globals.hpp>
 #include <Weather.hpp>
+#include <Draw.hpp>
+#include <Pause.hpp>
 
 extern int gameState;
 void updateGame();
 
-void updatePause(); //Handles Pause Menu UI and Logic
-
-void drawUI();
+//void drawUI();

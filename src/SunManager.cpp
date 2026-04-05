@@ -177,3 +177,6 @@ void collectSun(Sun* sun) {
   sun->state = 2;
   playSound("CollectSun");
 }
+
+
+
