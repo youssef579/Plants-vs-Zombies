@@ -4,4 +4,3 @@
 #include <SunManager.hpp>
 
 void drawUI();
-void drawUISun();

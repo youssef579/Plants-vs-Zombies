@@ -30,7 +30,6 @@ struct Checkbox {
 
 };
 
-extern const sf::Vector2f SUN_COLLECTION_SITE;
 extern bool isPaused;
 extern int gameState;
 extern int homeState;

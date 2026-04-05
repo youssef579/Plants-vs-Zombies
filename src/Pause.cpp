@@ -5,6 +5,7 @@ PauseMenu pauseMenu;
 PauseMenu::PauseMenu() {}
 
 void PauseMenu::init() {
+  //runOnce
   backgroundT = getTexture("assets/pause-menu.png");
   backgroundS = new sf::Sprite(backgroundT);
 
@@ -28,7 +29,6 @@ void PauseMenu::init() {
   checkboxWeatherActive = new Checkbox({ *checkboxWeatherActiveS ,
   *checkboxWeatherActiveM, 639.0f, 258.0f, Settings_WeatherActive });
 
-  //runOnce
   backgroundS->setPosition({ 358.5, 54.5 });
   // Back to Game
   backToGameBtn->setPosition({ 428, 455 });
@@ -101,14 +101,13 @@ void PauseMenu::update() {
   updateVolume(&gameWeather);
 
   drawUI();
-  drawUISun();
 
   draw();
 }
 
 void PauseMenu::draw() {
 
-  drawUISun();
+  Sun::manageSuns(0, Sun::State::Paused);
   drawUI();
 
   window->draw(overlay->overlayRect);

@@ -3,11 +3,11 @@
 
 void drawUI() {
   static bool runOnce = true;
-  static sf::Text SunBalanceText(assets->font, std::to_string(SunBalance), 40);
+  static sf::Text SunBalanceText(assets->font, std::to_string(Sun::sunBalance), 40);
   static sf::Texture& sunBankTexture = getTexture("assets/Sun/sun_bank.png");
   static sf::Sprite sunBank(sunBankTexture);
 
-  SunBalanceText.setString(std::to_string(SunBalance));
+  SunBalanceText.setString(std::to_string(Sun::sunBalance));
   SunBalanceText.setOrigin(SunBalanceText.getLocalBounds().getCenter()); //re-center text
 
   if (runOnce) {
@@ -25,10 +25,6 @@ void drawUI() {
 
   gameWeather.draw(*window);
 
-  window->draw(sunBank); // Draw order matters !!
+  window->draw(sunBank); // Draw order matters
   window->draw(SunBalanceText);
-}
-
-void drawUISun() {
-  drawSun();
 }

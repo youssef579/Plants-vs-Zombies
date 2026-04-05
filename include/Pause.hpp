@@ -38,25 +38,3 @@ struct PauseMenu {
 
 
 extern PauseMenu pauseMenu;
-
-//#include <iostream>
-//
-//
-//struct PauseMenu {
-//  sf::Texture texture;
-//  sf::Sprite* sprite;
-//  sf::Text* text;
-//
-//  sf::Texture sun;
-//  sf::Sprite* sunSp;
-//
-//  Slider* slider;
-//
-//  PauseMenu();
-//  void init();
-//  void draw();
-//
-//};
-//
-//
-//extern PauseMenu pauseMenu;

@@ -21,8 +21,7 @@ static bool weatherInited = false;
 
 bool isPaused = false;
 bool runOnce = true;
-bool runOncePause = true;
-bool runOnceUI = true;
+
 void updateGame() {
   dt = drawClock.restart()
            .asSeconds(); // clock.restart() sets time to 0 and returns the last
@@ -34,9 +33,7 @@ void updateGame() {
   case 0:
     updateHome();
     break;
-  default:
-    // Replace with loadLevel() w copy kol el logic hnak
-    
+  default:    
     if (runOnce) {
       pauseMenu.init();
       gameWeather.isRaining = true;
@@ -54,7 +51,7 @@ void updateGame() {
     
 
 
-    manageSuns(dt);
+    Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
     break;
