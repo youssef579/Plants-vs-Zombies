@@ -1,11 +1,12 @@
 #include <Array.hpp>
 
-
-void Array::push(int& value) {
+// push function
+template<typename elementType>
+void Array<elementType>::push(elementType& value) {
 	if (size == capacity) {
 		capacity *= 2;
 
-		int* newData = new int[capacity];
+		elementType* newData = new elementType[capacity];
 
 		for (int i = 0; i < size; i++) {
 			newData[i] = data[i];
@@ -19,7 +20,9 @@ void Array::push(int& value) {
 		size++;
 }
 
-void Array::erase(std::function<bool(int &value)> condition) {
+// erase function
+template<typename elementType>
+void Array<elementType>::erase(std::function<bool(elementType &value)> condition) {
 	int idx = 0;
 
 	for (int i = 0; i < size; i++) {
@@ -35,6 +38,20 @@ void Array::erase(std::function<bool(int &value)> condition) {
 	size = idx;
 }
 
-Array::~Array() {
+// destructor
+template<typename elementType>
+Array<elementType>::~Array() {
 	delete[] data;
+}
+
+// constructor
+template<typename elementType>
+Array<elementType>::Array() {
+	data = new elementType[capacity];
+}
+
+// operator overloading
+template<typename elementType>
+elementType& Array<elementType>::operator[](int index) {
+	return data[index];
 }

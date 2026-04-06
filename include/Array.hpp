@@ -1,13 +1,16 @@
 #include<functional>
 
+template<typename elementType>
+
 struct Array {
-	int* data;
+	elementType* data;
 	int size = 0;
 	int capacity = 10;
 
+	Array();
 	~Array();
 
-	void push(int &value);
+	void push(elementType&value);
 
-	void erase(std::function<bool(int &value)> condition);
+	void erase(std::function<bool(elementType&value)> condition);
 };
