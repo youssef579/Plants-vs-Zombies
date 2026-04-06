@@ -3,11 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 
+
 extern bool isPaused;
 extern int gameState;
 extern int homeState;
-extern float deltaTime;
 
-void onClick(sf::Text &,
-             std::function<void()>); // Execute an action when button is clicked
-float randomRange(float x, float y); // Return random value from x to y
+void onClick(sf::Text &, std::function<void()>);
+
+int randomRange(int x, int y);       // Return random int from x to y
+float randomRange(float x, float y); // Return random float from x to y

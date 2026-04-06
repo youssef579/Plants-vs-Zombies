@@ -1,5 +1,6 @@
-#include <UI/Slider.hpp>
-#include <Window.hpp>
+#include <UI/UI.hpp>
+
+
 
 // Returns slider value ranged (0->100)
 float updateSlider(Slider &slider) {
@@ -35,4 +36,31 @@ float updateSlider(Slider &slider) {
   return ((slider.sprite.getPosition().x + 9.0f) / (slider.length) -
           (float)((slider.lowerBound + 9.0f) / slider.length)) *
          100; // Holy Math!
+}
+
+//Checks clicks for Checkbox and updates target
+void updateCheckbox(Checkbox& cb, bool& target) {
+  static bool wasButtonClicked = false;
+  sf::Vector2f mousePosition =
+    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+
+  if (cb.box.getGlobalBounds().contains(mousePosition)) {
+    //button.setStyle(sf::Text::Bold);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (!wasButtonClicked) {
+        //action();
+        cb.checked = !cb.checked;
+        target = cb.checked;
+
+        if (cb.checked) sounds.play("Tap1");
+        else sounds.play("Tap2");
+
+        wasButtonClicked = true;
+      }
+    }
+    else
+      wasButtonClicked = false;
+
+  }
 }

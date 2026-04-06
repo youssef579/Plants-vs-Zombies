@@ -3,7 +3,7 @@
 #include <Files.hpp>
 #include <Game.hpp>
 #include <Home.hpp>
-#include <Overlay.hpp>
+#include <UI/Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
 
@@ -58,9 +58,10 @@ void updateHome() {
         levelSelectorCurrentPage == 1 ? "Back" : "Prev");
   };
 
+
   static bool runOnce = true;
   if (runOnce) {
-    playMusic("Menu");
+    music.play("Menu");
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
@@ -95,7 +96,7 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {
-              playMusic("DayStage");
+            music.play("DayStage");
               gameState = currentLevel;
             });
         },

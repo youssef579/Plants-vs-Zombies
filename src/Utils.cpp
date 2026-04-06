@@ -1,6 +1,5 @@
 #include <Window.hpp>
 #include <globals.hpp>
-#include <random>
 
 void onClick(sf::Text &button, std::function<void()> action) {
   static bool wasButtonClicked = false;
@@ -22,9 +21,10 @@ void onClick(sf::Text &button, std::function<void()> action) {
     button.setStyle(sf::Text::Regular);
 }
 
-float randomRange(float x, float y) { // random value from x to y
-  static std::random_device rd;
-  static std::mt19937 gen(rd());
-  std::uniform_real_distribution<float> dist(x, y);
-  return dist(gen);
+int randomRange(int x, int y) {        // random int from x to y
+  return x + rand() % (y - x + 1);
+}
+
+float randomRange(float x, float y) {  // random float from x to y
+  return x + (rand()) / ( (float)(RAND_MAX / (y - x)));
 }

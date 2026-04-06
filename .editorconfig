@@ -1,0 +1,22 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+tab_width = 2
+max_line_length = 100
+
+[*.{cpp,h,hpp}]
+# Visual Studio specific styling
+cpp_pointer_alignment = right
+cpp_new_line_before_open_brace_for_functions = same_line
+cpp_new_line_before_open_brace_for_types = same_line
+# Keeps your manual comment spacing intact
+cpp_indent_preserve_comments = true
+
+[Makefile]
+indent_style = tab

@@ -1,148 +1,150 @@
 #include <SunManager.hpp>
-#include <globals.hpp>
+#include <iostream>
 
-int SunBalance = 0;
-int sunArrayCounter = 0;
-float sunSpawnTimer = 0.0;
-const int MAX_SUN_SIZE = 250;
-Sun *SunArray[MAX_SUN_SIZE]; // bi size 250 bta5od 76kb memory bs fa looks good
-const float SUN_FALL_SPEED = 60.0f;
-const float SUN_GROUND_HEIGHT = 450.0f; // y level that sun stops at
-const float SUN_GROUND_TIMER =
-    3.0f; // time the sun stays on the ground before auto-collect (in seconds)
-const sf::Vector2f SUN_COLLECTION_SITE = {
-    0.0f, 0.0f}; // where collected sun will go when clicked
-const float SUN_COLLECTION_SPEED = 300.0f;
-const float SUN_COLLECTION_ERROR_MARGIN =
-    35.0f; // Distance from which sun will be considered collected
-const float SUN_ASSET_SIZE = 77;      // needed for spawn bounds
-const float SUN_SPAWN_INTERVAL = 1.0; // time between each sun spawn (in
-// seconds)
+int Sun::sunBalance = 0;
+int Sun::sunArrayCntr = 0;
+Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
+float Sun::spawnTimer = 0;
+bool Sun::hovering = false;
 
-void manageSuns() {
-  sunSpawnTimer += deltaTime;
-  if (sunSpawnTimer >= SUN_SPAWN_INTERVAL) { // spawn new sun if needed
-    sunSpawnTimer -= SUN_SPAWN_INTERVAL;
-    spawnSun();
+void Sun::manageSuns(float dt, State s) {
+  spawnTimer += dt;
+  if (spawnTimer >= spawnInterval) { // spawn new sun if needed
+    spawnTimer -= spawnInterval;
+    Sun::spawn();
   }
-  updateSun();
-  drawSun();
-}
 
-void drawSun() {
-  for (auto &currSun : SunArray) {
-    if (currSun) {
-      window->draw(currSun->sprite);
+  if (s != Paused) {
+    for (int i = 0; i < sunArrayCntr; i++) {
+      if (!sunArray[i]) continue;
+      if (!sunArray[i]->update(dt)) { i--; continue; }
+      if (sunArray[i]->state != Sun::State::Collecting && sunArray[i]->onClick()) hovering = true;
+      sunArray[i]->draw();
     }
+
+    if (hovering) { setCursorHover(); hovering = false; }
+    else setCursorMain();
+
   }
+  else
+    for (int i = 0; i < sunArrayCntr; i++) {
+      if (!sunArray[i]) continue;
+      sunArray[i]->draw();
+    }
 }
 
-void updateSun() {
-  static bool hovering = false, runOnce = true;
+bool Sun::update(float dt) {
+  animateSpritesheet(sheet, dt);
+  switch (state) {
+    case Falling:
 
-  for (auto &currSun : SunArray) {
-    if (currSun) {
-      animateSpritesheet(currSun->sheet);
-      switch (currSun->state) {
-      case 0: // sun is falling
+      sprite.move( { 0, fallSpeed * dt });
+      if (sprite.getPosition().y >= groundY) // check if sun has hit the ground
+        state = OnGround;
+      break;
 
-        currSun->sprite.move({0, SUN_FALL_SPEED * deltaTime}); // same thing as
-        // currSun->setPosition(currSun->getPosition() + offset)
-        if (currSun->sprite.getPosition().y >= SUN_GROUND_HEIGHT)
-          currSun->state = 1; // check if sun has hit the ground
-        if (onClickSun(currSun, collectSun))
-          hovering = true;
-        break;
+    case OnGround:
+      groundTimer -= dt;
+      if (groundTimer <= 0) // auto-collect sun
+        collect();
+      else if (onClick())
+        hovering = true;
 
-      case 1: // sun is on ground
-        currSun->groundTimer -= deltaTime;
-        if (currSun->groundTimer <= 0) { // auto-collect sun
-          collectSun(currSun);
-          break;
-        }
-        if (onClickSun(currSun, collectSun))
-          hovering = true;
-        break;
+      break;
 
-      case 2: // sun is moving to collection site
-        // habadt equation lel motion w sob7analah tl3t shabah el aslya faaa
-        currSun->sprite.move(
-            currSun->direction * SUN_COLLECTION_SPEED * deltaTime /
-            (float)120.0 * currSun->distFromCollectionSite); // curved(?) speed
-        currSun->distFromCollectionSite -= SUN_COLLECTION_SPEED * deltaTime /
-                                           (float)120.0 *
-                                           currSun->distFromCollectionSite;
-        if (currSun->distFromCollectionSite <=
-            SUN_COLLECTION_ERROR_MARGIN) { // Check if Sun has reached
-          // collection site
-          SunBalance += currSun->value;
-          delete currSun;
-          currSun = nullptr;
-        } else if (currSun->distFromCollectionSite <= 200.0f) {
-          // Second habda of the month:
-          //   let distance = x
-          //   while(0 < x < 200) opacity = (x*factor)^2 / 200
-          //     where factor = 200 / startX
-          //   opacity = x^2 * (factor^2 / 200)                take constant
-          //   coefficent as fadeFactor opacity = x^2 * fadeFactor (smooth
-          //   transition from opac. = 200 to opac. = 0)
-          currSun->sprite.setColor({255, 255, 255,
-                                    (uint8_t)(currSun->distFromCollectionSite *
-                                              currSun->distFromCollectionSite *
-                                              currSun->fadeFactor)});
-        }
+    case Collecting:
+      sprite.move(
+        direction * collectionSpeed * dt / (float)120.0 *
+        distanceToCollection); // Non-linear speed
 
-        break;
+      distanceToCollection -= collectionSpeed * dt /
+        (float)120.0 * distanceToCollection;
+      if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached
+                                                           // collection site
+        sunBalance += value;
+        Sun::destroy(index);
+        return false;
       }
+      else if (distanceToCollection <= 200.0f) {
+        //   let distance = x
+        //   while(0 < x < 200) opacity = (x*factor)^2 / 200
+        //     where factor = 200 / startX
+        //   opacity = x^2 * (factor^2 / 200)                take constant
+        //   coefficent as fadeFactor opacity = x^2 * fadeFactor (smooth
+        //   transition from opac. = 200 to opac. = 0)
+        sprite.setColor({ 255, 255, 255,
+                                  (uint8_t)(distanceToCollection *
+                                            distanceToCollection *
+                                            fadeFactor) });
+      }
+
+      break;
     }
-  }
 
-  // Handle switching of cursor images when hovering (or not)
-  if (hovering) {
-    setCursorHover();
-    hovering = false;
-  } else
-    setCursorMain();
+
+  return true; // Object still alive
 }
 
-void generateSun(float x, float y, int value) {
-  // static sf::Texture &sunTexture = getTexture("assets/Sun/Sun_0.png");
-  static sf::Texture &sunTexture =
-      getTexture("assets/Sun/sun_spritesheet2.png");
+void Sun::generate(float x, float y, int val) {
+  static sf::Texture& sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
   sf::Sprite sunSprite(sunTexture);
-  sunSprite.setTextureRect({{0, 0}, {77, 77}}); // set to 1st frame
-  Sun *sun = new Sun(
-      {sunSprite, value, 0, SUN_GROUND_TIMER, 0.0, {0.0, 0.0}, 0.0f, nullptr});
-  sun->sheet =
-      Spritesheet{&sun->sprite, 77, 77, 30, 0.03f}; // Initialize spritesheet
+  sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
+  Sun* sun =
+    new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,
+      0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, nullptr });
+  sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
 
-  sun->sprite.setPosition({x, y});
+  sun->sprite.setPosition({ x, y });
 
-  SunArray[sunArrayCounter] = sun;
-  sunArrayCounter++;
+  sunArray[sunArrayCntr] = sun;
+  sunArrayCntr++;
+
 }
 
-void spawnSun(int value) {
+void Sun::spawn(int val) {
   float randX =
-      randomRange(SUN_ASSET_SIZE, window->getSize().x - SUN_ASSET_SIZE);
-  generateSun(randX, -70, value);
+        randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
+  Sun::generate(randX, -70, val);
 }
 
-bool onClickSun(Sun *&sun, std::function<void(Sun *s)> action) {
+void Sun::draw() {
+  window->draw(sprite);
+}
+
+void Sun::collect() {
+  // Vector from sun to collection site
+  direction = collectionSite - sprite.getPosition();
+  // Get length before normalizing
+  distanceToCollection = direction.length();
+  // Normalize length to control speed
+  direction = direction.normalized();
+  if (distanceToCollection >= 200.0f) { // Control fading of sun
+    fadeFactor = (1.0f / 200.0f);
+    sprite.setColor({ 255, 255, 255, 200 });
+  }
+  else
+    fadeFactor = (200.0f / distanceToCollection) *
+    (200.0f / distanceToCollection) / 200.0f;
+  state = Collecting;
+  sounds.play("CollectSun");
+}
+
+bool Sun::onClick() {
   static bool wasButtonClicked = false;
   static bool hovering = false;
   sf::Vector2f mousePosition =
-      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
-  if (sun->sprite.getGlobalBounds().contains(mousePosition)) {
+  if (sprite.getGlobalBounds().contains(mousePosition)) {
     hovering = true;
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
       if (!wasButtonClicked) {
-        action(sun);
+        collect();
         wasButtonClicked = true;
       }
-    } else
+    }
+    else
       wasButtonClicked = false;
 
     return true;
@@ -150,20 +152,15 @@ bool onClickSun(Sun *&sun, std::function<void(Sun *s)> action) {
   return false;
 }
 
-void collectSun(Sun *sun) {
-  sun->direction =
-      SUN_COLLECTION_SITE -
-      sun->sprite.getPosition(); // Vector from sun to collection site
-  sun->distFromCollectionSite =
-      sun->direction.length(); // get length before normalizing
-  sun->direction =
-      sun->direction.normalized(); // normalize length to control speed
-  if (sun->distFromCollectionSite >= 200.0f) { // Control fading of sun
-    sun->fadeFactor = (1.0f / 200.0f);
-    sun->sprite.setColor({255, 255, 255, 200});
-  } else
-    sun->fadeFactor = (200.0f / sun->distFromCollectionSite) *
-                      (200.0f / sun->distFromCollectionSite) / 200.0f;
-  sun->state = 2;
-  playSound("CollectSun");
+void Sun::destroy(int idx) {
+  //Todo: Replace with dynamic array
+  delete sunArray[idx];
+  sunArray[idx] = nullptr;
+  for (int i = idx; i < sunArrayCntr-1; i++) {
+    sunArray[i] = sunArray[i + 1];
+    sunArray[i]->index--;
+  }
+  sunArray[sunArrayCntr - 1] = nullptr;
+
+  sunArrayCntr--;
 }

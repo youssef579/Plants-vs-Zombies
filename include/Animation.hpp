@@ -1,9 +1,8 @@
 #pragma once
-
 #include <globals.hpp>
 
 struct Spritesheet {
-  sf::Sprite *sprite;
+  sf::Sprite* sprite;
   int frameWidth;
   int frameHeight;
   int frameCount;
@@ -11,4 +10,5 @@ struct Spritesheet {
   float timer = 0.0f;
 };
 
-void animateSpritesheet(Spritesheet &sheet);
+
+void animateSpritesheet(Spritesheet& sheet, float dt);
