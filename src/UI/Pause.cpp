@@ -1,4 +1,4 @@
-#include <Pause.hpp>
+#include <UI/Pause.hpp>
 
 PauseMenu pauseMenu;
 
@@ -74,14 +74,14 @@ void PauseMenu::update() {
 
   // Back to Game button
   onClick(*backToGameBtn, []() {
-    playSound("ButtonClick");
+    sounds.play("ButtonClick");
     setCursorMain();
     gameWeather.isPaused = false, isPaused = false; });
 
   // Main Menu Button
   onClick(*mainMenuBtn, []() {
     gameState = 0, homeState = 0; //go to home menu not level selector
-    playSound("ButtonClick"); playMusic("Menu");
+    sounds.play("ButtonClick"); music.play("Menu");
     isPaused = false;
     });
 
@@ -98,7 +98,7 @@ void PauseMenu::update() {
   updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
 
 
-  updateVolume();
+  sounds.updateVolume();
 
   drawUI();
 

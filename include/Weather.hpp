@@ -17,7 +17,7 @@ struct WeatherSystem {
     bool isRaining = false;                              // If the current level contains rain
     bool isPaused = false;                               // If rain is paused (in pause menu)
     static constexpr float RAIN_VOLUME_MULTIPLIER = 0.2f;
-    static constexpr float RAIN_ANGLE = 15.0f;            // Angle of Rain (deg) from y-axis
+    static constexpr float RAIN_ANGLE = 15.0f;           // Angle of Rain (deg) from y-axis
     static constexpr float MIN_RAIN_SPEED = 600.f;       // Minimum falling speed of raindrops
     static constexpr float MAX_RAIN_SPEED = 1000.f;      // Maximum falling speed of raindrops
     static constexpr float LIGHTNING_CHANCE_MIN = 5.0f;  // Minimum seconds between lightning strikes 
@@ -26,29 +26,23 @@ struct WeatherSystem {
 
 
     struct RainDrop {
-        sf::RectangleShape shape;     // Visual representation of the drop 
-        float speed;                  // Vertical falling speed of the drop  
+        sf::RectangleShape shape;    // Visual representation of the drop 
+        float speed;                 // Vertical falling speed of the drop  
     };
 
     sf::Sound* rainSound = nullptr;
     sf::Sound* thunderSound = nullptr;
     sf::SoundBuffer rainBuffer, thunderBuffer;
-    //Clocks replaced by float timers using external dt
-    //sf::Clock timer;                 // Tracks time between lightning strikes 
-    //sf::Clock flashClock;            // Tracks how long the lightning flash stays on screen       // reduce clocks 
-    //sf::Clock rainClock;             // To calculate delta time (dt) for smooth movement
-    float timer;
-    float flashClock;
-    float rainClock;
+
+    float timer;                     // Tracks time between lightning strikes 
+    float flashClock;                // Tracks how long the lightning flash stays on screen    
+    float rainClock;                 // To calculate delta time (dt) for smooth movement
 
     float nextStrikeIn = 5.0f;       // Random delay (seconds) until the next lightning strike  
     bool isFlashing = false;         // True if the screen is currently being lit by lightning
     sf::RectangleShape flashOverlay; // White transparent rectangle to simulate lightning flash 
     std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                    // change vector 
 
-    //WeatherSystem(); 
-
-    //~WeatherSystem(); 
 
     void init();   
     void update(float dt);

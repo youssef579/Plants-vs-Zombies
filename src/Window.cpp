@@ -48,7 +48,7 @@ void handleEvents() {
       if (key->code == sf::Keyboard::Key::Escape && gameState != 0) //Pause / UnPause
       {
         if (!isPaused) {
-          playSound("Pause");
+          sounds.play("Pause");
           gameWeather.isPaused = true;
           setCursorMain();
         }

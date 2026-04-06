@@ -1,4 +1,5 @@
 #include <SunManager.hpp>
+#include <iostream>
 
 int Sun::sunBalance = 0;
 int Sun::sunArrayCntr = 0;
@@ -125,7 +126,7 @@ void Sun::collect() {
     fadeFactor = (200.0f / distanceToCollection) *
     (200.0f / distanceToCollection) / 200.0f;
   state = Collecting;
-  playSound("CollectSun");
+  sounds.play("CollectSun");
 }
 
 bool Sun::onClick() {

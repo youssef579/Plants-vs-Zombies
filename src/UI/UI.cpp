@@ -53,8 +53,8 @@ void updateCheckbox(Checkbox& cb, bool& target) {
         cb.checked = !cb.checked;
         target = cb.checked;
 
-        if (cb.checked) playSound("Tap1");
-        else playSound("Tap2");
+        if (cb.checked) sounds.play("Tap1");
+        else sounds.play("Tap2");
 
         wasButtonClicked = true;
       }

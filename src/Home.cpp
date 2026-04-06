@@ -61,7 +61,7 @@ void updateHome() {
 
   static bool runOnce = true;
   if (runOnce) {
-    playMusic("Menu");
+    music.play("Menu");
     headerSprite.setPosition(
         {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
@@ -96,7 +96,7 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() {
-              playMusic("DayStage");
+            music.play("DayStage");
               gameState = currentLevel;
             });
         },

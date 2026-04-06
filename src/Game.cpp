@@ -38,7 +38,7 @@ void updateGame() {
       pauseMenu.init();
       gameWeather.isRaining = true;
 
-      playMusic("DayStage");
+      music.play("DayStage");
       runOnce = false;
     }
 

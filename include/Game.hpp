@@ -7,5 +7,3 @@
 
 extern int gameState;
 void updateGame();
-
-//void drawUI();
