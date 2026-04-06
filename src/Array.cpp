@@ -3,7 +3,7 @@
 
 void Array::push(int& value) {
 	if (size == capacity) {
-		capacity *= 2; 5
+		capacity *= 2;
 
 		int* newData = new int[capacity];
 
@@ -14,9 +14,9 @@ void Array::push(int& value) {
 		delete[] data;
 		data = newData;
 
+	}
 		data[size] = value;
 		size++;
-	}
 }
 
 void Array::erase(std::function<bool(int &value)> condition) {
@@ -33,4 +33,8 @@ void Array::erase(std::function<bool(int &value)> condition) {
 	}
 
 	size = idx;
+}
+
+Array::~Array() {
+	delete[] data;
 }
