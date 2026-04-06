@@ -8,7 +8,7 @@ struct Settings {
   static bool weatherActive;
 
 
-  static struct Default { // Default settings values
+  struct Default { // Default settings values
     static constexpr float musicVolume     = 75.0f;
     static constexpr float soundFXVolume   = 75.0f;
     static constexpr float weatherFXVolume = 75.0f;

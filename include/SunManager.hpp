@@ -8,7 +8,7 @@
 struct Sun {
   sf::Sprite sprite;
   int value;
-  static enum State { Falling, OnGround, Collecting, Paused };
+  enum State { Falling, OnGround, Collecting, Paused };
   State state;
   float groundTimer;              // Keeps track of time spent on ground
   float distanceToCollection;
@@ -40,10 +40,10 @@ struct Sun {
     collectionSite = { 0, 0 };    // Position of sun collection site                                       
   //Shared Variables
   public:
-  static Sun* sunArray[MAX_SIMULTANEOUS_SUN];    // Array containing all Sun objects
-  static int sunBalance;                         // Amount of sun collected
-  static int sunArrayCntr;                       // Index of first empty space in array
-  static float spawnTimer;                       // Keeps track of time between last spawn
+  static Sun* sunArray[MAX_SIMULTANEOUS_SUN]; // Array containing all Sun objects
+  static int sunBalance;                      // Amount of sun collected
+  static int sunArrayCntr;                    // Index of first empty space in array
+  static float spawnTimer;                    // Keeps track of time between last spawn
   static bool hovering;
 
   // Personal Functions (Related to current Sun struct)
@@ -53,8 +53,8 @@ struct Sun {
   bool onClick();        // Returns whether a sun is hovered or not
 
   // Public Functions (Related to all Sun structs)
-  static void manageSuns(float dt, State s=Falling); // Manages spawning , update , draw and hover
+  static void manageSuns(float dt, State s = Falling); // Manages spawning , update , draw and hover
   static void generate(float x, float y, int val);
-  static void spawn(int val=25);
+  static void spawn(int val = 25);
   static void destroy(int idx);
 };
