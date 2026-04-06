@@ -12,22 +12,22 @@
 
 struct PauseMenu {
   sf::Texture backgroundT;
-  sf::Sprite* backgroundS;
-  sf::Text* backToGameBtn;
-  sf::Text* mainMenuBtn;
-  sf::Text* restartLevelBtn;
+  sf::Sprite *backgroundS;
+  sf::Text *backToGameBtn;
+  sf::Text *mainMenuBtn;
+  sf::Text *restartLevelBtn;
   sf::Texture sliderKnobT;
-  sf::Sprite* sliderMusicS;
-  Slider* sliderMusic;
-  sf::Sprite* sliderSFXS;
-  Slider* sliderSFX;
-  sf::Sprite* sliderWeatherFXS;
-  Slider* sliderWeatherFX;
+  sf::Sprite *sliderMusicS;
+  Slider *sliderMusic;
+  sf::Sprite *sliderSFXS;
+  Slider *sliderSFX;
+  sf::Sprite *sliderWeatherFXS;
+  Slider *sliderWeatherFX;
   sf::Texture checkboxBoxT;
   sf::Texture checkboxMarkT;
-  sf::Sprite* checkboxWeatherActiveS;
-  sf::Sprite* checkboxWeatherActiveM;
-  Checkbox* checkboxWeatherActive;
+  sf::Sprite *checkboxWeatherActiveS;
+  sf::Sprite *checkboxWeatherActiveM;
+  Checkbox *checkboxWeatherActive;
 
 
   PauseMenu();

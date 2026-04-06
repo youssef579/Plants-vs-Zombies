@@ -1,5 +1,5 @@
 #pragma once
-#include <sfml/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <Window.hpp>
 
 
@@ -21,6 +21,6 @@ struct Checkbox {
   bool checked;
 };
 
-float updateSlider(Slider& slider); // Check for click & return value (0->100)
+float updateSlider(Slider &slider); // Check for click & return value (0->100)
 
-void updateCheckbox(Checkbox& cb, bool& target);
+void updateCheckbox(Checkbox &cb, bool &target);

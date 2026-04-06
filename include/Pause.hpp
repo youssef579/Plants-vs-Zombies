@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sfml/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <AssetsManager.hpp>
 #include <globals.hpp>
 #include <Audio.hpp>
