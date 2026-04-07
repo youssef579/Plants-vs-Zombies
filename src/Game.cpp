@@ -8,6 +8,7 @@
 #include <globals.hpp>
 #include <Weather.hpp>
 #include <SunManager.hpp>
+#include <SunFlower.hpp>
 
 int gameState = 0;
 /*
@@ -54,6 +55,9 @@ void updateGame() {
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
+    Plant flower = Plant(createSunFlower(1150.0f / 2, 606.0f / 2));
+    updateSunFlower(flower, dt);
+    window->draw(flower.sprite);
     break;
   }
 }
