@@ -18,7 +18,7 @@ struct Sun {
   float sunflowerlevel;
   float sunFlowerSpeed;           // the initial fallsSpeed of each frame
   Spritesheet sheet;              // Animation object
-            
+
 
   //Constants
   private:
