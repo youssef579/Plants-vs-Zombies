@@ -37,10 +37,10 @@ struct Sun {
   static constexpr int
     assetWidth = 77;              // SunAsset width (Used for spawn bounds)
   static constexpr float
-    spawnInterval = 10.0f;         // Amount of seconds between each sun spawn
-  static constexpr float
-    acceleration = 762.5;
-  static constexpr float
+    spawnInterval = 1.0f;         // Amount of seconds between each sun spawn
+  static constexpr float 
+    acceleration = 400.0f;
+  static constexpr float  
     e = 2.71;                     // Euler's number
   static constexpr float
     ditanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
