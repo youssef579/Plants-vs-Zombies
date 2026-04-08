@@ -51,9 +51,6 @@ void updateGame() {
 
 
 
-    static Plant flower = Plant(createSunFlower(1150.0f / 2, 606.0f / 2));
-    updateSunFlower(flower, dt);
-    drawSunFlower(flower, dt);
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();

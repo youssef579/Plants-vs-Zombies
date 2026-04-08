@@ -39,11 +39,11 @@ struct Sun {
   static constexpr float
     spawnInterval = 10.0f;         // Amount of seconds between each sun spawn
   static constexpr float 
-    acceleration = 90.8f;
+    acceleration = 120.0f;
   static constexpr float  
     e = 2.71;                     // Euler's number
   static constexpr float
-    ditanceSunFlower = 60.0f;     // the distance the sun will fly above the sunflower
+    ditanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
 
   static constexpr sf::Vector2f
     collectionSite = { 0, 0 };    // Position of sun collection site
