@@ -11,3 +11,5 @@ const float GENERATE_SUN_FLOWER_INTERVAL = 10.0f;
 Plant createSunFlower(float x, float y);
 
 void updateSunFlower(Plant &sunFlower, float dt);
+
+void drawSunFlower(Plant &sunFlower, float dt);

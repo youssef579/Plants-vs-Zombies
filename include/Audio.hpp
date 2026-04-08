@@ -29,7 +29,8 @@ struct Sounds {
       pauseSound,
       buttonClick,
       tap1,
-      tap2;
+      tap2,
+      sunFlowerPop;
   };
 
   struct Paths {
@@ -39,7 +40,8 @@ struct Sounds {
       pauseSound = "assets/sounds/sfx_pause.ogg",
       buttonClick = "assets/sounds/sfx_buttonClick.ogg",
       tap1 = "assets/sounds/sfx_tap1.ogg",
-      tap2 = "assets/sounds/sfx_tap2.ogg";
+      tap2 = "assets/sounds/sfx_tap2.ogg",
+      sunFlowerPop = "assets/sounds/sfx_sunFlowerPop.wav";
   };
 
 

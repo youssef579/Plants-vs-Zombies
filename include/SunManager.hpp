@@ -8,14 +8,17 @@
 struct Sun {
   sf::Sprite sprite;
   int value;
-  enum State { Falling, OnGround, Collecting, Paused };
+  enum State { Falling, FreeFalling, OnGround, Collecting, Paused };
   State state;
   float groundTimer;              // Keeps track of time spent on ground
   float distanceToCollection;
   sf::Vector2f direction;         // Direction to Collection
   float fadeFactor;               // Used in fading equation
   int index;                      // Index of Sun object in sunArray[]
+  float sunflowerlevel;
+  float sunFlowerSpeed;           // the initial fallsSpeed of each frame
   Spritesheet sheet;              // Animation object
+            
 
   //Constants
   private:
@@ -34,7 +37,13 @@ struct Sun {
   static constexpr int
     assetWidth = 77;              // SunAsset width (Used for spawn bounds)
   static constexpr float
-    spawnInterval = 1.0f;         // Amount of seconds between each sun spawn
+    spawnInterval = 10.0f;         // Amount of seconds between each sun spawn
+  static constexpr float 
+    acceleration = 90.8f;
+  static constexpr float  
+    e = 2.71;                     // Euler's number
+  static constexpr float
+    ditanceSunFlower = 60.0f;     // the distance the sun will fly above the sunflower
 
   static constexpr sf::Vector2f
     collectionSite = { 0, 0 };    // Position of sun collection site
@@ -54,7 +63,7 @@ struct Sun {
 
   // Public Functions (Related to all Sun structs)
   static void manageSuns(float dt, State s = Falling); // Manages spawning , update , draw and hover
-  static void generate(float x, float y, int val);
+  static void generate(float x, float y, int val, bool isSunFlower);
   static void spawn(int val = 25);
   static void destroy(int idx);
 };
