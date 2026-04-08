@@ -8,6 +8,8 @@
 #include <globals.hpp>
 #include <Weather.hpp>
 #include <SunManager.hpp>
+#include <LevelManager.hpp>
+
 
 int gameState = 0;
 /*
@@ -45,6 +47,7 @@ void updateGame() {
 
       //gameWeather.isRaining = true;
     if (runOnce) {
+      dayLevel.init();
       gameWeather.isRaining = true;
       /*gameWeather.init(window->getSize());
       weatherInited = true;
@@ -54,6 +57,8 @@ void updateGame() {
       runOnce = false;
     }
 
+    dayLevel.update(dt);
+    dayLevel.draw(*window);
 
     manageSuns(dt);
     gameWeather.update(dt);

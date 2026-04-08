@@ -12,6 +12,7 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
+
 file(GLOB SOURCES "src/*.cpp") 
 
 add_executable(main ${SOURCES})
