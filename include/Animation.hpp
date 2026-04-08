@@ -2,7 +2,7 @@
 #include <globals.hpp>
 
 struct Spritesheet {
-  sf::Sprite* sprite;
+  sf::Sprite *sprite;
   int frameWidth;
   int frameHeight;
   int frameCount;

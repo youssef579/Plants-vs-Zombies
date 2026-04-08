@@ -1,5 +1,6 @@
 #include <SunManager.hpp>
 #include <iostream>
+#include <cmath>
 
 int Sun::sunBalance = 0;
 int Sun::sunArrayCntr = 0;
@@ -37,12 +38,30 @@ bool Sun::update(float dt) {
   animateSpritesheet(sheet, dt);
   switch (state) {
     case Falling:
-
       sprite.move( { 0, fallSpeed * dt });
       if (sprite.getPosition().y >= groundY) // check if sun has hit the ground
         state = OnGround;
       break;
+    
+    case FreeFalling:
+      // free fall with differnt acc
+      sprite.move( { 0, -(sunFlowerSpeed * dt - 0.5f * acceleration * dt * dt) });
 
+      sunFlowerSpeed -= acceleration * dt;  // update the speed
+      
+      // update scaling as function e ^ x
+      if (sunFlowerSpeed >= 0){
+        sprite.setScale({(float)pow(e, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(e, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
+      }else{
+        if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
+          sprite.setScale({1.0f, 1.0f});
+        }
+      }
+      if (sprite.getPosition().y >= sunflowerlevel) // check if sun has hit the sunFlowerLevel
+        state = OnGround;
+        
+      break;
+    
     case OnGround:
       groundTimer -= dt;
       if (groundTimer <= 0) // auto-collect sun
@@ -51,7 +70,7 @@ bool Sun::update(float dt) {
         hovering = true;
 
       break;
-
+    
     case Collecting:
       sprite.move(
         direction * collectionSpeed * dt / (float)120.0 *
@@ -85,26 +104,37 @@ bool Sun::update(float dt) {
   return true; // Object still alive
 }
 
-void Sun::generate(float x, float y, int val) {
+void Sun::generate(float x, float y, int val, bool isSunFlower) {
   static sf::Texture& sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
   sf::Sprite sunSprite(sunTexture);
   sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
   Sun* sun =
-    new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,
-      0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, nullptr });
-  sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
+      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration, 
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, nullptr});
+  
+  if (isSunFlower)
+    sun =
+      new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration, 
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y), 
+        sqrtf(2.0f * acceleration * ditanceSunFlower) , nullptr});
 
-  sun->sprite.setPosition({ x, y });
+  sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
+  
+  sun->sprite.setOrigin(
+    {sun->sprite.getLocalBounds().size.x / 2.0f,
+    sun->sprite.getLocalBounds().size.y / 2.0f}
+  );
+
+  sun->sprite.setPosition({x, y});
 
   sunArray[sunArrayCntr] = sun;
   sunArrayCntr++;
-
 }
 
 void Sun::spawn(int val) {
   float randX =
         randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
-  Sun::generate(randX, -70, val);
+  Sun::generate(randX, -70, val, 0);
 }
 
 void Sun::draw() {

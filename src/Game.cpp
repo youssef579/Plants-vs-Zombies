@@ -8,6 +8,7 @@
 #include <globals.hpp>
 #include <Weather.hpp>
 #include <SunManager.hpp>
+#include <SunFlower.hpp>
 
 int gameState = 0;
 /*
@@ -47,7 +48,6 @@ void updateGame() {
       pauseMenu.draw();
       break;
     }
-
 
 
 
