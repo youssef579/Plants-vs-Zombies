@@ -108,15 +108,17 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
   static sf::Texture& sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
   sf::Sprite sunSprite(sunTexture);
   sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
-  Sun* sun =
-      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration, 
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, nullptr});
-  
+  Sun* sun;
+      
   if (isSunFlower)
     sun =
       new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration, 
         0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y), 
         sqrtf(2.0f * acceleration * ditanceSunFlower) , nullptr});
+  else
+    sun = 
+      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration, 
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, nullptr});
 
   sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   
