@@ -8,7 +8,7 @@ Overlay *overlay;
 bool isOverlayChanged = false;
 
 void initOverlay() {
-  sf::RectangleShape rect((sf::Vector2f)view->getSize());
+  sf::RectangleShape rect((sf::Vector2f)WINDOW_SIZE);
   rect.setFillColor(sf::Color({0, 0, 0, 200}));
 
   int mediumSize = 40, largeSize = 60;
@@ -30,15 +30,14 @@ void placeOverlayContent() {
   sf::Vector2<float> greenButtonSize =
                          overlay->greenButton.getLocalBounds().size,
                      redButtonSize = overlay->redButton.getLocalBounds().size;
-  sf::Vector2f viewSize = view->getSize();
 
   float gapY = 60, titleExtraGap = 30, bias = 10,
         contentHeight = (overlay->nLines + 1) * gapY + titleExtraGap +
                         std::max(greenButtonSize.y, redButtonSize.y),
-        offsetY = (viewSize.y - contentHeight) / 2 - bias;
+        offsetY = (WINDOW_SIZE.y - contentHeight) / 2 - bias;
 
   auto centerX = [&](sf::Text &text) {
-    return (viewSize.x - text.getLocalBounds().size.x) / 2.f;
+    return (WINDOW_SIZE.x - text.getLocalBounds().size.x) / 2.f;
   };
 
   overlay->title.setPosition({centerX(overlay->title), offsetY});
@@ -57,8 +56,7 @@ void placeOverlayContent() {
   if (!overlay->greenButton.getString().isEmpty() &&
       !overlay->redButton.getString().isEmpty()) {
     float gapX = 50,
-          offsetX =
-              (viewSize.x - (greenButtonSize.x + redButtonSize.x + gapX)) / 2;
+          offsetX = (WINDOW_SIZE.x - (greenButtonSize.x + redButtonSize.x + gapX)) / 2;
     overlay->redButton.setPosition(
         {offsetX, (overlay->nLines + 1) * gapY + titleExtraGap + offsetY});
     overlay->greenButton.setPosition(
