@@ -18,7 +18,7 @@ struct Sun {
   float sunflowerlevel;
   float sunFlowerSpeed;           // the initial fallsSpeed of each frame
   Spritesheet sheet;              // Animation object
-            
+
 
   //Constants
   private:
@@ -38,9 +38,9 @@ struct Sun {
     assetWidth = 77;              // SunAsset width (Used for spawn bounds)
   static constexpr float
     spawnInterval = 10.0f;         // Amount of seconds between each sun spawn
-  static constexpr float 
-    acceleration = 120.0f;
-  static constexpr float  
+  static constexpr float
+    acceleration = 762.5;
+  static constexpr float
     e = 2.71;                     // Euler's number
   static constexpr float
     ditanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
