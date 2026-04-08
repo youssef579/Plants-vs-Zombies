@@ -61,9 +61,9 @@ void updateHome() {
 
   static bool runOnce = true;
   if (runOnce) {
+    backgroundSprite.scale({(float)WINDOW_SIZE.x / backgroundTexture.getSize().x, (float)WINDOW_SIZE.y / backgroundTexture.getSize().y});
     music.play("Menu");
-    headerSprite.setPosition(
-        {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
+    headerSprite.setPosition( {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
 
     playButton.setPosition({920, 420});
     creditsButton.setPosition({860, 470});
