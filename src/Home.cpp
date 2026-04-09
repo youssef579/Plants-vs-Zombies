@@ -61,9 +61,13 @@ void updateHome() {
 
   static bool runOnce = true;
   if (runOnce) {
+    float scaleHeader = 0.5;
+    // Scale main home images to fit fullscreen
+    backgroundSprite.scale({(float)WINDOW_SIZE.x / backgroundTexture.getSize().x, (float)WINDOW_SIZE.y / backgroundTexture.getSize().y});
+    headerSprite.scale({scaleHeader, scaleHeader});
+
     music.play("Menu");
-    headerSprite.setPosition(
-        {(window->getSize().x - headerTexture.getSize().x) / 2.0f, 20});
+    headerSprite.setPosition({(WINDOW_SIZE.x - headerTexture.getSize().x * scaleHeader) / 2.0f, 20});
 
     playButton.setPosition({920, 420});
     creditsButton.setPosition({860, 470});

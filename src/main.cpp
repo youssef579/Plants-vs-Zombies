@@ -14,18 +14,18 @@ int main() {
   initOverlay();
   initWeather();
 
-  //const auto onClose = [](const sf::Event::Closed &) { window->close(); };
   while (window->isOpen()) {
-    //window->handleEvents(onClose);  //doesn't allow for key presses
     handleEvents();
 
     window->clear();
+    window->setView(*view);
     updateGame();
     window->display();
   }
 
   updateFiles();
   delete window;
+  delete view;
   delete assets;
   delete overlay;
 }
