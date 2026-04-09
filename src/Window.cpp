@@ -1,7 +1,10 @@
+#include <SFML/Window/VideoMode.hpp>
+#include <SFML/Window/WindowEnums.hpp>
 #include <Window.hpp>
 #include <Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <globals.hpp>
+#include <iostream>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -63,8 +66,9 @@ void setCursorHover() {
   window->setMouseCursor(cursorHover);
 }
 
-
 void handleEvents() {
+  static bool isFullscreen = false;
+
   while (const std::optional event = window->pollEvent())
   {
     if (event->is<sf::Event::Closed>()) //Close Game
@@ -72,6 +76,17 @@ void handleEvents() {
 
     if (const auto* resized = event->getIf<sf::Event::Resized>())
       getLetterboxView(resized->size.x, resized->size.y);
+
+    if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+      if (keyPressed->scancode == sf::Keyboard::Scan::F11) {
+        isFullscreen = !isFullscreen;
+
+        if (isFullscreen)
+          window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+        else
+          window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+      }
+    }
 
     if (const auto* key = event->getIf<sf::Event::KeyPressed>()) //Key Presses
     {
