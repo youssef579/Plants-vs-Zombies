@@ -1,10 +1,5 @@
-#include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/WindowEnums.hpp>
 #include <Window.hpp>
-#include <Audio.hpp>
-#include <SFML/Graphics.hpp>
 #include <globals.hpp>
-#include <iostream>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -12,11 +7,22 @@ const sf::Vector2u WINDOW_SIZE = {1150, 606};
 
 void initWindow() {
   window = new sf::RenderWindow(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies");
+
+  // This is the game view
+  // It scales the game while keeping the original ration
+  view = new sf::View();
+  view->setSize((sf::Vector2f)WINDOW_SIZE);
+  view->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
+
+  setWindowMetaData();
+  getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
+}
+
+void setWindowMetaData() { // Set icon, cursor and window settings after creating a window
   window->setFramerateLimit(60);
 
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  window->setPosition(sf::Vector2i((desktop.size.x - window->getSize().x) / 2,
-                                   (desktop.size.y - window->getSize().y) / 2));
+  window->setPosition(sf::Vector2i((desktop.size.x - window->getSize().x) / 2, (desktop.size.y - window->getSize().y) / 2));
 
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
@@ -25,12 +31,6 @@ void initWindow() {
   static sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
                            sf::Vector2u(3, 3));
   window->setMouseCursor(cursor);
-
-  view = new sf::View();
-  view->setSize((sf::Vector2f)WINDOW_SIZE);
-  view->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
-
-  getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
 }
 
 void getLetterboxView(int windowWidth, int windowHeight) {
@@ -85,6 +85,7 @@ void handleEvents() {
           window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
         else
           window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+        setWindowMetaData();
       }
     }
 
@@ -103,6 +104,5 @@ void handleEvents() {
         isPaused = !isPaused;
       }
     }
-
   }
 }
