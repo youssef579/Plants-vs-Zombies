@@ -122,10 +122,7 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
 
   sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   
-  sun->sprite.setOrigin(
-    {sun->sprite.getLocalBounds().size.x / 2.0f,
-    sun->sprite.getLocalBounds().size.y / 2.0f}
-  );
+  sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
 
   sun->sprite.setPosition({x, y});
 

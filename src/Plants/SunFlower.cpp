@@ -1,6 +1,6 @@
-#include <SunFlower.hpp>
+#include <Plants/SunFlower.hpp>
 #include <SunManager.hpp>
-#include <Plant.hpp>
+#include <Plants/Plant.hpp>
 
 Plant createSunFlower(float x, float y /* the way used in grid */) {
   static sf::Texture& sunFlowerTexture = getTexture("assets/sunflower_spritesheet.png");
@@ -11,10 +11,7 @@ Plant createSunFlower(float x, float y /* the way used in grid */) {
   Spritesheet sunFlowerSheet = Spritesheet{&newPlant.sprite, 80, 80, 24, 0.05f};
   newPlant.sheet = sunFlowerSheet;
   
-  newPlant.sprite.setOrigin(
-    {newPlant.sprite.getLocalBounds().size.x / 2.0f,
-    newPlant.sprite.getLocalBounds().size.y / 2.0f}
-  );
+  newPlant.sprite.setOrigin(newPlant.sprite.getLocalBounds().size / 2.0f);
 
   newPlant.sprite.setPosition({x, y});
 
