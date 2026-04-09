@@ -28,7 +28,7 @@ void updateSunFlower(Plant &sunFlower, float dt){
   }
 }
 
-void drawSunFlower(Plant &sunFlower, float dt){
+void drawSunFlower(Plant &sunFlower){
     window->draw(sunFlower.sprite);
     if (sunFlower.timer <= 2)
       window->draw(sunFlower.sprite, sf::RenderStates(sf::BlendAdd));
