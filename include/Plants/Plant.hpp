@@ -10,6 +10,6 @@ struct Plant{
   sf::Sprite sprite;
   float health;
   PlantType plantType;
-  float timer; //  the time remaining to generate a sun or a bullet based on "plantType"
+  float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   Spritesheet sheet;
 };

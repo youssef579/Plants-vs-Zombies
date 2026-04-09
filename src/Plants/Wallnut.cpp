@@ -21,15 +21,14 @@ Plant createWallnut(float x, float y /* the way used in grid */) {
 
 void updateWallnut(Plant &wallNut, float dt){
   animateSpritesheet(wallNut.sheet, dt);
-  static bool onceCrack = 0, onceCrack2 = 0;
-  if (wallNut.health <= 50 && !onceCrack){
+  if (wallNut.health <= 50 && !wallNut.timer){
     static sf::Texture& wallNutCrackTexture = getTexture("assets/wallnutCrack.png");
     sf::Sprite wallNutCrackSprite(wallNutCrackTexture);
     wallNutCrackSprite.setTextureRect({{0, 0}, {65, 73}});
 
     sf::Vector2f wallNutPostion = wallNut.sprite.getPosition();
 
-    wallNut = {wallNutCrackSprite, 50, PlantType::WALLNUT, 0, nullptr};
+    wallNut = {wallNutCrackSprite, 50, PlantType::WALLNUT, 1, nullptr};
     Spritesheet wallNutSheet = Spritesheet{&wallNut.sprite, 65, 73, 11, 0.0581f};
     wallNut.sheet = wallNutSheet;
   
@@ -37,23 +36,21 @@ void updateWallnut(Plant &wallNut, float dt){
 
     wallNut.sprite.setPosition(wallNutPostion);
 
-    onceCrack = 1;
-  }else if (wallNut.health <= 20 && !onceCrack2){
+  }else if (wallNut.health <= 20 && wallNut.timer == 1){
     static sf::Texture& wallNutCrack2Texture = getTexture("assets/wallnutCrack2.png");
     sf::Sprite wallNutCrack2Sprite(wallNutCrack2Texture);
     wallNutCrack2Sprite.setTextureRect({{0, 0}, {65, 73}});
 
     sf::Vector2f wallNutPostion = wallNut.sprite.getPosition();
 
-    wallNut = {wallNutCrack2Sprite, 20, PlantType::WALLNUT, 0, nullptr};
+    wallNut = {wallNutCrack2Sprite, 20, PlantType::WALLNUT, 2, nullptr};
     Spritesheet wallNutSheet = Spritesheet{&wallNut.sprite, 65, 73, 15, 0.0426f};
     wallNut.sheet = wallNutSheet;
   
     wallNut.sprite.setOrigin(wallNut.sprite.getLocalBounds().size / 2.0f);
 
     wallNut.sprite.setPosition(wallNutPostion);
-
-    onceCrack2 = 1;
+    
   }
 }
 
