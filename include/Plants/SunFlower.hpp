@@ -1,5 +1,5 @@
 #pragma once
-#include <Plant.hpp>
+#include <Plants/Plant.hpp>
 #include <globals.hpp>
 #include <Window.hpp>
 #include <AssetsManager.hpp>

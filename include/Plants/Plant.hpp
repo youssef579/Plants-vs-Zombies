@@ -5,7 +5,7 @@
 #include <Audio.hpp>
 #include <Animation.hpp>
 
-enum PlantType {SUN_FLOWER}; // will add the other sorts of plants
+enum PlantType {SUN_FLOWER, WALLNUT}; // will add the other sorts of plants
 struct Plant{
   sf::Sprite sprite;
   float health;
