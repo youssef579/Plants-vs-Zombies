@@ -1,5 +1,5 @@
 #pragma once
-#include "Plant.hpp"
+#include <Plants/Plant.hpp>
 
 Plant createPeashooter(float x, float y);
 void updatePeashooter(Plant& peashooter, float dt);

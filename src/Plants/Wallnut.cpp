@@ -4,6 +4,8 @@
 
 Plant createWallnut(float x, float y /* the way used in grid */) {
   static sf::Texture& wallNutTexture = getTexture("assets/Plants/wallnut.png");
+  wallNutTexture.setSmooth(true);
+
   sf::Sprite wallNutSprite(wallNutTexture);
   wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
 

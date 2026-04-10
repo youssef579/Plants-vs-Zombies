@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(SFML)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-add_executable(main ${SOURCES} "src/Plants/peashooter.cpp" "include/Plants/peashooter.hpp")
+add_executable(main ${SOURCES})
 
 add_custom_command(TARGET main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory

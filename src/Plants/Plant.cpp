@@ -2,7 +2,7 @@
 #include <Plants/Wallnut.hpp>
 #include <Plants/Plant.hpp>
 #include <globals.hpp>
-#include<Plants/peashooter.hpp>
+#include <Plants/Peashooter.hpp>
 
 void Plant::update(float dt) {
   switch (plantType) {

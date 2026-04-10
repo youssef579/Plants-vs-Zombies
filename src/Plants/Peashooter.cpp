@@ -1,19 +1,21 @@
-#include <Plants/peashooter.hpp>
+#include <Plants/Peashooter.hpp>
 #include <Plants/Plant.hpp>
 
 Plant createPeashooter(float x, float y) {
   static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter2.png");
+  peashooterTexture.setSmooth(true);
+
   sf::Sprite peashooterSprite(peashooterTexture);
   peashooterSprite.setTextureRect({ {0,0},{71,71} });
-  Plant p = { peashooterSprite,100,PlantType::PEASHOOTER,1.5f,nullptr };
-  Spritesheet peashooterSheet = Spritesheet{ &p.sprite,71,71,13,0.0725f };
-  p.sheet = peashooterSheet;
 
-  p.sprite.setOrigin(p.sprite.getLocalBounds().size / 2.0f);
-  p.sprite.setPosition({ x,y });
+  Plant plant = { peashooterSprite,100,PlantType::PEASHOOTER,1.5f,nullptr };
+  Spritesheet peashooterSheet = Spritesheet{ &plant.sprite,71,71,13,0.0725f };
+  plant.sheet = peashooterSheet;
 
+  plant.sprite.setOrigin(plant.sprite.getLocalBounds().size / 2.0f);
+  plant.sprite.setPosition({ x,y });
 
-  return p;
+  return plant;
 }
 
 void updatePeashooter(Plant& peashooter, float dt) {

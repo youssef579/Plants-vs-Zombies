@@ -42,16 +42,16 @@ bool Sun::update(float dt) {
       if (sprite.getPosition().y >= groundY) // check if sun has hit the ground
         state = OnGround;
       break;
-    
+
     case FreeFalling:
       // free fall with differnt acc
       sprite.move( { 0, -(sunFlowerSpeed * dt - 0.5f * acceleration * dt * dt) });
 
       sunFlowerSpeed -= acceleration * dt;  // update the speed
-      
+
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        sprite.setScale({(float)pow(e, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(e, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
+        sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
       }else{
         if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
           sprite.setScale({1.0f, 1.0f});
@@ -59,9 +59,9 @@ bool Sun::update(float dt) {
       }
       if (sprite.getPosition().y >= sunflowerlevel) // check if sun has hit the sunFlowerLevel
         state = OnGround;
-        
+
       break;
-    
+
     case OnGround:
       groundTimer -= dt;
       if (groundTimer <= 0) // auto-collect sun
@@ -70,7 +70,7 @@ bool Sun::update(float dt) {
         hovering = true;
 
       break;
-    
+
     case Collecting:
       sprite.move(
         direction * collectionSpeed * dt / (float)120.0 *
@@ -109,19 +109,19 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
   sf::Sprite sunSprite(sunTexture);
   sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
   Sun* sun;
-      
+
   if (isSunFlower)
     sun =
-      new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration, 
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y), 
+      new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration,
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y),
         sqrtf(2.0f * acceleration * ditanceSunFlower) , nullptr});
   else
-    sun = 
-      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration, 
+    sun =
+      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,
         0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, nullptr});
 
   sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
-  
+
   sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
 
   sun->sprite.setPosition({x, y});

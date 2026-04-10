@@ -10,7 +10,7 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
-#include<Plants/peashooter.hpp>
+#include<Plants/Peashooter.hpp>
 
 int gameState = 0;
 /*
