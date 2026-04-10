@@ -7,7 +7,8 @@
 
 enum PlantType {
   SUN_FLOWER,
-  WALLNUT
+  WALLNUT,
+  PEASHOOTER
 }; // will add the other sorts of plants
 
 struct Plant{

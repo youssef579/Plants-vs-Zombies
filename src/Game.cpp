@@ -10,6 +10,7 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
+#include<Plants/peashooter.hpp>
 
 int gameState = 0;
 /*
@@ -53,12 +54,15 @@ void updateGame() {
     // These plants are for test only, gonna be removed in future
     static Plant s = createSunFlower(100, 100);
     static Plant t = createWallnut(400, 500);
+    static Plant p = createPeashooter(300, 300);
 
     s.update(dt);
     t.update(dt);
+    p.update(dt);
 
     s.draw();
     t.draw();
+    p.draw();
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
