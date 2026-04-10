@@ -27,10 +27,7 @@ void setWindowMetaData() { // Set icon, cursor and window settings after creatin
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
 
-  sf::Image cursorImage("assets/cursorMain.png");
-  static sf::Cursor cursor(cursorImage.getPixelsPtr(), cursorImage.getSize(),
-                           sf::Vector2u(3, 3));
-  window->setMouseCursor(cursor);
+  setCursorMain();
 }
 
 void getLetterboxView(int windowWidth, int windowHeight) {
