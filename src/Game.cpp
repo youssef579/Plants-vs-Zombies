@@ -51,8 +51,8 @@ void updateGame() {
     }
 
     // These plants are for test only, gonna be removed in future
-    static Plant s = createSunFlower(100, 100);
-    static Plant t = createWallnut(400, 500);
+    static Plant s = createSunFlower(100, 100, 1);
+    static Plant t = createWallnut(400, 500, 1);
 
     s.update(dt);
     t.update(dt);
