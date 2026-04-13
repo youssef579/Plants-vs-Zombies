@@ -3,14 +3,14 @@
 #include <Plants/Plant.hpp>
 
 Plant createSunFlower(float x, float y /* the way used in grid */) {
-  static sf::Texture& sunFlowerTexture = getTexture("assets/sunflower_spritesheet.png");
+  static sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
   sf::Sprite sunFlowerSprite(sunFlowerTexture);
   sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});
 
   Plant newPlant = {sunFlowerSprite, 10, PlantType::SUN_FLOWER, 10, nullptr};
   Spritesheet sunFlowerSheet = Spritesheet{&newPlant.sprite, 80, 80, 24, 0.05f};
   newPlant.sheet = sunFlowerSheet;
-  
+
   newPlant.sprite.setOrigin(newPlant.sprite.getLocalBounds().size / 2.0f);
 
   newPlant.sprite.setPosition({x, y});
@@ -28,7 +28,7 @@ void updateSunFlower(Plant &sunFlower, float dt){
   }
 }
 
-void drawSunFlower(Plant &sunFlower, float dt){
+void drawSunFlower(Plant &sunFlower){
     window->draw(sunFlower.sprite);
     if (sunFlower.timer <= 2)
       window->draw(sunFlower.sprite, sf::RenderStates(sf::BlendAdd));

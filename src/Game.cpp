@@ -67,6 +67,15 @@ void updateGame() {
       return b.remove;
     });
 
+    // These plants are for test only, gonna be removed in future
+    static Plant s = createSunFlower(100, 100);
+    static Plant t = createWallnut(400, 500);
+
+    s.update(dt);
+    t.update(dt);
+
+    s.draw();
+    t.draw();
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
