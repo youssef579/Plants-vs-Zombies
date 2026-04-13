@@ -10,11 +10,16 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
+#include <Array.hpp>
+#include <Bullet.hpp>
+#include <globals.hpp>
 
 int gameState = 0;
 /*
   0 -> Home menu
 */
+
+Array<Bullet>bullets;
 
 sf::Clock drawClock;
 float dt; // Delta Time (time between each frame draw)
@@ -25,8 +30,7 @@ bool isPaused = false;
 bool runOnce = true;
 
 void updateGame() {
-  dt = drawClock.restart()
-           .asSeconds(); // clock.restart() sets time to 0 and returns the last
+  dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
@@ -40,6 +44,10 @@ void updateGame() {
       pauseMenu.init();
       gameWeather.isRaining = true;
 
+      Bullet b1{PEA, {300, 300}, 0};
+      Bullet b2{PEAICE, {300, 400}, 0};
+      bullets.push(b1);
+      bullets.push(b2);
       music.play("DayStage");
       runOnce = false;
     }
@@ -49,6 +57,15 @@ void updateGame() {
       pauseMenu.draw();
       break;
     }
+
+    for (int i = 0; i < bullets.size; i++) {
+      bullets[i].update(dt);
+      bullets[i].draw();
+    }
+
+    bullets.erase([](const Bullet& b) {
+      return b.remove;
+    });
 
     // These plants are for test only, gonna be removed in future
     static Plant s = createSunFlower(100, 100);
