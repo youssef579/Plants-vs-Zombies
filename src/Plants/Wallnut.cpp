@@ -6,6 +6,8 @@
 
 Plant createWallnut(float x, float y /* the way used in grid */, int row) {
   static sf::Texture& wallNutTexture = getTexture("assets/Plants/wallnut.png");
+  wallNutTexture.setSmooth(true);
+
   sf::Sprite wallNutSprite(wallNutTexture);
   wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
 
@@ -22,8 +24,11 @@ Plant createWallnut(float x, float y /* the way used in grid */, int row) {
 
 void updateWallnut(Plant &wallNut, float dt){
   animateSpritesheet(wallNut.sheet, dt);
+  wallNut.health -= dt * 5;
   if (wallNut.health <= CRACK1_HEALTH && !wallNut.timer){
     static sf::Texture& wallNutCrackTexture = getTexture("assets/Plants/wallnutCrack.png");
+    wallNutCrackTexture.setSmooth(true);
+
     sf::Sprite wallNutCrackSprite(wallNutCrackTexture);
     wallNutCrackSprite.setTextureRect({{0, 0}, {65, 73}});
 
@@ -40,6 +45,8 @@ void updateWallnut(Plant &wallNut, float dt){
 
   }else if (wallNut.health <= CRACK2_HEALTH && wallNut.timer == 1){
     static sf::Texture& wallNutCrack2Texture = getTexture("assets/Plants/wallnutCrack2.png");
+    wallNutCrack2Texture.setSmooth(true);
+
     sf::Sprite wallNutCrack2Sprite(wallNutCrack2Texture);
     wallNutCrack2Sprite.setTextureRect({{0, 0}, {65, 73}});
 
