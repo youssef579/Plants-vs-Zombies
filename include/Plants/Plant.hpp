@@ -7,10 +7,11 @@
 
 enum PlantType {
   SUN_FLOWER,
-  WALLNUT
+  WALLNUT,
+  PEASHOOTER
 }; // will add the other sorts of plants
 
-struct Plant{
+struct Plant {
   sf::Sprite sprite;
   float health;
   PlantType plantType;

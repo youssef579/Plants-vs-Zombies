@@ -10,6 +10,7 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
+#include <Plants/Peashooter.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
 #include <globals.hpp>
@@ -70,12 +71,15 @@ void updateGame() {
     // These plants are for test only, gonna be removed in future
     static Plant s = createSunFlower(100, 100, 1);
     static Plant t = createWallnut(400, 500, 1);
+    static Plant p = createPeashooter(300, 300, 1);
 
     s.update(dt);
     t.update(dt);
+    p.update(dt);
 
     s.draw();
     t.draw();
+    p.draw();
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();

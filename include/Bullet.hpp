@@ -3,7 +3,7 @@
 #include <Array.hpp>
 #include <SFML/Graphics.hpp>
 
-const int BULLET_VELOCITY = 300;
+const float BULLET_VELOCITY = 300;
 const float PARTICLE_DEFAULT_TIMER = 0.3f;
 
 enum BulletType { PEA, PEAICE };

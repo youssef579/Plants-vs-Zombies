@@ -2,6 +2,7 @@
 #include <Plants/Wallnut.hpp>
 #include <Plants/Plant.hpp>
 #include <globals.hpp>
+#include <Plants/Peashooter.hpp>
 
 void Plant::update(float dt) {
   switch (plantType) {
@@ -10,6 +11,9 @@ void Plant::update(float dt) {
       break;
     case WALLNUT:
       updateWallnut(*this, dt);
+      break;
+    case PEASHOOTER:
+      updatePeashooter(*this, dt);
       break;
   }
 }
@@ -21,6 +25,9 @@ void Plant::draw() {
       break;
     case WALLNUT:
       drawWallnut(*this);
+      break;
+    case PEASHOOTER:
+      drawPeashooter(*this);
       break;
   }
 }
