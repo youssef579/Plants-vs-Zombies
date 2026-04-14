@@ -60,15 +60,6 @@ void updateGame() {
       break;
     }
 
-    for (int i = 0; i < bullets.size; i++) {
-      bullets[i].update(dt);
-      bullets[i].draw();
-    }
-
-    bullets.erase([](const Bullet& b) {
-      return b.remove;
-    });
-
     // These plants are for test only, gonna be removed in future
     static Plant s = createSunFlower(100, 100, 1);
     static Plant t = createWallnut(400, 500, 1);
@@ -85,6 +76,16 @@ void updateGame() {
     t.draw();
     p.draw();
     q.draw();
+
+    for (int i = 0; i < bullets.size; i++) {
+      bullets[i].update(dt);
+      bullets[i].draw();
+    }
+
+    bullets.erase([](const Bullet& b) {
+      return b.remove;
+    });
+
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
