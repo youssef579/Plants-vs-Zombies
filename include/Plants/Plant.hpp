@@ -11,13 +11,13 @@ enum PlantType {
   PEASHOOTER
 }; // will add the other sorts of plants
 
-struct Plant{
+struct Plant {
   sf::Sprite sprite;
   float health;
   PlantType plantType;
   float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   Spritesheet sheet;
-  float row;
+  int row;
 
   void update(float dt);
 

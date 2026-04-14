@@ -2,7 +2,7 @@
 #include <Plants/Plant.hpp>
 #include<Bullet.hpp>
 
-Plant createPeashooter(float x, float y, float row) {
+Plant createPeashooter(float x, float y, int row) {
   static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
   // peashooterTexture.setSmooth(true);
 
@@ -25,11 +25,11 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
   peashooter.timer -= dt;
   if (peashooter.timer <= 0) {
-    peashooter.timer = GENERATE_BULLET;
+    peashooter.timer = GENERATE_BULLET_TIMER;
 
     sf::Vector2f currPOS = peashooter.sprite.getPosition();
-    Bullet new_bullet = { PEA,{currPOS.x+40.0f,currPOS.y-25.0f},peashooter.row };
-    bullets.push(new_bullet);
+    Bullet newBullet = { PEA,{currPOS.x+40.0f,currPOS.y-25.0f},peashooter.row };
+    bullets.push(newBullet);
   }
 }
 
