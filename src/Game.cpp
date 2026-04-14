@@ -11,6 +11,7 @@
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
 #include <Plants/Peashooter.hpp>
+#include <Plants/Icepea.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
 #include <globals.hpp>
@@ -72,14 +73,18 @@ void updateGame() {
     static Plant s = createSunFlower(100, 100, 1);
     static Plant t = createWallnut(400, 500, 1);
     static Plant p = createPeashooter(300, 300, 1);
+    static Plant q = createIcepea(300, 200, 1);
+
 
     s.update(dt);
     t.update(dt);
     p.update(dt);
+    q.update(dt);
 
     s.draw();
     t.draw();
     p.draw();
+    q.draw();
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
