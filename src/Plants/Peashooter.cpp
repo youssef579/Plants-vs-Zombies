@@ -1,7 +1,8 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/Plant.hpp>
+#include<Bullet.hpp>
 
-Plant createPeashooter(float x, float y) {
+Plant createPeashooter(float x, float y, float row) {
   static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
   // peashooterTexture.setSmooth(true);
 
@@ -9,7 +10,7 @@ Plant createPeashooter(float x, float y) {
   peashooterSprite.setTextureRect({ {0,0},{348,359}});
   peashooterSprite.setScale({0.225, 0.225});
 
-  Plant plant = { peashooterSprite,100,PlantType::PEASHOOTER,1.5f,nullptr };
+  Plant plant = { peashooterSprite,100,PlantType::PEASHOOTER,1.5f,nullptr,row };
   Spritesheet peashooterSheet = Spritesheet{ &plant.sprite,348,359,29,0.065f };
   plant.sheet = peashooterSheet;
 
@@ -24,7 +25,11 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
   peashooter.timer -= dt;
   if (peashooter.timer <= 0) {
-    peashooter.timer = 1.5f;
+    peashooter.timer = GENERATE_BULLET;
+
+    sf::Vector2f currPOS = peashooter.sprite.getPosition();
+    Bullet new_bullet = { PEA,{currPOS.x+40.0f,currPOS.y-25.0f},peashooter.row };
+    bullets.push(new_bullet);
   }
 }
 

@@ -17,7 +17,7 @@ struct Bullet {
   float particleTimer;
   BulletType type;
 
-  Bullet(BulletType type, sf::Vector2f position, int row);
+  Bullet(BulletType type, sf::Vector2f position, float row);
 
   void update(float deltaTime);
 

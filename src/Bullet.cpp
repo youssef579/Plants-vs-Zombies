@@ -4,7 +4,7 @@
 #include <Window.hpp>
 #include <cmath>
 
-Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
+Bullet::Bullet(BulletType typeValue, sf::Vector2f position, float rowValue)
     : sprite(typeValue == PEA ? getTexture("assets/bullets/pea.png") : getTexture("assets/bullets/peaice.png")) {
   shadow.setRadius(8);
   shadow.setFillColor(sf::Color(255, 255, 255, 255));

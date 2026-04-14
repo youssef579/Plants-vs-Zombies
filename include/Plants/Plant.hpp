@@ -17,6 +17,7 @@ struct Plant{
   PlantType plantType;
   float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   Spritesheet sheet;
+  float row;
 
   void update(float dt);
 
