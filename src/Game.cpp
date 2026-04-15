@@ -18,6 +18,7 @@
 #include <SunManager.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
+#include <LevelManager.hpp>
 #include <globals.hpp>
 
 int gameState = 0;
@@ -50,6 +51,7 @@ void updateGame() {
     if (runOnce) {
       //pauseMenu.init();
       initPackets();
+      dayLevel.init();
       gameWeather.isRaining = true;
 
       music.play("DayStage");
@@ -57,6 +59,12 @@ void updateGame() {
     }
 
     if (isPaused) {
+      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+        dayLevel.dirtSound->pause();
+        dayLevel.dirtSoundStarted = false; 
+      }
+      dayLevel.draw(*window);
+      gameWeather.draw(*window);
       pauseMenu.update();
       pauseMenu.draw();
       break;
@@ -86,6 +94,9 @@ void updateGame() {
     q.draw();
     v.draw();
 
+    dayLevel.update(dt);
+    dayLevel.draw(*window);
+    
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
