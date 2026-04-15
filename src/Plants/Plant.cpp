@@ -3,6 +3,7 @@
 #include <Plants/Plant.hpp>
 #include <globals.hpp>
 #include <Plants/Peashooter.hpp>
+#include <Plants/Icepea.hpp>
 
 void Plant::update(float dt) {
   switch (plantType) {
@@ -14,6 +15,9 @@ void Plant::update(float dt) {
       break;
     case PEASHOOTER:
       updatePeashooter(*this, dt);
+      break;
+    case ICEPEA:
+      updateIcepea(*this, dt);
       break;
   }
 }
@@ -28,6 +32,9 @@ void Plant::draw() {
       break;
     case PEASHOOTER:
       drawPeashooter(*this);
+      break;
+    case ICEPEA:
+      drawIcepea(*this);
       break;
   }
 }

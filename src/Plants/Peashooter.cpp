@@ -10,7 +10,7 @@ Plant createPeashooter(float x, float y, int row) {
   peashooterSprite.setTextureRect({ {0,0},{348,359}});
   peashooterSprite.setScale({0.225, 0.225});
 
-  Plant plant = { peashooterSprite,100,PlantType::PEASHOOTER,1.5f,row,nullptr };
+  Plant plant = {peashooterSprite, 100, PlantType::PEASHOOTER, GENERATE_BULLET_TIMER, row, nullptr};
   Spritesheet peashooterSheet = Spritesheet{ &plant.sprite,348,359,29,0.065f };
   plant.sheet = peashooterSheet;
 
@@ -28,7 +28,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
     peashooter.timer = GENERATE_BULLET_TIMER;
 
     sf::Vector2f currPOS = peashooter.sprite.getPosition();
-    Bullet newBullet = { PEA,{currPOS.x+40.0f,currPOS.y-25.0f},peashooter.row };
+    Bullet newBullet = { PEA,{currPOS.x+25.0f,currPOS.y-25.0f},peashooter.row };
     bullets.push(newBullet);
   }
 }
