@@ -40,7 +40,7 @@ void Bullet::update(float deltaTime) {
 
       if (type == PEA)
         sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
-      else if (type == PEAICE)
+      else if (type == SNOWPEA)
         sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
 
       sprite.setTextureRect(sf::IntRect({24 * randomRange(0, 3), 0}, {24, 24})); // Select random particle

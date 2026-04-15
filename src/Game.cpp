@@ -11,7 +11,8 @@
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
 #include <Plants/Peashooter.hpp>
-#include <Plants/Icepea.hpp>
+#include <Plants/SnowpeaShooter.hpp>
+#include <Plants/Repeaterpea.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
 #include <globals.hpp>
@@ -47,7 +48,7 @@ void updateGame() {
       gameWeather.isRaining = true;
 
       Bullet b1{PEA, {300, 300}, 0};
-      Bullet b2{PEAICE, {300, 400}, 0};
+      Bullet b2{SNOWPEA, {300, 400}, 0};
       bullets.push(b1);
       bullets.push(b2);
       music.play("DayStage");
@@ -64,18 +65,21 @@ void updateGame() {
     static Plant s = createSunFlower(100, 100, 1);
     static Plant t = createWallnut(400, 500, 1);
     static Plant p = createPeashooter(300, 300, 1);
-    static Plant q = createIcepea(300, 200, 1);
+    static Plant q = createSnowpeaShooter(300, 200, 1);
+    static Plant v = createRepeaterpea(300, 550, 1);
 
 
     s.update(dt);
     t.update(dt);
     p.update(dt);
     q.update(dt);
+    v.update(dt);
 
     s.draw();
     t.draw();
     p.draw();
     q.draw();
+    v.draw();
 
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);

@@ -11,7 +11,7 @@ Plant createWallnut(float x, float y /* the way used in grid */, int row) {
   sf::Sprite wallNutSprite(wallNutTexture);
   wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
 
-  Plant newPlant = {wallNutSprite, WALLNUT_HEALTH, PlantType::WALLNUT, 0, row, nullptr};
+  Plant newPlant = {wallNutSprite, WALLNUT_HEALTH, PlantType::WALLNUT, 0, row, 0,nullptr};
   Spritesheet wallNutSheet = Spritesheet{&newPlant.sprite, 65, 73, 16, 0.04f};
   newPlant.sheet = wallNutSheet;
 
@@ -35,7 +35,7 @@ void updateWallnut(Plant &wallNut, float dt){
     sf::Vector2f wallNutPostion = wallNut.sprite.getPosition();
     int row = wallNut.row;
 
-    wallNut = {wallNutCrackSprite, CRACK1_HEALTH, PlantType::WALLNUT, 1, row, nullptr};
+    wallNut = {wallNutCrackSprite, CRACK1_HEALTH, PlantType::WALLNUT, 1, row, 0, nullptr};
     Spritesheet wallNutSheet = Spritesheet{&wallNut.sprite, 65, 73, 11, 0.0581f};
     wallNut.sheet = wallNutSheet;
 
@@ -53,7 +53,7 @@ void updateWallnut(Plant &wallNut, float dt){
     sf::Vector2f wallNutPostion = wallNut.sprite.getPosition();
     int row = wallNut.row;
 
-    wallNut = {wallNutCrack2Sprite, CRACK2_HEALTH, PlantType::WALLNUT, 2, row, nullptr};
+    wallNut = {wallNutCrack2Sprite, CRACK2_HEALTH, PlantType::WALLNUT, 2, row,0, nullptr};
     Spritesheet wallNutSheet = Spritesheet{&wallNut.sprite, 65, 73, 15, 0.0426f};
     wallNut.sheet = wallNutSheet;
 

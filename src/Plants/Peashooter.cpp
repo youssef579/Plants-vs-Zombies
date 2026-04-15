@@ -10,7 +10,7 @@ Plant createPeashooter(float x, float y, int row) {
   peashooterSprite.setTextureRect({ {0,0},{348,359}});
   peashooterSprite.setScale({0.225, 0.225});
 
-  Plant plant = {peashooterSprite, 100, PlantType::PEASHOOTER, GENERATE_BULLET_TIMER, row, nullptr};
+  Plant plant = {peashooterSprite, PEASHOOTER_HEALTH, PlantType::PEASHOOTER, GENERATE_BULLET_TIMER, row, 0, nullptr};
   Spritesheet peashooterSheet = Spritesheet{ &plant.sprite,348,359,29,0.065f };
   plant.sheet = peashooterSheet;
 
