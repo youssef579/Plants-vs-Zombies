@@ -2,10 +2,11 @@
 #include <iostream>
 #include <cmath>
 
+
 int Sun::sunBalance = 0;
 int Sun::sunArrayCntr = 0;
 Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
-float Sun::spawnTimer = 0;
+float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 
 void Sun::manageSuns(float dt, State s) {
@@ -51,7 +52,7 @@ bool Sun::update(float dt) {
 
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
+        sprite.setScale({(float)pow(2.71828f, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(2.71828f, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
       }else{
         if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
           sprite.setScale({1.0f, 1.0f});

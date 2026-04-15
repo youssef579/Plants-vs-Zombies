@@ -6,6 +6,8 @@
 #include <Window.hpp>
 #include <globals.hpp>
 
+
+
 int main() {
   initWindow();
   initFiles();

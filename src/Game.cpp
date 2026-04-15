@@ -13,6 +13,7 @@
 #include <Plants/Peashooter.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
+#include <LevelManager.hpp>
 #include <globals.hpp>
 
 int gameState = 0;
@@ -42,6 +43,7 @@ void updateGame() {
     break;
   default:
     if (runOnce) {
+      dayLevel.init();
       pauseMenu.init();
       gameWeather.isRaining = true;
 
@@ -54,11 +56,20 @@ void updateGame() {
     }
 
     if (isPaused) {
+      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+        dayLevel.dirtSound->pause();
+        dayLevel.dirtSoundStarted = false; 
+      }
+      dayLevel.draw(*window);
+      gameWeather.draw(*window);
       pauseMenu.update();
       pauseMenu.draw();
       break;
     }
 
+    dayLevel.update(dt);
+    dayLevel.draw(*window);
+    
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
@@ -68,18 +79,18 @@ void updateGame() {
       return b.remove;
     });
 
-    // These plants are for test only, gonna be removed in future
-    static Plant s = createSunFlower(100, 100, 1);
-    static Plant t = createWallnut(400, 500, 1);
-    static Plant p = createPeashooter(300, 300, 1);
+    //// These plants are for test only, gonna be removed in future
+    //static Plant s = createSunFlower(100, 100, 1);
+    //static Plant t = createWallnut(400, 500, 1);
+    //static Plant p = createPeashooter(300, 300, 1);
 
-    s.update(dt);
-    t.update(dt);
-    p.update(dt);
+    //s.update(dt);
+    //t.update(dt);
+    //p.update(dt);
 
-    s.draw();
-    t.draw();
-    p.draw();
+    //s.draw();
+    //t.draw();
+    //p.draw();
     Sun::manageSuns(dt);
     gameWeather.update(dt);
     drawUI();
