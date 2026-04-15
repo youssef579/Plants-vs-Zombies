@@ -1,6 +1,6 @@
 #include <Plants/Icepea.hpp>
 #include <Plants/Plant.hpp>
-#include<Bullet.hpp>
+#include <Bullet.hpp>
 
 Plant createIcepea(float x, float y, int row) {
   static sf::Texture& icepeaTexture = getTexture("assets/Plants/Icepea.png");

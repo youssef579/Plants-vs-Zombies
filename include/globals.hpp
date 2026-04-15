@@ -5,6 +5,7 @@
 
 
 extern bool isPaused;
+extern bool isMousePressed, isMouseReleased;
 extern int gameState;
 extern int homeState;
 

@@ -21,7 +21,7 @@ struct Array {
     return *data[index];
   }
 
-  void push(elementType& value) {
+  void push(elementType value) {
     if (size == capacity) {
       capacity *= 2;
       std::optional<elementType>* newData = new std::optional<elementType>[capacity];

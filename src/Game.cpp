@@ -1,3 +1,4 @@
+#include "Plants/Packet.hpp"
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
 #include <Game.hpp>
@@ -44,12 +45,9 @@ void updateGame() {
   default:
     if (runOnce) {
       pauseMenu.init();
+      initPackets();
       gameWeather.isRaining = true;
 
-      Bullet b1{PEA, {300, 300}, 0};
-      Bullet b2{PEAICE, {300, 400}, 0};
-      bullets.push(b1);
-      bullets.push(b2);
       music.play("DayStage");
       runOnce = false;
     }
@@ -65,7 +63,6 @@ void updateGame() {
     static Plant t = createWallnut(400, 500, 1);
     static Plant p = createPeashooter(300, 300, 1);
     static Plant q = createIcepea(300, 200, 1);
-
 
     s.update(dt);
     t.update(dt);
@@ -86,9 +83,13 @@ void updateGame() {
       return b.remove;
     });
 
+    drawUI();
+    for (int i = 0; i < packets.size; i++) {
+        packets[i].update(dt);
+        packets[i].draw();
+    }
     Sun::manageSuns(dt);
     gameWeather.update(dt);
-    drawUI();
     break;
   }
 }

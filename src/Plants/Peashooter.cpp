@@ -1,6 +1,6 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/Plant.hpp>
-#include<Bullet.hpp>
+#include <Bullet.hpp>
 
 Plant createPeashooter(float x, float y, int row) {
   static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");

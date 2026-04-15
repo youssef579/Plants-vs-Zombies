@@ -1,18 +1,16 @@
 #include <UI/Draw.hpp>
 
-
 void drawUI() {
   static bool runOnce = true;
   static sf::Text SunBalanceText(assets->font, std::to_string(Sun::sunBalance), 40);
-  static sf::Texture& sunBankTexture = getTexture("assets/Sun/sun_bank.png");
+  static sf::Texture& sunBankTexture = getTexture("assets/seedbank.png");
   static sf::Sprite sunBank(sunBankTexture);
 
   SunBalanceText.setString(std::to_string(Sun::sunBalance));
   SunBalanceText.setOrigin(SunBalanceText.getLocalBounds().getCenter()); //re-center text
 
   if (runOnce) {
-
-    SunBalanceText.setPosition({ 37.0, 72.0 });
+    SunBalanceText.setPosition({ 45, 83 });
     SunBalanceText.setFillColor({ 0, 0, 0, 255 });
     SunBalanceText.setOutlineColor({ 255, 255, 255, 255 });
     SunBalanceText.setOutlineThickness(1.0f);
