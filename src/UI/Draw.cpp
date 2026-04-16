@@ -1,9 +1,10 @@
 #include <UI/Draw.hpp>
+#include <Packets/Shovel.hpp>
 
 void drawUI() {
   static bool runOnce = true;
   static sf::Text SunBalanceText(assets->font, std::to_string(Sun::sunBalance), 40);
-  static sf::Texture& sunBankTexture = getTexture("assets/seedbank.png");
+  static sf::Texture& sunBankTexture = getTexture("assets/packets/seed_bank.png");
   static sf::Sprite sunBank(sunBankTexture);
 
   SunBalanceText.setString(std::to_string(Sun::sunBalance));
@@ -16,13 +17,13 @@ void drawUI() {
     SunBalanceText.setOutlineThickness(1.0f);
     SunBalanceText.setCharacterSize(20.0f);
     SunBalanceText.setStyle(sf::Text::Style::Regular);
+
     sunBank.setPosition({ 0, 0 });
     runOnce = false;
   }
 
 
   gameWeather.draw(*window);
-
   window->draw(sunBank); // Draw order matters
   window->draw(SunBalanceText);
 }

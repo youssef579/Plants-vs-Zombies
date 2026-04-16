@@ -1,4 +1,5 @@
-#include "Plants/Packet.hpp"
+#include <Packets/Shovel.hpp>
+#include <Packets/Packet.hpp>
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
 #include <Game.hpp>
@@ -43,6 +44,7 @@ void updateGame() {
     updateHome();
     break;
   default:
+    static Shovel shovel;
     if (runOnce) {
       pauseMenu.init();
       initPackets();
@@ -88,7 +90,9 @@ void updateGame() {
         packets[i].update(dt);
         packets[i].draw();
     }
+    shovel.draw();
     Sun::manageSuns(dt);
+    shovel.update();
     gameWeather.update(dt);
     break;
   }

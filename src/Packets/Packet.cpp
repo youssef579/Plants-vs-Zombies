@@ -1,19 +1,35 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <AssetsManager.hpp>
-#include <Plants/Packet.hpp>
+#include <Packets/Packet.hpp>
 #include <SunManager.hpp>
+#include <iostream>
 
 Array<SeedPacket> packets;
 
 void initPackets() {
-  static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
-  static sf::Sprite peashooterSprite(peashooterTexture);
+  sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
+  sf::Sprite peashooterSprite(peashooterTexture);
   peashooterSprite.setTextureRect({{0,0},{348,359}});
   peashooterSprite.setScale({0.225, 0.225});
+  packets.push({100, 5, "peashooter", {90 + 59.0f * 0, 11}, peashooterSprite});
 
-  for (int i = 0; i < 7; i++)
-    packets.push({100, 5, "peashooter", {90 + 59.0f * i, 11}, peashooterSprite});
+  sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
+  sf::Sprite sunFlowerSprite(sunFlowerTexture);
+  sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});
+  packets.push({50, 5, "sunflower", {90 + 59.0f * 1, 11}, sunFlowerSprite});
+
+  sf::Texture& wallNutTexture = getTexture("assets/Plants/wallnut.png");
+  sf::Sprite wallNutSprite(wallNutTexture);
+  wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
+  packets.push({50, 5, "wallnut", {90 + 59.0f * 2, 11}, wallNutSprite});
+
+  sf::Texture& icepeaTexture = getTexture("assets/Plants/Icepea.png");
+  sf::Sprite icepeaSprite(icepeaTexture);
+  icepeaSprite.setTextureRect({ {0,0},{353, 368}});
+  icepeaSprite.setScale({0.218, 0.217});
+  packets.push({150, 5, "peaice", {90 + 59.0f * 3, 11}, icepeaSprite});
+
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview)
@@ -21,6 +37,7 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
       disabledSprite(getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview),
       cost(costValue),
+      selected(false),
       reloadDuration(reloadDurationValue) {
   float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
@@ -35,7 +52,6 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
 void SeedPacket::update(float dt) {
   reloadTimer = std::max(0.0f, reloadTimer - dt);
 
-  sf::Vector2f mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
   if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed && enabledSprite.getGlobalBounds().contains(mousePosition))
     selected = true;
 
@@ -45,6 +61,7 @@ void SeedPacket::update(float dt) {
   if (selected && isMouseReleased) {
     reloadTimer = reloadDuration;
     Sun::sunBalance -= cost;
+    std::cout << "Minus" << std::endl;
     selected = false;
   }
 

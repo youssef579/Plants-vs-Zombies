@@ -3,9 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 
-
 extern bool isPaused;
 extern bool isMousePressed, isMouseReleased;
+extern sf::Vector2f mousePosition;
 extern int gameState;
 extern int homeState;
 

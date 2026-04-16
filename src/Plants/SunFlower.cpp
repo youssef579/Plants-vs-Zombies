@@ -5,7 +5,6 @@
 
 Plant createSunFlower(float x, float y /* the way used in grid */, int row) {
   static sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
-  sunFlowerTexture.setSmooth(true);
 
   sf::Sprite sunFlowerSprite(sunFlowerTexture);
   sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});

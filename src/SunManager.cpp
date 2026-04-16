@@ -160,7 +160,6 @@ void Sun::collect() {
 
 bool Sun::onClick() {
   static bool hovering = false;
-  sf::Vector2f mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
   if (sprite.getGlobalBounds().contains(mousePosition)) {
     hovering = true;
