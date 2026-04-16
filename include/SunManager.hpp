@@ -41,7 +41,7 @@ struct Sun {
   static constexpr float
     acceleration = 400.0f;
   static constexpr float
-    ditanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
+    distanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
 
   static constexpr sf::Vector2f
     collectionSite = { 43, 41 };    // Position of sun collection site

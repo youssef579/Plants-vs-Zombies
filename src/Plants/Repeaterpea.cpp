@@ -2,7 +2,7 @@
 #include <Plants/Plant.hpp>
 #include<Bullet.hpp>
 
-Plant createRepeaterpea(float x, float y, int row) {
+/*Plant createRepeaterpea(float x, float y, int row) {
   static sf::Texture& repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
   repeaterpeaTexture.setSmooth(true);
 
@@ -17,7 +17,7 @@ Plant createRepeaterpea(float x, float y, int row) {
   plant.sprite.setPosition({ x,y });
 
   return plant;
-}
+}*/
 
 void updateRepeaterpea(Plant& repeaterpea, float dt) {
   animateSpritesheet(repeaterpea.sheet, dt);

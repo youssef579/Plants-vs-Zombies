@@ -6,7 +6,7 @@ const float GENERATE_SNOWBULLET_TIMER = 1.5f;
 const float SNOWPEASHOOTER_HEALTH = 50.0f;
 
 
-Plant createSnowpeaShooter(float x, float y, int row);
+//Plant createSnowpeaShooter(float x, float y, int row);
 
 void updateSnowpeaShooter(Plant &snowpeashooter, float dt);
 
