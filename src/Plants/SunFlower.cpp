@@ -9,7 +9,7 @@ Plant createSunFlower(float x, float y /* the way used in grid */, int row) {
   sf::Sprite sunFlowerSprite(sunFlowerTexture);
   sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});
 
-  Plant newPlant = {sunFlowerSprite, SUN_FLOWER_HEALTH, PlantType::SUN_FLOWER, 10, row, nullptr};
+  Plant newPlant = {sunFlowerSprite, SUN_FLOWER_HEALTH, PlantType::SUN_FLOWER, 10, row,0, nullptr};
   Spritesheet sunFlowerSheet = Spritesheet{&newPlant.sprite, 80, 80, 24, 0.05f};
   newPlant.sheet = sunFlowerSheet;
 

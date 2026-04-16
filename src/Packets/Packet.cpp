@@ -3,7 +3,6 @@
 #include <AssetsManager.hpp>
 #include <Packets/Packet.hpp>
 #include <SunManager.hpp>
-#include <iostream>
 
 Array<SeedPacket> packets;
 
@@ -28,8 +27,13 @@ void initPackets() {
   sf::Sprite icepeaSprite(icepeaTexture);
   icepeaSprite.setTextureRect({ {0,0},{353, 368}});
   icepeaSprite.setScale({0.218, 0.217});
-  packets.push({150, 5, "peaice", {90 + 59.0f * 3, 11}, icepeaSprite});
+  packets.push({175, 5, "peaice", {90 + 59.0f * 3, 11}, icepeaSprite});
 
+  sf::Texture& repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
+  repeaterpeaTexture.setSmooth(true);
+  sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
+  repeaterpeaSprite.setTextureRect({ {0,0},{73, 71}});
+  packets.push({200, 5, "repeated", {90 + 59.0f * 4, 11}, repeaterpeaSprite});
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview)
@@ -61,7 +65,6 @@ void SeedPacket::update(float dt) {
   if (selected && isMouseReleased) {
     reloadTimer = reloadDuration;
     Sun::sunBalance -= cost;
-    std::cout << "Minus" << std::endl;
     selected = false;
   }
 

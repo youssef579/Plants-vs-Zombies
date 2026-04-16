@@ -9,7 +9,8 @@ enum PlantType {
   SUN_FLOWER,
   WALLNUT,
   PEASHOOTER,
-  ICEPEA
+  SNOWPEASHOOTER,
+  REPEATERPEA
 }; // will add the other sorts of plants
 
 struct Plant {
@@ -18,6 +19,7 @@ struct Plant {
   PlantType plantType;
   float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   int row;
+  int state;   // could be used in repeater or other plants
   Spritesheet sheet;
 
   void update(float dt);
