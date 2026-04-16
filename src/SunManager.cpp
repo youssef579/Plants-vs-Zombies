@@ -51,7 +51,7 @@ bool Sun::update(float dt) {
 
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
+        sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower))});
       }else{
         if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
           sprite.setScale({1.0f, 1.0f});
@@ -114,7 +114,7 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
     sun =
       new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration,
         0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y),
-        sqrtf(2.0f * acceleration * ditanceSunFlower) , nullptr});
+        sqrtf(2.0f * acceleration * distanceSunFlower) , nullptr});
   else
     sun =
       new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,

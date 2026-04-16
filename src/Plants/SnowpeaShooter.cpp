@@ -2,7 +2,7 @@
 #include <Plants/Plant.hpp>
 #include<Bullet.hpp>
 
-Plant createSnowpeaShooter(float x, float y, int row) {
+/*Plant createSnowpeaShooter(float x, float y, int row) {
   static sf::Texture& snowpeaShooterTexture = getTexture("assets/Plants/Icepea.png");
   // icepeaTexture.setSmooth(true);
 
@@ -18,7 +18,7 @@ Plant createSnowpeaShooter(float x, float y, int row) {
   plant.sprite.setPosition({x, y});
 
   return plant;
-}
+}*/
 
 void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
   animateSpritesheet(snowpeaShooter.sheet, dt);

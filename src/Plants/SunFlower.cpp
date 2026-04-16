@@ -3,7 +3,7 @@
 #include <Plants/Plant.hpp>
 
 
-Plant createSunFlower(float x, float y /* the way used in grid */, int row) {
+/*Plant createSunFlower(float x, float y  the way used in grid , int row) {
   static sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
   sunFlowerTexture.setSmooth(true);
 
@@ -11,15 +11,13 @@ Plant createSunFlower(float x, float y /* the way used in grid */, int row) {
   sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});
 
   Plant newPlant = {sunFlowerSprite, SUN_FLOWER_HEALTH, PlantType::SUN_FLOWER, 10, row,0, nullptr};
-  Spritesheet sunFlowerSheet = Spritesheet{&newPlant.sprite, 80, 80, 24, 0.05f};
-  newPlant.sheet = sunFlowerSheet;
 
   newPlant.sprite.setOrigin(newPlant.sprite.getLocalBounds().size / 2.0f);
 
   newPlant.sprite.setPosition({x, y});
 
   return newPlant;
-}
+}*/
 
 void updateSunFlower(Plant &sunFlower, float dt){
   animateSpritesheet(sunFlower.sheet, dt);
