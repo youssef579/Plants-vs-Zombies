@@ -77,8 +77,9 @@ void SeedPacket::draw() {
 
   if (Sun::sunBalance >= cost)
     window->draw(enabledSprite);
+}
 
+void SeedPacket::drawSelectedPlant() {
   if (selected)
     window->draw(plantSprite);
 }
-

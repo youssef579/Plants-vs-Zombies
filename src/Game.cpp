@@ -15,6 +15,7 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Repeaterpea.hpp>
+#include <SunManager.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
 #include <globals.hpp>
@@ -74,12 +75,6 @@ void updateGame() {
     q.update(dt);
     v.update(dt);
 
-    s.draw();
-    t.draw();
-    p.draw();
-    q.draw();
-    v.draw();
-
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
@@ -90,13 +85,29 @@ void updateGame() {
     });
 
     drawUI();
-    for (int i = 0; i < packets.size; i++) {
-        packets[i].update(dt);
-        packets[i].draw();
-    }
-    shovel.draw();
+    shovel.drawBank();
     Sun::manageSuns(dt);
+
+    for (int i = 0; i < packets.size; i++) {
+      packets[i].update(dt);
+      packets[i].draw();
+    }
     shovel.update();
+
+    s.draw();
+    t.draw();
+    p.draw();
+    q.draw();
+    v.draw();
+
+    for (int i = 0; i < Sun::sunArrayCntr; i++) {
+      if (Sun::sunArray[i])
+        Sun::sunArray[i]->draw();
+    }
+    shovel.drawMovingShovel();
+
+    for (int i = 0; i < packets.size; i++)
+      packets[i].drawSelectedPlant();
     gameWeather.update(dt);
     break;
   }

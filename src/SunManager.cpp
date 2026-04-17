@@ -20,18 +20,12 @@ void Sun::manageSuns(float dt, State s) {
       if (!sunArray[i]) continue;
       if (!sunArray[i]->update(dt)) { i--; continue; }
       if (sunArray[i]->state != Sun::State::Collecting && sunArray[i]->onClick()) hovering = true;
-      sunArray[i]->draw();
     }
 
     if (hovering) { setCursorHover(); hovering = false; }
     else setCursorMain();
 
   }
-  else
-    for (int i = 0; i < sunArrayCntr; i++) {
-      if (!sunArray[i]) continue;
-      sunArray[i]->draw();
-    }
 }
 
 bool Sun::update(float dt) {
