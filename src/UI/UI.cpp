@@ -1,12 +1,10 @@
 #include <UI/UI.hpp>
-
+#include <globals.hpp>
 
 
 // Returns slider value ranged (0->100)
 float updateSlider(Slider &slider) {
   static bool wasButtonClicked = false;
-  sf::Vector2f mousePosition =
-      window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
   // 7eta di m7taga some optimization probably bdl kol el getPosition()'s di
   if ((slider.sprite.getGlobalBounds().contains(mousePosition) ||
@@ -41,8 +39,6 @@ float updateSlider(Slider &slider) {
 //Checks clicks for Checkbox and updates target
 void updateCheckbox(Checkbox& cb, bool& target) {
   static bool wasButtonClicked = false;
-  sf::Vector2f mousePosition =
-    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
   if (cb.box.getGlobalBounds().contains(mousePosition)) {
     //button.setStyle(sf::Text::Bold);

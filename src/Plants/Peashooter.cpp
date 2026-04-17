@@ -1,6 +1,6 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/Plant.hpp>
-#include<Bullet.hpp>
+#include <Bullet.hpp>
 
 void updatePeashooter(Plant& peashooter, float dt) {
   animateSpritesheet(peashooter.sheet, dt);

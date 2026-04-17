@@ -44,7 +44,7 @@ struct Sun {
     distanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
 
   static constexpr sf::Vector2f
-    collectionSite = { 0, 0 };    // Position of sun collection site
+    collectionSite = { 43, 41 };    // Position of sun collection site
   //Shared Variables
   public:
   static Sun* sunArray[MAX_SIMULTANEOUS_SUN]; // Array containing all Sun objects

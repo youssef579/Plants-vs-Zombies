@@ -1,3 +1,4 @@
+#include <globals.hpp>
 #include <SunManager.hpp>
 #include <cmath>
 
@@ -151,23 +152,15 @@ void Sun::collect() {
 }
 
 bool Sun::onClick() {
-  static bool wasButtonClicked = false;
   static bool hovering = false;
-  sf::Vector2f mousePosition =
-    window->mapPixelToCoords(sf::Mouse::getPosition(*window));
 
   if (sprite.getGlobalBounds().contains(mousePosition)) {
     hovering = true;
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-      if (!wasButtonClicked) {
-        collect();
-        wasButtonClicked = true;
-      }
+    if (isMousePressed) {
+      isMousePressed = false; // Avoid clicking many suns at once
+      collect();
     }
-    else
-      wasButtonClicked = false;
-
     return true;
   }
   return false;

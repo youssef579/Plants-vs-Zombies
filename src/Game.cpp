@@ -1,3 +1,5 @@
+#include <Packets/Shovel.hpp>
+#include <Packets/Packet.hpp>
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
 #include <Game.hpp>
@@ -43,14 +45,12 @@ void updateGame() {
     updateHome();
     break;
   default:
+    static Shovel shovel;
     if (runOnce) {
       pauseMenu.init();
+      initPackets();
       gameWeather.isRaining = true;
 
-      Bullet b1{PEA, {300, 300}, 0};
-      Bullet b2{SNOWPEA, {300, 400}, 0};
-      bullets.push(b1);
-      bullets.push(b2);
       music.play("DayStage");
       runOnce = false;
     }
@@ -67,7 +67,6 @@ void updateGame() {
     static Plant p(PEASHOOTER, {300 ,300}, 1, getTexture("assets/Plants/peashooter.png"), 348, 359, 29, {0.225, 0.225});
     static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217});
     static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1});
-
 
     s.update(dt);
     t.update(dt);
@@ -90,9 +89,15 @@ void updateGame() {
       return b.remove;
     });
 
-    Sun::manageSuns(dt);
-    gameWeather.update(dt);
     drawUI();
+    for (int i = 0; i < packets.size; i++) {
+        packets[i].update(dt);
+        packets[i].draw();
+    }
+    shovel.draw();
+    Sun::manageSuns(dt);
+    shovel.update();
+    gameWeather.update(dt);
     break;
   }
 }
