@@ -25,9 +25,14 @@ struct PauseMenu {
   Slider *sliderWeatherFX;
   sf::Texture checkboxBoxT;
   sf::Texture checkboxMarkT;
+
   sf::Sprite *checkboxWeatherActiveS;
   sf::Sprite *checkboxWeatherActiveM;
   Checkbox *checkboxWeatherActive;
+
+  sf::Sprite *checkboxFullscreenS;
+  sf::Sprite *checkboxFullscreenM;
+  Checkbox *checkboxFullscreen;
 
 
   PauseMenu();

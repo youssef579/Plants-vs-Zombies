@@ -67,7 +67,7 @@ void setCursorHover() {
 }
 
 void handleEvents() {
-  static bool isFullscreen = false;
+  //static bool isFullscreen = false;
 
   isMousePressed = isMouseReleased = false;
   while (const std::optional event = window->pollEvent())
@@ -91,9 +91,10 @@ void handleEvents() {
     if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
       switch (keyPress->code) {
         case sf::Keyboard::Key::F11:
-          isFullscreen = !isFullscreen;
+          //isFullscreen = !isFullscreen;
+          settings.fullscreen = !settings.fullscreen;
 
-          if (isFullscreen)
+          if (settings.fullscreen)
             window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
           else
             window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed

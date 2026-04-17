@@ -10,6 +10,7 @@ float Settings::musicVolume;
 float Settings::soundFXVolume;
 float Settings::weatherFXVolume;
 bool Settings::weatherActive;
+bool Settings::fullscreen;
 
 Settings settings;
 
@@ -35,6 +36,7 @@ void loadSettingsFile() {
     settingsFile >> settings.soundFXVolume;
     settingsFile >> settings.weatherFXVolume;
     settingsFile >> settings.weatherActive;
+    settingsFile >> settings.fullscreen;
   }
   else {
     settingsFile.close();
@@ -44,10 +46,12 @@ void loadSettingsFile() {
     settings.soundFXVolume   =  settings.DEFAULT.soundFXVolume;
     settings.weatherFXVolume =  settings.DEFAULT.weatherFXVolume;
     settings.weatherActive   =  settings.DEFAULT.weatherActive;
+    settings.fullscreen   =  settings.DEFAULT.fullscreen;
     settingsFile << settings.DEFAULT.musicVolume << "\n";     //Music
     settingsFile << settings.DEFAULT.soundFXVolume << "\n";   //Sound FX
     settingsFile << settings.DEFAULT.weatherFXVolume << "\n"; //Weather FX
-    settingsFile << settings.DEFAULT.weatherActive;           //Weather Active
+    settingsFile << settings.DEFAULT.weatherActive << "\n";   //Weather Active
+    settingsFile << settings.DEFAULT.fullscreen;              //Fullscreen
   }
   settingsFile.close();
 }
@@ -63,7 +67,8 @@ void updateFiles() {
   settingsFile << settings.musicVolume << "\n";
   settingsFile << settings.soundFXVolume << "\n";
   settingsFile << settings.weatherFXVolume << "\n";
-  settingsFile << settings.weatherActive;
+  settingsFile << settings.weatherActive << "\n";
+  settingsFile << settings.fullscreen;
   settingsFile.close();
 }
 
