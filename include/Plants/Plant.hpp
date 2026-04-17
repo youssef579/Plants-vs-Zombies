@@ -13,6 +13,10 @@ enum PlantType {
   REPEATERPEA
 }; // will add the other sorts of plants
 
+float getPlantHealth(PlantType type);
+
+float getPlantTimer(PlantType type);
+
 struct Plant {
   sf::Sprite sprite;
   float health;
@@ -21,6 +25,8 @@ struct Plant {
   int row;
   int state;   // could be used in repeater or other plants
   Spritesheet sheet;
+
+  Plant(PlantType type, sf::Vector2f position, int Row, sf::Texture &plantTexture, int width, int height, int numberOfFrames, sf::Vector2f scale);
 
   void update(float dt);
 

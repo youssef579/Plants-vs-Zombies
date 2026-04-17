@@ -5,8 +5,6 @@
 const float GENERATE_BULLET_TIMER = 1.5f;
 const float PEASHOOTER_HEALTH = 50.0f;
 
-Plant createPeashooter(float x, float y, int row);
-
 void updatePeashooter(Plant& peashooter, float dt);
 
 void drawPeashooter(Plant& peashooter);

@@ -51,7 +51,7 @@ bool Sun::update(float dt) {
 
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / ditanceSunFlower))});
+        sprite.setScale({std::exp(-(1.0f - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower)), std::exp(-(1 - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower))});
       }else{
         if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
           sprite.setScale({1.0f, 1.0f});
@@ -72,14 +72,10 @@ bool Sun::update(float dt) {
       break;
 
     case Collecting:
-      sprite.move(
-        direction * collectionSpeed * dt / (float)120.0 *
-        distanceToCollection); // Non-linear speed
+      sprite.move( direction * collectionSpeed * dt / 120.0f * distanceToCollection); // Non-linear speed
 
-      distanceToCollection -= collectionSpeed * dt /
-        (float)120.0 * distanceToCollection;
-      if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached
-                                                           // collection site
+      distanceToCollection -= collectionSpeed * dt / 120.0f * distanceToCollection;
+      if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached collection site
         sunBalance += value;
         Sun::destroy(index);
         return false;
@@ -91,10 +87,7 @@ bool Sun::update(float dt) {
         //   opacity = x^2 * (factor^2 / 200)                take constant
         //   coefficent as fadeFactor opacity = x^2 * fadeFactor (smooth
         //   transition from opac. = 200 to opac. = 0)
-        sprite.setColor({ 255, 255, 255,
-                                  (uint8_t)(distanceToCollection *
-                                            distanceToCollection *
-                                            fadeFactor) });
+        sprite.setColor({ 255, 255, 255, (uint8_t)(distanceToCollection * distanceToCollection * fadeFactor) });
       }
 
       break;
@@ -114,7 +107,7 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
     sun =
       new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration,
         0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y),
-        sqrtf(2.0f * acceleration * ditanceSunFlower) , nullptr});
+        sqrtf(2.0f * acceleration * distanceSunFlower) , nullptr});
   else
     sun =
       new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,

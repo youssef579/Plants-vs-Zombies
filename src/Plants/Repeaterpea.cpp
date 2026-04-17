@@ -2,23 +2,6 @@
 #include <Plants/Plant.hpp>
 #include<Bullet.hpp>
 
-Plant createRepeaterpea(float x, float y, int row) {
-  static sf::Texture& repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
-  repeaterpeaTexture.setSmooth(true);
-
-  sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
-  repeaterpeaSprite.setTextureRect({ {0,0},{73, 71}});
-
-  Plant plant = {repeaterpeaSprite, REPEATERPEA_HEALTH, PlantType::REPEATERPEA, GENERATE_REPEATERBULLET_TIMER, row, 0, nullptr};
-  Spritesheet repeaterpeaSheet = Spritesheet{ &plant.sprite,73,71, 15,0.0426f };
-  plant.sheet = repeaterpeaSheet;
-
-  plant.sprite.setOrigin(plant.sprite.getLocalBounds().size / 2.0f);
-  plant.sprite.setPosition({ x,y });
-
-  return plant;
-}
-
 void updateRepeaterpea(Plant& repeaterpea, float dt) {
   animateSpritesheet(repeaterpea.sheet, dt);
 
