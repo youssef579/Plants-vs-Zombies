@@ -58,7 +58,7 @@ void ReAnimator::update(float dt) {
     //std::cout << "timer += " << (dt * reAnimDef->fps * animSpeedMulti) << "\n";
   //if(x == 400)
     //std::cout << "Time: " << timer << "\n";
-    
+
   //std::cout << "Active Labels---------------------------------\n";
 
   /*for (auto label : reAnimDef->labels) {
@@ -67,7 +67,7 @@ void ReAnimator::update(float dt) {
   }*/
 
   //float labelTime = (((int)label.start + (int)timer)%((int)label.end - (int)label.start));
-  
+
   curTransforms.clear();
 
   std::vector<std::string> queuedLabels;
@@ -121,8 +121,8 @@ void ReAnimator::update(float dt) {
   //  if (track.transforms[(int)labelTime].f == -1) continue;
   //  curTransforms[track.name] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], timer - (int)timer);
   //}
-  
-  
+
+
   //drawTransforms();
 
   /*std::cout << "Update: " << timer << " / labelTime: " << labelTime << "\n";
@@ -235,7 +235,7 @@ bool ReAnimator::updateLabel(ActiveLabel lab) {
 //  for (int i = 0; i < reAnimDef->tracks.size(); i++) {
 //    //if (!curTransforms.count(reAnimDef->tracks[i].name)) continue;
 //    std::pair<std::string, Transform> t = { reAnimDef->tracks[i].name, curTransforms[reAnimDef->tracks[i].name]};
-//    
+//
 //    //for (auto t : curTransforms) { // t.first = trackName, t.second = trackTransform
 //      if (!t.second.i || t.second.a <= 0.0f) continue;
 //
@@ -334,7 +334,7 @@ void ReAnimator::draw() {
       sprite->setColor(sf::Color(255, 255, 255, alpha255));
     //}
 
-    
+
 
     sf::Transform localMatrix = transformToSFML(t);
     sf::Transform finalLocal = localMatrix;
@@ -491,7 +491,7 @@ Transform ReAnimationDefinition::getBaseTransform(Track &track) {
   //return track.transforms[baseIdx];
 }
 
-sf::Transform ReAnimator::transformToSFML(Transform &t) {
+sf::Transform ReAnimator::transformToSFML(Transform t) {
   return sf::Transform(
     std::cos(-t.kx * TO_RAD) * t.sx, std::sin(-t.ky * TO_RAD) * t.sy, t.x,
     -std::sin(-t.kx * TO_RAD) * t.sx, std::cos(-t.ky * TO_RAD) * t.sy, t.y,
@@ -761,7 +761,7 @@ void initReAnimDefs() {
     });
   definitions.push(def);
 
-  
+
 
 
 

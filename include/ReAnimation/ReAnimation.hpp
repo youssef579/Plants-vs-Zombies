@@ -34,7 +34,7 @@ struct Track {
   std::string name;
   std::vector<Transform> transforms;
   Track *parent = nullptr;
-  sf::Vector2f basePose;    // base X, Y positions 
+  sf::Vector2f basePose;    // base X, Y positions
   bool fullInherit = false; // Whether to inherit scale and skew from parent track
 
 };
@@ -96,7 +96,7 @@ struct ReAnimationDefinition {
 
   //void defineAnimation(std::string name, int labelCount, int labels[], bool loop = true);
 
-  
+
 
 };
 
@@ -110,7 +110,7 @@ enum ReAnimationDef {
 };
 
 struct ReAnimator {
-  
+
   ReAnimationDefinition *reAnimDef = nullptr;
   sf::RenderWindow *window;
   float x=0, y=0, sx=1, sy=1;
@@ -124,17 +124,17 @@ struct ReAnimator {
   float timer=0.0f; // Global animTime
   std::vector<TrackInstance> trackInstances;
 
-  
+
 
   std::unordered_map<std::string, sf::Transform> effectiveBasePoses;
   std::unordered_map<std::string, sf::Transform> effectiveTransforms;
 
 
-  
+
 
 
   void update(float dt);
-  
+
   float lerp(float a, float b, float t);
   Transform lerpTransform(Transform a, Transform b, float t);
 
@@ -150,7 +150,7 @@ struct ReAnimator {
 
   sf::Transform getEffectiveBasePose(std::string trackName);
   sf::Transform getEffectiveTransform(std::string trackName);
-  static sf::Transform transformToSFML(Transform &t);
+  static sf::Transform transformToSFML(Transform t);
   static int getFirstValidIdx(Track &track);
 
 
