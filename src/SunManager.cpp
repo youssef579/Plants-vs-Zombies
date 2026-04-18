@@ -2,8 +2,6 @@
 #include <SunManager.hpp>
 #include <cmath>
 
-#define M_E 2.71828182845904523536
-
 int Sun::sunBalance = 0;
 int Sun::sunArrayCntr = 0;
 Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
@@ -49,7 +47,7 @@ bool Sun::update(float dt) {
 
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        reAnimator.setScale((float)pow(M_E, -(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)), (float)pow(M_E, -(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)));
+        reAnimator.setScale(std::exp(-(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)), std::exp(-(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)));
         //sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower))});
       }else{
         if (reAnimator.sx != 1.0f && reAnimator.sy != 1.0f){
@@ -100,7 +98,7 @@ bool Sun::update(float dt) {
         reAnimator.opacityMultiplier = (distanceToCollection *
           distanceToCollection *
           fadeFactor) / 255.0f;
-          
+
       }
 
       break;
