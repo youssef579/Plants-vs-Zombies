@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Array.hpp"
 #include <SFML/Audio.hpp>
 #include <Files.hpp> // To access settings
 #include <AssetsManager.hpp>
@@ -18,9 +19,7 @@ struct Music {
 };
 
 struct Sounds {
-  static constexpr int sfxArraySize = 255;
-  static sf::Sound *sfxArray[sfxArraySize];
-  static int sfxArrayCntr;
+  static Array<sf::Sound> sfxArray;
 
   struct Buffers {
     sf::SoundBuffer

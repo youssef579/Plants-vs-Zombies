@@ -48,8 +48,8 @@ void updateGame() {
   default:
     static Shovel shovel;
     if (runOnce) {
-      pauseMenu.init();
       initPackets();
+      pauseMenu.init();
       gameWeather.isRaining = true;
 
       music.play("DayStage");
@@ -99,10 +99,8 @@ void updateGame() {
     shovel.drawBank();
     Sun::manageSuns(dt);
 
-    for (int i = 0; i < packets.size; i++) {
-      packets[i].update(dt);
-      packets[i].draw();
-    }
+    for (int i = 0; i < packets.size; i++)
+        packets[i].update(dt);
     shovel.update();
 
     s.draw();
@@ -111,10 +109,8 @@ void updateGame() {
     q.draw();
     v.draw();
 
-    for (int i = 0; i < Sun::sunArrayCntr; i++) {
-      if (Sun::sunArray[i])
-        Sun::sunArray[i]->draw();
-    }
+    for (int i = 0; i < Sun::sunArray.size; i++)
+      Sun::sunArray[i].draw();
     shovel.drawMovingShovel();
 
     for (int i = 0; i < packets.size; i++)

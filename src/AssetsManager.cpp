@@ -35,7 +35,7 @@ sf::Texture &getTexture(std::string path) {
   exit(1);
 }
 
-sf::SoundBuffer &getSound(std::string path) {
+sf::SoundBuffer &getSoundBuffer(std::string path) {
   for (int i = 0; i < MAX_RESOURCES; i++) {
     if (assets->sounds[i].path.empty()) {
       if (!assets->sounds[i].resource.loadFromFile(path))

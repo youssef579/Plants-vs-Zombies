@@ -1,4 +1,5 @@
 #include <Window.hpp>
+#include <algorithm>
 #include <globals.hpp>
 #include <AssetsManager.hpp>
 #include <Packets/Packet.hpp>
@@ -69,7 +70,7 @@ void SeedPacket::update(float dt) {
   }
 
   if (reloadTimer > 0)
-    enabledSprite.setTextureRect({{0, 0}, {50, (int)(70 * (reloadDuration - reloadTimer) / reloadDuration)}});
+    enabledSprite.setTextureRect({{0, 0}, {50, std::clamp(0, (int)(70 * (reloadDuration - reloadTimer) / reloadDuration), 70)}});
 }
 
 void SeedPacket::draw() {

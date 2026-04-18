@@ -1,3 +1,4 @@
+#include <Packets/Packet.hpp>
 #include <UI/Draw.hpp>
 #include <Packets/Shovel.hpp>
 
@@ -26,4 +27,6 @@ void drawUI() {
   gameWeather.draw(*window);
   window->draw(sunBank); // Draw order matters
   window->draw(SunBalanceText);
+  for (int i = 0; i < packets.size; i++)
+    packets[i].draw();
 }
