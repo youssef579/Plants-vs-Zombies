@@ -12,6 +12,8 @@ struct Shovel {
 
   void update();
 
-  void draw();
+  void drawBank();
+
+  void drawMovingShovel();
 };
 

@@ -11,8 +11,6 @@ const float SHINE_TIME = 2.0f;
 const float SUN_FLOWER_HEALTH = 40.0f;
 const float BLINK_INTERVAL_SUNFLOWER = 2.0f;
 
-//Plant createSunFlower(float x, float y, int row);
-
 void updateSunFlower(Plant &sunFlower, float dt);
 
 void drawSunFlower(Plant &sunFlower);

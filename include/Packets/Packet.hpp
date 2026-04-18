@@ -17,6 +17,8 @@ struct SeedPacket {
   void update(float dt);
 
   void draw();
+
+  void drawSelectedPlant();
 };
 
 void initPackets();

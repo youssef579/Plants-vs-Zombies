@@ -27,10 +27,12 @@ void Shovel::update() {
     selected = false;
 }
 
-void Shovel::draw() {
+void Shovel::drawBank() {
   window->draw(shovelBank);
   window->draw(shovel);
+}
 
+void Shovel::drawMovingShovel() {
   if (selected)
     window->draw(movingShovel);
 }

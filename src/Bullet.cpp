@@ -15,6 +15,7 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   sprite.setOrigin(sprite.getLocalBounds().getCenter());
   sprite.setPosition(position);
 
+  remove = false;
   row = rowValue;
   particleTimer = INFINITY; // When set to inf, bullet is still moving
   type = typeValue;
