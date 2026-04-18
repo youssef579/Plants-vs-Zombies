@@ -10,6 +10,7 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
+#include <Zombies/Zombie.hpp>
 
 int gameState = 0;
 /*
@@ -56,6 +57,15 @@ void updateGame() {
 
     s.update(dt);
     t.update(dt);
+
+    static Zombie zombies[] = {
+        Zombie::createZombie(1000, 100, Zombie::Regular),
+        Zombie::createZombie(1000, 200, Zombie::Conehead),
+        Zombie::createZombie(1000, 300, Zombie::Buckethead),
+        Zombie::createZombie(1000, 400, Zombie::Flag)
+    };
+
+    for(auto& zombie : zombies) zombie.update(dt);
 
     s.draw();
     t.draw();
