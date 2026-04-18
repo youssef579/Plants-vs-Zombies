@@ -6,6 +6,7 @@ struct Settings {
   static float weatherFXVolume;
 
   static bool weatherActive;
+  static bool fullscreen;
 
 
   struct Default { // Default settings values
@@ -14,6 +15,7 @@ struct Settings {
     static constexpr float weatherFXVolume = 75.0f;
 
     static constexpr bool  weatherActive   = true;
+    static constexpr bool  fullscreen      = false;
   };
   static Default DEFAULT;
 

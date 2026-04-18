@@ -6,7 +6,7 @@ PauseMenu::PauseMenu() {}
 
 void PauseMenu::init() {
   //runOnce
-  backgroundT = getTexture("assets/pause-menu.png");
+  backgroundT = getTexture("assets/pm3.png");
   backgroundS = new sf::Sprite(backgroundT);
 
   backToGameBtn = new sf::Text(assets->font, "Back To Game", 40);
@@ -24,10 +24,16 @@ void PauseMenu::init() {
       *sliderWeatherFXS, 232.0f, 562.0f, 676.0f, 114.0f, false });
   checkboxBoxT = getTexture("assets/checkbox.png");
   checkboxMarkT = getTexture("assets/checkmark.png");
+
   checkboxWeatherActiveS = new sf::Sprite(checkboxBoxT);
   checkboxWeatherActiveM = new sf::Sprite(checkboxMarkT);
   checkboxWeatherActive = new Checkbox({ *checkboxWeatherActiveS ,
   *checkboxWeatherActiveM, 639.0f, 258.0f, settings.weatherActive });
+
+  checkboxFullscreenS = new sf::Sprite(checkboxBoxT);
+  checkboxFullscreenM = new sf::Sprite(checkboxMarkT);
+  checkboxFullscreen = new Checkbox({ *checkboxFullscreenS ,
+  *checkboxFullscreenM, 639.0f, 292.0f, settings.fullscreen });
 
   backgroundS->setPosition({ 358.5, 54.5 });
   // Back to Game
@@ -68,6 +74,11 @@ void PauseMenu::init() {
   checkboxWeatherActive->mark.setPosition({
     checkboxWeatherActive->x + 5.0f, checkboxWeatherActive->y - 4.0f });
 
+  checkboxFullscreen->box.setPosition({
+    checkboxFullscreen->x, checkboxFullscreen->y });
+  checkboxFullscreen->mark.setPosition({
+    checkboxFullscreen->x + 5.0f, checkboxFullscreen->y - 4.0f });
+
 }
 
 void PauseMenu::update() {
@@ -96,11 +107,19 @@ void PauseMenu::update() {
 
   //Update Checkboxes
   updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
+  if (updateCheckbox(*checkboxFullscreen, settings.fullscreen)) {
+    if (settings.fullscreen)
+      window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+    else
+      window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+    setWindowMetaData();
+  }
 
 
   sounds.updateVolume();
 
   drawUI();
+  // draw plants
 
   draw();
 }
@@ -124,4 +143,7 @@ void PauseMenu::draw() {
   //Checkboxes & Checkmarks
   window->draw(checkboxWeatherActive->box);
   if (checkboxWeatherActive->checked) window->draw(checkboxWeatherActive->mark);
+
+  window->draw(checkboxFullscreen->box);
+  if (checkboxFullscreen->checked) window->draw(checkboxFullscreen->mark);
 }

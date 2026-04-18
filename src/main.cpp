@@ -6,6 +6,7 @@
 #include <UI/Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
+#include <ReAnimation/ReAnimation.hpp>
 
 sf::Vector2f mousePosition;
 
@@ -16,6 +17,7 @@ int main() {
   initAudio();
   initOverlay();
   initWeather();
+  initReAnimDefs();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
@@ -25,6 +27,8 @@ int main() {
     window->setView(*view);
     updateGame();
     window->display();
+
+
   }
 
   updateFiles();

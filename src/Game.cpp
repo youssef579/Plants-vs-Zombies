@@ -63,17 +63,28 @@ void updateGame() {
     }
 
     // These plants are for test only, gonna be removed in future
-    static Plant s(SUN_FLOWER, {300 ,100}, 1, getTexture("assets/Plants/sunflower.png"), 80, 80, 24, {1, 1});
-    static Plant t(WALLNUT, {300 ,200}, 1, getTexture("assets/Plants/wallnut.png"), 65, 73, 16, {1, 1});
-    static Plant p(PEASHOOTER, {300 ,300}, 1, getTexture("assets/Plants/peashooter.png"), 348, 359, 29, {0.225, 0.225});
-    static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217});
-    static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1});
+    static Plant s(SUN_FLOWER, {500 ,300}, 1, getTexture("assets/Plants/sunflower.png"), 80, 80, 24, {1, 1}, ReAnimator::getDefinition(REANIM_SUNFLOWER));
+    static Plant t(WALLNUT, {300 ,200}, 1, getTexture("assets/Plants/wallnut.png"), 65, 73, 16, {1, 1}, ReAnimator::getDefinition(REANIM_WALLNUT));
+    static Plant p(PEASHOOTER, {300 ,300}, 1, getTexture("assets/Plants/peashooter.png"), 348, 359, 29, {0.225, 0.225}, ReAnimator::getDefinition(REANIM_PEASHOOTER));
+    static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217}, ReAnimator::getDefinition(REANIM_SNOWPEA));
+    static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1}, ReAnimator::getDefinition(REANIM_REPEATER));
+
+    static sf::RectangleShape rec1({3, 3});
+    rec1.setPosition({300, 500});
+    rec1.setFillColor(sf::Color(0, 255, 0, 255));
 
     s.update(dt);
     t.update(dt);
     p.update(dt);
     q.update(dt);
     v.update(dt);
+
+    s.draw();
+    window->draw(rec1);
+    t.draw();
+    p.draw();
+    q.draw();
+    v.draw();
 
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);

@@ -4,9 +4,10 @@
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
 #include <Animation.hpp>
+#include <ReAnimation/ReAnimation.hpp>
 
 struct Sun {
-  sf::Sprite sprite;
+  //sf::Sprite sprite;
   int value;
   enum State { Falling, FreeFalling, OnGround, Collecting, Paused };
   State state;
@@ -16,8 +17,9 @@ struct Sun {
   float fadeFactor;               // Used in fading equation
   int index;                      // Index of Sun object in sunArray[]
   float sunflowerlevel;
-  float sunFlowerSpeed;           // the initial fallsSpeed of each frame
-  Spritesheet sheet;              // Animation object
+  float sunFlowerSpeed;           // the initial fallSpeed of each frame
+  //Spritesheet sheet;              // Animation object
+  ReAnimator reAnimator;
 
 
   //Constants
@@ -35,7 +37,7 @@ struct Sun {
   static constexpr float
     collectionErrorMargin = 35.0f;
   static constexpr int
-    assetWidth = 77;              // SunAsset width (Used for spawn bounds)
+    assetWidth = 116;              // SunAsset width (Used for spawn bounds)
   static constexpr float
     spawnInterval = 1.0f;         // Amount of seconds between each sun spawn
   static constexpr float
@@ -61,7 +63,7 @@ struct Sun {
 
   // Public Functions (Related to all Sun structs)
   static void manageSuns(float dt, State s = Falling); // Manages spawning , update , draw and hover
-  static void generate(float x, float y, int val, bool isSunFlower);
+  static void generate(sf::Vector2f pos, int val, bool isSunFlower);
   static void spawn(int val = 25);
   static void destroy(int idx);
 };

@@ -36,9 +36,11 @@ float updateSlider(Slider &slider) {
          100; // Holy Math!
 }
 
-//Checks clicks for Checkbox and updates target
-void updateCheckbox(Checkbox& cb, bool& target) {
+//Checks clicks for Checkbox and updates target (returns true if value changed)
+bool updateCheckbox(Checkbox& cb, bool& target) {
   static bool wasButtonClicked = false;
+
+  cb.checked = target; // reset incase value was changed somewhere else
 
   if (cb.box.getGlobalBounds().contains(mousePosition)) {
     //button.setStyle(sf::Text::Bold);
@@ -53,10 +55,12 @@ void updateCheckbox(Checkbox& cb, bool& target) {
         else sounds.play("Tap2");
 
         wasButtonClicked = true;
+        return true;
       }
     }
     else
       wasButtonClicked = false;
 
   }
+  return false;
 }

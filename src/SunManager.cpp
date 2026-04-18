@@ -2,6 +2,8 @@
 #include <SunManager.hpp>
 #include <cmath>
 
+#define M_E 2.71828182845904523536
+
 int Sun::sunBalance = 0;
 int Sun::sunArrayCntr = 0;
 Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
@@ -29,29 +31,33 @@ void Sun::manageSuns(float dt, State s) {
 }
 
 bool Sun::update(float dt) {
-  animateSpritesheet(sheet, dt);
+  //animateSpritesheet(sheet, dt);
+  reAnimator.update(dt);
   switch (state) {
     case Falling:
-      sprite.move( { 0, fallSpeed * dt });
-      if (sprite.getPosition().y >= groundY) // check if sun has hit the ground
+      //sprite.move( { 0, fallSpeed * dt });
+      reAnimator.y += fallSpeed * dt;
+      if (reAnimator.y >= groundY) // check if sun has hit the ground
         state = OnGround;
       break;
 
     case FreeFalling:
       // free fall with differnt acc
-      sprite.move( { 0, -(sunFlowerSpeed * dt - 0.5f * acceleration * dt * dt) });
-
+      //sprite.move( { 0, -(sunFlowerSpeed * dt - 0.5f * acceleration * dt * dt) });
+      reAnimator.y -= (sunFlowerSpeed * dt - 0.5f * acceleration * dt * dt);
       sunFlowerSpeed -= acceleration * dt;  // update the speed
 
       // update scaling as function e ^ x
       if (sunFlowerSpeed >= 0){
-        sprite.setScale({std::exp(-(1.0f - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower)), std::exp(-(1 - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower))});
+        reAnimator.setScale((float)pow(M_E, -(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)), (float)pow(M_E, -(1.0f - (sunflowerlevel - reAnimator.y) / distanceSunFlower)));
+        //sprite.setScale({(float)pow(M_E, -(1.0f - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower)), (float)pow(M_E, -(1 - (sunflowerlevel - sprite.getPosition().y) / distanceSunFlower))});
       }else{
-        if (sprite.getScale() != sf::Vector2f(1.0f, 1.0f)){
-          sprite.setScale({1.0f, 1.0f});
+        if (reAnimator.sx != 1.0f && reAnimator.sy != 1.0f){
+          //sprite.setScale({1.0f, 1.0f});
+          reAnimator.setScale(1.0f, 1.0f);
         }
       }
-      if (sprite.getPosition().y >= sunflowerlevel) // check if sun has hit the sunFlowerLevel
+      if (reAnimator.y >= sunflowerlevel) // check if sun has hit the sunFlowerLevel
         state = OnGround;
 
       break;
@@ -66,10 +72,16 @@ bool Sun::update(float dt) {
       break;
 
     case Collecting:
-      sprite.move( direction * collectionSpeed * dt / 120.0f * distanceToCollection); // Non-linear speed
+      //sprite.move(
+        //direction * collectionSpeed * dt / (float)120.0 *
+        //distanceToCollection); // Non-linear speed
+      reAnimator.move(direction * collectionSpeed * dt / (float)120.0 *
+        distanceToCollection);
 
-      distanceToCollection -= collectionSpeed * dt / 120.0f * distanceToCollection;
-      if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached collection site
+      distanceToCollection -= collectionSpeed * dt /
+        (float)120.0 * distanceToCollection;
+      if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached
+                                                           // collection site
         sunBalance += value;
         Sun::destroy(index);
         return false;
@@ -81,7 +93,14 @@ bool Sun::update(float dt) {
         //   opacity = x^2 * (factor^2 / 200)                take constant
         //   coefficent as fadeFactor opacity = x^2 * fadeFactor (smooth
         //   transition from opac. = 200 to opac. = 0)
-        sprite.setColor({ 255, 255, 255, (uint8_t)(distanceToCollection * distanceToCollection * fadeFactor) });
+        /*sprite.setColor({ 255, 255, 255,
+                                  (uint8_t)(distanceToCollection *
+                                            distanceToCollection *
+                                            fadeFactor) });*/
+        reAnimator.opacityMultiplier = (distanceToCollection *
+          distanceToCollection *
+          fadeFactor) / 255.0f;
+          
       }
 
       break;
@@ -91,27 +110,33 @@ bool Sun::update(float dt) {
   return true; // Object still alive
 }
 
-void Sun::generate(float x, float y, int val, bool isSunFlower) {
-  static sf::Texture& sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
-  sf::Sprite sunSprite(sunTexture);
-  sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
+void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
+  //static sf::Texture& sunTexture = getTexture("assets/Sun/sun_spritesheet2.png");
+  //sf::Sprite sunSprite(sunTexture);
+  //sunSprite.setTextureRect({ {0, 0}, {77, 77} }); //set to 1st frame
   Sun* sun;
 
-  if (isSunFlower)
+  if (isSunFlower) {
     sun =
-      new Sun({ sunSprite, val, Sun::State::FreeFalling, groundDuration,
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(y),
-        sqrtf(2.0f * acceleration * distanceSunFlower) , nullptr});
+      new Sun({ val, Sun::State::FreeFalling, groundDuration,
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(pos.y),
+        sqrtf(2.0f * acceleration * distanceSunFlower) , ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
+    sun->reAnimator.setScale(0, 0);
+
+  }
   else
     sun =
-      new Sun({ sunSprite, val, Sun::State::Falling, groundDuration,
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, nullptr});
+      new Sun({ val, Sun::State::Falling, groundDuration,
+        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
 
-  sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
+  //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
+  //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;
+  sun->reAnimator.setPosition(pos);
+  sun->reAnimator.playAnimation("main", true);
 
-  sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
+  //sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
 
-  sun->sprite.setPosition({x, y});
+  //sun->sprite.setPosition({x, y});
 
   sunArray[sunArrayCntr] = sun;
   sunArrayCntr++;
@@ -120,23 +145,29 @@ void Sun::generate(float x, float y, int val, bool isSunFlower) {
 void Sun::spawn(int val) {
   float randX =
         randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
-  Sun::generate(randX, -70, val, 0);
+  Sun::generate(sf::Vector2f(randX, -70), val, 0);
 }
 
 void Sun::draw() {
-  window->draw(sprite);
+  reAnimator.draw();
+  //reAnimator.x = sprite.getPosition().x;
+  //reAnimator.y = sprite.getPosition().y;
+  //reAnimator.drawHitbox();
+  //window->draw(sprite);
+
 }
 
 void Sun::collect() {
   // Vector from sun to collection site
-  direction = collectionSite - sprite.getPosition();
+  direction = collectionSite - reAnimator.getPosition();
   // Get length before normalizing
   distanceToCollection = direction.length();
   // Normalize length to control speed
   direction = direction.normalized();
   if (distanceToCollection >= 200.0f) { // Control fading of sun
     fadeFactor = (1.0f / 200.0f);
-    sprite.setColor({ 255, 255, 255, 200 });
+    //sprite.setColor({ 255, 255, 255, 200 });
+    reAnimator.opacityMultiplier = (200.0f/255.0f);
   }
   else
     fadeFactor = (200.0f / distanceToCollection) *
@@ -148,8 +179,9 @@ void Sun::collect() {
 bool Sun::onClick() {
   static bool hovering = false;
 
-  if (sprite.getGlobalBounds().contains(mousePosition)) {
+  if (reAnimator.getGlobalBounds().contains(mousePosition)) {
     hovering = true;
+
 
     if (isMousePressed) {
       isMousePressed = false; // Avoid clicking many suns at once

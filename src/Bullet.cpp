@@ -20,6 +20,7 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   particleTimer = INFINITY; // When set to inf, bullet is still moving
   type = typeValue;
   damage = 20;
+  remove = false;
 }
 
 void Bullet::draw() {
@@ -33,9 +34,9 @@ void Bullet::update(float deltaTime) {
     float distance = BULLET_VELOCITY * deltaTime;
     sprite.move({distance, 0});
     shadow.move({distance, 0});
-
-    if (sprite.getPosition().x > WINDOW_SIZE.x) // Bullet out of bounds
+    if (sprite.getPosition().x > WINDOW_SIZE.x) { // Bullet out of bounds
       remove = true;
+    }
     else if (sprite.getPosition().x > 1000) { // This is only made to show the particles effect, will be removed later
       particleTimer = PARTICLE_DEFAULT_TIMER;
 
@@ -52,7 +53,8 @@ void Bullet::update(float deltaTime) {
     float scaleProgress = 1.0f - (particleTimer / PARTICLE_DEFAULT_TIMER);
     sprite.setScale({scaleProgress, scaleProgress});
 
-    if (particleTimer <= 0)
+    if (particleTimer <= 0) {
       remove = true;
+    }
   }
 }
