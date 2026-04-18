@@ -1,9 +1,12 @@
+#include <SFML/Window/Keyboard.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
 
 sf::RenderWindow *window;
 sf::View *view;
 const sf::Vector2u WINDOW_SIZE = {1150, 606};
+
+bool isMousePressed, isMouseReleased;
 
 void initWindow() {
   window = new sf::RenderWindow(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies");
@@ -64,41 +67,53 @@ void setCursorHover() {
 }
 
 void handleEvents() {
-  static bool isFullscreen = false;
+  //static bool isFullscreen = false;
 
+  isMousePressed = isMouseReleased = false;
   while (const std::optional event = window->pollEvent())
   {
-    if (event->is<sf::Event::Closed>()) //Close Game
+    if (event->is<sf::Event::Closed>()) // Close Game
       window->close();
 
-    if (const auto* resized = event->getIf<sf::Event::Resized>())
+    if (const auto* resized = event->getIf<sf::Event::Resized>()) // Resize game when window is resized
       getLetterboxView(resized->size.x, resized->size.y);
 
-    if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-      if (keyPressed->scancode == sf::Keyboard::Scan::F11) {
-        isFullscreen = !isFullscreen;
-
-        if (isFullscreen)
-          window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
-        else
-          window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
-        setWindowMetaData();
-      }
+    if (const auto* mousePress = event->getIf<sf::Event::MouseButtonPressed>()) {
+      if (mousePress->button == sf::Mouse::Button::Left)
+        isMousePressed = true;
     }
 
-    if (const auto* key = event->getIf<sf::Event::KeyPressed>()) //Key Presses
-    {
-      if (key->code == sf::Keyboard::Key::Escape && gameState != 0) //Pause / UnPause
-      {
-        if (!isPaused) {
-          sounds.play("Pause");
-          gameWeather.isPaused = true;
-          setCursorMain();
-        }
-        else gameWeather.isPaused = false;
-        gameWeather.update(0);
+    if (const auto* mouseRelease = event->getIf<sf::Event::MouseButtonReleased>()) {
+      if (mouseRelease->button == sf::Mouse::Button::Left)
+        isMouseReleased = true;
+    }
 
-        isPaused = !isPaused;
+    if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
+      switch (keyPress->code) {
+        case sf::Keyboard::Key::F11:
+          //isFullscreen = !isFullscreen;
+          settings.fullscreen = !settings.fullscreen;
+
+          if (settings.fullscreen)
+            window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+          else
+            window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+          setWindowMetaData();
+          break;
+
+        case sf::Keyboard::Key::Escape:
+          if (gameState != 0) { // Pause / UnPause
+            if (!isPaused) {
+              sounds.play("Pause");
+              gameWeather.isPaused = true;
+              setCursorMain();
+            }
+            else gameWeather.isPaused = false;
+            gameWeather.update(0);
+
+            isPaused = !isPaused;
+          }
+          break;
       }
     }
   }

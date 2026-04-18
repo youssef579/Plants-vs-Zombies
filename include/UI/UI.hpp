@@ -21,4 +21,4 @@ struct Checkbox {
 
 float updateSlider(Slider &slider); // Check for click & return value (0->100)
 
-void updateCheckbox(Checkbox &cb, bool &target);
+bool updateCheckbox(Checkbox &cb, bool &target);

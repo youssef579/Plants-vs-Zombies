@@ -72,7 +72,6 @@ void updateHome() {
     playButton.setPosition({920, 420});
     creditsButton.setPosition({860, 470});
     exitButton.setPosition({920, 520});
-    sf::Mouse::setPosition({0, 0}, *window);
 
     runOnce = false;
   }
