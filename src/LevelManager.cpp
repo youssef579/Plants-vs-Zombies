@@ -2,24 +2,25 @@
 #include <LevelManager.hpp>
 #include <iostream>
 #include <SFML/Audio.hpp>
-
+#include <Window.hpp>
+#include <globals.hpp>
 
 LevelManager dayLevel;
 
 void LevelManager::init() {
   
-  if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
-    grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
-    threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
-    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass.png") &&
-    rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
-    capTexture.loadFromFile("assets/BackGround/SodRollCap.png"))
-  {
+  backGroundTexture = getTexture("assets/BackGround/background.png");
+  grassTexture = getTexture("assets/BackGround/sod1row.png");
+  threeMiddleGrassTexture = getTexture("assets/BackGround/sod3row.png");
+  fullGrassTexture = getTexture("assets/BackGround/fullGrass.png");
+  rollTexture = getTexture("assets/BackGround/SodRoll.png");
+  capTexture = getTexture("assets/BackGround/SodRollCap.png");
+  dirtTexture = getTexture("assets/BackGround/dirtsmall.png");
+  
     if (!backGroundSprite) backGroundSprite = new sf::Sprite(backGroundTexture);
     else backGroundSprite->setTexture(backGroundTexture);
     backGroundSprite->setPosition(sf::Vector2f(0, 0));
 
-    if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
       dirtPool.clear();
       for (int i = 0; i < 250; i++) {
         DirtParticle p;
@@ -37,16 +38,11 @@ void LevelManager::init() {
 
         dirtPool.push_back(p);
       }
-    }
+    
 
-    if (!dirtBuffer) dirtBuffer = new sf::SoundBuffer();
-    if (dirtBuffer->loadFromFile("assets/sounds/dirtRoll.wav")) {
-      if (!dirtSound) dirtSound = new sf::Sound(*dirtBuffer);
-
-      dirtSound->setBuffer(*dirtBuffer);
+      if (!dirtSound) dirtSound = new sf::Sound(getSound("assets/sounds/dirtRoll.wav"));
       dirtSound->setLooping(true);
       dirtSound->setVolume(70.f);
-    }
 
     float startX = 200.0f;
     float rollSize = 0.75f;
@@ -87,11 +83,10 @@ void LevelManager::init() {
     fullGrassSprite->setScale(sf::Vector2f(grassSizeX + 0.01f, grassSizeY + 0.05f)); 
     fullGrassSprite->setPosition(sf::Vector2f(startX - 12.0f, groundY[0] - 48.0f));
     fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)fullGrassTexture.getSize().y }));
-  }
+  
 
-  camera.setSize(sf::Vector2f(800.f, 600.f));
-  camera.setCenter(sf::Vector2f(490.f, 330.f));
-
+  view->setSize(sf::Vector2f(800.f, 600.f));
+  view->setCenter(sf::Vector2f(490.f, 330.f));
 }
 
 void LevelManager::spawnDirt(sf::Vector2f position) {
@@ -139,13 +134,14 @@ void LevelManager::updateDirt(float dt) {
 }
 
 void LevelManager::update(float dt) {
-
+  if (isPaused) return; 
+  
   if (isIntroRunning) {
     introTimer += dt;
 
-    if (introTimer < 1.5f) camera.zoom(1.0f - (0.05 * dt));
-    else if (introTimer >= 1.5f && introTimer < 2.2f) camera.move(sf::Vector2f(400.f * dt, 0.f));
-    else if (introTimer >= 5.5f && introTimer < 6.2f) camera.move(sf::Vector2f(-400.f * dt, 0.f));
+    if (introTimer < 1.5f) view->zoom(1.0f - (0.05 * dt));
+    else if (introTimer >= 1.5f && introTimer < 2.2f) view->move(sf::Vector2f(400.f * dt, 0.f));
+    else if (introTimer >= 5.5f && introTimer < 6.2f) view->move(sf::Vector2f(-400.f * dt, 0.f));
     else if (introTimer >= 8.5f) {
       isIntroRunning = false;
       startPlanting();
@@ -280,7 +276,8 @@ void LevelManager::update(float dt) {
 
 void LevelManager::draw(sf::RenderWindow& window) {
 
-  window.setView(camera);
+
+  window.setView(*view);
 
   if (backGroundSprite) window.draw(*backGroundSprite);
 
@@ -306,7 +303,14 @@ void LevelManager::draw(sf::RenderWindow& window) {
       window.draw(*capSprites[i]);
     }
   }
-  window.setView(window.getDefaultView());
+
+  if (isPaused) {
+    sf::View pauseView;
+    pauseView.setSize(sf::Vector2f(1066.f, 600.f)); 
+    pauseView.setCenter(sf::Vector2f(580.f, 300.f));
+    pauseView.setViewport(sf::FloatRect({ 0.f, 0.f }, { 1.f, 1.f }));
+    window.setView(pauseView);
+  }
 }
 
 void LevelManager::startPlanting() {

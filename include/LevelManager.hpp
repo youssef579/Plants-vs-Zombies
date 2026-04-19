@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <string>
 #include <vector>
-
+#include <AssetsManager.hpp>
 
 struct DirtParticle {
   sf::Sprite* sprite;
@@ -35,7 +35,7 @@ struct LevelManager {
   sf::SoundBuffer* dirtBuffer = nullptr;
   sf::Sound* dirtSound = nullptr;
 
-  sf::View camera;
+ // sf::View camera;
   float introTimer = 0.0f;
   bool isIntroRunning = true;
 
