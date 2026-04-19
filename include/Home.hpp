@@ -3,3 +3,6 @@
 
 void updateHome();
 bool isLastPage();
+
+
+void updateCredits();

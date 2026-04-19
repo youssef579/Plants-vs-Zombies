@@ -48,7 +48,7 @@ void updateGame() {
   default:
     static Shovel shovel;
     if (runOnce) {
-      pauseMenu.init();
+      //pauseMenu.init();
       initPackets();
       gameWeather.isRaining = true;
 

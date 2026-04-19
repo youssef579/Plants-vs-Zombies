@@ -35,10 +35,18 @@ struct PauseMenu {
   Checkbox *checkboxFullscreen;
 
 
+  //options menu
+  sf::Text *doneBtn;
+  sf::Texture backgroundOptionsT;
+  sf::Sprite *backgroundOptionsS;
+
+
   PauseMenu();
   void init();
   void update();
   void draw();
+  void updateOptionsMenu();
+  void drawOptionsMenu();
 
 };
 
