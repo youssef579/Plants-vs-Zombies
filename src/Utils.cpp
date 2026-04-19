@@ -11,6 +11,15 @@ void onClick(sf::Text &button, std::function<void()> action) {
     button.setStyle(sf::Text::Regular);
 }
 
+void onClick(sf::Sprite &button, std::function<void()> actionClick, std::function<void()> actionHover) {
+  if (button.getGlobalBounds().contains(mousePosition)) {
+    actionHover();
+    if(isMousePressed)
+      actionClick();
+  }
+}
+
+
 int randomRange(int x, int y) {        // random int from x to y
   return x + rand() % (y - x + 1);
 }
