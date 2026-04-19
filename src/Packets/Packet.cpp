@@ -41,6 +41,7 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
     : enabledSprite(getTexture("assets/packets/" + packetName + ".png")),
       disabledSprite(getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview),
+      plantShadow(preview),
       cost(costValue),
       selected(false),
       reloadDuration(reloadDurationValue) {
@@ -52,6 +53,9 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
   disabledSprite.setScale({scaleFactor, scaleFactor});
 
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
+
+  plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
+  plantShadow.setColor(sf::Color{255, 255, 255, 100});
 
   plantType = planttype;
 }

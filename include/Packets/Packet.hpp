@@ -11,6 +11,7 @@ struct SeedPacket {
   sf::Sprite enabledSprite;
   sf::Sprite disabledSprite;
   sf::Sprite plantSprite;
+  sf::Sprite plantShadow;
   PlantType plantType;
   bool selected;
 

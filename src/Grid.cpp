@@ -26,6 +26,7 @@ void updateGrid(float dt){
   for (int i = 0; i < ROWS_NUMBER; i++){
       for (int j = 0; j < COLUMNS_NUMER; j++){
           if (grid[i][j].plant.has_value()){
+
             grid[i][j].plant.value().update(dt);
 
             if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
@@ -43,8 +44,19 @@ void updateGrid(float dt){
   
             if (grid[i][j].plant.has_value() && grid[i][j].plant.value().health <= 0)
               grid[i][j].plant.reset();
+
           }else{
             for (int k = 0; k < packets.size; k++){
+
+              if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
+                packets[k].plantShadow.setPosition(grid[i][j].plantPosition);
+                grid[i][j].therePlantInBounders = 1;
+              }
+
+              if (packets[k].selected && !grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && grid[i][j].therePlantInBounders)
+                grid[i][j].therePlantInBounders = 0;
+
+
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
@@ -68,7 +80,10 @@ void updateGrid(float dt){
 
                 packets[k].reloadTimer = packets[k].reloadDuration;
                 Sun::sunBalance -= packets[k].cost;
+                grid[i][j].therePlantInBounders = 0;
+                
               } 
+
             }
           }
       }
@@ -85,14 +100,10 @@ void drawGrid(){
 
       }else{
         for (int k = 0; k < packets.size; k++){
-          if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition)){
 
-            sf::Sprite plantshadow = packets[k].plantSprite;
-            plantshadow.setPosition(grid[i][j].plantPosition);
-            plantshadow.setColor(sf::Color{255, 255, 255, 100});
+          if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition))
+            window->draw(packets[k].plantShadow);
 
-            window->draw(plantshadow);
-          }
         }
       }
     }
