@@ -10,16 +10,19 @@
 
 const int ROWS_NUMBER = 5, COLUMNS_NUMER = 9;
 const float rowLenth[5] = {98.3, 85, 96.4, 94.5, 98.3};
-const float columnLenth[9] = {105.5, 94.5, 113.4, 102.1, 109.5, 105.85, 98.3, 109.5, 120};
+const float columnLenth[9] = {108.5, 94.5, 113.4, 102.1, 109.5, 105.85, 98.3, 109.5, 120};
 
 struct Cell {
   sf::RectangleShape rectangle;
   bool therePlantInBounders;
+  sf::Vector2f plantPosition;
   std::optional < Plant > plant;
 };
 
 extern Cell grid[ROWS_NUMBER][COLUMNS_NUMER];
 
 void initGrid();
+
+void updateGrid(float dt);
 
 void drawGrid();

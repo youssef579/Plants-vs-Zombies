@@ -12,7 +12,6 @@
 #include <SunManager.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
-#include <Zombies/Zombie.hpp>
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Repeaterpea.hpp>
@@ -54,9 +53,15 @@ void updateGame() {
       //pauseMenu.init();
       shovel.init();
       initPackets();
+      initGrid();
       dayLevel.init();
       gameWeather.isRaining = true;
-
+      for (int i = 0; i < ROWS_NUMBER; i++){
+        for (int j = 0; j < COLUMNS_NUMER; j++){
+              // plants just for testing
+              //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
+        }
+      }
       music.play("DayStage");
       runOnce = false;
     }
@@ -75,37 +80,30 @@ void updateGame() {
     }
 
     // These plants are for test only, gonna be removed in future
-    static Plant s(SUN_FLOWER, {500 ,300}, 1, getTexture("assets/Plants/sunflower.png"), 80, 80, 24, {1, 1}, ReAnimator::getDefinition(REANIM_SUNFLOWER));
-    static Plant t(WALLNUT, {300 ,200}, 1, getTexture("assets/Plants/wallnut.png"), 65, 73, 16, {1, 1}, ReAnimator::getDefinition(REANIM_WALLNUT));
-    static Plant p(PEASHOOTER, {300 ,300}, 1, getTexture("assets/Plants/peashooter.png"), 348, 359, 29, {0.225, 0.225}, ReAnimator::getDefinition(REANIM_PEASHOOTER));
-    static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217}, ReAnimator::getDefinition(REANIM_SNOWPEA));
-    static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1}, ReAnimator::getDefinition(REANIM_REPEATER));
+    static Plant s(SUN_FLOWER, {500 ,300}, 1, ReAnimator::getDefinition(REANIM_SUNFLOWER));
+    static Plant t(WALLNUT, {300 ,200}, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
+    static Plant p(PEASHOOTER, {300 ,300}, 1, ReAnimator::getDefinition(REANIM_PEASHOOTER));
+    static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, ReAnimator::getDefinition(REANIM_SNOWPEA));
+    static Plant v(REPEATERPEA, {300 ,500}, 1, ReAnimator::getDefinition(REANIM_REPEATER));
 
 
-    s.update(dt);
-    t.update(dt);
-    p.update(dt);
-    q.update(dt);
-    v.update(dt);
-
-    static Zombie zombies[] = {
-        Zombie::createZombie(1000, 100, Zombie::Regular),
-        Zombie::createZombie(1000, 200, Zombie::Conehead),
-        Zombie::createZombie(1000, 300, Zombie::Buckethead),
-        Zombie::createZombie(1000, 400, Zombie::Flag)
-    };
-
-    for(auto& zombie : zombies) zombie.update(dt);
+    //s.update(dt);
+    //t.update(dt);
+    //p.update(dt);
+    //q.update(dt);
+    //v.update(dt);
+    updateGrid(dt);
 
     dayLevel.update(dt);
     dayLevel.draw(*window);
     window->setView(*view);
-    s.draw();
+    //s.draw();
     //window->draw(rec1);
-    t.draw();
-    p.draw();
-    q.draw();
-    v.draw();
+    //t.draw();
+    //p.draw();
+    //q.draw();
+    //v.draw();
+    drawGrid();
 
     
     for (int i = 0; i < bullets.size; i++) {
@@ -131,11 +129,12 @@ void updateGame() {
 
     shovel.update();
 
-    s.draw();
-    t.draw();
-    p.draw();
-    q.draw();
-    v.draw();
+    //s.draw();
+    //t.draw();
+    //p.draw();
+    //q.draw();
+    //v.draw();
+    drawGrid();
 
     for (int i = 0; i < Sun::sunArrayCntr; i++) {
       if (Sun::sunArray[i])
@@ -146,9 +145,6 @@ void updateGame() {
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
     gameWeather.update(dt);
-    drawGrid();
     break;
   }
 }
-
-
