@@ -20,6 +20,7 @@
 #include <Array.hpp>
 #include <Bullet.hpp>
 #include <globals.hpp>
+#include <Grid.hpp>
 
 int gameState = 0;
 /*
@@ -51,6 +52,7 @@ void updateGame() {
     if (runOnce) {
       pauseMenu.init();
       initPackets();
+      initGrid();
       gameWeather.isRaining = true;
 
       music.play("DayStage");
@@ -130,6 +132,7 @@ void updateGame() {
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
     gameWeather.update(dt);
+    drawGrid();
     break;
   }
 }
