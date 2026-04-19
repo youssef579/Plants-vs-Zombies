@@ -104,7 +104,6 @@ void updateGame() {
     //q.draw();
     //v.draw();
     drawGrid();
-
     
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
@@ -128,6 +127,8 @@ void updateGame() {
     
 
     shovel.update();
+
+
 
     //s.draw();
     //t.draw();

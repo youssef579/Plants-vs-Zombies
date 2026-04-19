@@ -23,27 +23,23 @@ void initGrid(){
 }
 
 void updateGrid(float dt){
+  bool isShovelDark = 0;
   for (int i = 0; i < ROWS_NUMBER; i++){
       for (int j = 0; j < COLUMNS_NUMER; j++){
           if (grid[i][j].plant.has_value()){
 
             grid[i][j].plant.value().update(dt);
 
-            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
-              shovel.movingShovel->setColor(sf::Color{125, 125, 125, 230});
-              grid[i][j].therePlantInBounders = 1;
-            }
-
-            if (grid[i][j].plant.has_value() && shovel.selected && !grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && grid[i][j].therePlantInBounders){
-              shovel.movingShovel->setColor(sf::Color{255, 255, 255, 255});
-              grid[i][j].therePlantInBounders = 0;
-            }
-              
-            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased)
-              grid[i][j].plant.reset();
-  
             if (grid[i][j].plant.has_value() && grid[i][j].plant.value().health <= 0)
               grid[i][j].plant.reset();
+
+            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased)
+              grid[i][j].plant.reset();
+
+              
+            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
+              isShovelDark = 1;
+            }
 
           }else{
             for (int k = 0; k < packets.size; k++){
@@ -81,13 +77,22 @@ void updateGrid(float dt){
                 packets[k].reloadTimer = packets[k].reloadDuration;
                 Sun::sunBalance -= packets[k].cost;
                 grid[i][j].therePlantInBounders = 0;
-                
+              
               } 
 
             }
           }
       }
   }
+
+  if (isShovelDark){
+    if (shovel.movingShovel->getColor() != sf::Color{125, 125, 125, 230})
+      shovel.movingShovel->setColor(sf::Color{125, 125, 125, 230});
+  }else{
+    if (shovel.movingShovel->getColor() != sf::Color{255, 255, 255, 255})
+      shovel.movingShovel->setColor(sf::Color{255, 255, 255, 255});
+  }
+  
 }
 
 void drawGrid(){
