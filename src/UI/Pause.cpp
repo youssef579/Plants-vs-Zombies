@@ -96,6 +96,9 @@ void PauseMenu::init() {
 
 void PauseMenu::update() {
 
+  // Other interactions with UI
+  shovel.selected = false; // prevents selected carrying over after unpause
+
   // Back to Game button
   onClick(*backToGameBtn, []() {
     sounds.play("ButtonClick");
@@ -134,13 +137,15 @@ void PauseMenu::update() {
   drawUI();
   // draw plants
 
-  draw();
+  //draw();
 }
 
 void PauseMenu::draw() {
 
   Sun::manageSuns(0, Sun::State::Paused); // draw only mode
   drawUI();
+  shovel.drawBank();
+  drawSeedPackets();
 
   window->draw(overlay->overlayRect);
   window->draw(*backgroundS);

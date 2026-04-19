@@ -83,3 +83,16 @@ void SeedPacket::drawSelectedPlant() {
   if (selected)
     window->draw(plantSprite);
 }
+
+
+void updateSeedPackets(float dt) {
+  for (int i = 0; i < packets.size; i++) {
+    packets[i].update(dt);
+  }
+}
+
+void drawSeedPackets() {
+  for (int i = 0; i < packets.size; i++) {
+    packets[i].draw();
+  }
+}

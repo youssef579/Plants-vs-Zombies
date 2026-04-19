@@ -2,6 +2,7 @@
 #include <LevelManager.hpp>
 #include <iostream>
 #include <SFML/Audio.hpp>
+#include <Window.hpp>
 
 
 LevelManager dayLevel;
@@ -11,7 +12,7 @@ void LevelManager::init() {
   if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
     threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
-    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass.png") &&
+    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass2.png") &&
     rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
     capTexture.loadFromFile("assets/BackGround/SodRollCap.png"))
   {

@@ -27,6 +27,7 @@ void WeatherSystem::init() {
         thunderSound->setVolume(settings.weatherFXVolume);
     }
 
+    //  Problem Here
     flashOverlay.setSize(sf::Vector2f(2000.0f , 2000.0f));   // Handle Screen Size
     flashOverlay.setFillColor(sf::Color::Transparent);                                            // Start invisible
 

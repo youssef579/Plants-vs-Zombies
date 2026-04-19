@@ -9,6 +9,8 @@
 #include <UI/Draw.hpp>
 #include <UI/UI.hpp>
 #include <Files.hpp>
+#include <Packets/Packet.hpp>
+#include <Packets/Shovel.hpp>
 
 struct PauseMenu {
   sf::Texture backgroundT;

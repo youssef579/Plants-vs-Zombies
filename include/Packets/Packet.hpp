@@ -22,5 +22,8 @@ struct SeedPacket {
 };
 
 void initPackets();
+void updateSeedPackets(float dt);
+void drawSeedPackets();
+
 
 extern Array<SeedPacket> packets;

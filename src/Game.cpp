@@ -47,9 +47,10 @@ void updateGame() {
     updateHome();
     break;
   default:
-    static Shovel shovel;
+    //static Shovel shovel;
     if (runOnce) {
       //pauseMenu.init();
+      shovel.init();
       initPackets();
       dayLevel.init();
       gameWeather.isRaining = true;
@@ -64,6 +65,7 @@ void updateGame() {
         dayLevel.dirtSoundStarted = false; 
       }
       dayLevel.draw(*window);
+      window->setView(*view);
       gameWeather.draw(*window);
       pauseMenu.update();
       pauseMenu.draw();
@@ -77,9 +79,6 @@ void updateGame() {
     static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217}, ReAnimator::getDefinition(REANIM_SNOWPEA));
     static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1}, ReAnimator::getDefinition(REANIM_REPEATER));
 
-    static sf::RectangleShape rec1({3, 3});
-    rec1.setPosition({300, 500});
-    rec1.setFillColor(sf::Color(0, 255, 0, 255));
 
     s.update(dt);
     t.update(dt);
@@ -87,15 +86,16 @@ void updateGame() {
     q.update(dt);
     v.update(dt);
 
+    dayLevel.update(dt);
+    dayLevel.draw(*window);
+    window->setView(*view);
     s.draw();
-    window->draw(rec1);
+    //window->draw(rec1);
     t.draw();
     p.draw();
     q.draw();
     v.draw();
 
-    dayLevel.update(dt);
-    dayLevel.draw(*window);
     
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
@@ -110,10 +110,14 @@ void updateGame() {
     shovel.drawBank();
     Sun::manageSuns(dt);
 
-    for (int i = 0; i < packets.size; i++) {
-      packets[i].update(dt);
-      packets[i].draw();
-    }
+    //for (int i = 0; i < packets.size; i++) {
+    //  packets[i].update(dt);
+    //  //packets[i].draw();
+    //}
+    updateSeedPackets(dt);
+    drawSeedPackets();
+    
+
     shovel.update();
 
     s.draw();
