@@ -27,7 +27,17 @@ void updateGrid(float dt){
       for (int j = 0; j < COLUMNS_NUMER; j++){
           if (grid[i][j].plant.has_value()){
             grid[i][j].plant.value().update(dt);
-            
+
+            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
+              shovel.movingShovel->setColor(sf::Color{125, 125, 125, 230});
+              grid[i][j].therePlantInBounders = 1;
+            }
+
+            if (grid[i][j].plant.has_value() && shovel.selected && !grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && grid[i][j].therePlantInBounders){
+              shovel.movingShovel->setColor(sf::Color{255, 255, 255, 255});
+              grid[i][j].therePlantInBounders = 0;
+            }
+              
             if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased)
               grid[i][j].plant.reset();
   
@@ -56,7 +66,7 @@ void updateGrid(float dt){
                     break;
                 }
 
-                packets[k].reloadTimer =  packets[k].reloadDuration;
+                packets[k].reloadTimer = packets[k].reloadDuration;
                 Sun::sunBalance -= packets[k].cost;
               } 
             }
@@ -64,7 +74,6 @@ void updateGrid(float dt){
       }
   }
 }
-
 
 void drawGrid(){
   for (int i = 0; i < ROWS_NUMBER; i++){
