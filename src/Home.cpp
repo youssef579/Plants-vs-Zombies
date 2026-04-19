@@ -6,6 +6,7 @@
 #include <UI/Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
+#include <cmath>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
