@@ -4,9 +4,8 @@
 #include <cmath>
 
 
+Array<Sun> Sun::sunArray;
 int Sun::sunBalance = 0;
-int Sun::sunArrayCntr = 0;
-Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
 float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 

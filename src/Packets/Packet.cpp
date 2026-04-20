@@ -38,13 +38,15 @@ void initPackets() {
   packets.push({200, 5, "repeated", {90 + 59.0f * 4, 11}, repeaterpeaSprite, REPEATERPEA});
 }
 
-SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType planttype)
+SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
     : enabledSprite(getTexture("assets/packets/" + packetName + ".png")),
       disabledSprite(getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview),
       plantShadow(preview),
       cost(costValue),
+      plantType(plantTypeValue),
       selected(false),
+      reloadTimer(0),
       reloadDuration(reloadDurationValue) {
   float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
@@ -57,8 +59,6 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
   plantShadow.setColor(sf::Color{255, 255, 255, 100});
-
-  plantType = planttype;
 }
 
 void SeedPacket::update(float dt) {
@@ -75,7 +75,7 @@ void SeedPacket::update(float dt) {
   }
 
   if (reloadTimer > 0)
-    enabledSprite.setTextureRect({{0, 0}, {50, std::clamp(0, (int)(70 * (reloadDuration - reloadTimer) / reloadDuration), 70)}});
+    enabledSprite.setTextureRect({{0, 0}, {50, (int)(70 * (reloadDuration - reloadTimer) / reloadDuration)}});
 }
 
 void SeedPacket::draw() {
