@@ -816,25 +816,39 @@ void initReAnimDefs() {
     "idle_headleaf_tip_bottom", "idle_headleaf_nearest", "idle_headleaf_tip_top", "anim_face",
     "idle_mouth", "idle_shoot_blink", "anim_blink", "PeaShooter_eyebrow" };
   def->loadFiles("assets/Plants/repeater/repeater.json", 24, trackNames_repeater, {
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF",             "assets/Plants/repeater/PeaShooter_backleaf.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_LEFTTIP",     "assets/Plants/repeater/PeaShooter_backleaf_lefttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_RIGHTTIP",    "assets/Plants/repeater/PeaShooter_backleaf_righttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_STALK_BOTTOM",         "assets/Plants/repeater/PeaShooter_stalk_bottom.png"},
-    {"IMAGE_REANIM_PEASHOOTER_STALK_TOP",            "assets/Plants/repeater/PeaShooter_stalk_top.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF",            "assets/Plants/repeater/PeaShooter_frontleaf.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_RIGHTTIP",   "assets/Plants/repeater/PeaShooter_frontleaf_righttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_LEFTTIP",    "assets/Plants/repeater/PeaShooter_frontleaf_lefttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_FARTHEST",    "assets/Plants/repeater/PeaShooter_headleaf_farthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_3RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_3rdfarthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_NEAREST",     "assets/Plants/repeater/PeaShooter_headleaf_nearest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_BOTTOM",  "assets/Plants/repeater/PeaShooter_headleaf_tip_bottom.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_2RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_2rdfarthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_TOP",     "assets/Plants/repeater/PeaShooter_headleaf_tip_top.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEAD",                 "assets/Plants/repeater/PeaShooter_Head.png"},
-    {"IMAGE_REANIM_PEASHOOTER_MOUTH",                "assets/Plants/repeater/PeaShooter_mouth.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BLINK1",               "assets/Plants/repeater/PeaShooter_blink1.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BLINK2",               "assets/Plants/repeater/PeaShooter_blink2.png"},
-    {"IMAGE_REANIM_PEASHOOTER_EYEBROW",              "assets/Plants/repeater/PeaShooter_eyebrow.png"}
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF",             "assets/Plants/repeater/PeaShooter_backleaf.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_LEFTTIP",     "assets/Plants/repeater/PeaShooter_backleaf_lefttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_RIGHTTIP",    "assets/Plants/repeater/PeaShooter_backleaf_righttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_STALK_BOTTOM",         "assets/Plants/repeater/PeaShooter_stalk_bottom.png"},
+      {"IMAGE_REANIM_PEASHOOTER_STALK_TOP",            "assets/Plants/repeater/PeaShooter_stalk_top.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF",            "assets/Plants/repeater/PeaShooter_frontleaf.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_RIGHTTIP",   "assets/Plants/repeater/PeaShooter_frontleaf_righttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_LEFTTIP",    "assets/Plants/repeater/PeaShooter_frontleaf_lefttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_FARTHEST",    "assets/Plants/repeater/PeaShooter_headleaf_farthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_3RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_3rdfarthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_NEAREST",     "assets/Plants/repeater/PeaShooter_headleaf_nearest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_BOTTOM",  "assets/Plants/repeater/PeaShooter_headleaf_tip_bottom.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_2RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_2rdfarthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_TOP",     "assets/Plants/repeater/PeaShooter_headleaf_tip_top.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEAD",                 "assets/Plants/repeater/PeaShooter_Head.png"},
+      {"IMAGE_REANIM_PEASHOOTER_MOUTH",                "assets/Plants/repeater/PeaShooter_mouth.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BLINK1",               "assets/Plants/repeater/PeaShooter_blink1.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BLINK2",               "assets/Plants/repeater/PeaShooter_blink2.png"},
+      {"IMAGE_REANIM_PEASHOOTER_EYEBROW",              "assets/Plants/repeater/PeaShooter_eyebrow.png"}
+    });
+  definitions.push(def);
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_tallnut[] = { "anim_idle", "anim_blink_twice", "anim_blink_thrice" };
+  def->loadFiles("assets/Plants/tallnut/tallnut.json", 24, trackNames_tallnut, {
+      {"IMAGE_REANIM_TALLNUT_BODY", "assets/Plants/tallnut/Tallnut_body.png"},
+      {"IMAGE_REANIM_TALLNUT_BLINK1", "assets/Plants/tallnut/Tallnut_blink1.png"},
+      {"IMAGE_REANIM_TALLNUT_BLINK2", "assets/Plants/tallnut/Tallnut_blink2.png"},
+
+    {"IMAGE_REANIM_TALLNUT_CRACKED1", "assets/Plants/tallnut/Tallnut_cracked1.png"},
+    {"IMAGE_REANIM_TALLNUT_CRACKED2", "assets/Plants/tallnut/Tallnut_cracked2.png"}
     });
   definitions.push(def);
 

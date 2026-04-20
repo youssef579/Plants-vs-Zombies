@@ -106,7 +106,8 @@ enum ReAnimationDef {
   REANIM_PEASHOOTER = 2,
   REANIM_WALLNUT = 3,
   REANIM_SNOWPEA = 4,
-  REANIM_REPEATER = 5
+  REANIM_REPEATER = 5,
+  REANIM_TALLNUT = 6
 };
 
 struct ReAnimator {

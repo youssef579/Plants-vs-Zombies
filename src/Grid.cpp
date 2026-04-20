@@ -74,6 +74,9 @@ void updateGrid(float dt){
                   case REPEATERPEA:
                     grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_REPEATER));
                     break;
+                  case TALLNUT:
+                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    break;
                   default:
                     break;
                 }
