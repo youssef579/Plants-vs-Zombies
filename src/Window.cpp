@@ -24,7 +24,7 @@ void initWindow() {
 }
 
 void setWindowMetaData() { // Set icon, cursor and window settings after creating a window
-  window->setFramerateLimit(60);
+  window->setFramerateLimit(144);
 
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   window->setPosition(sf::Vector2i((desktop.size.x - window->getSize().x) / 2, (desktop.size.y - window->getSize().y) / 2));
@@ -100,12 +100,15 @@ void handleEvents() {
 
           if (settings.fullscreen) {
             window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+            view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+            dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
           }
-          else
+          else {
             window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+            getLetterboxView(window->getSize().x, window->getSize().y);
+          }
           setWindowMetaData();
           
-          //getLetterboxView(window->getSize().x, window->getSize().y);
           break;
 
         case sf::Keyboard::Key::Escape:

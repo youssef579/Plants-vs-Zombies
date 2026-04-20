@@ -149,11 +149,6 @@ void Sun::spawn(int val) {
 
 void Sun::draw() {
   reAnimator.draw();
-  //reAnimator.x = sprite.getPosition().x;
-  //reAnimator.y = sprite.getPosition().y;
-  //reAnimator.drawHitbox();
-  //window->draw(sprite);
-
 }
 
 void Sun::collect() {
@@ -202,4 +197,12 @@ void Sun::destroy(int idx) {
   sunArray[sunArrayCntr - 1] = nullptr;
 
   sunArrayCntr--;
+}
+
+
+void Sun::drawAll() {
+  for (int i = 0; i < Sun::sunArrayCntr; i++) {
+    if (Sun::sunArray[i])
+      Sun::sunArray[i]->draw();
+  }
 }
