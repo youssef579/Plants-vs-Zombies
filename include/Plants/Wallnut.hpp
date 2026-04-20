@@ -7,8 +7,8 @@
 #include <Animation.hpp>
 
 const float WALLNUT_HEALTH = 100.0f;
-const float WALLNUT_CRACK1_HEALTH = 50.0f;
-const float WALLNUT_CRACK2_HEALTH = 20.0f;
+const float WALLNUT_CRACK1_HEALTH = 66.0f;
+const float WALLNUT_CRACK2_HEALTH = 33.0f;
 
 void updateWallnut(Plant &sunFlower, float dt);
 

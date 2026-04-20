@@ -3,18 +3,20 @@
 #include <Packets/Shovel.hpp>
 #include <SunManager.hpp>
 
-Cell grid[ROWS_NUMBER][COLUMNS_NUMER];
+Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
-void initGrid(){
+void initGrid() {
   float y = 104;
-  for (int i = 0; i < ROWS_NUMBER; i++){
+  const float offsetY = -15, offsetX = 3;
+  for (int i = 0; i < ROWS_NUMBER; i++) {
     float x = 131;
-    for (int j = 0; j < COLUMNS_NUMER; j++){
-      grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
+    for (int j = 0; j < COLUMNS_NUMBER; j++) {
+      grid[i][j].rectangle.setSize({ columnLenth[j], rowLenth[i] });
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
-      grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
-      grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      grid[i][j].plantPosition = {x + columnLenth[j] / 2 + 2, y + rowLenth[i] / 2 - 10};
+      grid[i][j].rectangle.setPosition({ x + columnLenth[j] / 2, y + rowLenth[i] / 2 });
+      grid[i][j].rectangle.setFillColor(sf::Color({ 0, 0, 0, 0 }));
+      grid[i][j].plantPosition = { x + columnLenth[j] / 2 + 2, y + rowLenth[i] / 2 - 10 };
+      grid[i][j].plantPosition = { x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY };
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth[j];
     }
@@ -25,7 +27,7 @@ void initGrid(){
 void updateGrid(float dt){
   bool isShovelDark = 0;
   for (int i = 0; i < ROWS_NUMBER; i++){
-      for (int j = 0; j < COLUMNS_NUMER; j++){
+      for (int j = 0; j < COLUMNS_NUMBER; j++){
           if (grid[i][j].plant.has_value()){
 
             grid[i][j].plant.value().update(dt);
@@ -104,7 +106,7 @@ void updateGrid(float dt){
 
 void drawGrid(){
   for (int i = 0; i < ROWS_NUMBER; i++){
-    for (int j = 0; j < COLUMNS_NUMER; j++){
+    for (int j = 0; j < COLUMNS_NUMBER; j++){
       window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
@@ -120,4 +122,15 @@ void drawGrid(){
       }
     }
   }
+}
+
+
+sf::Vector2i positionToGrid(sf::Vector2f pos) {
+  for (int i = 0; i < ROWS_NUMBER; i++) {
+    for (int j = 0; j < COLUMNS_NUMBER; j++) {
+      if (grid[i][j].rectangle.getGlobalBounds().contains(pos))
+        return { i, j };
+    }
+  }
+  return { -1, -1 }; // position out of grid bounds
 }

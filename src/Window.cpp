@@ -124,6 +124,9 @@ void handleEvents() {
           isPaused = !isPaused;
         }
         break;
+      case sf::Keyboard::Key::Tab:
+        settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
+        break;
       }
     }
   }

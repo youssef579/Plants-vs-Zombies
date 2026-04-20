@@ -34,6 +34,10 @@ void Bullet::update(float deltaTime) {
     float distance = BULLET_VELOCITY * deltaTime;
     sprite.move({distance, 0});
     shadow.move({distance, 0});
+
+    // Check zombie
+
+
     if (sprite.getPosition().x > WINDOW_SIZE.x) { // Bullet out of bounds
       remove = true;
     }

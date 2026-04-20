@@ -10,14 +10,14 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
   snowpeaShooter.blinkTimer -= dt;
 
   if (snowpeaShooter.blinkTimer <= 0) {
-    snowpeaShooter.reAnimator.playAnimation("anim_blink", false);
+    snowpeaShooter.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
     snowpeaShooter.blinkTimer = randomRange(2.0f, 3.0f);
   }
 
   if (snowpeaShooter.timer <= 0) {
     //peashooter.timer = GENERATE_BULLET_TIMER;
     if (snowpeaShooter.timer > -1000) {
-      snowpeaShooter.reAnimator.playAnimation("anim_shooting", false);
+      snowpeaShooter.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
       snowpeaShooter.timer = -10000;
 
     }

@@ -4,6 +4,7 @@ struct Settings {
   static float musicVolume;
   static float soundFXVolume;
   static float weatherFXVolume;
+  static int timeModifier; // not saved in storage
 
   static bool weatherActive;
   static bool fullscreen;
@@ -13,6 +14,8 @@ struct Settings {
     static constexpr float musicVolume     = 75.0f;
     static constexpr float soundFXVolume   = 75.0f;
     static constexpr float weatherFXVolume = 75.0f;
+
+    static constexpr int timeModifier      = 1;
 
     static constexpr bool  weatherActive   = true;
     static constexpr bool  fullscreen      = false;

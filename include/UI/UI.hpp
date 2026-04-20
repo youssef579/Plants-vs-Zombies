@@ -22,3 +22,5 @@ struct Checkbox {
 float updateSlider(Slider &slider); // Check for click & return value (0->100)
 
 bool updateCheckbox(Checkbox &cb, bool &target);
+
+void drawTimeModifier();

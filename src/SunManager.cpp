@@ -123,7 +123,7 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
   //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;
   sun->reAnimator.setPosition(pos);
-  sun->reAnimator.playAnimation("main", true);
+  sun->reAnimator.playAnimation("main", LoopType::Loop);
 
   //sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
 

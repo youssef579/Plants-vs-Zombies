@@ -10,14 +10,14 @@ void updatePeashooter(Plant& peashooter, float dt) {
   peashooter.blinkTimer -= dt;
 
   if (peashooter.blinkTimer <= 0) {
-    peashooter.reAnimator.playAnimation("anim_blink", false);
+    peashooter.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
     peashooter.blinkTimer = randomRange(2.0f, 3.5f);
   }
 
   if (peashooter.timer <= 0) {
     //peashooter.timer = GENERATE_BULLET_TIMER;
     if (peashooter.timer > -1000) {
-      peashooter.reAnimator.playAnimation("anim_shooting", false);
+      peashooter.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
       peashooter.timer = -10000;
 
     }

@@ -17,7 +17,7 @@ void updateSunFlower(Plant &sunFlower, float dt){
     //sunFlower.reAnimator.setOverlayAlpha(0);
   }
   if (sunFlower.blinkTimer <= 0) {
-    sunFlower.reAnimator.playAnimation("blink", false);
+    sunFlower.reAnimator.playAnimation("blink", LoopType::PlayOnce);
     sunFlower.blinkTimer = randomRange(1.0f, 3.0f);
   }
 }

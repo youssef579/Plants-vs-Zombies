@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Animation.hpp>
+#include <ReAnimation/ReAnimation.hpp>
 
 struct Zombie {
     
@@ -10,7 +11,7 @@ struct Zombie {
 
     static constexpr float speeds[] = {60, 50, 40, 80};
     static constexpr float healths[] = {100, 200, 200, 100};
-    static constexpr float strengths[] = {10, 10, 10, 10};
+    static constexpr float strengths[] = {5.55f, 10, 10, 10};
 
     static constexpr float AttackTimer = 0.5;
     static constexpr float FreezeTimer = 0.2;
@@ -35,14 +36,17 @@ struct Zombie {
 
     //
 
-    sf::Sprite sprite;
-    Spritesheet sheet;
+    //sf::Sprite sprite;
+    //Spritesheet sheet;
+    ReAnimator reAnimator;
 
     Type type;
     State state;
 
     sf::Vector2f position;
-    sf::Vector2f velocity;
+    sf::Vector2i gridPosition;
+    //sf::Vector2f velocity;
+    bool onGrid = false;
 
     float health;
     float strength;
@@ -50,9 +54,14 @@ struct Zombie {
     float attackTimer = 0;
     float freezeTimer = 0;
 
+    float corpseDissapearTimer = 0.0f;
+
+
     bool headless = false;
     bool enraged = false;   // For Newspaper Zombie
 
+
+    Zombie(sf::Vector2f pos, ReAnimationDefinition *def);
     bool update(float dt);  // Return True if Zombie is Alive
     void setSprite();
     void takeDamage(float damage);
@@ -60,5 +69,6 @@ struct Zombie {
     void move(float dt);
     void attack(float dt);
     void die();
+    void updateDeath(float dt);
     void draw(float dt);
 };

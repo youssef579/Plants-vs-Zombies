@@ -21,6 +21,7 @@
 #include <BackgroundManager.hpp>
 #include <globals.hpp>
 #include <Grid.hpp>
+#include <Zombies/Zombie.hpp>
 
 int gameState = 0;
 /*
@@ -42,6 +43,7 @@ void updateGame() {
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
+  dt *= settings.timeModifier;
 
   switch (gameState) {
   case 0:
@@ -55,13 +57,14 @@ void updateGame() {
       dayLevel.init();
       gameWeather.isRaining = true;
       for (int i = 0; i < ROWS_NUMBER; i++){
-        for (int j = 0; j < COLUMNS_NUMER; j++){
+        for (int j = 0; j < COLUMNS_NUMBER; j++){
               // plants just for testing
               //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
         }
       }
       music.play("DayStage");
       runOnce = false;
+
     }
 
     if (isPaused) {
@@ -76,6 +79,51 @@ void updateGame() {
       pauseMenu.draw();
       break;
     }
+
+    //Zombie Testing
+    static Zombie z1 = Zombie::createZombie(
+      grid[2][8].rectangle.getGlobalBounds().getCenter().x,
+      grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+      Zombie::Type::Regular);
+    static Zombie z2 = Zombie::createZombie(
+      grid[1][8].rectangle.getGlobalBounds().getCenter().x,
+      grid[1][8].rectangle.getGlobalBounds().getCenter().y,
+      Zombie::Type::Conehead);
+    static Zombie z3 = Zombie::createZombie(
+      grid[0][8].rectangle.getGlobalBounds().getCenter().x,
+      grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+      Zombie::Type::Buckethead);
+    static Zombie z4 = Zombie::createZombie(
+      grid[3][8].rectangle.getGlobalBounds().getCenter().x,
+      grid[3][8].rectangle.getGlobalBounds().getCenter().y,
+      Zombie::Type::Flag);
+
+    if (z4.health > 0)
+      z4.takeDamage(0.2);
+    if (z3.health > 0)
+      z3.takeDamage(0.2);
+    if (z2.health > 0)
+      z2.takeDamage(0.2);
+    if (z1.health > 0)
+      z1.takeDamage(0.2);
+    //static sf::Clock tmpC;
+    //static float tmp = 0;
+    //tmp = tmpC.getElapsedTime().asSeconds();
+    ////std::cout << "state: " << z1.state << "\n";
+    //if (tmp >= 2 && tmp <= 5) {
+    //  //tmp = 0;
+    //  z1.state = Zombie::State::Attacking;
+    //  //tmpC.reset();
+    //}
+    //else if (tmp >= 5 && tmp <= 8) {
+    //  z1.state = Zombie::State::Walking;
+    //}
+    //else if (tmp >= 8) {
+    //  if(z1.health > 0)
+    //    z1.takeDamage(10);
+    //}
+    
+    
 
     updateGrid(dt);
 
@@ -110,9 +158,17 @@ void updateGame() {
     Sun::drawAll();
 
 
-
+    z1.update(dt);
+    z2.update(dt);
+    z3.update(dt);
+    z4.update(dt);
+    z3.draw(dt);
+    z2.draw(dt);
+    z1.draw(dt);
+    z4.draw(dt);
 
     shovel.drawMovingShovel();
+    drawTimeModifier();
 
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();

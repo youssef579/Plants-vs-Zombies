@@ -10,12 +10,12 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
   repeaterpea.blinkTimer -= dt;
 
   if (repeaterpea.blinkTimer <= 0) {
-    repeaterpea.reAnimator.playAnimation("anim_blink", false);
+    repeaterpea.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
     repeaterpea.blinkTimer = randomRange(2.0f, 3.5f);
   }
 
   if (repeaterpea.timer <= 0.8f && repeaterpea.state == 0) {
-    repeaterpea.reAnimator.playAnimation("anim_shooting", false);
+    repeaterpea.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
     repeaterpea.state = 1;
   }
 

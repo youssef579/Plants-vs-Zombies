@@ -64,3 +64,31 @@ bool updateCheckbox(Checkbox& cb, bool& target) {
   }
   return false;
 }
+
+void drawTimeModifier() {
+  static sf::Texture timeModifierT_1x = getTexture("assets/UI/TimeModifier/timeModifier_1x.png");
+  static sf::Texture timeModifierT_2x = getTexture("assets/UI/TimeModifier/timeModifier_2x.png");
+  static sf::Texture timeModifierT_3x = getTexture("assets/UI/TimeModifier/timeModifier_3x.png");
+  //static sf::Sprite  timeModifierS(timeModifierT_1x);
+  static sf::Sprite timeModifierS = []() {
+    sf::Sprite s(timeModifierT_1x);
+    s.setOrigin({ s.getLocalBounds().size.x , 0});
+    s.setPosition({ (float)WINDOW_SIZE.x + 4 , 0 });
+    s.setScale({0.85f, 0.85f});
+    return s;
+    }();
+
+  static int lastTimeModifier = 1;
+  
+  if (lastTimeModifier != settings.timeModifier) {
+    switch (settings.timeModifier) {
+    case 1: timeModifierS.setTexture(timeModifierT_1x); break;
+    case 2: timeModifierS.setTexture(timeModifierT_2x); break;
+    case 3: timeModifierS.setTexture(timeModifierT_3x); break;
+    }
+    lastTimeModifier = settings.timeModifier;
+  }
+
+  window->draw(timeModifierS);
+
+}

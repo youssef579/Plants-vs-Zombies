@@ -6,7 +6,7 @@
 void updateTallnut(Plant &tallnut, float dt){
   //animateSpritesheet(tallNut.sheet, dt);
   tallnut.reAnimator.update(dt);
-  tallnut.health -= dt * 10;
+  //tallnut.health -= dt * 10;
   tallnut.blinkTimer -= dt;
 
   if (tallnut.blinkTimer <= 0) {
@@ -14,10 +14,10 @@ void updateTallnut(Plant &tallnut, float dt){
 
     switch (numberOfBlinks) {
     case 2:
-      tallnut.reAnimator.playAnimation("anim_blink_twice", false);
+      tallnut.reAnimator.playAnimation("anim_blink_twice", LoopType::PlayOnce);
       break;
     case 3:
-      tallnut.reAnimator.playAnimation("anim_blink_thrice", false);
+      tallnut.reAnimator.playAnimation("anim_blink_thrice", LoopType::PlayOnce);
       break;
 
     }
