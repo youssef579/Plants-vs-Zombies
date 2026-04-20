@@ -1,4 +1,4 @@
-#include "Array.hpp"
+#include <Array.hpp>
 #include <globals.hpp>
 #include <SunManager.hpp>
 #include <cmath>

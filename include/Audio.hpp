@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Array.hpp"
+#include <Array.hpp>
 #include <SFML/Audio.hpp>
 #include <Files.hpp> // To access settings
 #include <AssetsManager.hpp>
