@@ -3,12 +3,14 @@
 #include <SFML/Graphics.hpp>
 
 struct Shovel {
-  sf::Sprite shovelBank;
-  sf::Sprite shovel;
-  sf::Sprite movingShovel;
+  sf::Sprite *shovelBank   = nullptr;
+  sf::Sprite *shovel       = nullptr;
+  sf::Sprite *movingShovel = nullptr;
   bool selected;
 
-  Shovel();
+  //Shovel();
+
+  void init();
 
   void update();
 
@@ -17,3 +19,4 @@ struct Shovel {
   void drawMovingShovel();
 };
 
+extern Shovel shovel;

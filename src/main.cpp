@@ -10,6 +10,8 @@
 
 sf::Vector2f mousePosition;
 
+
+
 int main() {
   initWindow();
   initFiles();
@@ -18,6 +20,7 @@ int main() {
   initOverlay();
   initWeather();
   initReAnimDefs();
+  pauseMenu.init();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));

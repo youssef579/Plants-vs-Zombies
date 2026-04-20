@@ -9,6 +9,8 @@
 #include <UI/Draw.hpp>
 #include <UI/UI.hpp>
 #include <Files.hpp>
+#include <Packets/Packet.hpp>
+#include <Packets/Shovel.hpp>
 
 struct PauseMenu {
   sf::Texture backgroundT;
@@ -35,10 +37,18 @@ struct PauseMenu {
   Checkbox *checkboxFullscreen;
 
 
+  //options menu
+  sf::Text *doneBtn;
+  sf::Texture backgroundOptionsT;
+  sf::Sprite *backgroundOptionsS;
+
+
   PauseMenu();
   void init();
   void update();
   void draw();
+  void updateOptionsMenu();
+  void drawOptionsMenu();
 
 };
 
