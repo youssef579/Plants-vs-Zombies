@@ -1,6 +1,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
+#include <iostream> // REMOVE LATER
+#include <LevelManager.hpp>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -50,6 +52,7 @@ void getLetterboxView(int windowWidth, int windowHeight) {
     }
 
     view->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
+    dayLevel.camera.setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
 }
 
 void setCursorMain() {
@@ -75,8 +78,9 @@ void handleEvents() {
     if (event->is<sf::Event::Closed>()) // Close Game
       window->close();
 
-    if (const auto* resized = event->getIf<sf::Event::Resized>()) // Resize game when window is resized
+    if (const auto *resized = event->getIf<sf::Event::Resized>()) { // Resize game when window is resized
       getLetterboxView(resized->size.x, resized->size.y);
+    }
 
     if (const auto* mousePress = event->getIf<sf::Event::MouseButtonPressed>()) {
       if (mousePress->button == sf::Mouse::Button::Left)
@@ -94,11 +98,14 @@ void handleEvents() {
           //isFullscreen = !isFullscreen;
           settings.fullscreen = !settings.fullscreen;
 
-          if (settings.fullscreen)
+          if (settings.fullscreen) {
             window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+          }
           else
             window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
           setWindowMetaData();
+          
+          //getLetterboxView(window->getSize().x, window->getSize().y);
           break;
 
         case sf::Keyboard::Key::Escape:

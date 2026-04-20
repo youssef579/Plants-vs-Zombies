@@ -3,9 +3,11 @@
 #include <SunManager.hpp>
 #include <cmath>
 
+
 int Sun::sunBalance = 0;
-Array<Sun> Sun::sunArray;
-float Sun::spawnTimer = 0;
+int Sun::sunArrayCntr = 0;
+Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
+float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 
 void Sun::manageSuns(float dt, State s) {

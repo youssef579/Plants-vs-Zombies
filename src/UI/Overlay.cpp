@@ -9,7 +9,7 @@ bool isOverlayChanged = false;
 
 void initOverlay() {
   sf::RectangleShape rect((sf::Vector2f)WINDOW_SIZE);
-  rect.setFillColor(sf::Color({0, 0, 0, 200}));
+  rect.setFillColor(sf::Color({0, 0, 0, 150}));
 
   int mediumSize = 40, largeSize = 60;
   auto createText = [&]() { return sf::Text(assets->font, "", mediumSize); };

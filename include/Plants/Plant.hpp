@@ -22,18 +22,14 @@ float getPlantTimer(PlantType type);
 
 struct Plant {
   ReAnimator reAnimator;
-  sf::Sprite sprite;
   float health;
   PlantType plantType;
   float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   float blinkTimer;
   int row;
   int state;   // could be used in repeater or other plants
-  Spritesheet sheet;
 
-  Plant(PlantType type, sf::Vector2f position, int Row,
-    sf::Texture &plantTexture, int width, int height, int numberOfFrames,
-    sf::Vector2f scale, ReAnimationDefinition *def);
+  Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefinition *def);
 
   void update(float dt);
 

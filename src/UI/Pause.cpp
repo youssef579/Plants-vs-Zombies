@@ -9,9 +9,13 @@ void PauseMenu::init() {
   backgroundT = getTexture("assets/pm3.png");
   backgroundS = new sf::Sprite(backgroundT);
 
+  backgroundOptionsT = getTexture("assets/optionsMenu.png");
+  backgroundOptionsS = new sf::Sprite(backgroundOptionsT);
+
   backToGameBtn = new sf::Text(assets->font, "Back To Game", 40);
   mainMenuBtn = new sf::Text(assets->font, "Main Menu", 20);
   restartLevelBtn = new sf::Text(assets->font, "Restart Level", 20);
+  doneBtn = new sf::Text(assets->font, "Done", 40);
   sliderKnobT = getTexture("assets/slider.png");
   sliderMusicS = new sf::Sprite(sliderKnobT);
   sliderMusic = new Slider({
@@ -36,6 +40,7 @@ void PauseMenu::init() {
   *checkboxFullscreenM, 639.0f, 292.0f, settings.fullscreen });
 
   backgroundS->setPosition({ 358.5, 54.5 });
+  backgroundOptionsS->setPosition({ 358.5, 54.5 });
   // Back to Game
   backToGameBtn->setPosition({ 428, 455 });
   backToGameBtn->setFillColor({ 0, 196, 0 });
@@ -52,6 +57,14 @@ void PauseMenu::init() {
   restartLevelBtn->setPosition({ 510, 346 });
   restartLevelBtn->setOutlineColor(sf::Color::Black);
   restartLevelBtn->setOutlineThickness(1.0);
+  // Done Button
+  doneBtn->setOrigin(doneBtn->getLocalBounds().size / 2.0f);
+  doneBtn->setLetterSpacing(2.0f);
+  doneBtn->setPosition({ 560, 475 });
+  doneBtn->setFillColor({ 0, 196, 0 });
+  doneBtn->setStyle(sf::Text::Bold);
+  doneBtn->setOutlineColor(sf::Color::Black);
+  doneBtn->setOutlineThickness(1.0);
   // Music Slider
   sliderMusic->sprite.setPosition(
     { sliderMusic->lowerBound +
@@ -82,6 +95,9 @@ void PauseMenu::init() {
 }
 
 void PauseMenu::update() {
+
+  // Other interactions with UI
+  shovel.selected = false; // prevents selected carrying over after unpause
 
   // Back to Game button
   onClick(*backToGameBtn, []() {
@@ -121,13 +137,15 @@ void PauseMenu::update() {
   drawUI();
   // draw plants
 
-  draw();
+  //draw();
 }
 
 void PauseMenu::draw() {
 
   Sun::manageSuns(0, Sun::State::Paused); // draw only mode
   drawUI();
+  shovel.drawBank();
+  drawSeedPackets();
 
   window->draw(overlay->overlayRect);
   window->draw(*backgroundS);
@@ -147,3 +165,78 @@ void PauseMenu::draw() {
   window->draw(checkboxFullscreen->box);
   if (checkboxFullscreen->checked) window->draw(checkboxFullscreen->mark);
 }
+
+
+
+// Options Menu
+
+void PauseMenu::updateOptionsMenu() {
+
+  // Done Button
+  onClick(*doneBtn, []() {
+      sounds.play("ButtonClick");
+      setCursorMain();
+      //isPaused = false;
+      homeState = 0;
+    });
+
+  // Main Menu Button
+  //onClick(*mainMenuBtn, []() {
+  //  gameState = 0, homeState = 0; //go to home menu not level selector
+  //  sounds.play("ButtonClick"); music.play("Menu");
+  //  isPaused = false;
+  //  });
+
+// Restart Level Button
+  //onClick(*restartLevelBtn, []() {}); // TODO: Add restartLevel()
+
+
+  // Update Sliders
+  settings.musicVolume = updateSlider(*sliderMusic);
+  settings.soundFXVolume = updateSlider(*sliderSFX);
+  settings.weatherFXVolume = updateSlider(*sliderWeatherFX);
+
+  //Update Checkboxes
+  updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
+  if (updateCheckbox(*checkboxFullscreen, settings.fullscreen)) {
+    if (settings.fullscreen)
+      window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+    else
+      window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+    setWindowMetaData();
+  }
+
+
+  sounds.updateVolume();
+
+  //drawUI();
+  // draw plants
+
+  drawOptionsMenu();
+}
+
+void PauseMenu::drawOptionsMenu() {
+
+  //Sun::manageSuns(0, Sun::State::Paused); // draw only mode
+  //drawUI();
+
+  window->draw(overlay->overlayRect);
+  window->draw(*backgroundOptionsS);
+
+  //Buttons
+  window->draw(*doneBtn);
+  //window->draw(*backToGameBtn);
+  //window->draw(*mainMenuBtn);
+  //window->draw(*restartLevelBtn);
+  //Sliders
+  window->draw(sliderMusic->sprite);
+  window->draw(sliderSFX->sprite);
+  window->draw(sliderWeatherFX->sprite);
+  //Checkboxes & Checkmarks
+  window->draw(checkboxWeatherActive->box);
+  if (checkboxWeatherActive->checked) window->draw(checkboxWeatherActive->mark);
+
+  window->draw(checkboxFullscreen->box);
+  if (checkboxFullscreen->checked) window->draw(checkboxFullscreen->mark);
+}
+
