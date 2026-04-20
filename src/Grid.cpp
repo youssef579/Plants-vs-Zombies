@@ -7,9 +7,9 @@ Cell grid[ROWS_NUMBER][COLUMNS_NUMER];
 
 void initGrid(){
   float y = 120;
-  const float offsetY = -15, offsetX = 3;
+  const float offsetY = -12, offsetX = 3;
   for (int i = 0; i < ROWS_NUMBER; i++){
-    float x = 136;
+    float x = 134;
     for (int j = 0; j < COLUMNS_NUMER; j++){
       grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
