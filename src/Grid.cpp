@@ -7,6 +7,7 @@ Cell grid[ROWS_NUMBER][COLUMNS_NUMER];
 
 void initGrid(){
   float y = 104;
+  const float offsetY = -15, offsetX = 3;
   for (int i = 0; i < ROWS_NUMBER; i++){
     float x = 131;
     for (int j = 0; j < COLUMNS_NUMER; j++){
@@ -14,7 +15,7 @@ void initGrid(){
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
       grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      grid[i][j].plantPosition = {x + columnLenth[j] / 2 + 2, y + rowLenth[i] / 2 - 10};
+      grid[i][j].plantPosition = {x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth[j];
     }
