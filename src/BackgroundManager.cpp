@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <Window.hpp>
@@ -12,7 +12,7 @@ void LevelManager::init() {
   if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
     threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
-    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass2.png") &&
+    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass1.png") &&
     rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
     capTexture.loadFromFile("assets/BackGround/SodRollCap.png"))
   {
@@ -25,7 +25,6 @@ void LevelManager::init() {
       for (int i = 0; i < 250; i++) {
         DirtParticle p;
         p.sprite = new sf::Sprite(dirtTexture);
-
         int col = rand() % 8;
         int row = rand() % 2;
         p.sprite->setTextureRect(sf::IntRect({ col * 30, row * 30 }, { 30, 30 }));
@@ -91,8 +90,7 @@ void LevelManager::init() {
   }
 
   camera.setSize(sf::Vector2f(800.f, 600.f));
-  camera.setCenter(sf::Vector2f(490.f, 330.f));
-
+  camera.setCenter(sf::Vector2f(490.f, 312.f));
 }
 
 void LevelManager::spawnDirt(sf::Vector2f position) {

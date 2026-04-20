@@ -11,7 +11,7 @@
 #include <Files.hpp>
 #include <Packets/Packet.hpp>
 #include <Packets/Shovel.hpp>
-#include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 
 struct PauseMenu {
   sf::Texture backgroundT;

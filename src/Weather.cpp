@@ -2,16 +2,7 @@
 #include <Window.hpp>
 #include <cmath>
 
-
 WeatherSystem gameWeather;
-
-//WeatherSystem::WeatherSystem() {}
-
-//WeatherSystem::~WeatherSystem() {
-//    if (rainSound) delete rainSound;
-//    if (thunderSound) delete thunderSound;
-//}
-
 
 // --- Initialization ---
 // Loads audio assets, sets up the lightning overlay, and generates the initial pool of raindrops.
@@ -27,7 +18,7 @@ void WeatherSystem::init() {
         thunderSound->setVolume(settings.weatherFXVolume);
     }
 
-    //  Problem Here
+
     flashOverlay.setSize(sf::Vector2f(2000.0f , 2000.0f));   // Handle Screen Size
     flashOverlay.setFillColor(sf::Color::Transparent);                                            // Start invisible
 
@@ -60,17 +51,14 @@ void WeatherSystem::update(float dt) {
       rainSound->play();
     }
 
-    //float dt = rainClock.restart().asSeconds();                                          // Calculate delta time to balance rain speed
 
-    static float sine=std::sin(sf::degrees(RAIN_ANGLE).asRadians()),
-      cosine=std::cos(sf::degrees(RAIN_ANGLE).asRadians());
+    static float sine = std::sin(sf::degrees(RAIN_ANGLE).asRadians()),
+               cosine = std::cos(sf::degrees(RAIN_ANGLE).asRadians());
 
     for (auto& d : drops) {
-        //float angle = d.shape.getRotation().asRadians();
-        //d.shape.move(sf::Vector2f(-d.speed * std::sin(angle) * dt, d.speed * std::cos(angle) * dt));    // Move raindrops
         d.shape.move(sf::Vector2f(-d.speed * sine * dt, d.speed * cosine * dt));    // Move raindrops
-        if (d.shape.getPosition().y > 1500.f || d.shape.getPosition().x < -100.f) {               // Out of bonds ?
-            d.shape.setPosition(sf::Vector2f(static_cast<float>(rand() % 2500), -50.f));      // reset to top
+        if (d.shape.getPosition().y > WINDOW_SIZE.y || d.shape.getPosition().x < 0) {               // Out of bonds ?
+          d.shape.setPosition(sf::Vector2f(static_cast<float>(rand() % 2500), -50.f));      // reset to top
         }
     }
 
@@ -109,16 +97,13 @@ void WeatherSystem::updateVolume() {
 void WeatherSystem::draw(sf::RenderWindow& targetWindow) {      // Rendering function
     if (!isRaining || !settings.weatherActive) return;          // No draw if no raining
 
-    sf::View oldView = targetWindow.getView();
-    targetWindow.setView(targetWindow.getDefaultView());
     for (auto& d : drops) {                                     // Draw all raindrops
         targetWindow.draw(d.shape);
     }
     if (isFlashing) {                                           // draw lightning on top
-        flashOverlay.setSize(sf::Vector2f(targetWindow.getSize()));
+        flashOverlay.setSize(sf::Vector2f(WINDOW_SIZE));
         targetWindow.draw(flashOverlay);
     }
-    targetWindow.setView(oldView);
 }
 
 

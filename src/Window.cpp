@@ -2,7 +2,7 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <iostream> // REMOVE LATER
-#include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -78,7 +78,7 @@ void handleEvents() {
     if (event->is<sf::Event::Closed>()) // Close Game
       window->close();
 
-    if (const auto *resized = event->getIf<sf::Event::Resized>()) { // Resize game when window is resized
+    if (const auto* resized = event->getIf<sf::Event::Resized>()) { // Resize game when window is resized
       getLetterboxView(resized->size.x, resized->size.y);
     }
 
@@ -94,36 +94,36 @@ void handleEvents() {
 
     if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
       switch (keyPress->code) {
-        case sf::Keyboard::Key::F11:
-          //isFullscreen = !isFullscreen;
-          settings.fullscreen = !settings.fullscreen;
+      case sf::Keyboard::Key::F11:
+        //isFullscreen = !isFullscreen;
+        settings.fullscreen = !settings.fullscreen;
 
-          if (settings.fullscreen) {
-            window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
-            view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
-            dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
-          }
-          else {
-            window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
-            getLetterboxView(window->getSize().x, window->getSize().y);
-          }
-          setWindowMetaData();
-          
-          break;
+        if (settings.fullscreen) {
+          window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+          view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+          dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+        }
+        else {
+          window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+          getLetterboxView(window->getSize().x, window->getSize().y);
+        }
+        setWindowMetaData();
 
-        case sf::Keyboard::Key::Escape:
-          if (gameState != 0) { // Pause / UnPause
-            if (!isPaused) {
-              sounds.play("Pause");
-              gameWeather.isPaused = true;
-              setCursorMain();
-            }
-            else gameWeather.isPaused = false;
-            gameWeather.update(0);
+        break;
 
-            isPaused = !isPaused;
+      case sf::Keyboard::Key::Escape:
+        if (gameState != 0) { // Pause / UnPause
+          if (!isPaused) {
+            sounds.play("Pause");
+            gameWeather.isPaused = true;
+            setCursorMain();
           }
-          break;
+          else gameWeather.isPaused = false;
+          gameWeather.update(0);
+
+          isPaused = !isPaused;
+        }
+        break;
       }
     }
   }
