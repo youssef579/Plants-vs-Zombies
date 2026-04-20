@@ -24,4 +24,4 @@ void initAssets();
 
 sf::Texture &getTexture(std::string);
 
-sf::SoundBuffer &getSound(std::string);
+sf::SoundBuffer &getSoundBuffer(std::string);

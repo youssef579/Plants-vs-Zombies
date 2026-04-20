@@ -1,11 +1,11 @@
+#include <Array.hpp>
 #include <globals.hpp>
 #include <SunManager.hpp>
 #include <cmath>
 
 
+Array<Sun> Sun::sunArray;
 int Sun::sunBalance = 0;
-int Sun::sunArrayCntr = 0;
-Sun* Sun::sunArray[Sun::MAX_SIMULTANEOUS_SUN] = { nullptr };
 float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 
@@ -17,19 +17,22 @@ void Sun::manageSuns(float dt, State s) {
   }
 
   if (s != Paused) {
-    for (int i = 0; i < sunArrayCntr; i++) {
-      if (!sunArray[i]) continue;
-      if (!sunArray[i]->update(dt)) { i--; continue; }
-      if (sunArray[i]->state != Sun::State::Collecting && sunArray[i]->onClick()) hovering = true;
+    for (int i = 0; i < sunArray.size; i++) {
+      sunArray[i].update(dt);
+      if (sunArray[i].state != Sun::State::Collecting && sunArray[i].onClick())
+        hovering = true;
     }
+
+    sunArray.erase([](Sun &sun) {
+      return sun.state == Done;
+    });
 
     if (hovering) { setCursorHover(); hovering = false; }
     else setCursorMain();
-
   }
 }
 
-bool Sun::update(float dt) {
+void Sun::update(float dt) {
   //animateSpritesheet(sheet, dt);
   reAnimator.update(dt);
   switch (state) {
@@ -82,8 +85,7 @@ bool Sun::update(float dt) {
       if (distanceToCollection <= collectionErrorMargin) { // Check if Sun has reached
                                                            // collection site
         sunBalance += value;
-        Sun::destroy(index);
-        return false;
+        state = Done;
       }
       else if (distanceToCollection <= 200.0f) {
         //   let distance = x
@@ -104,9 +106,6 @@ bool Sun::update(float dt) {
 
       break;
     }
-
-
-  return true; // Object still alive
 }
 
 void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
@@ -116,17 +115,10 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
   Sun* sun;
 
   if (isSunFlower) {
-    sun =
-      new Sun({ val, Sun::State::FreeFalling, groundDuration,
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr , float(pos.y),
-        sqrtf(2.0f * acceleration * distanceSunFlower) , ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
+    sun = new Sun({val, Sun::State::FreeFalling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, float(pos.y), sqrtf(2.0f * acceleration * distanceSunFlower) , ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window)});
     sun->reAnimator.setScale(0, 0);
-
-  }
-  else
-    sun =
-      new Sun({ val, Sun::State::Falling, groundDuration,
-        0.0, {0.0, 0.0}, 0.0f, sunArrayCntr, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
+  } else
+    sun = new Sun({val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window)});
 
   //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;
@@ -137,13 +129,12 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
 
   //sun->sprite.setPosition({x, y});
 
-  sunArray[sunArrayCntr] = sun;
-  sunArrayCntr++;
+  sunArray.push(*sun);
+  delete sun;
 }
 
 void Sun::spawn(int val) {
-  float randX =
-        randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
+  float randX = randomRange((float)assetWidth, (float)WINDOW_SIZE.x - assetWidth);
   Sun::generate(sf::Vector2f(randX, -70), val, 0);
 }
 
@@ -191,15 +182,3 @@ bool Sun::onClick() {
   return false;
 }
 
-void Sun::destroy(int idx) {
-  //Todo: Replace with dynamic array
-  delete sunArray[idx];
-  sunArray[idx] = nullptr;
-  for (int i = idx; i < sunArrayCntr-1; i++) {
-    sunArray[i] = sunArray[i + 1];
-    sunArray[i]->index--;
-  }
-  sunArray[sunArrayCntr - 1] = nullptr;
-
-  sunArrayCntr--;
-}

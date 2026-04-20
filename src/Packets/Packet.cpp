@@ -1,4 +1,5 @@
 #include <Window.hpp>
+#include <algorithm>
 #include <globals.hpp>
 #include <AssetsManager.hpp>
 #include <Plants/Plant.hpp>
@@ -37,13 +38,15 @@ void initPackets() {
   packets.push({200, 5, "repeated", {90 + 59.0f * 4, 11}, repeaterpeaSprite, REPEATERPEA});
 }
 
-SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType planttype)
+SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
     : enabledSprite(getTexture("assets/packets/" + packetName + ".png")),
       disabledSprite(getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview),
       plantShadow(preview),
       cost(costValue),
+      plantType(plantTypeValue),
       selected(false),
+      reloadTimer(0),
       reloadDuration(reloadDurationValue) {
   float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
@@ -56,8 +59,6 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
   plantShadow.setColor(sf::Color{255, 255, 255, 100});
-
-  plantType = planttype;
 }
 
 void SeedPacket::update(float dt) {

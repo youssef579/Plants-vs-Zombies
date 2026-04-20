@@ -137,10 +137,8 @@ void updateGame() {
     //v.draw();
     drawGrid();
 
-    for (int i = 0; i < Sun::sunArrayCntr; i++) {
-      if (Sun::sunArray[i])
-        Sun::sunArray[i]->draw();
-    }
+    for (int i = 0; i < Sun::sunArray.size; i++)
+      Sun::sunArray[i].draw();
     shovel.drawMovingShovel();
 
     for (int i = 0; i < packets.size; i++)
