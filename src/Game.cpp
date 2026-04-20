@@ -18,7 +18,7 @@
 #include <SunManager.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
-#include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 #include <globals.hpp>
 #include <Grid.hpp>
 
