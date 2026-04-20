@@ -15,8 +15,8 @@ void initGrid(){
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
       grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
-      grid[i][j].rectangle.setOutlineThickness(1);
+      //grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
+      //grid[i][j].rectangle.setOutlineThickness(1);
       grid[i][j].plantPosition = {x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth[j];
