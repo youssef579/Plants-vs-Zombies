@@ -45,7 +45,8 @@ void LevelManager::init() {
 
       dirtSound->setBuffer(*dirtBuffer);
       dirtSound->setLooping(true);
-      dirtSound->setVolume(70.f);
+      //dirtSound->setVolume(70.f);
+      dirtSound->setVolume(settings.soundFXVolume);
     }
 
     float startX = 200.0f;
@@ -261,6 +262,7 @@ void LevelManager::update(float dt) {
   bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
   if (dirtSound) {
     if (anyRolling) {
+      dirtSound->setVolume(settings.soundFXVolume); // update volume
       if (!dirtSoundStarted) {
         dirtSound->play();
         dirtSoundStarted = true; 

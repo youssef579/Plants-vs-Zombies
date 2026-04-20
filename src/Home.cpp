@@ -6,6 +6,7 @@
 #include <UI/Overlay.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
+#include <cmath>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -176,19 +177,23 @@ void updateHome() {
 
     onClick(selectorScreenHitbox1, 8, []() {
       // Play
+      sounds.play("Tap1");
       homeState = 2;
       updateLevelsMenu();
       }, []() {selectorScreenButton1.setTexture(selectorScreenButton1T1); });
     onClick(selectorScreenHitbox2, 10, []() {
       // Mini-games
+      sounds.play("Tap1");
       }, []() {selectorScreenButton2.setTexture(selectorScreenButton2T1); });
     onClick(selectorScreenHitbox3, 10, []() {
       // Credits
+      sounds.play("Tap1");
       homeState = 1;
       runOnceCredits = true;
       }, []() {selectorScreenButton3.setTexture(selectorScreenButton3T1); });
     onClick(selectorScreenHitbox4, 13, []() {
       // Button 4
+      sounds.play("Tap1");
       }, []() {selectorScreenButton4.setTexture(selectorScreenButton4T1); });
 
     onClick(selectorScreenButtonOptions, []() {
@@ -262,7 +267,7 @@ void updateHome() {
 
 
 void updateCredits() {
-  static bool state = false; // false => bounce in , true => bounce out
+  static int state = 0; // 0 => bounce in , 1 => bounce out (runOnce) , 2 => bounce out
 
   static sf::Texture creditsNoteT = getTexture("assets/creditsNote3.png");
   static sf::Sprite creditsNote(creditsNoteT);
@@ -303,6 +308,10 @@ void updateCredits() {
 
   }
   else { // Bounce out
+    if (state == 1) {
+      sounds.play("Tap2");
+      state = 2;
+    }
     creditsTime *= 1.4f;
     if(creditsTime <= 0.85753f)
       creditsNote.setPosition({ (float)WINDOW_SIZE.x / 2.0f, -(float)(WINDOW_SIZE.y / 2.0f) * (float)std::sin(4 * (creditsTime + 1.78484f + -0.0045)) + (float)(WINDOW_SIZE.y / 2.0f) });

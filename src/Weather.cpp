@@ -1,4 +1,3 @@
-
 #include <Window.hpp>
 #include <cmath>
 

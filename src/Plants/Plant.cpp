@@ -54,11 +54,8 @@ float getPlantTimer(PlantType type){
 }
 
 
-Plant::Plant(PlantType type, sf::Vector2f position, int Row, sf::Texture &plantTexture,
-  int width, int height, int numberOfFrames, sf::Vector2f scale, ReAnimationDefinition *def)
-  : sprite(plantTexture), reAnimator(def, position.x, position.y, window){
-  //sprite.setTextureRect({{0, 0}, {width, height}});
-  //sprite.setScale(scale);
+Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefinition *def)
+  : reAnimator(def, position.x, position.y, window){
 
   //ReAnimationDef defName;
   //switch (type) {
@@ -103,6 +100,7 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, sf::Texture &plantT
   switch (plantType) {
   case SUN_FLOWER:
     reAnimator.playAnimation("idle");
+    timer--;
     break;
   case WALLNUT:
     reAnimator.playAnimation("anim_idle");
