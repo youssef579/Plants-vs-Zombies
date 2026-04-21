@@ -1,23 +1,34 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/Plant.hpp>
 #include <Bullet.hpp>
+#include <Zombies/Zombie.hpp>
+
 
 void updatePeashooter(Plant& peashooter, float dt) {
   //animateSpritesheet(peashooter.sheet, dt);
   peashooter.reAnimator.update(dt);
 
-  peashooter.timer -= dt;
-  peashooter.blinkTimer -= dt;
 
+  // Zombie detection
+  if (Zombie::isZombieAliveInRow(peashooter.row, peashooter.reAnimator.getPosition().x + 70.0f)) // only shoot when there is a zombie in the row
+    peashooter.timer -= dt;
+  else {
+    peashooter.reAnimator.stopAnimation("anim_shooting");
+    peashooter.timer = GENERATE_BULLET_TIMER;
+  }
+
+
+
+  peashooter.blinkTimer -= dt;
   if (peashooter.blinkTimer <= 0) {
-    peashooter.reAnimator.playAnimation("anim_blink", false);
-    peashooter.blinkTimer = randomRange(2.0f, 3.5f);
+    peashooter.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
+    peashooter.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
   if (peashooter.timer <= 0) {
     //peashooter.timer = GENERATE_BULLET_TIMER;
-    if (peashooter.timer > -1000) {
-      peashooter.reAnimator.playAnimation("anim_shooting", false);
+    if (peashooter.timer > -10000) {
+      peashooter.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
       peashooter.timer = -10000;
 
     }
@@ -64,25 +75,4 @@ void drawPeashooter(Plant& peashooter) {
   //static sf::RectangleShape rec({3, 3});
   //rec.setPosition({300, 300});
   //rec.setFillColor(sf::Color(0, 255, 0, 255));
-
-
-  /*sf::Vector2f currPOS =
-  {
-    ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-      * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[12] + 50,
-
-      ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-      * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 10
-
-  };*/
-
-  //std::cout << "currPos: (" << currPOS.x << ", " << currPOS.y << ")\n";
-  //std::cout << "mouth_x: " << peashooter.reAnimator.curTransforms["idle_mouth"].x << "\n";
-  //rec.setPosition(currPOS);
-  //window->draw(rec);
-
-
-  //window->draw(rec);
-
-  //window->draw(peashooter.sprite);
 }

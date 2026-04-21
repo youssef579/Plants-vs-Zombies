@@ -64,3 +64,98 @@ bool updateCheckbox(Checkbox& cb, bool& target) {
   }
   return false;
 }
+
+void drawTimeModifier(float dt) {
+  static sf::Texture timeModifierT_1x = getTexture("assets/UI/TimeModifier/timeModifier_1x.png");
+  static sf::Texture timeModifierT_2x = getTexture("assets/UI/TimeModifier/timeModifier_2x.png");
+  static sf::Texture timeModifierT_3x = getTexture("assets/UI/TimeModifier/timeModifier_3x.png");
+  //static sf::Sprite  timeModifierS(timeModifierT_1x);
+  static sf::Sprite timeModifierS = []() {
+      sf::Sprite s(timeModifierT_1x);
+      s.setOrigin({ s.getLocalBounds().size.x , 0});
+      s.setPosition({ (float)WINDOW_SIZE.x + 4 , -46 });
+      s.setScale({0.85f, 0.85f});
+      return s;
+    }();
+  static PopupUI timeModifierPopup = []() {
+      PopupUI timeModifierPopup;
+      timeModifierPopup.init(&timeModifierS, timeModifierS.getPosition(), 46.0f, 120.0f, 1.0f);
+      return timeModifierPopup;
+    }();
+
+  
+  static int lastTimeModifier = 1;
+  
+  if (lastTimeModifier != settings.timeModifier) {
+    switch (settings.timeModifier) {
+    case 1: timeModifierS.setTexture(timeModifierT_1x); break;
+    case 2: timeModifierS.setTexture(timeModifierT_2x); break;
+    case 3: timeModifierS.setTexture(timeModifierT_3x); break;
+    }
+    lastTimeModifier = settings.timeModifier;
+
+    timeModifierPopup.trigger();
+
+  }
+
+
+
+  timeModifierPopup.update(dt / settings.timeModifier); // to keep speed const
+  if(timeModifierPopup.state != PopupUI::Idle)
+    window->draw(timeModifierS);
+
+}
+
+
+
+
+void PopupUI::init(sf::Sprite *sp, sf::Vector2f startPos, float dropDistance, float moveSpeed, float wd) {
+  sprite = sp;
+  sprite->setPosition(startPos);
+  startY = startPos.y;
+  targetY = startPos.y + dropDistance;
+  speed = moveSpeed;
+  waitDuration = wd;
+}
+
+void PopupUI::trigger() {
+  if (state == UIState::Idle || state == UIState::MovingUp) {
+    state = UIState::MovingDown;
+  }
+
+  waitTimer.restart();
+}
+
+void PopupUI::update(float dt) {
+  sf::Vector2f pos = sprite->getPosition();
+
+  switch (state) {
+  case UIState::MovingDown:
+    pos.y += speed * dt;
+    if (pos.y >= targetY) {
+      pos.y = targetY;
+      state = UIState::Waiting;
+      waitTimer.restart();
+    }
+    break;
+
+  case UIState::Waiting:
+    if (waitTimer.getElapsedTime().asSeconds() >= waitDuration) {
+      state = UIState::MovingUp;
+    }
+    break;
+
+  case UIState::MovingUp:
+    pos.y -= speed * dt;
+    if (pos.y <= startY) {
+      pos.y = startY;
+      state = UIState::Idle;
+    }
+    break;
+
+  //case UIState::Idle:
+    //break;
+  }
+
+  sprite->setPosition(pos);
+}

@@ -50,6 +50,7 @@ struct Sun {
 
   // Public Functions (Related to all Sun structs)
   static void manageSuns(float dt, State s = Falling); // Manages spawning , update , draw and hover
+  static void drawAll();
   static void generate(sf::Vector2f pos, int val, bool isSunFlower);
   static void spawn(int val = 25);
 };

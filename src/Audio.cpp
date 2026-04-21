@@ -46,6 +46,7 @@ void Sounds::play(std::string op) {
   else if (op == "Tap1") sound = new sf::Sound(sounds.buffers.tap1);
   else if (op == "Tap2") sound = new sf::Sound(sounds.buffers.tap2);
   else if (op == "sunFlowerPop") sound = new sf::Sound(sounds.buffers.sunFlowerPop);
+  else if (op == "Shovel") sound = new sf::Sound(sounds.buffers.shovel);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -68,6 +69,7 @@ void Sounds::init() {
   sounds.buffers.tap1          = getSoundBuffer(sounds.paths.tap1);
   sounds.buffers.tap2          = getSoundBuffer(sounds.paths.tap2);
   sounds.buffers.sunFlowerPop  = getSoundBuffer(sounds.paths.sunFlowerPop);
+  sounds.buffers.shovel  = getSoundBuffer(sounds.paths.shovel);
 
 }
 

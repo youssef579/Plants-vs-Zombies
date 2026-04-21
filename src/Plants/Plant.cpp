@@ -1,11 +1,13 @@
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
+#include <Plants/Tallnut.hpp>
 #include <Plants/Plant.hpp>
 #include <globals.hpp>
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Repeaterpea.hpp>
 #include <iostream>
+
 
 float getPlantHealth(PlantType type){
   float health;
@@ -24,6 +26,9 @@ float getPlantHealth(PlantType type){
       break;
     case REPEATERPEA:
       health = REPEATERPEA_HEALTH;
+      break;
+    case TALLNUT:
+      health = TALLNUT_HEALTH;
       break;
   }
 
@@ -47,6 +52,9 @@ float getPlantTimer(PlantType type){
       break;
     case REPEATERPEA:
       timer = GENERATE_REPEATERBULLET_TIMER;
+      break;
+    case TALLNUT:
+      timer = 0;
       break;
   }
 
@@ -100,6 +108,7 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefiniti
   switch (plantType) {
   case SUN_FLOWER:
     reAnimator.playAnimation("idle");
+    timer--;
     break;
   case WALLNUT:
     reAnimator.playAnimation("anim_idle");
@@ -115,6 +124,9 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefiniti
   case REPEATERPEA:
     reAnimator.playAnimation("anim_idle");
     reAnimator.playAnimation("anim_head_idle");
+    break;
+  case TALLNUT:
+    reAnimator.playAnimation("anim_idle");
     break;
   }
 }
@@ -136,11 +148,15 @@ void Plant::update(float dt) {
     case REPEATERPEA:
       updateRepeaterpea(*this, dt);
       break;
+    case TALLNUT:
+      updateTallnut(*this, dt);
+      break;
   }
 }
 
 void Plant::draw() {
   reAnimator.draw();
+  //reAnimator.drawHitbox();
   switch (plantType) {
     case SUN_FLOWER:
       drawSunFlower(*this);
@@ -156,6 +172,9 @@ void Plant::draw() {
       break;
     case REPEATERPEA:
       drawRepeaterpea(*this);
+      break;
+    case TALLNUT:
+      drawTallnut(*this);
       break;
   }
 }

@@ -1,23 +1,31 @@
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Plant.hpp>
-#include<Bullet.hpp>
+#include <Bullet.hpp>
+#include <Zombies/Zombie.hpp>
 
 void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
   //animateSpritesheet(snowpeaShooter.sheet, dt);
   snowpeaShooter.reAnimator.update(dt);
 
-  snowpeaShooter.timer -= dt;
+  // Zombie detection
+  if (Zombie::isZombieAliveInRow(snowpeaShooter.row, snowpeaShooter.reAnimator.getPosition().x + 70.0f)) // only shoot when there is a zombie in the row
+    snowpeaShooter.timer -= dt;
+  else {
+    snowpeaShooter.reAnimator.stopAnimation("anim_shooting");
+    snowpeaShooter.timer = GENERATE_SNOWBULLET_TIMER;
+  }
+
   snowpeaShooter.blinkTimer -= dt;
 
   if (snowpeaShooter.blinkTimer <= 0) {
-    snowpeaShooter.reAnimator.playAnimation("anim_blink", false);
-    snowpeaShooter.blinkTimer = randomRange(2.0f, 3.0f);
+    snowpeaShooter.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
+    snowpeaShooter.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
   if (snowpeaShooter.timer <= 0) {
     //peashooter.timer = GENERATE_BULLET_TIMER;
     if (snowpeaShooter.timer > -1000) {
-      snowpeaShooter.reAnimator.playAnimation("anim_shooting", false);
+      snowpeaShooter.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
       snowpeaShooter.timer = -10000;
 
     }
