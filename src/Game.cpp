@@ -168,7 +168,7 @@ void updateGame() {
 
 
     shovel.drawMovingShovel();
-    drawTimeModifier();
+    drawTimeModifier(dt);
 
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();

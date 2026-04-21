@@ -6,6 +6,7 @@
 
 sf::RenderWindow *window;
 sf::View *view;
+sf::View *gameView;
 const sf::Vector2u WINDOW_SIZE = {1150, 606};
 
 bool isMousePressed, isMouseReleased;
@@ -18,6 +19,10 @@ void initWindow() {
   view = new sf::View();
   view->setSize((sf::Vector2f)WINDOW_SIZE);
   view->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
+
+  gameView = new sf::View();
+  gameView->setSize((sf::Vector2f)WINDOW_SIZE);
+  gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
 
   setWindowMetaData();
   getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
@@ -125,7 +130,8 @@ void handleEvents() {
         }
         break;
       case sf::Keyboard::Key::Tab:
-        settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
+        if(gameState != 0)
+          settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
       }
     }

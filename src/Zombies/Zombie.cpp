@@ -1,5 +1,6 @@
 #include <Zombies/Zombie.hpp>
 #include <Window.hpp>
+#include <BackgroundManager.hpp>
 
 Array<Zombie> zombies[ROWS_NUMBER];
 
@@ -56,6 +57,7 @@ void Zombie::createZombie(float x, float y, Type type) {
     zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
+    zombie->reAnimator.setTrackVisibility("anim_hair", false);
     zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
@@ -70,6 +72,7 @@ void Zombie::createZombie(float x, float y, Type type) {
     zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
+    zombie->reAnimator.setTrackVisibility("anim_hair", false);
     zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
@@ -127,13 +130,6 @@ void Zombie::setSprite() {
     if (!reAnimator.isPlayingAnimation("anim_walk"))
       reAnimator.playAnimation("anim_walk", LoopType::Loop);
   }
-  //else if (state == Zombie::State::Dying) {
-  //  reAnimator.stopAnimation("anim_walk");
-  //  reAnimator.stopAnimation("anim_eat");
-  //  /*if (!reAnimator.isPlayingAnimation("anim_death"))
-  //    reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame);*/
-  //  
-  //}
     /*std::string location = "assets/Zombies/" + types[type] + (headless ? "/headless_" : "/") + states[state] + ".png";
     sf::Texture& texture = getTexture(location);
     sprite.setTexture(texture);
@@ -147,9 +143,8 @@ bool Zombie::update(float dt) {
   reAnimator.update(dt);
   gridPosition = positionToGrid(reAnimator.getPosition());
   onGrid = (gridPosition != sf::Vector2{-1, -1});
-  //takeDamage(0);  // Until Hit Detection is Implemented
   checkState(dt);
-  draw(dt);
+  //draw(dt);
   return health > 0;
 }
 
@@ -236,7 +231,7 @@ void Zombie::die() {
 
 void Zombie::updateDeath(float dt) {
   if (!reAnimator.isPlayingAnimation("anim_death")) {
-    // Zombie is deleted completely
+    remove = true;
   }
   else {
     // will be changed later into a better option
@@ -268,14 +263,21 @@ void Zombie::updateAll(float dt) {
       zombies[r][i].update(dt);
     }
   }
+
+  for (int r = 0; r < ROWS_NUMBER; r++) {
+    zombies[r].erase([](Zombie& z) { return z.remove; });
+  }
+
 }
 
 void Zombie::drawAll(float dt) {
+  window->setView(*gameView);
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
       zombies[r][i].draw(dt);
     }
   }
+  window->setView(*view);
 }
 
 

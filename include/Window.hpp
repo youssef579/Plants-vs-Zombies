@@ -4,7 +4,8 @@
 #include <Weather.hpp>
 
 extern sf::RenderWindow *window;
-extern sf::View *view;
+extern sf::View *view; // for static objects (background & UI)
+extern sf::View *gameView; // For objects that moves with the camera (plants & zombies)
 extern const sf::Vector2u WINDOW_SIZE;
 
 void initWindow();

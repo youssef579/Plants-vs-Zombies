@@ -92,6 +92,9 @@ void LevelManager::init() {
 
   camera.setSize(sf::Vector2f(800.f, 600.f));
   camera.setCenter(sf::Vector2f(490.f, 312.f));
+  gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+  //gameView->setCenter(sf::Vector2f(490.f, 312.f));
+  //gameView->setCenter(view->getCenter());
 }
 
 void LevelManager::spawnDirt(sf::Vector2f position) {
@@ -143,9 +146,18 @@ void LevelManager::update(float dt) {
   if (isIntroRunning) {
     introTimer += dt;
 
-    if (introTimer < 1.5f) camera.zoom(1.0f - (0.05 * dt));
-    else if (introTimer >= 1.5f && introTimer < 2.2f) camera.move(sf::Vector2f(400.f * dt, 0.f));
-    else if (introTimer >= 5.5f && introTimer < 6.2f) camera.move(sf::Vector2f(-400.f * dt, 0.f));
+    if (introTimer < 1.5f) {
+      camera.zoom(1.0f - (0.05 * dt));
+      gameView->zoom(1.0f - (0.05 * dt));
+    }
+    else if (introTimer >= 1.5f && introTimer < 2.2f) {
+      camera.move(sf::Vector2f(400.f * dt, 0.f));
+      gameView->move(sf::Vector2f(400.f * dt, 0.f));
+    }
+    else if (introTimer >= 5.5f && introTimer < 6.2f) {
+      camera.move(sf::Vector2f(-400.f * dt, 0.f));
+      gameView->move(sf::Vector2f(-400.f * dt, 0.f));
+    }
     else if (introTimer >= 8.5f) {
       isIntroRunning = false;
       startPlanting();

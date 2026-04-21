@@ -60,7 +60,7 @@ struct Zombie {
 
     bool headless = false;
     bool enraged = false;   // For Newspaper Zombie
-
+    bool remove = false;
 
     Zombie(sf::Vector2f pos, ReAnimationDefinition *def);
     bool update(float dt);  // Return True if Zombie is Alive
