@@ -159,7 +159,7 @@ void Zombie::takeDamage(float damage) {
     if (health <= 40 && type == Zombie::Type::Flag)
       reAnimator.child->trackInstances[1].imageOverride
         = ReAnimator::getDefinition(REANIM_FLAGPOLE)->textureMap["IMAGE_REANIM_ZOMBIE_FLAG3"];
-    if (health <= 75 && health > 50) {
+    if (health <= healths[type]*0.75f && health > healths[type]*0.5f) {
       if (type == Zombie::Type::Conehead)
         reAnimator.trackInstances[40].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_CONE2"];
@@ -167,7 +167,7 @@ void Zombie::takeDamage(float damage) {
         reAnimator.trackInstances[41].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_BUCKET2"];
     }
-    else if (health < 50 && health >= 20) {
+    else if (health < healths[type]*0.5f && health >= healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
         reAnimator.trackInstances[40].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_CONE3"];
@@ -175,7 +175,7 @@ void Zombie::takeDamage(float damage) {
         reAnimator.trackInstances[41].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_BUCKET3"];
     }
-    else if (health < 20) {
+    else if (health < healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
         reAnimator.setTrackVisibility("anim_cone", false);
       else if (type == Zombie::Type::Buckethead)
