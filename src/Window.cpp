@@ -24,7 +24,7 @@ void initWindow() {
   gameView->setSize((sf::Vector2f)WINDOW_SIZE);
   gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
 
-  setWindowMetaData();
+
   getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
 }
 
@@ -36,7 +36,6 @@ void setWindowMetaData() { // Set icon, cursor and window settings after creatin
 
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
-
   setCursorMain();
 }
 
@@ -58,6 +57,7 @@ void getLetterboxView(int windowWidth, int windowHeight) {
 
     view->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
     dayLevel.camera.setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
+    gameView->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
 }
 
 void setCursorMain() {

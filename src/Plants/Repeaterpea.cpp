@@ -40,6 +40,7 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
         * ReAnimator::transformToSFML(repeaterpea.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
 
     };
+    sounds.play((rand() & 1) ? "Throw1" : "Throw2");
     Bullet newBullet = { PEA,{currPOS.x,currPOS.y},repeaterpea.row };
     bullets.push(newBullet);
 
@@ -59,6 +60,7 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
         * ReAnimator::transformToSFML(repeaterpea.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
 
     };
+    sounds.play((rand() & 1) ? "Throw1" : "Throw2");
     Bullet newBullet = { PEA,{currPOS.x,currPOS.y},repeaterpea.row };
     bullets.push(newBullet);
 

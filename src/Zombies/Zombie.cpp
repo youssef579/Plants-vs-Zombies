@@ -277,13 +277,21 @@ void Zombie::drawAll(float dt) {
       zombies[r][i].draw(dt);
     }
   }
+
+  /*sf::RectangleShape rec({2, 1000});
+  rec.setFillColor(sf::Color(255, 0, 0, 255));
+  rec.setPosition({ 1130 , 0});
+  window->draw(rec);*/
+
   window->setView(*view);
 }
 
 
 bool Zombie::isZombieAliveInRow(int row, float startPosX) {
   for (int i = 0; i < zombies[row].size; i++) {
-    if (zombies[row][i].health > 0 && zombies[row][i].reAnimator.getPosition().x >= startPosX)
+    if (zombies[row][i].health > 0 && // alive
+      zombies[row][i].reAnimator.getPosition().x >= startPosX && // in front of plant
+      zombies[row][i].reAnimator.getPosition().x <= 1130) // inside play area
       return true;
   }
   return false;

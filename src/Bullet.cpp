@@ -42,6 +42,7 @@ void Bullet::update(float deltaTime) {
       if (zombies[row][i].reAnimator.getGlobalBounds().contains(sprite.getPosition())) {
         if (!(zombies[row][i].health > 0)) continue; // skip dead zombies
         // Bullet hit zombie
+        sounds.play("Splat" + std::to_string(randomRange(1, 3)));
         zombies[row][i].takeDamage(damage);
         particleTimer = PARTICLE_DEFAULT_TIMER;
 
