@@ -87,6 +87,7 @@ void updateGrid(float dt){
                 packets[k].reloadTimer = packets[k].reloadDuration;
                 Sun::sunBalance -= packets[k].cost;
                 grid[i][j].therePlantInBounders = 0;
+                sounds.play((rand() & 1) ? "Plant1" : "Plant2");
               
               } 
 

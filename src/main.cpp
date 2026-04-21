@@ -21,6 +21,7 @@ int main() {
   initWeather();
   initReAnimDefs();
   pauseMenu.init();
+  setWindowMetaData();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));

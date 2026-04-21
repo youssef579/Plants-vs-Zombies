@@ -148,18 +148,30 @@ void LevelManager::update(float dt) {
     introTimer += dt;
     float gameViewOffset = 1.5f;
     if (introTimer < 1.5f) {
-      camera.zoom(1.0f - (0.05 * dt));
+      //camera.zoom(1.0f - (0.05 * dt));
       //gameView->zoom(1.0f - (0.05 * dt));
+      float currentZoom = 1 - (introTimer / 1.5f)*0.075f;
+      camera.setSize({800.0f * currentZoom, 600.0f * currentZoom});
     }
-    else if (introTimer >= 1.5f && introTimer < 2.2f) {
+    /*else if (introTimer >= 1.5f && introTimer < 2.2f) {
       camera.move(sf::Vector2f(400.f * dt, 0.f));
       gameView->move(sf::Vector2f(400.f * dt * gameViewOffset, 0.f));
     }
     else if (introTimer >= 5.5f && introTimer < 6.2f) {
       camera.move(sf::Vector2f(-400.f * dt, 0.f));
       gameView->move(sf::Vector2f(-400.f * dt * gameViewOffset, 0.f));
+    }*/
+    else if (introTimer >= 1.5f && introTimer < 2.2f) {
+      camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
+      gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
+    }
+    else if (introTimer >= 5.5f && introTimer < 6.2f) {
+      camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
+      gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 8.5f) {
+      camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
+      gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
       startPlanting();
     }
