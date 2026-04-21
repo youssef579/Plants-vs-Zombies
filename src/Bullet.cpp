@@ -1,8 +1,9 @@
+#include <cmath>
 #include <globals.hpp>
 #include <AssetsManager.hpp>
 #include <Bullet.hpp>
 #include <Window.hpp>
-#include <cmath>
+#include <Zombies/Zombie.hpp>
 
 Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
     : sprite(typeValue == PEA ? getTexture("assets/bullets/pea.png") : getTexture("assets/bullets/peaice.png")) {
@@ -34,10 +35,30 @@ void Bullet::update(float deltaTime) {
     float distance = BULLET_VELOCITY * deltaTime;
     sprite.move({distance, 0});
     shadow.move({distance, 0});
+
+    // Check zombie
+
+    for (int i = 0; i < zombies[row].size; i++) {
+      if (zombies[row][i].reAnimator.getGlobalBounds().contains(sprite.getPosition())) {
+        if (!(zombies[row][i].health > 0)) continue; // skip dead zombies
+        // Bullet hit zombie
+        zombies[row][i].takeDamage(damage);
+        particleTimer = PARTICLE_DEFAULT_TIMER;
+
+        if (type == PEA)
+          sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
+        else if (type == SNOWPEA)
+          sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
+
+        sprite.setTextureRect(sf::IntRect({ 24 * randomRange(0, 3), 0 }, { 24, 24 }));
+      }
+
+    }
+
     if (sprite.getPosition().x > WINDOW_SIZE.x) { // Bullet out of bounds
       remove = true;
     }
-    else if (sprite.getPosition().x > 1000) { // This is only made to show the particles effect, will be removed later
+    else if (sprite.getPosition().x > 1600) { // This is only made to show the particles effect, will be removed later
       particleTimer = PARTICLE_DEFAULT_TIMER;
 
       if (type == PEA)

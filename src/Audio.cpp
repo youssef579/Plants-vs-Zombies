@@ -1,3 +1,4 @@
+#include <Array.hpp>
 #include <Audio.hpp>
 #include <iostream>
 #include <globals.hpp>
@@ -11,11 +12,9 @@
 */
 
 
-sf::Sound* Sounds::sfxArray[Sounds::sfxArraySize];
-int Sounds::sfxArrayCntr = 0;
+Array<sf::Sound> Sounds::sfxArray;
 sf::Music Music::container;
 Sounds::Buffers Sounds::buffers;
-
 
 void Music::play(std::string op) {
   std::string path;
@@ -47,6 +46,7 @@ void Sounds::play(std::string op) {
   else if (op == "Tap1") sound = new sf::Sound(sounds.buffers.tap1);
   else if (op == "Tap2") sound = new sf::Sound(sounds.buffers.tap2);
   else if (op == "sunFlowerPop") sound = new sf::Sound(sounds.buffers.sunFlowerPop);
+  else if (op == "Shovel") sound = new sf::Sound(sounds.buffers.shovel);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -57,55 +57,32 @@ void Sounds::play(std::string op) {
   sound->setVolume(settings.soundFXVolume);
   sound->play();
 
-  // Save sound obj in array
-  if (sounds.sfxArrayCntr >= sounds.sfxArraySize) { //Prevent possible out of bounds error
-    std::cerr << "FATAL ERROR: Maximum simultaneous SFX reached (" << sounds.sfxArraySize << ")" << std::endl;
-    std::system("pause");
-    exit(1);
-    return;
-  }
-
-  sounds.sfxArray[sounds.sfxArrayCntr] = sound;
-  sounds.sfxArrayCntr++;
+  sounds.sfxArray.push(*sound);
   update();
 }
 
 void Sounds::init() {
-  sounds.buffers.collectSun    = getSound(sounds.paths.collectSun);
-  sounds.buffers.zombiesComing = getSound(sounds.paths.zombiesComing);
-  sounds.buffers.pauseSound    = getSound(sounds.paths.pauseSound);
-  sounds.buffers.buttonClick   = getSound(sounds.paths.buttonClick);
-  sounds.buffers.tap1          = getSound(sounds.paths.tap1);
-  sounds.buffers.tap2          = getSound(sounds.paths.tap2);
-  sounds.buffers.sunFlowerPop  = getSound(sounds.paths.sunFlowerPop);
+  sounds.buffers.collectSun    = getSoundBuffer(sounds.paths.collectSun);
+  sounds.buffers.zombiesComing = getSoundBuffer(sounds.paths.zombiesComing);
+  sounds.buffers.pauseSound    = getSoundBuffer(sounds.paths.pauseSound);
+  sounds.buffers.buttonClick   = getSoundBuffer(sounds.paths.buttonClick);
+  sounds.buffers.tap1          = getSoundBuffer(sounds.paths.tap1);
+  sounds.buffers.tap2          = getSoundBuffer(sounds.paths.tap2);
+  sounds.buffers.sunFlowerPop  = getSoundBuffer(sounds.paths.sunFlowerPop);
+  sounds.buffers.shovel  = getSoundBuffer(sounds.paths.shovel);
 
 }
 
 void Sounds::update() {
-  for (int i = 0; i < sounds.sfxArrayCntr; ++i)
-  {
-    if (sounds.sfxArray[i]->getStatus() == sf::Sound::Status::Stopped) //if sfx has finished
-    {
-      delete sounds.sfxArray[i];
-      sounds.sfxArray[i] = nullptr;
-
-      for (int j = i; j < sounds.sfxArrayCntr - 1; j++) //reorganize the array
-      {
-        sounds.sfxArray[j] = sounds.sfxArray[j + 1];
-      }
-
-      sounds.sfxArray[sounds.sfxArrayCntr - 1] = nullptr;
-      sounds.sfxArrayCntr--;
-      i--; //check sfxArray[i] again (new value)
-    }
-  }
+  sounds.sfxArray.erase([](sf::Sound &sound) {
+    return sound.getStatus() == sf::Sound::Status::Stopped;
+  });
 }
 
 void Sounds::updateVolume() {
   music.container.setVolume(settings.musicVolume);
-  for (int i = 0; i < sounds.sfxArrayCntr; i++) {
-    sounds.sfxArray[i]->setVolume(settings.soundFXVolume);
-  }
+  for (int i = 0; i < sounds.sfxArray.size; i++)
+    sounds.sfxArray[i].setVolume(settings.soundFXVolume);
   gameWeather.updateVolume();
 
 }

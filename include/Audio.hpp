@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Array.hpp>
 #include <SFML/Audio.hpp>
 #include <Files.hpp> // To access settings
 #include <AssetsManager.hpp>
@@ -18,9 +19,7 @@ struct Music {
 };
 
 struct Sounds {
-  static constexpr int sfxArraySize = 255;
-  static sf::Sound *sfxArray[sfxArraySize];
-  static int sfxArrayCntr;
+  static Array<sf::Sound> sfxArray;
 
   struct Buffers {
     sf::SoundBuffer
@@ -30,7 +29,8 @@ struct Sounds {
       buttonClick,
       tap1,
       tap2,
-      sunFlowerPop;
+      sunFlowerPop,
+      shovel;
   };
 
   struct Paths {
@@ -41,7 +41,8 @@ struct Sounds {
       buttonClick = "assets/sounds/sfx_buttonClick.ogg",
       tap1 = "assets/sounds/sfx_tap1.ogg",
       tap2 = "assets/sounds/sfx_tap2.ogg",
-      sunFlowerPop = "assets/sounds/sfx_sunFlowerPop.wav";
+      sunFlowerPop = "assets/sounds/sfx_sunFlowerPop.wav",
+      shovel = "assets/sounds/sfx_shovel.ogg";
   };
 
 

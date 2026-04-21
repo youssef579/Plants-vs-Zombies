@@ -9,6 +9,11 @@
 const int MAX_TRACKS = 60;
 
 
+enum LoopType {
+  PlayOnce,
+  Loop,
+  HoldLastFrame
+};
 
 struct Transform {
   float
@@ -59,12 +64,9 @@ struct TrackInstance {
 
 struct ActiveLabel {
   Label *label;
-  bool loop = false;
+  LoopType loop = LoopType::PlayOnce;
   float offset = 0.0f;
-
-  //bool operator<(const ActiveLabel &other) const { // used for set<> sorting
-  //  return label < other.label;
-  //}
+  float holdTimer = 0.0f; // Time to hold after animation end
 };
 
 struct ReAnimationDefinition {
@@ -106,20 +108,27 @@ enum ReAnimationDef {
   REANIM_PEASHOOTER = 2,
   REANIM_WALLNUT = 3,
   REANIM_SNOWPEA = 4,
-  REANIM_REPEATER = 5
+  REANIM_REPEATER = 5,
+  REANIM_TALLNUT = 6,
+  REANIM_ZOMBIE_BASIC = 7,
+  REANIM_FLAGPOLE = 8
 };
 
 struct ReAnimator {
+
+  ReAnimator *child = nullptr;
+  std::string childsParentTrack = "";
+  bool hasParent = false;
 
   ReAnimationDefinition *reAnimDef = nullptr;
   sf::RenderWindow *window;
   float x=0, y=0, sx=1, sy=1;
   float animSpeedMulti = 1.0f; // multiplier of animation speed
   float opacityMultiplier=1.0f;
+  bool allowMotion = true;
 
 
-
-
+  sf::Transform rootMatrix;
 
   float timer=0.0f; // Global animTime
   std::vector<TrackInstance> trackInstances;
@@ -154,10 +163,10 @@ struct ReAnimator {
   static int getFirstValidIdx(Track &track);
 
 
-  void playLabel(std::string labelName, bool loop=true);
+  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
   void stopLabel(int labelIdx);
 
-  void playAnimation(std::string labelName, bool loop=true);
+  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
   void stopAnimation(std::string labelName);
   //void replaceWithQueueAnimation(std::string labelNameA, std::string labelNameB);
 

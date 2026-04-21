@@ -2,6 +2,7 @@
 
 #include <Array.hpp>
 #include <SFML/Graphics.hpp>
+#include <Plants/Plant.hpp>
 
 struct SeedPacket {
   int cost;
@@ -10,9 +11,11 @@ struct SeedPacket {
   sf::Sprite enabledSprite;
   sf::Sprite disabledSprite;
   sf::Sprite plantSprite;
+  sf::Sprite plantShadow;
+  PlantType plantType;
   bool selected;
 
-  SeedPacket(int costValue, float reloadDurationValue, std::string plantName, sf::Vector2f position, sf::Sprite preview);
+  SeedPacket(int costValue, float reloadDurationValue, std::string plantName, sf::Vector2f position, sf::Sprite preview, PlantType planttype);
 
   void update(float dt);
 

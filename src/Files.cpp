@@ -9,6 +9,7 @@ int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
 float Settings::musicVolume;
 float Settings::soundFXVolume;
 float Settings::weatherFXVolume;
+int Settings::timeModifier; // not saved in storage
 bool Settings::weatherActive;
 bool Settings::fullscreen;
 
@@ -35,6 +36,7 @@ void loadSettingsFile() {
     settingsFile >> settings.musicVolume;
     settingsFile >> settings.soundFXVolume;
     settingsFile >> settings.weatherFXVolume;
+    settings.timeModifier = 1;
     settingsFile >> settings.weatherActive;
     settingsFile >> settings.fullscreen;
   }
@@ -45,8 +47,9 @@ void loadSettingsFile() {
     settings.musicVolume     =  settings.DEFAULT.musicVolume;
     settings.soundFXVolume   =  settings.DEFAULT.soundFXVolume;
     settings.weatherFXVolume =  settings.DEFAULT.weatherFXVolume;
+    settings.timeModifier    =  settings.DEFAULT.timeModifier;
     settings.weatherActive   =  settings.DEFAULT.weatherActive;
-    settings.fullscreen   =  settings.DEFAULT.fullscreen;
+    settings.fullscreen      =  settings.DEFAULT.fullscreen;
     settingsFile << settings.DEFAULT.musicVolume << "\n";     //Music
     settingsFile << settings.DEFAULT.soundFXVolume << "\n";   //Sound FX
     settingsFile << settings.DEFAULT.weatherFXVolume << "\n"; //Weather FX

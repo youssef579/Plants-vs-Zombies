@@ -124,10 +124,15 @@ void PauseMenu::update() {
   //Update Checkboxes
   updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
   if (updateCheckbox(*checkboxFullscreen, settings.fullscreen)) {
-    if (settings.fullscreen)
+    if (settings.fullscreen) {
       window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
-    else
+      view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+      dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+    }
+    else {
       window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+      getLetterboxView(window->getSize().x, window->getSize().y);
+    }
     setWindowMetaData();
   }
 
@@ -142,10 +147,10 @@ void PauseMenu::update() {
 
 void PauseMenu::draw() {
 
-  Sun::manageSuns(0, Sun::State::Paused); // draw only mode
   drawUI();
   shovel.drawBank();
   drawSeedPackets();
+  Sun::drawAll();
 
   window->draw(overlay->overlayRect);
   window->draw(*backgroundS);

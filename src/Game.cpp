@@ -18,8 +18,10 @@
 #include <SunManager.hpp>
 #include <Array.hpp>
 #include <Bullet.hpp>
-#include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 #include <globals.hpp>
+#include <Grid.hpp>
+#include <Zombies/Zombie.hpp>
 
 int gameState = 0;
 /*
@@ -41,22 +43,48 @@ void updateGame() {
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
+  dt *= settings.timeModifier;
 
   switch (gameState) {
   case 0:
     updateHome();
     break;
   default:
-    //static Shovel shovel;
     if (runOnce) {
-      //pauseMenu.init();
       shovel.init();
       initPackets();
+      initGrid();
       dayLevel.init();
       gameWeather.isRaining = true;
-
+      for (int i = 0; i < ROWS_NUMBER; i++){
+        for (int j = 0; j < COLUMNS_NUMBER; j++){
+              // plants just for testing
+              //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
+        }
+      }
       music.play("DayStage");
+
+      //Zombie Testing
+      Zombie::createZombie(
+        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Regular, 2);
+      Zombie::createZombie(
+        grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[1][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Conehead, 1);
+      Zombie::createZombie(
+        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Buckethead, 0);
+      Zombie::createZombie(
+        grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[3][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Flag, 3);
+
+
       runOnce = false;
+
     }
 
     if (isPaused) {
@@ -72,30 +100,42 @@ void updateGame() {
       break;
     }
 
-    // These plants are for test only, gonna be removed in future
-    static Plant s(SUN_FLOWER, {500 ,300}, 1, getTexture("assets/Plants/sunflower.png"), 80, 80, 24, {1, 1}, ReAnimator::getDefinition(REANIM_SUNFLOWER));
-    static Plant t(WALLNUT, {300 ,200}, 1, getTexture("assets/Plants/wallnut.png"), 65, 73, 16, {1, 1}, ReAnimator::getDefinition(REANIM_WALLNUT));
-    static Plant p(PEASHOOTER, {300 ,300}, 1, getTexture("assets/Plants/peashooter.png"), 348, 359, 29, {0.225, 0.225}, ReAnimator::getDefinition(REANIM_PEASHOOTER));
-    static Plant q(SNOWPEASHOOTER, {300 ,400}, 1, getTexture("assets/Plants/Icepea.png"), 353, 368, 25, {0.218, 0.217}, ReAnimator::getDefinition(REANIM_SNOWPEA));
-    static Plant v(REPEATERPEA, {300 ,500}, 1, getTexture("assets/Plants/Repeaterpea.png"), 73, 71, 15, {1, 1}, ReAnimator::getDefinition(REANIM_REPEATER));
+    
 
+    //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
+    /*if (z4.health > 0)
+      z4.takeDamage(0.2);
+    if (z3.health > 0)
+      z3.takeDamage(0.2);
+    if (z2.health > 0)
+      z2.takeDamage(0.2);
+    if (z1.health > 0)
+      z1.takeDamage(0.2);*/
+    //static sf::Clock tmpC;
+    //static float tmp = 0;
+    //tmp = tmpC.getElapsedTime().asSeconds();
+    ////std::cout << "state: " << z1.state << "\n";
+    //if (tmp >= 2 && tmp <= 5) {
+    //  //tmp = 0;
+    //  z1.state = Zombie::State::Attacking;
+    //  //tmpC.reset();
+    //}
+    //else if (tmp >= 5 && tmp <= 8) {
+    //  z1.state = Zombie::State::Walking;
+    //}
+    //else if (tmp >= 8) {
+    //  if(z1.health > 0)
+    //    z1.takeDamage(10);
+    //}
+    
+    
 
-    s.update(dt);
-    t.update(dt);
-    p.update(dt);
-    q.update(dt);
-    v.update(dt);
+    updateGrid(dt);
 
     dayLevel.update(dt);
     dayLevel.draw(*window);
     window->setView(*view);
-    s.draw();
-    //window->draw(rec1);
-    t.draw();
-    p.draw();
-    q.draw();
-    v.draw();
-
+    drawGrid();
     
     for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
@@ -106,31 +146,29 @@ void updateGame() {
       return b.remove;
     });
 
+    Zombie::updateAll(dt);
+    Zombie::drawAll(dt);
+
     drawUI();
     shovel.drawBank();
     Sun::manageSuns(dt);
 
-    //for (int i = 0; i < packets.size; i++) {
-    //  packets[i].update(dt);
-    //  //packets[i].draw();
-    //}
     updateSeedPackets(dt);
     drawSeedPackets();
     
 
     shovel.update();
 
-    s.draw();
-    t.draw();
-    p.draw();
-    q.draw();
-    v.draw();
 
-    for (int i = 0; i < Sun::sunArrayCntr; i++) {
-      if (Sun::sunArray[i])
-        Sun::sunArray[i]->draw();
-    }
+
+    //drawGrid();
+
+    Sun::drawAll();
+
+
+
     shovel.drawMovingShovel();
+    drawTimeModifier(dt);
 
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
@@ -138,5 +176,3 @@ void updateGame() {
     break;
   }
 }
-
-
