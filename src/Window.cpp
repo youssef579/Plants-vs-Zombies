@@ -6,6 +6,7 @@
 
 sf::RenderWindow *window;
 sf::View *view;
+sf::View *gameView;
 const sf::Vector2u WINDOW_SIZE = {1150, 606};
 
 bool isMousePressed, isMouseReleased;
@@ -19,12 +20,16 @@ void initWindow() {
   view->setSize((sf::Vector2f)WINDOW_SIZE);
   view->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
 
+  gameView = new sf::View();
+  gameView->setSize((sf::Vector2f)WINDOW_SIZE);
+  gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
+
   setWindowMetaData();
   getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
 }
 
 void setWindowMetaData() { // Set icon, cursor and window settings after creating a window
-  window->setFramerateLimit(60);
+  window->setFramerateLimit(144);
 
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   window->setPosition(sf::Vector2i((desktop.size.x - window->getSize().x) / 2, (desktop.size.y - window->getSize().y) / 2));
@@ -123,6 +128,10 @@ void handleEvents() {
 
           isPaused = !isPaused;
         }
+        break;
+      case sf::Keyboard::Key::Tab:
+        if(gameState != 0)
+          settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
       }
     }

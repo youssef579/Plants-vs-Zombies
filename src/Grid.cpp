@@ -3,14 +3,14 @@
 #include <Packets/Shovel.hpp>
 #include <SunManager.hpp>
 
-Cell grid[ROWS_NUMBER][COLUMNS_NUMER];
+Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
 void initGrid(){
   float y = 120;
   const float offsetY = -12, offsetX = 3;
   for (int i = 0; i < ROWS_NUMBER; i++){
     float x = 134;
-    for (int j = 0; j < COLUMNS_NUMER; j++){
+    for (int j = 0; j < COLUMNS_NUMBER; j++){
       grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
@@ -28,16 +28,20 @@ void initGrid(){
 void updateGrid(float dt){
   bool isShovelDark = 0;
   for (int i = 0; i < ROWS_NUMBER; i++){
-      for (int j = 0; j < COLUMNS_NUMER; j++){
+      for (int j = 0; j < COLUMNS_NUMBER; j++){
           if (grid[i][j].plant.has_value()){
 
             grid[i][j].plant.value().update(dt);
 
             if (grid[i][j].plant.has_value() && grid[i][j].plant.value().health <= 0)
+              // Removed because of death
               grid[i][j].plant.reset();
 
-            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased)
+            if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased) {
+              // Removed using shovel
               grid[i][j].plant.reset();
+              sounds.play("Shovel");
+            }
 
               
             if (grid[i][j].plant.has_value() && shovel.selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && !grid[i][j].therePlantInBounders){
@@ -73,6 +77,9 @@ void updateGrid(float dt){
                   case REPEATERPEA:
                     grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_REPEATER));
                     break;
+                  case TALLNUT:
+                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    break;
                   default:
                     break;
                 }
@@ -99,9 +106,10 @@ void updateGrid(float dt){
 }
 
 void drawGrid(){
+  window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
-    for (int j = 0; j < COLUMNS_NUMER; j++){
-      window->draw(grid[i][j].rectangle);
+    for (int j = 0; j < COLUMNS_NUMBER; j++){
+      //window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
         grid[i][j].plant.value().draw();
@@ -116,4 +124,16 @@ void drawGrid(){
       }
     }
   }
+  window->setView(*view);
+}
+
+
+sf::Vector2i positionToGrid(sf::Vector2f pos) {
+  for (int i = 0; i < ROWS_NUMBER; i++) {
+    for (int j = 0; j < COLUMNS_NUMBER; j++) {
+      if (grid[i][j].rectangle.getGlobalBounds().contains(pos))
+        return { i, j };
+    }
+  }
+  return { -1, -1 }; // position out of grid bounds
 }

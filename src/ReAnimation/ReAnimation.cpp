@@ -83,7 +83,7 @@ void ReAnimator::update(float dt) {
   }
 
   for (auto ql : queuedLabels)
-    playAnimation(ql, true);
+    playAnimation(ql, LoopType::Loop);
 
 
   float deltaGround;
@@ -94,7 +94,7 @@ void ReAnimator::update(float dt) {
   //std::cout << "DG: " << deltaGround << "\n";
 
   // TODO: set dg threshold
-  if(deltaGround > 0.0f) x -= deltaGround;
+  if(deltaGround > 0.0f && allowMotion) x -= deltaGround;
 
 
   //std::cout << "END\n";
@@ -154,7 +154,8 @@ void ReAnimator::update(float dt) {
     -std::sin(skewX) * t.sx, std::cos(skewY) * t.sy, t.y,
     0.0f, 0.0f, 1.0f
   );*/
-
+  if (child)
+    child->update(dt);
 
 }
 
@@ -164,19 +165,25 @@ bool ReAnimator::updateLabel(ActiveLabel lab) {
   float labelOffseted = timer - lab.offset;
   float labelTime = label.start + std::fmod(labelOffseted, (float)(label.end - label.start));
 
-  if (labelTime >= label.end - 1) {
-    if(!lab.loop)
+  //std::cout << "offs: " << labelOffseted << " / labEnd: " << label.end << "\n";
+  //std::cout << "conditions: " << (labelOffseted >= label.end - 1) << "&" << (lab.loop == LoopType::HoldLastFrame) << "\n";
+  if (labelOffseted >= label.end - label.start - 1 && lab.loop == LoopType::HoldLastFrame) {
+    labelTime = label.end - 2;
+    labelOffseted = label.end - label.start + 0.999f;
+    if (timer - lab.offset - (label.end - label.start) >= lab.holdTimer * reAnimDef->fps)
       return false; // Label will be Destroyed
-    //labelTime = label.start -1 + 0.0001f;
-    //labelTime = label.start;
-    //labelOffseted = 0;
-    //labelOffseted = 1;
-    //return true;
   }
+  else if (labelTime >= label.end - 1) {
+    if (lab.loop == LoopType::PlayOnce)
+      return false; // Label will be Destroyed
+  }
+  //std::cout << "labelTime: " << labelTime << "\n";
   //std::cout << "Update Label " << label.name << ": " << timer << " / labelTime: " << labelTime << "\n";
+
   for (auto track : reAnimDef->tracks) {
     if (track.transforms[(int)labelTime].f == -1) continue;
     //std::cout << "Frame " << labelTime << "\n";
+    //std::cout << "lerping (" << (int)labelTime << " -> " << (int)labelTime + 1 << ")\n";
     curTransforms[track.name] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], labelOffseted - (int)labelOffseted);
 
   }
@@ -289,10 +296,21 @@ bool ReAnimator::updateLabel(ActiveLabel lab) {
 
 
 void ReAnimator::draw() {
-  sf::Transform rootMatrix;
-  rootMatrix.translate({ x, y });
-  rootMatrix.scale({ sx, sy });
+  if (!hasParent) {
+    rootMatrix = sf::Transform::Identity; // reset root
+    rootMatrix.translate({ x, y });
+    rootMatrix.scale({ sx, sy });
+  }
 
+  if (child) {
+    sf::Transform parCur = getEffectiveTransform(childsParentTrack);
+    sf::Transform parBase = getEffectiveBasePose(childsParentTrack);
+
+    // child inherits transformation of difference of parent
+    child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
+
+    child->draw();
+  }
 
   effectiveBasePoses.clear();
   effectiveTransforms.clear();
@@ -387,6 +405,8 @@ void ReAnimator::draw() {
 
     delete sprite;
   }
+
+  
 }
 
 
@@ -513,9 +533,9 @@ int ReAnimationDefinition::getLabelIndex(std::string labelName) {
   return -1; // label not found
 }
 
-void ReAnimator::playLabel(std::string labelName, bool loop) {
+void ReAnimator::playLabel(std::string labelName, LoopType loop, float holdTimer) {
   activeLabels.push_back({&reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
-    loop, timer});
+    loop, timer, holdTimer});
 }
 
 void ReAnimator::stopLabel(int labelIdx) {
@@ -535,10 +555,10 @@ void ReAnimator::stopLabel(int labelIdx) {
 //}
 
 
-void ReAnimator::playAnimation(std::string labelName, bool loop) {
+void ReAnimator::playAnimation(std::string labelName, LoopType loop, float holdTimer) {
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
   playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
-    loop);
+    loop, holdTimer);
 }
 
 void ReAnimator::stopAnimation(std::string labelName) {
@@ -816,27 +836,110 @@ void initReAnimDefs() {
     "idle_headleaf_tip_bottom", "idle_headleaf_nearest", "idle_headleaf_tip_top", "anim_face",
     "idle_mouth", "idle_shoot_blink", "anim_blink", "PeaShooter_eyebrow" };
   def->loadFiles("assets/Plants/repeater/repeater.json", 24, trackNames_repeater, {
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF",             "assets/Plants/repeater/PeaShooter_backleaf.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_LEFTTIP",     "assets/Plants/repeater/PeaShooter_backleaf_lefttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_RIGHTTIP",    "assets/Plants/repeater/PeaShooter_backleaf_righttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_STALK_BOTTOM",         "assets/Plants/repeater/PeaShooter_stalk_bottom.png"},
-    {"IMAGE_REANIM_PEASHOOTER_STALK_TOP",            "assets/Plants/repeater/PeaShooter_stalk_top.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF",            "assets/Plants/repeater/PeaShooter_frontleaf.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_RIGHTTIP",   "assets/Plants/repeater/PeaShooter_frontleaf_righttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_LEFTTIP",    "assets/Plants/repeater/PeaShooter_frontleaf_lefttip.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_FARTHEST",    "assets/Plants/repeater/PeaShooter_headleaf_farthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_3RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_3rdfarthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_NEAREST",     "assets/Plants/repeater/PeaShooter_headleaf_nearest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_BOTTOM",  "assets/Plants/repeater/PeaShooter_headleaf_tip_bottom.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_2RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_2rdfarthest.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_TOP",     "assets/Plants/repeater/PeaShooter_headleaf_tip_top.png"},
-    {"IMAGE_REANIM_PEASHOOTER_HEAD",                 "assets/Plants/repeater/PeaShooter_Head.png"},
-    {"IMAGE_REANIM_PEASHOOTER_MOUTH",                "assets/Plants/repeater/PeaShooter_mouth.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BLINK1",               "assets/Plants/repeater/PeaShooter_blink1.png"},
-    {"IMAGE_REANIM_PEASHOOTER_BLINK2",               "assets/Plants/repeater/PeaShooter_blink2.png"},
-    {"IMAGE_REANIM_PEASHOOTER_EYEBROW",              "assets/Plants/repeater/PeaShooter_eyebrow.png"}
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF",             "assets/Plants/repeater/PeaShooter_backleaf.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_LEFTTIP",     "assets/Plants/repeater/PeaShooter_backleaf_lefttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BACKLEAF_RIGHTTIP",    "assets/Plants/repeater/PeaShooter_backleaf_righttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_STALK_BOTTOM",         "assets/Plants/repeater/PeaShooter_stalk_bottom.png"},
+      {"IMAGE_REANIM_PEASHOOTER_STALK_TOP",            "assets/Plants/repeater/PeaShooter_stalk_top.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF",            "assets/Plants/repeater/PeaShooter_frontleaf.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_RIGHTTIP",   "assets/Plants/repeater/PeaShooter_frontleaf_righttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_FRONTLEAF_LEFTTIP",    "assets/Plants/repeater/PeaShooter_frontleaf_lefttip.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_FARTHEST",    "assets/Plants/repeater/PeaShooter_headleaf_farthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_3RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_3rdfarthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_NEAREST",     "assets/Plants/repeater/PeaShooter_headleaf_nearest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_BOTTOM",  "assets/Plants/repeater/PeaShooter_headleaf_tip_bottom.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_2RDFARTHEST", "assets/Plants/repeater/PeaShooter_headleaf_2rdfarthest.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEADLEAF_TIP_TOP",     "assets/Plants/repeater/PeaShooter_headleaf_tip_top.png"},
+      {"IMAGE_REANIM_PEASHOOTER_HEAD",                 "assets/Plants/repeater/PeaShooter_Head.png"},
+      {"IMAGE_REANIM_PEASHOOTER_MOUTH",                "assets/Plants/repeater/PeaShooter_mouth.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BLINK1",               "assets/Plants/repeater/PeaShooter_blink1.png"},
+      {"IMAGE_REANIM_PEASHOOTER_BLINK2",               "assets/Plants/repeater/PeaShooter_blink2.png"},
+      {"IMAGE_REANIM_PEASHOOTER_EYEBROW",              "assets/Plants/repeater/PeaShooter_eyebrow.png"}
     });
   definitions.push(def);
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_tallnut[] = { "anim_idle", "anim_blink_twice", "anim_blink_thrice" };
+  def->loadFiles("assets/Plants/tallnut/tallnut.json", 24, trackNames_tallnut, {
+      {"IMAGE_REANIM_TALLNUT_BODY", "assets/Plants/tallnut/Tallnut_body.png"},
+      {"IMAGE_REANIM_TALLNUT_BLINK1", "assets/Plants/tallnut/Tallnut_blink1.png"},
+      {"IMAGE_REANIM_TALLNUT_BLINK2", "assets/Plants/tallnut/Tallnut_blink2.png"},
+
+    {"IMAGE_REANIM_TALLNUT_CRACKED1", "assets/Plants/tallnut/Tallnut_cracked1.png"},
+    {"IMAGE_REANIM_TALLNUT_CRACKED2", "assets/Plants/tallnut/Tallnut_cracked2.png"}
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieBasic[42] = { "anim_superlongdeath", "anim_swim", "anim_death2",
+    "anim_death", "anim_walk2", "anim_walk", "anim_idle2", "anim_idle", "anim_eat",
+    "anim_waterdeath", "anim_dance", "_ground", "anim_innerarm3", "anim_innerarm2",
+    "anim_innerarm1", "Zombie_flaghand", "Zombie_innerarm_screendoor", "Zombie_neck",
+    "anim_head1", "Zombie_innerleg_upper", "Zombie_innerleg_lower", "Zombie_innerleg_foot",
+    "Zombie_outerleg_upper", "Zombie_outerleg_foot", "Zombie_outerleg_lower", "Zombie_body",
+    "Zombie_duckytube", "Zombie_whitewater", "Zombie_tie", "anim_head2", "anim_tongue",
+    "Zombie_mustache", "anim_screendoor", "Zombie_innerarm_screendoor_hand",
+    "Zombie_outerarm_screendoor", "Zombie_outerarm_hand", "Zombie_outerarm_upper",
+    "Zombie_whitewater2", "Zombie_outerarm_lower", "anim_hair", "anim_cone", "anim_bucket" };
+  def->loadFiles("assets/Zombies/Basic/zombieBasic.json", 42, trackNames_zombieBasic, {
+      {"IMAGE_REANIM_ZOMBIE_INNERARM_HAND",             "assets/Zombies/Basic/Zombie_innerarm_hand.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERARM_LOWER",           "assets/Zombies/Basic/Zombie_innerarm_lower.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERARM_UPPER",           "assets/Zombies/Basic/Zombie_innerarm_upper.png" },
+      { "IMAGE_REANIM_ZOMBIE_FLAGHAND",                 "assets/Zombies/Basic/Zombie_flaghand.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERARM_SCREENDOOR",      "assets/Zombies/Basic/Zombie_innerarm_screendoor.png" },
+      { "IMAGE_REANIM_ZOMBIE_NECK",                     "assets/Zombies/Basic/Zombie_neck.png" },
+      { "IMAGE_REANIM_ZOMBIE_HEAD",                     "assets/Zombies/Basic/Zombie_head.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERLEG_UPPER",           "assets/Zombies/Basic/Zombie_innerleg_upper.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERLEG_LOWER",           "assets/Zombies/Basic/Zombie_innerleg_lower.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERLEG_FOOT",            "assets/Zombies/Basic/Zombie_innerleg_foot.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERLEG_UPPER",           "assets/Zombies/Basic/Zombie_outerleg_upper.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERLEG_FOOT",            "assets/Zombies/Basic/Zombie_outerleg_foot.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERLEG_LOWER",           "assets/Zombies/Basic/Zombie_outerleg_lower.png" },
+      { "IMAGE_REANIM_ZOMBIE_BODY",                     "assets/Zombies/Basic/Zombie_body.png" },
+      { "IMAGE_REANIM_ZOMBIE_DUCKYTUBE",                "assets/Zombies/Basic/Zombie_duckytube.png" },
+      { "IMAGE_REANIM_ZOMBIE_DUCKYTUBE_INWATER",        "assets/Zombies/Basic/Zombie_duckytube_inwater.png" },
+      { "IMAGE_REANIM_ZOMBIE_WHITEWATER1",              "assets/Zombies/Basic/Zombie_whitewater1.png" },
+      { "IMAGE_REANIM_ZOMBIE_WHITEWATER2",              "assets/Zombies/Basic/Zombie_whitewater2.png" },
+      { "IMAGE_REANIM_ZOMBIE_WHITEWATER3",              "assets/Zombies/Basic/Zombie_whitewater3.png" },
+      { "IMAGE_REANIM_ZOMBIE_TIE",                      "assets/Zombies/Basic/Zombie_tie.png" },
+      { "IMAGE_REANIM_ZOMBIE_JAW",                      "assets/Zombies/Basic/Zombie_jaw.png" },
+      { "IMAGE_REANIM_ZOMBIE_TONGUE",                   "assets/Zombies/Basic/Zombie_tongue.png" },
+      { "IMAGE_REANIM_ZOMBIE_MUSTACHE1",                "assets/Zombies/Basic/Zombie_mustache1.png" },
+      { "IMAGE_REANIM_ZOMBIE_SCREENDOOR1",              "assets/Zombies/Basic/Zombie_screendoor1.png" },
+      { "IMAGE_REANIM_ZOMBIE_INNERARM_SCREENDOOR_HAND", "assets/Zombies/Basic/Zombie_innerarm_screendoor_hand.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_SCREENDOOR",      "assets/Zombies/Basic/Zombie_outerarm_screendoor.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_HAND",            "assets/Zombies/Basic/Zombie_outerarm_hand.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_HAND2",           "assets/Zombies/Basic/Zombie_outerarm_hand2.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_UPPER",           "assets/Zombies/Basic/Zombie_outerarm_upper.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_UPPER2",          "assets/Zombies/Basic/Zombie_outerarm_upper2.png" },
+      { "IMAGE_REANIM_ZOMBIE_SNORKLE_WHITEWATER3",      "assets/Zombies/Basic/Zombie_snorkle_whitewater1.png" },
+      { "IMAGE_REANIM_ZOMBIE_SNORKLE_WHITEWATER1",      "assets/Zombies/Basic/Zombie_snorkle_whitewater2.png" },
+      { "IMAGE_REANIM_ZOMBIE_SNORKLE_WHITEWATER2",      "assets/Zombies/Basic/Zombie_snorkle_whitewater3.png" },
+      { "IMAGE_REANIM_ZOMBIE_OUTERARM_LOWER",           "assets/Zombies/Basic/Zombie_outerarm_lower.png" },
+      { "IMAGE_REANIM_ZOMBIE_HAIR",                     "assets/Zombies/Basic/Zombie_hair.png" },
+      { "IMAGE_REANIM_ZOMBIE_CONE1",                    "assets/Zombies/Basic/Zombie_cone1.png" },
+      { "IMAGE_REANIM_ZOMBIE_CONE2",                    "assets/Zombies/Basic/Zombie_cone2.png" },
+      { "IMAGE_REANIM_ZOMBIE_CONE3",                    "assets/Zombies/Basic/Zombie_cone3.png" },
+      { "IMAGE_REANIM_ZOMBIE_BUCKET1",                  "assets/Zombies/Basic/Zombie_bucket1.png" },
+      { "IMAGE_REANIM_ZOMBIE_BUCKET2",                  "assets/Zombies/Basic/Zombie_bucket2.png" },
+      { "IMAGE_REANIM_ZOMBIE_BUCKET3",                  "assets/Zombies/Basic/Zombie_bucket3.png" }
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_flagpole[] = { "Zombie_flagpole", "Zombie_flag" };
+
+  def->loadFiles("assets/Zombies/Basic/flagpole.json", 2, trackNames_flagpole, {
+      {"IMAGE_REANIM_ZOMBIE_FLAGPOLE",     "assets/Zombies/Basic/Zombie_flagpole.png"},
+      {"IMAGE_REANIM_ZOMBIE_FLAG1",        "assets/Zombies/Basic/Zombie_flag1.png"},
+      {"IMAGE_REANIM_ZOMBIE_FLAG3",        "assets/Zombies/Basic/Zombie_flag3.png"}
+    });
+  definitions.push(def);
+  
 
 
 }

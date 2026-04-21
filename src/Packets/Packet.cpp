@@ -36,6 +36,13 @@ void initPackets() {
   sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
   repeaterpeaSprite.setTextureRect({ {0,0},{73, 71}});
   packets.push({200, 5, "repeated", {90 + 59.0f * 4, 11}, repeaterpeaSprite, REPEATERPEA});
+
+  sf::Texture &tallNutTexture = getTexture("assets/Plants/tallnut/Tallnut_body.png");
+  sf::Sprite tallNutSprite(tallNutTexture);
+  tallNutSprite.setScale({0.8f, 0.8f});
+  //tallNutSprite.setTextureRect({ {0, 0}, {65, 73} });
+  packets.push({ 125, 5, "tallnut", {90 + 59.0f * 5, 11}, tallNutSprite, TALLNUT });
+
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)

@@ -5,7 +5,7 @@
 
 
 Array<Sun> Sun::sunArray;
-int Sun::sunBalance = 0;
+int Sun::sunBalance = 1000; // initialized for testing
 float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 
@@ -123,7 +123,7 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
   //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;
   sun->reAnimator.setPosition(pos);
-  sun->reAnimator.playAnimation("main", true);
+  sun->reAnimator.playAnimation("main", LoopType::Loop);
 
   //sun->sprite.setOrigin(sun->sprite.getLocalBounds().size / 2.0f);
 
@@ -140,11 +140,6 @@ void Sun::spawn(int val) {
 
 void Sun::draw() {
   reAnimator.draw();
-  //reAnimator.x = sprite.getPosition().x;
-  //reAnimator.y = sprite.getPosition().y;
-  //reAnimator.drawHitbox();
-  //window->draw(sprite);
-
 }
 
 void Sun::collect() {
@@ -182,3 +177,9 @@ bool Sun::onClick() {
   return false;
 }
 
+
+void Sun::drawAll() {
+  for (int i = 0; i < Sun::sunArray.size; i++) {
+    Sun::sunArray[i].draw();
+  }
+}
