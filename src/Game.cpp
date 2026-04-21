@@ -64,6 +64,8 @@ void updateGame() {
       }
       music.play("DayStage");
 
+      Zombie::init();
+
       //Zombie Testing
       Zombie::createZombie(
         grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,

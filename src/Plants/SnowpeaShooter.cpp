@@ -42,7 +42,7 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
           * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
 
       };
-
+      sounds.play((rand() & 1) ? "Throw1" : "Throw2");
       Bullet newBullet = { SNOWPEA,{currPOS.x,currPOS.y},snowpeaShooter.row };
       bullets.push(newBullet);
 
