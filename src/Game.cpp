@@ -63,6 +63,26 @@ void updateGame() {
         }
       }
       music.play("DayStage");
+
+      //Zombie Testing
+      Zombie::createZombie(
+        grid[2][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Regular);
+      Zombie::createZombie(
+        grid[1][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[1][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Conehead);
+      Zombie::createZombie(
+        grid[0][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Buckethead);
+      Zombie::createZombie(
+        grid[3][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[3][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Flag);
+
+
       runOnce = false;
 
     }
@@ -80,32 +100,17 @@ void updateGame() {
       break;
     }
 
-    //Zombie Testing
-    static Zombie z1 = Zombie::createZombie(
-      grid[2][8].rectangle.getGlobalBounds().getCenter().x,
-      grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-      Zombie::Type::Regular);
-    static Zombie z2 = Zombie::createZombie(
-      grid[1][8].rectangle.getGlobalBounds().getCenter().x,
-      grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-      Zombie::Type::Conehead);
-    static Zombie z3 = Zombie::createZombie(
-      grid[0][8].rectangle.getGlobalBounds().getCenter().x,
-      grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-      Zombie::Type::Buckethead);
-    static Zombie z4 = Zombie::createZombie(
-      grid[3][8].rectangle.getGlobalBounds().getCenter().x,
-      grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-      Zombie::Type::Flag);
+    
 
-    if (z4.health > 0)
+    //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
+    /*if (z4.health > 0)
       z4.takeDamage(0.2);
     if (z3.health > 0)
       z3.takeDamage(0.2);
     if (z2.health > 0)
       z2.takeDamage(0.2);
     if (z1.health > 0)
-      z1.takeDamage(0.2);
+      z1.takeDamage(0.2);*/
     //static sf::Clock tmpC;
     //static float tmp = 0;
     //tmp = tmpC.getElapsedTime().asSeconds();
@@ -141,6 +146,9 @@ void updateGame() {
       return b.remove;
     });
 
+    Zombie::updateAll(dt);
+    Zombie::drawAll(dt);
+
     drawUI();
     shovel.drawBank();
     Sun::manageSuns(dt);
@@ -158,14 +166,6 @@ void updateGame() {
     Sun::drawAll();
 
 
-    z1.update(dt);
-    z2.update(dt);
-    z3.update(dt);
-    z4.update(dt);
-    z3.draw(dt);
-    z2.draw(dt);
-    z1.draw(dt);
-    z4.draw(dt);
 
     shovel.drawMovingShovel();
     drawTimeModifier();

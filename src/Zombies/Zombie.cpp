@@ -1,6 +1,7 @@
 #include <Zombies/Zombie.hpp>
 #include <Window.hpp>
-#include <Grid.hpp>
+
+Array<Zombie> zombies[ROWS_NUMBER];
 
 std::string Zombie::types[] = {"Regular", "Conehead", "Buckethead", "Flag", "Newspaper"};
 std::string Zombie::states[] = {"zombie", "attack", "die"};
@@ -9,7 +10,7 @@ Zombie::Zombie(sf::Vector2f pos, ReAnimationDefinition *def) : reAnimator(def, p
   reAnimator.setPosition(pos);
 }
 
-Zombie Zombie::createZombie(float x, float y, Type type) {
+void Zombie::createZombie(float x, float y, Type type) {
     //sf::Texture tempTexture; sf::Sprite tempSprite(tempTexture); 
 
     //Zombie zombie;
@@ -101,6 +102,7 @@ Zombie Zombie::createZombie(float x, float y, Type type) {
   zombie->state = Walking;
 
   zombie->position = {x, y};
+  zombie->gridPosition = positionToGrid({ x, y });
   //zombie->velocity = {-speeds[type], 0};
 
   zombie->health = healths[type];
@@ -108,7 +110,7 @@ Zombie Zombie::createZombie(float x, float y, Type type) {
 
   zombie->setSprite();
 
-  return *zombie;
+  zombies[zombie->gridPosition.x].push(*zombie);
 }
 
 void Zombie::setSprite() {
@@ -183,6 +185,8 @@ void Zombie::takeDamage(float damage) {
         reAnimator.setTrackVisibility("anim_cone", false);
       else if (type == Zombie::Type::Buckethead)
         reAnimator.setTrackVisibility("anim_bucket", false);
+      else if (type == Zombie::Type::Flag)
+        reAnimator.child->stopAnimation("main"); // temporary
     }
 
     if(damage) freezeTimer = FreezeTimer;
@@ -244,15 +248,41 @@ void Zombie::updateDeath(float dt) {
 }
 
 void Zombie::draw(float dt) {
-    //sheet.sprite = &sprite;
-    //window->draw(sprite);
   reAnimator.draw();
-  //reAnimator.drawHitbox();
-  sf::RectangleShape rec({2, 2});
-  rec.setPosition(reAnimator.getPosition());
-  window->draw(rec);
+  //reAnimator.drawHitbox();                    // shows zombies hitbox as a red rectangle
+  
+  //sf::RectangleShape rec({2, 2});
+  //rec.setPosition(reAnimator.getPosition());  // shows zombies actual x, y position as a white dot
+  //window->draw(rec);
+
     if(freezeTimer <= 0) {
 
         //animateSpritesheet(sheet, dt);
     }
+}
+
+
+void Zombie::updateAll(float dt) {
+  for (int r = 0; r < ROWS_NUMBER; r++) {
+    for (int i = 0; i < zombies[r].size; i++) {
+      zombies[r][i].update(dt);
+    }
+  }
+}
+
+void Zombie::drawAll(float dt) {
+  for (int r = 0; r < ROWS_NUMBER; r++) {
+    for (int i = 0; i < zombies[r].size; i++) {
+      zombies[r][i].draw(dt);
+    }
+  }
+}
+
+
+bool Zombie::isZombieAliveInRow(int row, float startPosX) {
+  for (int i = 0; i < zombies[row].size; i++) {
+    if (zombies[row][i].health > 0 && zombies[row][i].reAnimator.getPosition().x >= startPosX)
+      return true;
+  }
+  return false;
 }

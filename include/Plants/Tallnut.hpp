@@ -6,9 +6,9 @@
 #include <Audio.hpp>
 #include <Animation.hpp>
 
-const float TALLNUT_HEALTH = 200.0f;
-const float TALLNUT_CRACK1_HEALTH = 100.0f;
-const float TALLNUT_CRACK2_HEALTH = 40.0f;
+const float TALLNUT_HEALTH = 8000.0f;
+const float TALLNUT_CRACK1_HEALTH = 5333.3f;
+const float TALLNUT_CRACK2_HEALTH = 2666.6f;
 
 void updateTallnut(Plant &tallnut, float dt);
 

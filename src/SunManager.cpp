@@ -5,7 +5,7 @@
 
 
 Array<Sun> Sun::sunArray;
-int Sun::sunBalance = 0;
+int Sun::sunBalance = 1000; // initialized for testing
 float Sun::spawnTimer = -20;
 bool Sun::hovering = false;
 

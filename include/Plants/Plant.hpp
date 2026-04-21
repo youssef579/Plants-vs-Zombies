@@ -6,7 +6,7 @@
 #include <Animation.hpp>
 #include <ReAnimation/ReAnimation.hpp>
 
-const float PLANT_BLINK_INTERVAL = 2.0f;
+const float PLANT_BLINK_INTERVAL = 3.0f;
 
 enum PlantType {
   SUN_FLOWER,

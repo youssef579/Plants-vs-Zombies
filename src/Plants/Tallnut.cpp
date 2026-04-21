@@ -21,7 +21,7 @@ void updateTallnut(Plant &tallnut, float dt){
       break;
 
     }
-    tallnut.blinkTimer = randomRange(1.5f, 4.0f);
+    tallnut.blinkTimer = randomRange(2.0f, 4.0f);
   }
 
   if (tallnut.health <= TALLNUT_CRACK1_HEALTH && !tallnut.timer){

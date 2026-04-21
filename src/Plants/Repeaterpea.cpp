@@ -1,17 +1,26 @@
 #include <Plants/Repeaterpea.hpp>
 #include <Plants/Plant.hpp>
-#include<Bullet.hpp>
+#include <Bullet.hpp>
+#include <Zombies/Zombie.hpp>
 
 void updateRepeaterpea(Plant& repeaterpea, float dt) {
   //animateSpritesheet(repeaterpea.sheet, dt);
   repeaterpea.reAnimator.update(dt);
 
-  repeaterpea.timer -= dt;
+  // Zombie detection
+  if (Zombie::isZombieAliveInRow(repeaterpea.row, repeaterpea.reAnimator.getPosition().x + 70.0f)) // only shoot when there is a zombie in the row
+    repeaterpea.timer -= dt;
+  else {
+    repeaterpea.reAnimator.stopAnimation("anim_shooting");
+    repeaterpea.timer = GENERATE_REPEATERBULLET_TIMER;
+    repeaterpea.state = 0;
+  }
+
   repeaterpea.blinkTimer -= dt;
 
   if (repeaterpea.blinkTimer <= 0) {
     repeaterpea.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
-    repeaterpea.blinkTimer = randomRange(2.0f, 3.5f);
+    repeaterpea.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
   if (repeaterpea.timer <= 0.8f && repeaterpea.state == 0) {

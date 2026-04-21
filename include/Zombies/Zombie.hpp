@@ -2,6 +2,7 @@
 
 #include <Animation.hpp>
 #include <ReAnimation/ReAnimation.hpp>
+#include <Grid.hpp>
 
 struct Zombie {
     
@@ -9,11 +10,11 @@ struct Zombie {
 
     static constexpr int numberOfTypes = 5;
 
-    static constexpr float speeds[] = {60, 50, 40, 80};
-    static constexpr float healths[] = {100, 200, 200, 100};
-    static constexpr float strengths[] = {5.55f, 10, 10, 10};
+    static constexpr float speeds[] = {60, 50, 40, 80}; // not used ?
+    static constexpr float healths[] = {270, 370, 1100, 270 };
+    static constexpr float strengths[] = { 36, 36, 36, 36 };
 
-    static constexpr float AttackTimer = 0.5;
+    static constexpr float AttackTimer = 0.33f;
     static constexpr float FreezeTimer = 0.2;
 
     enum Type {Regular, Conehead, Buckethead, Flag, Newspaper};
@@ -31,7 +32,7 @@ struct Zombie {
         {{{}, {}}, {{}, {}}, {{}, {}}},
     };
 
-    static Zombie createZombie(float x, float y, Type type);
+    static void createZombie(float x, float y, Type type);
     static void manageZombies(float dt);
 
     //
@@ -71,4 +72,11 @@ struct Zombie {
     void die();
     void updateDeath(float dt);
     void draw(float dt);
+
+    // General Functions for all zombies
+    static void updateAll(float dt);
+    static void drawAll(float dt);
+    static bool isZombieAliveInRow(int row, float startPosX = 0.0f);
 };
+
+extern Array<Zombie> zombies[ROWS_NUMBER];

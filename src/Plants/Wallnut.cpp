@@ -21,7 +21,7 @@ void updateWallnut(Plant &wallNut, float dt){
       break;
 
     }
-    wallNut.blinkTimer = randomRange(1.5f, 4.0f);
+    wallNut.blinkTimer = randomRange(2.0f, 4.0f);
   }
 
   if (wallNut.health <= WALLNUT_CRACK1_HEALTH && !wallNut.timer){
