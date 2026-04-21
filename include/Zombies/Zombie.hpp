@@ -32,7 +32,7 @@ struct Zombie {
         {{{}, {}}, {{}, {}}, {{}, {}}},
     };
 
-    static void createZombie(float x, float y, Type type);
+    static void createZombie(float x, float y, Type type, int row);
     static void manageZombies(float dt);
 
     //
@@ -62,7 +62,7 @@ struct Zombie {
     bool enraged = false;   // For Newspaper Zombie
     bool remove = false;
 
-    Zombie(sf::Vector2f pos, ReAnimationDefinition *def);
+    Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row);
     bool update(float dt);  // Return True if Zombie is Alive
     void setSprite();
     void takeDamage(float damage);

@@ -66,21 +66,21 @@ void updateGame() {
 
       //Zombie Testing
       Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular);
+        Zombie::Type::Regular, 2);
       Zombie::createZombie(
-        grid[1][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Conehead);
+        Zombie::Type::Conehead, 1);
       Zombie::createZombie(
-        grid[0][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Buckethead);
+        Zombie::Type::Buckethead, 0);
       Zombie::createZombie(
-        grid[3][8].rectangle.getGlobalBounds().getCenter().x,
+        grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Flag);
+        Zombie::Type::Flag, 3);
 
 
       runOnce = false;

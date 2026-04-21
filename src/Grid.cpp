@@ -106,6 +106,7 @@ void updateGrid(float dt){
 }
 
 void drawGrid(){
+  window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
     for (int j = 0; j < COLUMNS_NUMBER; j++){
       //window->draw(grid[i][j].rectangle);
@@ -123,6 +124,7 @@ void drawGrid(){
       }
     }
   }
+  window->setView(*view);
 }
 
 
