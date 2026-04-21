@@ -107,6 +107,7 @@ void handleEvents() {
           window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
           view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
           dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+          gameView->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
         }
         else {
           window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
@@ -130,7 +131,7 @@ void handleEvents() {
         }
         break;
       case sf::Keyboard::Key::Tab:
-        if(gameState != 0)
+        if(gameState != 0 && !isPaused)
           settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
       }

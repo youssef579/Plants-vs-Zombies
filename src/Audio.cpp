@@ -3,6 +3,7 @@
 #include <iostream>
 #include <globals.hpp>
 #include <Weather.hpp>
+#include <Zombies/Zombie.hpp>
 
 /*
  Steps to add new sfx:
@@ -102,7 +103,7 @@ void Sounds::updateVolume() {
   for (int i = 0; i < sounds.sfxArray.size; i++)
     sounds.sfxArray[i].setVolume(settings.soundFXVolume);
   gameWeather.updateVolume();
-
+  Zombie::updateVolumes();
 }
 
 Sounds sounds;

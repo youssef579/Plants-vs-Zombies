@@ -5,7 +5,6 @@
 #include <Files.hpp> // To access settings
 #include <AssetsManager.hpp>
 
-
 struct Music {
   static sf::Music container;
   struct Paths {

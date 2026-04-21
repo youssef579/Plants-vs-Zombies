@@ -62,6 +62,14 @@ struct Zombie {
     bool enraged = false;   // For Newspaper Zombie
     bool remove = false;
 
+
+    sf::Sound sound_zombieBite;
+    sf::Sound sound_zombieGulp;
+    // General variables for all zombies
+    static sf::SoundBuffer soundBuffer_zombieBite;
+    static sf::SoundBuffer soundBuffer_zombieGulp;
+
+
     Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row);
     bool update(float dt);  // Return True if Zombie is Alive
     void setSprite();
@@ -74,9 +82,11 @@ struct Zombie {
     void draw(float dt);
 
     // General Functions for all zombies
+    static void init();
     static void updateAll(float dt);
     static void drawAll(float dt);
     static bool isZombieAliveInRow(int row, float startPosX = 0.0f);
+    static void updateVolumes();
 };
 
 extern Array<Zombie> zombies[ROWS_NUMBER];

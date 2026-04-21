@@ -7,8 +7,19 @@ Array<Zombie> zombies[ROWS_NUMBER];
 std::string Zombie::types[] = {"Regular", "Conehead", "Buckethead", "Flag", "Newspaper"};
 std::string Zombie::states[] = {"zombie", "attack", "die"};
 
-Zombie::Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row) : reAnimator(def, pos.x, pos.y, window) {
-  reAnimator.setPosition(pos);
+sf::SoundBuffer Zombie::soundBuffer_zombieBite;
+sf::SoundBuffer Zombie::soundBuffer_zombieGulp;
+
+Zombie::Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row)
+  : reAnimator(def, pos.x, pos.y, window),
+  sound_zombieBite(soundBuffer_zombieBite),
+  sound_zombieGulp(soundBuffer_zombieGulp){
+    reAnimator.setPosition(pos);
+}
+
+void Zombie::init() {
+  soundBuffer_zombieBite = getSoundBuffer("assets/sounds/sfx_zombieBite.ogg");
+  soundBuffer_zombieGulp = getSoundBuffer("assets/sounds/sfx_zombieGulp.ogg");
 }
 
 void Zombie::createZombie(float x, float y, Type type, int row) {
@@ -118,6 +129,8 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
 
 void Zombie::setSprite() {
   if (state == Zombie::State::Attacking) {
+    if(sound_zombieBite.getStatus() != sf::Sound::Status::Playing)
+      sound_zombieBite.play();
     reAnimator.stopAnimation("anim_walk");
     reAnimator.allowMotion = false;
     if (!reAnimator.isPlayingAnimation("anim_eat")) {
@@ -126,6 +139,8 @@ void Zombie::setSprite() {
     }
   }
   else if (state == Zombie::State::Walking) {
+    if (sound_zombieBite.getStatus() == sf::Sound::Status::Playing)
+      sound_zombieBite.stop();
     reAnimator.stopAnimation("anim_eat");
     if (!reAnimator.isPlayingAnimation("anim_walk"))
       reAnimator.playAnimation("anim_walk", LoopType::Loop);
@@ -215,6 +230,8 @@ void Zombie::attack(float dt) {
     if(attackTimer <= 0) {
          //hitGridCell();
       grid[gridPosition.x][gridPosition.y].plant->health -= strength;
+      if (grid[gridPosition.x][gridPosition.y].plant->health <= 0)
+        sound_zombieGulp.play();
       attackTimer = AttackTimer;
     }
     setSprite();
@@ -295,4 +312,14 @@ bool Zombie::isZombieAliveInRow(int row, float startPosX) {
       return true;
   }
   return false;
+}
+
+
+void Zombie::updateVolumes() {
+  for (int r = 0; r < ROWS_NUMBER; r++) {
+    for (int i = 0; i < zombies[r].size; i++) {
+      zombies[r][i].sound_zombieBite.setVolume(settings.soundFXVolume);
+      zombies[r][i].sound_zombieGulp.setVolume(settings.soundFXVolume);
+    }
+  }
 }
