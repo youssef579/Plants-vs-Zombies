@@ -5,19 +5,19 @@
 
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
-void initGrid() {
+void initGrid(){
   float y = 120;
-  const float offsetY = -15, offsetX = 3;
-  for (int i = 0; i < ROWS_NUMBER; i++) {
-    float x = 136;
-    for (int j = 0; j < COLUMNS_NUMBER; j++) {
-      grid[i][j].rectangle.setSize({ columnLenth[j], rowLenth[i] });
+  const float offsetY = -12, offsetX = 3;
+  for (int i = 0; i < ROWS_NUMBER; i++){
+    float x = 134;
+    for (int j = 0; j < COLUMNS_NUMBER; j++){
+      grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
-      grid[i][j].rectangle.setPosition({ x + columnLenth[j] / 2, y + rowLenth[i] / 2 });
-      //grid[i][j].rectangle.setFillColor(sf::Color({ 0, 0, 0, 0 }));
+      grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
+      grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
       //grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
       //grid[i][j].rectangle.setOutlineThickness(1);
-      grid[i][j].plantPosition = { x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY };
+      grid[i][j].plantPosition = {x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth[j];
     }
@@ -63,22 +63,25 @@ void updateGrid(float dt){
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
-                    grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SUNFLOWER));
+                    grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SUNFLOWER));
                     break;
                   case WALLNUT:
-                    grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_WALLNUT));
+                    grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_WALLNUT));
                     break;
                   case PEASHOOTER:
-                    grid[i][j].plant = Plant(PEASHOOTER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_PEASHOOTER));
+                    grid[i][j].plant = Plant(PEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_PEASHOOTER));
                     break;
                   case SNOWPEASHOOTER:
-                    grid[i][j].plant = Plant(SNOWPEASHOOTER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SNOWPEA));
+                    grid[i][j].plant = Plant(SNOWPEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SNOWPEA));
                     break;
                   case REPEATERPEA:
-                    grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_REPEATER));
+                    grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_REPEATER));
                     break;
                   case TALLNUT:
-                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    break;
+                  case CHERRYBOMB:
+                    grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_TALLNUT));
                     break;
                   default:
                     break;

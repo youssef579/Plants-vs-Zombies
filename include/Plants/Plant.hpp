@@ -14,11 +14,11 @@ enum PlantType {
   WALLNUT,
   SNOWPEASHOOTER,
   REPEATERPEA,
-  TALLNUT
+  TALLNUT,
+  CHERRYBOMB
 }; // will add the other sorts of plants
 
 float getPlantHealth(PlantType type);
-
 float getPlantTimer(PlantType type);
 
 struct Plant {
@@ -28,9 +28,10 @@ struct Plant {
   float timer; //  the time remaining to generate a sun or a bullet based on "plantType" or state of wallnut
   float blinkTimer;
   int row;
+  int col;
   int state;   // could be used in repeater or other plants
 
-  Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefinition *def);
+  Plant(PlantType type, sf::Vector2f position, int Row, int col, ReAnimationDefinition *def);
 
   void update(float dt);
 
