@@ -1,3 +1,4 @@
+#include "Files.hpp"
 #include <Packets/Shovel.hpp>
 #include <Packets/Packet.hpp>
 #include <AssetsManager.hpp>
@@ -56,33 +57,34 @@ void updateGame() {
       initGrid();
       dayLevel.init();
       gameWeather.isRaining = true;
-      for (int i = 0; i < ROWS_NUMBER; i++){
-        for (int j = 0; j < COLUMNS_NUMBER; j++){
+      // for (int i = 0; i < ROWS_NUMBER; i++){
+      //   for (int j = 0; j < COLUMNS_NUMBER; j++){
               // plants just for testing
               //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
-        }
-      }
+      //   }
+      // }
       music.play("DayStage");
 
       Zombie::init();
+      loadLevelFile(gameState);
 
       //Zombie Testing
-      Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular, 2);
-      Zombie::createZombie(
-        grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Conehead, 1);
-      Zombie::createZombie(
-        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Buckethead, 0);
-      Zombie::createZombie(
-        grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Flag, 3);
+      // Zombie::createZombie(
+      //   grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Regular, 2, 0);
+      // Zombie::createZombie(
+      //   grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[1][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Conehead, 1, 0);
+      // Zombie::createZombie(
+      //   grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Buckethead, 0, 0);
+      // Zombie::createZombie(
+      //   grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[3][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Flag, 3, 0);
 
 
       runOnce = false;
@@ -92,7 +94,7 @@ void updateGame() {
     if (isPaused) {
       if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
-        dayLevel.dirtSoundStarted = false; 
+        dayLevel.dirtSoundStarted = false;
       }
       dayLevel.draw(*window);
       window->setView(*view);
@@ -102,7 +104,7 @@ void updateGame() {
       break;
     }
 
-    
+
 
     //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
     /*if (z4.health > 0)
@@ -129,8 +131,8 @@ void updateGame() {
     //  if(z1.health > 0)
     //    z1.takeDamage(10);
     //}
-    
-    
+
+
 
     updateGrid(dt);
 
@@ -138,7 +140,7 @@ void updateGame() {
     dayLevel.draw(*window);
     window->setView(*view);
     drawGrid();
-    
+
     /*for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
@@ -156,7 +158,7 @@ void updateGame() {
 
     updateSeedPackets(dt);
     drawSeedPackets();
-    
+
 
     shovel.update();
 

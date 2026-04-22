@@ -22,8 +22,8 @@ void Zombie::init() {
   soundBuffer_zombieGulp = getSoundBuffer("assets/sounds/sfx_zombieGulp.ogg");
 }
 
-void Zombie::createZombie(float x, float y, Type type, int row) {
-    //sf::Texture tempTexture; sf::Sprite tempSprite(tempTexture); 
+void Zombie::createZombie(float x, float y, Type type, int row, float startTimerValue) {
+    //sf::Texture tempTexture; sf::Sprite tempSprite(tempTexture);
 
     //Zombie zombie;
 
@@ -43,20 +43,19 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
 
   switch (type) {
   case Zombie::Type::Regular:
-      zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
-      zombie->reAnimator.setTrackVisibility("anim_cone", false);
-      zombie->reAnimator.setTrackVisibility("anim_bucket", false);
-      zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_duckytube", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
-      zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
-      zombie->reAnimator.setTrackVisibility("anim_tongue", false);
-      zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
-      //zombie->reAnimator.animSpeedMulti = 1.5f;
-      break;
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie->reAnimator.setTrackVisibility("anim_cone", false);
+    zombie->reAnimator.setTrackVisibility("anim_bucket", false);
+    zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_duckytube", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
+    zombie->reAnimator.setTrackVisibility("anim_tongue", false);
+    //zombie->reAnimator.animSpeedMulti = 1.5f;
+    break;
   case Zombie::Type::Conehead:
     zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
     zombie->reAnimator.setTrackVisibility("anim_bucket", false);
@@ -69,7 +68,6 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Buckethead:
@@ -84,7 +82,6 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Flag:
@@ -105,17 +102,17 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_innerarm1", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm2", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm3", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     zombie->reAnimator.child->playAnimation("main");
     //zombie->reAnimator.animSpeedMulti = 1.8f;
     break;
   }
-  
+
   zombie->reAnimator.animSpeedMulti = speeds[type];
   for (int i = 0; i < zombie->reAnimator.trackInstances.size(); i++)
     zombie->reAnimator.trackInstances[i].colorOverlay = {0, 0, 255, 0};
   zombie->type = type;
-  zombie->state = Walking;
+  zombie->state = Idle;
+  zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
 
   zombie->position = {x, y};
   //zombie->gridPosition = positionToGrid({ x, y });
@@ -123,6 +120,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
 
   zombie->health = healths[type];
   zombie->strength = strengths[type];
+  zombie->startTimer = startTimerValue;
 
   zombie->setSprite();
 
@@ -146,6 +144,10 @@ void Zombie::setSprite() {
     reAnimator.stopAnimation("anim_eat");
     if (!reAnimator.isPlayingAnimation("anim_walk"))
       reAnimator.playAnimation("anim_walk", LoopType::Loop);
+  } else if (state == Zombie::State::Idle) {
+    reAnimator.stopAnimation("anim_walk");
+    if(!reAnimator.isPlayingAnimation("anim_idle"))
+      reAnimator.playAnimation("anim_idle", LoopType::Loop);
   }
     /*std::string location = "assets/Zombies/" + types[type] + (headless ? "/headless_" : "/") + states[state] + ".png";
     sf::Texture& texture = getTexture(location);
@@ -167,7 +169,7 @@ void Zombie::setSprite() {
     reAnimator.setOverlayAlpha(0.0f);
   }*/
 
-  
+
   float lerpFactor;
   if (freezeTimer > FreezeTimer - 0.1)
     lerpFactor = (ReAnimator::lerp(1, 0, (freezeTimer - (FreezeTimer - 0.1)) / (FreezeTimer - (FreezeTimer - 0.1))));
@@ -248,44 +250,54 @@ void Zombie::checkState(float dt) {
   if (state == Walking) move(dt);
   else if (state == Attacking) attack(dt);
   else if (state == Dying) updateDeath(dt);
+  else if (state == Idle) updateIdle(dt);
 }
 
 void Zombie::move(float dt) {
-    if(onGrid && grid[gridPosition.x][gridPosition.y].plant.has_value()) {
-        state = Attacking;
-        setSprite();
-        return;
-    }
-    reAnimator.allowMotion = true;
-    setSprite();
-    //position += velocity * dt;
-    //sprite.setPosition(position);
+  if(onGrid && grid[gridPosition.x][gridPosition.y].plant.has_value()) {
+      state = Attacking;
+      setSprite();
+      return;
+  }
+  reAnimator.allowMotion = false;
+  setSprite();
+  //position += velocity * dt;
+  //sprite.setPosition(position);
 }
 
 void Zombie::attack(float dt) {
-    if(onGrid && !grid[gridPosition.x][gridPosition.y].plant.has_value()) {
-        state = Walking;
-        setSprite();
-        return;
-    }
-    attackTimer -= dt;
-    if(attackTimer <= 0) {
-         //hitGridCell();
-      grid[gridPosition.x][gridPosition.y].plant->health -= strength;
-      if (grid[gridPosition.x][gridPosition.y].plant->health <= 0)
-        sound_zombieGulp.play();
-      attackTimer = AttackTimer;
-    }
-    setSprite();
+  if(onGrid && !grid[gridPosition.x][gridPosition.y].plant.has_value()) {
+      state = Walking;
+      setSprite();
+      return;
+  }
+  attackTimer -= dt;
+  if(attackTimer <= 0) {
+       //hitGridCell();
+    grid[gridPosition.x][gridPosition.y].plant->health -= strength;
+    if (grid[gridPosition.x][gridPosition.y].plant->health <= 0)
+      sound_zombieGulp.play();
+    attackTimer = AttackTimer;
+  }
+  setSprite();
+}
+
+void Zombie::updateIdle(float dt) {
+  if (startTimer > 0)
+    startTimer -= dt;
+  else
+    state = Walking;
+
+  setSprite();
 }
 
 void Zombie::die() {
-    state = Dying;
-    //velocity = {0, 0};
-    reAnimator.stopAnimation("anim_walk");
-    reAnimator.stopAnimation("anim_eat");
-    reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
-    setSprite();
+  state = Dying;
+  //velocity = {0, 0};
+  reAnimator.stopAnimation("anim_walk");
+  reAnimator.stopAnimation("anim_eat");
+  reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
+  setSprite();
 }
 
 void Zombie::updateDeath(float dt) {
@@ -304,7 +316,7 @@ void Zombie::updateDeath(float dt) {
 void Zombie::draw() {
   reAnimator.draw();
   //reAnimator.drawHitbox();                    // shows zombies hitbox as a red rectangle
-  
+
   //sf::RectangleShape rec({2, 2});
   //rec.setPosition(reAnimator.getPosition());  // shows zombies actual x, y position as a white dot
   //window->draw(rec);

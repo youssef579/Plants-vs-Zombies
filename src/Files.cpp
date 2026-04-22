@@ -1,8 +1,11 @@
+#include "Grid.hpp"
+#include <Zombies/Zombie.hpp>
 #include <Files.hpp>
 #include <Audio.hpp>
 #include <fstream>
 #include <globals.hpp>
 #include <Weather.hpp>
+#include <string>
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
 
@@ -27,6 +30,32 @@ void loadLevelsFile() {
     levelsFile << 1;
   }
   levelsFile.close();
+}
+
+void loadLevelFile(int level) { // Rename the above function to something else to avoid confusion
+  std::ifstream levelFile("storage/level_" + std::to_string(level) + ".txt");
+
+  int nWaves;
+  levelFile >> nWaves;
+
+  for (int i = 0; i < nWaves; i++) {
+    int nZombies, startTimer;
+    levelFile >> nZombies >> startTimer;
+
+    for (int j = 0; j < nZombies; j++) {
+      int zombieTypeIndex;
+      levelFile >> zombieTypeIndex;
+
+      int row = randomRange(0, ROWS_NUMBER - 1), offset = randomRange(250, 400);
+      Zombie::createZombie(
+        grid[row][8].rectangle.getGlobalBounds().getCenter().x + offset,
+        grid[row][8].rectangle.getGlobalBounds().getCenter().y,
+        (Zombie::Type)zombieTypeIndex, // index 0 is the first type, 1 the second type and so on
+        row,
+        startTimer
+      );
+    }
+  }
 }
 
 void loadSettingsFile() {

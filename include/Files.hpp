@@ -29,6 +29,7 @@ extern Settings settings;
 
 void initFiles();
 void loadLevelsFile();
+void loadLevelFile(int level);
 void loadSettingsFile();
 void updateFiles();
 

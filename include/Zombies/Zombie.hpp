@@ -5,7 +5,7 @@
 #include <Grid.hpp>
 
 struct Zombie {
-    
+
     // Statics
 
     static constexpr int numberOfTypes = 5;
@@ -18,7 +18,7 @@ struct Zombie {
     static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
 
     enum Type {Regular, Conehead, Buckethead, Flag, Newspaper};
-    enum State {Walking, Attacking, Dying};
+    enum State {Walking, Attacking, Dying, Idle};
 
     // For simple assets access
     static std::string types[];
@@ -32,7 +32,7 @@ struct Zombie {
         {{{}, {}}, {{}, {}}, {{}, {}}},
     };
 
-    static void createZombie(float x, float y, Type type, int row);
+    static void createZombie(float x, float y, Type type, int row, float startTimerValue);
     static void manageZombies(float dt);
 
     //
@@ -54,6 +54,7 @@ struct Zombie {
 
     float attackTimer = 0;
     float freezeTimer = 0;
+    float startTimer;
 
     float corpseDissapearTimer = 0.0f;
 
@@ -79,6 +80,7 @@ struct Zombie {
     void attack(float dt);
     void die();
     void updateDeath(float dt);
+    void updateIdle(float dt);
     void draw();
 
     // General Functions for all zombies
