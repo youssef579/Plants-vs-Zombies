@@ -111,7 +111,8 @@ enum ReAnimationDef {
   REANIM_REPEATER = 5,
   REANIM_TALLNUT = 6,
   REANIM_ZOMBIE_BASIC = 7,
-  REANIM_FLAGPOLE = 8
+  REANIM_FLAGPOLE = 8,
+  REANIM_CHERRYBOMB =9
 };
 
 struct ReAnimator {

@@ -43,6 +43,8 @@ void initPackets() {
   //tallNutSprite.setTextureRect({ {0, 0}, {65, 73} });
   packets.push({ 125, 5, "tallnut", {90 + 59.0f * 5, 11}, tallNutSprite, TALLNUT });
 
+  packets.push({ 150, 20, "tallnut", {90 + 59.0f * 6, 11}, wallNutSprite, CHERRYBOMB });
+
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
