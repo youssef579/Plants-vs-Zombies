@@ -55,6 +55,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
       };
 
+      sounds.play((rand()&1) ? "Throw1" : "Throw2");
       Bullet newBullet = { PEA,{currPOS.x,currPOS.y},peashooter.row };
       bullets.push(newBullet);
 

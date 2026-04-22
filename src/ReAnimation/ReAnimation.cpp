@@ -349,7 +349,7 @@ void ReAnimator::draw() {
     }*/
     //else {
       uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
-      sprite->setColor(sf::Color(255, 255, 255, alpha255));
+      sprite->setColor(sf::Color(globalColor.r, globalColor.g, globalColor.b, alpha255));
     //}
 
 
@@ -397,7 +397,12 @@ void ReAnimator::draw() {
     if (window) {
       window->draw(*sprite, states);
       if (trackInstances[idx].colorOverlay.a > 0.0f) {
-        sprite->setColor(trackInstances[idx].colorOverlay);
+        sprite->setColor({
+            trackInstances[idx].colorOverlay.r,
+            trackInstances[idx].colorOverlay.g,
+            trackInstances[idx].colorOverlay.b,
+            (uint8_t)(trackInstances[idx].colorOverlay.a * opacityMultiplier)
+          });
         states.blendMode = sf::BlendAdd;
         window->draw(*sprite, states);
       }
@@ -969,6 +974,8 @@ sf::FloatRect ReAnimator::getGlobalBounds() {
 }
 
 void ReAnimator::setOverlayAlpha(float newAlpha) {
+  if (newAlpha > 1.0f) newAlpha = 1.0f;
+  else if (newAlpha < 0.0f) newAlpha = 0.0f;
   uint8_t castedAlpha = (uint8_t)(newAlpha * 255.0f);
   for (auto &trackI : trackInstances)
     trackI.colorOverlay.a = castedAlpha;

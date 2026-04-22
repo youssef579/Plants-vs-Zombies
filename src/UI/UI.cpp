@@ -69,6 +69,14 @@ void drawTimeModifier(float dt) {
   static sf::Texture timeModifierT_1x = getTexture("assets/UI/TimeModifier/timeModifier_1x.png");
   static sf::Texture timeModifierT_2x = getTexture("assets/UI/TimeModifier/timeModifier_2x.png");
   static sf::Texture timeModifierT_3x = getTexture("assets/UI/TimeModifier/timeModifier_3x.png");
+  static sf::SoundBuffer timeModifierSB_ding[] = {
+    getSoundBuffer("assets/sounds/ding1.mp3"),
+    getSoundBuffer("assets/sounds/ding2.mp3"),
+    getSoundBuffer("assets/sounds/ding3.mp3")
+  };
+  //static sf::SoundBuffer timeModifierSB_ding2 = 
+  //static sf::SoundBuffer timeModifierSB_ding3 = ;
+  static sf::Sound timeModifier_sound(timeModifierSB_ding[0]);
   //static sf::Sprite  timeModifierS(timeModifierT_1x);
   static sf::Sprite timeModifierS = []() {
       sf::Sprite s(timeModifierT_1x);
@@ -95,6 +103,9 @@ void drawTimeModifier(float dt) {
     lastTimeModifier = settings.timeModifier;
 
     timeModifierPopup.trigger();
+    timeModifier_sound.setBuffer(timeModifierSB_ding[settings.timeModifier-1]);
+    timeModifier_sound.setVolume(settings.soundFXVolume);
+    timeModifier_sound.play();
 
   }
 

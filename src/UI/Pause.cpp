@@ -1,4 +1,6 @@
 #include <UI/Pause.hpp>
+#include <Zombies/Zombie.hpp>
+#include <Bullet.hpp>
 
 PauseMenu pauseMenu;
 
@@ -146,6 +148,10 @@ void PauseMenu::update() {
 }
 
 void PauseMenu::draw() {
+  drawGrid();
+  Bullet::drawAll();
+  Zombie::drawAll();
+
 
   drawUI();
   shovel.drawBank();

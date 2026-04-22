@@ -64,6 +64,8 @@ void updateGame() {
       }
       music.play("DayStage");
 
+      Zombie::init();
+
       //Zombie Testing
       Zombie::createZombie(
         grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
@@ -137,17 +139,16 @@ void updateGame() {
     window->setView(*view);
     drawGrid();
     
-    for (int i = 0; i < bullets.size; i++) {
+    /*for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
-    }
+    }*/
+    Bullet::updateAll(dt);
+    Bullet::drawAll();
 
-    bullets.erase([](const Bullet& b) {
-      return b.remove;
-    });
 
     Zombie::updateAll(dt);
-    Zombie::drawAll(dt);
+    Zombie::drawAll();
 
     drawUI();
     shovel.drawBank();

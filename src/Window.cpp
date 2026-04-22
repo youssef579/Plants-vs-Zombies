@@ -1,7 +1,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
-#include <iostream> // REMOVE LATER
 #include <BackgroundManager.hpp>
 
 sf::RenderWindow *window;
@@ -24,7 +23,7 @@ void initWindow() {
   gameView->setSize((sf::Vector2f)WINDOW_SIZE);
   gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
 
-  setWindowMetaData();
+
   getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
 }
 
@@ -36,7 +35,6 @@ void setWindowMetaData() { // Set icon, cursor and window settings after creatin
 
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
-
   setCursorMain();
 }
 
@@ -58,6 +56,7 @@ void getLetterboxView(int windowWidth, int windowHeight) {
 
     view->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
     dayLevel.camera.setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
+    gameView->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
 }
 
 void setCursorMain() {
@@ -107,6 +106,7 @@ void handleEvents() {
           window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
           view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
           dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+          gameView->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
         }
         else {
           window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
@@ -130,7 +130,7 @@ void handleEvents() {
         }
         break;
       case sf::Keyboard::Key::Tab:
-        if(gameState != 0)
+        if(gameState != 0 && !isPaused)
           settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
       }
