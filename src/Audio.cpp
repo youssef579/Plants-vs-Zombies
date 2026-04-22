@@ -55,6 +55,7 @@ void Sounds::play(std::string op) {
   else if (op == "Splat3")        sound = new sf::Sound(sounds.buffers.splat3);
   else if (op == "Throw1")        sound = new sf::Sound(sounds.buffers.throw1);
   else if (op == "Throw2")        sound = new sf::Sound(sounds.buffers.throw2);
+  else if (op == "ThrowSnowPea")  sound = new sf::Sound(sounds.buffers.throwSnowPea);
   else if (op == "ZombieBite")    sound = new sf::Sound(sounds.buffers.zombieBite);
   else if (op == "ZombieGulp")    sound = new sf::Sound(sounds.buffers.zombieGulp);
   else {
@@ -87,6 +88,7 @@ void Sounds::init() {
   sounds.buffers.splat3        = getSoundBuffer(sounds.paths.splat3);
   sounds.buffers.throw1        = getSoundBuffer(sounds.paths.throw1);
   sounds.buffers.throw2        = getSoundBuffer(sounds.paths.throw2);
+  sounds.buffers.throwSnowPea  = getSoundBuffer(sounds.paths.throwSnowPea);
   sounds.buffers.zombieBite    = getSoundBuffer(sounds.paths.zombieBite);
   sounds.buffers.zombieGulp    = getSoundBuffer(sounds.paths.zombieGulp);
 

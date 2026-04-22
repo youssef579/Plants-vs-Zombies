@@ -22,6 +22,10 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   type = typeValue;
   damage = 20;
   remove = false;
+
+  if(type == BulletType::PEA) effect = 0;
+  else if (type == BulletType::SNOWPEA) effect = 1;
+
 }
 
 void Bullet::draw() {
@@ -43,7 +47,7 @@ void Bullet::update(float deltaTime) {
         if (!(zombies[row][i].health > 0)) continue; // skip dead zombies
         // Bullet hit zombie
         sounds.play("Splat" + std::to_string(randomRange(1, 3)));
-        zombies[row][i].takeDamage(damage);
+        zombies[row][i].takeDamage(damage, effect);
         particleTimer = PARTICLE_DEFAULT_TIMER;
 
         if (type == PEA)
@@ -79,4 +83,17 @@ void Bullet::update(float deltaTime) {
       remove = true;
     }
   }
+}
+
+
+void Bullet::updateAll(float dt) {
+  for (int i = 0; i < bullets.size; i++)
+    bullets[i].update(dt);
+
+  bullets.erase([](const Bullet &b) {return b.remove; });
+}
+
+void Bullet::drawAll() {
+  for (int i = 0; i < bullets.size; i++)
+    bullets[i].draw();
 }
