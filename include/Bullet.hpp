@@ -16,12 +16,16 @@ struct Bullet {
   bool remove;
   float particleTimer;
   BulletType type;
+  int effect;
 
   Bullet(BulletType type, sf::Vector2f position, int row);
 
   void update(float deltaTime);
 
   void draw();
+
+  static void updateAll(float dt);
+  static void drawAll();
 };
 
 extern Array<Bullet> bullets;

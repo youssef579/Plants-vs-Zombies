@@ -1,6 +1,5 @@
 #include <Window.hpp>
 #include <globals.hpp>
-#include <iostream> // REMOVE LATER
 
 void onClick(sf::Text &button, std::function<void()> action) {
   if (button.getGlobalBounds().contains(mousePosition)) {

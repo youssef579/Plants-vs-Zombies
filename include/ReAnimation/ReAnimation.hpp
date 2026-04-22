@@ -126,6 +126,7 @@ struct ReAnimator {
   float animSpeedMulti = 1.0f; // multiplier of animation speed
   float opacityMultiplier=1.0f;
   bool allowMotion = true;
+  sf::Color globalColor = { 255, 255, 255, 255 };
 
 
   sf::Transform rootMatrix;
@@ -144,8 +145,8 @@ struct ReAnimator {
 
   void update(float dt);
 
-  float lerp(float a, float b, float t);
-  Transform lerpTransform(Transform a, Transform b, float t);
+  static float lerp(float a, float b, float t);
+  static Transform lerpTransform(Transform a, Transform b, float t);
 
   void draw();
 

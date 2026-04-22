@@ -1,7 +1,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
-#include <iostream> // REMOVE LATER
 #include <BackgroundManager.hpp>
 
 sf::RenderWindow *window;
