@@ -7,6 +7,7 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <ReAnimation/ReAnimation.hpp>
+#include <ParticleSystem.hpp>
 
 sf::Vector2f mousePosition;
 
@@ -20,6 +21,7 @@ int main() {
   initOverlay();
   initWeather();
   initReAnimDefs();
+  ParticleSystem::init();
   pauseMenu.init();
   setWindowMetaData();
 

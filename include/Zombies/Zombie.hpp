@@ -48,6 +48,7 @@ struct Zombie {
     sf::Vector2i gridPosition;
     //sf::Vector2f velocity;
     bool onGrid = false;
+    bool inPlayArea = false; // if the zombie is on screen or idle outside
 
     float health;
     float strength;
@@ -61,6 +62,8 @@ struct Zombie {
     bool headless = false;
     bool enraged = false;   // For Newspaper Zombie
     bool remove = false;
+
+    int deathCause = 0;     // 0 -> normal death, 1 -> explosion/fire
 
 
     sf::Sound sound_zombieBite;
@@ -77,7 +80,7 @@ struct Zombie {
     void checkState(float dt);
     void move(float dt);
     void attack(float dt);
-    void die();
+    void die(int effect = 0);
     void updateDeath(float dt);
     void draw();
 

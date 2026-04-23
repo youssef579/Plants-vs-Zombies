@@ -5,8 +5,8 @@
 
 
 Array<Sun> Sun::sunArray;
-int Sun::sunBalance = 1000; // initialized for testing
-float Sun::spawnTimer = -20;
+int Sun::sunBalance = 5000; // initialized for testing
+float Sun::spawnTimer = -20; // negative values delay the first spawn
 bool Sun::hovering = false;
 
 void Sun::manageSuns(float dt, State s) {

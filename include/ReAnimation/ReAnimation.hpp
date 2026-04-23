@@ -8,11 +8,11 @@
 
 const int MAX_TRACKS = 60;
 
-
 enum LoopType {
   PlayOnce,
   Loop,
-  HoldLastFrame
+  HoldLastFrame,
+  LoopTimes // Loops a specific number of times
 };
 
 struct Transform {
@@ -67,6 +67,8 @@ struct ActiveLabel {
   LoopType loop = LoopType::PlayOnce;
   float offset = 0.0f;
   float holdTimer = 0.0f; // Time to hold after animation end
+  int loopCount = 0;      // counts how many loops have passed
+  int targetLoops = 0;
 };
 
 struct ReAnimationDefinition {
@@ -111,7 +113,11 @@ enum ReAnimationDef {
   REANIM_REPEATER = 5,
   REANIM_TALLNUT = 6,
   REANIM_ZOMBIE_BASIC = 7,
-  REANIM_FLAGPOLE = 8
+  REANIM_FLAGPOLE = 8,
+  REANIM_CHERRYBOMB = 9,
+  REANIM_ZOMBIE_CHARRED = 10,
+  REANIM_JALAPENO = 11,
+  REANIM_FIRE = 12
 };
 
 struct ReAnimator {
@@ -150,7 +156,7 @@ struct ReAnimator {
 
   void draw();
 
-  bool updateLabel(ActiveLabel lab);
+  bool updateLabel(ActiveLabel &lab);
 
 
 
@@ -164,10 +170,12 @@ struct ReAnimator {
   static int getFirstValidIdx(Track &track);
 
 
-  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
+  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
+  void playLabel(std::string labelName, LoopType loop, int loopCnt=0);
   void stopLabel(int labelIdx);
 
-  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
+  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
+  void playAnimation(std::string labelName, LoopType loop, int loopCnt);
   void stopAnimation(std::string labelName);
   //void replaceWithQueueAnimation(std::string labelNameA, std::string labelNameB);
 
@@ -186,21 +194,22 @@ struct ReAnimator {
   sf::Vector2f getPosition();
   void setPosition(sf::Vector2f newPos);
   sf::FloatRect getGlobalBounds();
-  bool isPlayingAnimation(std::string animName);
+  bool isPlayingAnimation(std::string animName="");
+  void switchDefinition(ReAnimationDef newDefID);
 
   void setOverlayAlpha(float newAlpha);
 
   void drawHitbox();
 
   static ReAnimationDefinition* getDefinition(ReAnimationDef defId);
-
+  static void updateOrphans(float dt);
+  static void drawOrphans();
   ReAnimator(ReAnimationDefinition *def, float x, float y, sf::RenderWindow *w);
 
+  static Array<ReAnimator> orphanAnimators;
 };
-
 
 void debugTransform(const sf::Transform &matrix);
 
 
 void initReAnimDefs();
-

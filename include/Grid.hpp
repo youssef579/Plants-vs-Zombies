@@ -10,7 +10,7 @@
 
 const int ROWS_NUMBER = 5, COLUMNS_NUMBER = 9;
 const float rowLenth[5] = {98.3, 85, 96.4, 94.5, 98.3};
-const float columnLenth[9] = {108.5, 94.5, 113.4, 102.1, 109.5, 105.85, 98.3, 109.5, 120};
+const float columnLenth[9] = {108.5, 99.5, 113.4, 104.1, 103.5, 105.85, 98.3, 109.5, 120};
 
 struct Cell {
   sf::RectangleShape rectangle;

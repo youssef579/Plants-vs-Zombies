@@ -22,6 +22,7 @@
 #include <globals.hpp>
 #include <Grid.hpp>
 #include <Zombies/Zombie.hpp>
+#include <ParticleSystem.hpp>
 
 int gameState = 0;
 /*
@@ -160,6 +161,10 @@ void updateGame() {
 
     shovel.update();
 
+    ParticleSystem::update(dt);
+    ParticleSystem::draw();
+    ReAnimator::updateOrphans(dt);
+    ReAnimator::drawOrphans();
 
 
     //drawGrid();
