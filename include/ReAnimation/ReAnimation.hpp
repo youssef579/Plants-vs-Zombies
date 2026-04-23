@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iostream>
-#include <unordered_map>
-#include <set>
-#include <SFML/Graphics.hpp>
 #include <Array.hpp>
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <set>
+#include <unordered_map>
 
 const int MAX_TRACKS = 60;
 
@@ -16,17 +16,15 @@ enum LoopType {
 };
 
 struct Transform {
-  float
-    x, y,                 // Position
-    sx, sy,               // Scale
-    kx, ky,               // Skew
-    f, a;                 // isActive and Alpha opacity
-    //std::string i;      // image ID
-  sf::Texture *i = nullptr;         // image pointer
-
+  float x, y, // Position
+      sx, sy, // Scale
+      kx, ky, // Skew
+      f, a;   // isActive and Alpha opacity
+  // std::string i;      // image ID
+  sf::Texture *i = nullptr; // image pointer
 };
 
-//struct ActiveLabel;
+// struct ActiveLabel;
 
 struct Label {
   std::string name;
@@ -39,28 +37,28 @@ struct Track {
   std::string name;
   std::vector<Transform> transforms;
   Track *parent = nullptr;
-  sf::Vector2f basePose;    // base X, Y positions
-  bool fullInherit = false; // Whether to inherit scale and skew from parent track
-
+  sf::Vector2f basePose; // base X, Y positions
+  bool fullInherit =
+      false; // Whether to inherit scale and skew from parent track
 };
 
- //Used for overlay colors (eg. sunflower glow) & wallnut cracks
+// Used for overlay colors (eg. sunflower glow) & wallnut cracks
 struct TrackInstance {
   sf::Color colorOverlay = sf::Color(255, 255, 255, 0);
   bool isVisible = true;
 
-  //float colorOverlayIntensity = 0.0f;
+  // float colorOverlayIntensity = 0.0f;
   sf::Texture *imageOverride = nullptr;
 };
 
-//struct ReAnimationInstance {
-//  std::vector<TrackInstance> trackInstances;
-//};
+// struct ReAnimationInstance {
+//   std::vector<TrackInstance> trackInstances;
+// };
 
-//struct Animation {
-//  std::vector<int> labels;
-//  bool loop = false;         // Loops:  false = Play Once , true = Loop
-//};
+// struct Animation {
+//   std::vector<int> labels;
+//   bool loop = false;         // Loops:  false = Play Once , true = Loop
+// };
 
 struct ActiveLabel {
   Label *label;
@@ -73,21 +71,21 @@ struct ActiveLabel {
 
 struct ReAnimationDefinition {
   float fps;
-  int frameCount=0;
-  int totalTracks=0;
+  int frameCount = 0;
+  int totalTracks = 0;
   std::vector<Label> labels;
   std::vector<Track> tracks;
   std::unordered_map<std::string, sf::Texture *> textureMap;
-  std::unordered_map<std::string, sf::Transform> basePoses;  // constant
-  std::unordered_map<std::string, Track *> trackMap;         // constant
+  std::unordered_map<std::string, sf::Transform> basePoses; // constant
+  std::unordered_map<std::string, Track *> trackMap;        // constant
 
-  sf::FloatRect hitbox = sf::FloatRect({ 0, 0 }, { 0, 0 });
+  sf::FloatRect hitbox = sf::FloatRect({0, 0}, {0, 0});
   sf::Vector2f offset = {0, 0}; // to change origin (top left by default)
 
-  //std::unordered_map<std::string, Animation> animations;
+  // std::unordered_map<std::string, Animation> animations;
 
   void loadFiles(std::string reAnimPath, int tracksNum, std::string tracks[],
-    std::unordered_map<std::string, std::string> images);
+                 std::unordered_map<std::string, std::string> images);
 
   void createTrackMap();
 
@@ -97,11 +95,8 @@ struct ReAnimationDefinition {
 
   int getLabelIndex(std::string labelName);
 
-
-  //void defineAnimation(std::string name, int labelCount, int labels[], bool loop = true);
-
-
-
+  // void defineAnimation(std::string name, int labelCount, int labels[], bool
+  // loop = true);
 };
 
 enum ReAnimationDef {
@@ -128,26 +123,19 @@ struct ReAnimator {
 
   ReAnimationDefinition *reAnimDef = nullptr;
   sf::RenderWindow *window;
-  float x=0, y=0, sx=1, sy=1;
+  float x = 0, y = 0, sx = 1, sy = 1;
   float animSpeedMulti = 1.0f; // multiplier of animation speed
-  float opacityMultiplier=1.0f;
+  float opacityMultiplier = 1.0f;
   bool allowMotion = true;
-  sf::Color globalColor = { 255, 255, 255, 255 };
-
+  sf::Color globalColor = {255, 255, 255, 255};
 
   sf::Transform rootMatrix;
 
-  float timer=0.0f; // Global animTime
+  float timer = 0.0f; // Global animTime
   std::vector<TrackInstance> trackInstances;
-
-
 
   std::unordered_map<std::string, sf::Transform> effectiveBasePoses;
   std::unordered_map<std::string, sf::Transform> effectiveTransforms;
-
-
-
-
 
   void update(float dt);
 
@@ -158,8 +146,6 @@ struct ReAnimator {
 
   bool updateLabel(ActiveLabel &lab);
 
-
-
   std::vector<ActiveLabel> activeLabels;
 
   std::unordered_map<std::string, Transform> curTransforms;
@@ -169,24 +155,26 @@ struct ReAnimator {
   static sf::Transform transformToSFML(Transform t);
   static int getFirstValidIdx(Track &track);
 
-
-  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
-  void ReAnimator::playLabel(std::string labelName, LoopType loop, int loopCnt=0);
+  void playLabel(std::string labelName, LoopType loop = LoopType::Loop,
+                 float holdTimer = 0.0f);
+  void playLabel(std::string labelName, LoopType loop, int loopCnt = 0);
   void stopLabel(int labelIdx);
 
-  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
-  void ReAnimator::playAnimation(std::string labelName, LoopType loop, int loopCnt);
+  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop,
+                     float holdTimer = 0.0f);
+  void playAnimation(std::string labelName, LoopType loop, int loopCnt);
   void stopAnimation(std::string labelName);
-  //void replaceWithQueueAnimation(std::string labelNameA, std::string labelNameB);
+  // void replaceWithQueueAnimation(std::string labelNameA, std::string
+  // labelNameB);
 
   void setTrackVisibility(std::string trackName, bool newVisibility);
-  void setTrackVisibility(std::vector<std::string> trackNames, bool newVisibility);
+  void setTrackVisibility(std::vector<std::string> trackNames,
+                          bool newVisibility);
 
   void report();
   void forceSyncAll();
 
   static sf::Color multiplyColor(sf::Color color, float multiplier);
-
 
   void setScale(float SX, float SY);
   void setOpacity(uint8_t newOpacity);
@@ -194,14 +182,14 @@ struct ReAnimator {
   sf::Vector2f getPosition();
   void setPosition(sf::Vector2f newPos);
   sf::FloatRect getGlobalBounds();
-  bool isPlayingAnimation(std::string animName="");
+  bool isPlayingAnimation(std::string animName = "");
   void switchDefinition(ReAnimationDef newDefID);
 
   void setOverlayAlpha(float newAlpha);
 
   void drawHitbox();
 
-  static ReAnimationDefinition* getDefinition(ReAnimationDef defId);
+  static ReAnimationDefinition *getDefinition(ReAnimationDef defId);
   static void updateOrphans(float dt);
   static void drawOrphans();
   ReAnimator(ReAnimationDefinition *def, float x, float y, sf::RenderWindow *w);
@@ -210,6 +198,5 @@ struct ReAnimator {
 };
 
 void debugTransform(const sf::Transform &matrix);
-
 
 void initReAnimDefs();
