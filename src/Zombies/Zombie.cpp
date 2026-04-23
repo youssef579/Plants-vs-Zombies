@@ -184,6 +184,10 @@ void Zombie::setSprite() {
 }
 
 bool Zombie::update(float dt) {
+
+  if (inPlayArea || reAnimator.getPosition().x <= 1130)
+    inPlayArea = true;
+
   if (freezeTimer > 0) {
     freezeTimer -= dt;
     if (freezeTimer > 0) {
@@ -365,7 +369,7 @@ bool Zombie::isZombieAliveInRow(int row, float startPosX) {
   for (int i = 0; i < zombies[row].size; i++) {
     if (zombies[row][i].health > 0 && // alive
       zombies[row][i].reAnimator.getPosition().x >= startPosX && // in front of plant
-      zombies[row][i].reAnimator.getPosition().x <= 1130) // inside play area
+      zombies[row][i].inPlayArea) // inside play area
       return true;
   }
   return false;

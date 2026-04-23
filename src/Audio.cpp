@@ -59,6 +59,7 @@ void Sounds::play(std::string op) {
   else if (op == "ZombieBite")    sound = new sf::Sound(sounds.buffers.zombieBite);
   else if (op == "ZombieGulp")    sound = new sf::Sound(sounds.buffers.zombieGulp);
   else if (op == "CherryBomb")    sound = new sf::Sound(sounds.buffers.cherryBomb);
+  else if (op == "Jalapeno")      sound = new sf::Sound(sounds.buffers.jalapeno);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -93,6 +94,7 @@ void Sounds::init() {
   sounds.buffers.zombieBite    = getSoundBuffer(sounds.paths.zombieBite);
   sounds.buffers.zombieGulp    = getSoundBuffer(sounds.paths.zombieGulp);
   sounds.buffers.cherryBomb    = getSoundBuffer(sounds.paths.cherryBomb);
+  sounds.buffers.jalapeno      = getSoundBuffer(sounds.paths.jalapeno);
 
 }
 

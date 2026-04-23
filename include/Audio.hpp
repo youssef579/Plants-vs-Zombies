@@ -40,7 +40,8 @@ struct Sounds {
       throwSnowPea,
       zombieBite,
       zombieGulp,
-      cherryBomb;
+      cherryBomb,
+      jalapeno;
   };
 
   struct Paths {
@@ -63,7 +64,8 @@ struct Sounds {
       throwSnowPea    = "assets/sounds/sfx_throwSnowpea.ogg",
       zombieBite      = "assets/sounds/sfx_zombieBite.ogg",
       zombieGulp      = "assets/sounds/sfx_zombieGulp.ogg",
-      cherryBomb      = "assets/sounds/sfx_cherryBomb.ogg";
+      cherryBomb      = "assets/sounds/sfx_cherryBomb.ogg",
+      jalapeno        = "assets/sounds/sfx_jalapeno.ogg";
   };
 
 

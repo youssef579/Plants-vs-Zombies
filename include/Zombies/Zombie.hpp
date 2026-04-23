@@ -48,6 +48,7 @@ struct Zombie {
     sf::Vector2i gridPosition;
     //sf::Vector2f velocity;
     bool onGrid = false;
+    bool inPlayArea = false; // if the zombie is on screen or idle outside
 
     float health;
     float strength;

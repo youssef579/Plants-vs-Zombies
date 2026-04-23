@@ -47,6 +47,12 @@ void initPackets() {
   //cherryBombSprite.setScale({ 0.8f, 0.8f });
   packets.push({ 125, 1, "cherrybomb", {90 + 59.0f * 6, 11}, cherryBombSprite, CHERRYBOMB });
 
+
+  sf::Texture &jalapenoTexture = getTexture("assets/Plants/jalapeno.png");
+  sf::Sprite jalapenoSprite(jalapenoTexture);
+  jalapenoSprite.setScale({ 0.8f, 0.8f });
+  packets.push({ 125, 1, "jalapeno", {90 + 59.0f * 7, 11}, jalapenoSprite, JALAPENO });
+
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)

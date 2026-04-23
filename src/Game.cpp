@@ -163,6 +163,8 @@ void updateGame() {
 
     ParticleSystem::update(dt);
     ParticleSystem::draw();
+    ReAnimator::updateOrphans(dt);
+    ReAnimator::drawOrphans();
 
 
     //drawGrid();

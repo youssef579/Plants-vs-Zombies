@@ -83,6 +83,9 @@ void updateGrid(float dt){
                   case CHERRYBOMB:
                     grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_CHERRYBOMB));
                     break;
+                  case JALAPENO:
+                    grid[i][j].plant = Plant(JALAPENO, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_JALAPENO));
+                    break;
                   default:
                     break;
                 }

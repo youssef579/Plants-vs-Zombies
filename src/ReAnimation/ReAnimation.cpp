@@ -4,6 +4,7 @@
 const float TO_RAD = 3.141592653589793f / 180.0f;
 
 Array<ReAnimationDefinition*> definitions;
+Array<ReAnimator> ReAnimator::orphanAnimators;
 
 ReAnimator::ReAnimator(ReAnimationDefinition *def, float X, float Y, sf::RenderWindow *w) {
   reAnimDef = def;
@@ -83,7 +84,7 @@ void ReAnimator::update(float dt) {
   }
 
   for (auto ql : queuedLabels)
-    playAnimation(ql, LoopType::Loop);
+    playAnimation(ql, LoopType::PlayOnce);
 
 
   float deltaGround;
@@ -160,9 +161,15 @@ void ReAnimator::update(float dt) {
 }
 
 
-bool ReAnimator::updateLabel(ActiveLabel lab) {
+bool ReAnimator::updateLabel(ActiveLabel &lab) {
   Label label = *lab.label;
   float labelOffseted = timer - lab.offset;
+  if (labelOffseted > label.end - label.start)
+    lab.loopCount++;
+  //if(lab.label->name == "anim_flame" || lab.label->name == "anim_done") std::cout << "loopCount: " << lab.loopCount << " / targetLoops: " << lab.targetLoops << "\n";
+  if(lab.loop == LoopType::LoopTimes && lab.loopCount >= lab.targetLoops)
+    return false; // Label will be Destroyed
+    
   float labelTime = label.start + std::fmod(labelOffseted, (float)(label.end - label.start));
 
   //std::cout << "offs: " << labelOffseted << " / labEnd: " << label.end << "\n";
@@ -539,8 +546,14 @@ int ReAnimationDefinition::getLabelIndex(std::string labelName) {
 }
 
 void ReAnimator::playLabel(std::string labelName, LoopType loop, float holdTimer) {
-  activeLabels.push_back({&reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
-    loop, timer, holdTimer});
+  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, holdTimer });
+}
+
+void ReAnimator::playLabel(std::string labelName, LoopType loop, int loopCnt) {
+  ActiveLabel a;
+  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, 0, 0, loopCnt });
 }
 
 void ReAnimator::stopLabel(int labelIdx) {
@@ -564,6 +577,11 @@ void ReAnimator::playAnimation(std::string labelName, LoopType loop, float holdT
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
   playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
     loop, holdTimer);
+}
+void ReAnimator::playAnimation(std::string labelName, LoopType loop, int loopCnt) {
+  //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
+  playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, loopCnt);
 }
 
 void ReAnimator::stopAnimation(std::string labelName) {
@@ -1002,6 +1020,45 @@ void initReAnimDefs() {
   definitions.push(def);
 
 
+  def = new ReAnimationDefinition;
+  std::string trackNames_jalapeno[] = { "anim_blink", "anim_idle", "anim_explode", "Jalapeno_stem",
+    "Jalapeno_body", "Jalapeno_mouth", "Jalapeno_eye1", "Jalapeno_eye2", "Jalapeno_cheek",
+    "Jalapeno_eyebrow1", "Jalapeno_eyebrow2" };
+
+  def->loadFiles("assets/Plants/jalapeno/jalapeno.json", 11, trackNames_jalapeno, {
+      {"IMAGE_REANIM_JALAPENO_STEM",     "assets/Plants/jalapeno/Jalapeno_stem.png"},
+      {"IMAGE_REANIM_JALAPENO_BODY",     "assets/Plants/jalapeno/Jalapeno_body.png"},
+      {"IMAGE_REANIM_JALAPENO_MOUTH",    "assets/Plants/jalapeno/Jalapeno_mouth.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE1",     "assets/Plants/jalapeno/Jalapeno_eye1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE2",     "assets/Plants/jalapeno/Jalapeno_eye2.png"},
+      {"IMAGE_REANIM_JALAPENO_CHEEK",    "assets/Plants/jalapeno/Jalapeno_cheek.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW1", "assets/Plants/jalapeno/Jalapeno_eyebrow1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW2", "assets/Plants/jalapeno/Jalapeno_eyebrow2.png"}
+    });
+  definitions.push(def);
+
+  //ReAnimationParser::reportImageMap("assets/Particles/fire/fire.json", "assets/Particles/fire/aaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_fire[] = { "anim_flame", "anim_done", "Layer 1" };
+  def->loadFiles("assets/Particles/fire/fire.json", 3, trackNames_fire, {
+      {"IMAGE_REANIM_FIRE1",       "assets/Particles/fire/fire1.png"},
+      {"IMAGE_REANIM_FIRE2",       "assets/Particles/fire/fire2.png"},
+      {"IMAGE_REANIM_FIRE3",       "assets/Particles/fire/fire3.png"},
+      {"IMAGE_REANIM_FIRE4",       "assets/Particles/fire/fire4.png"},
+      {"IMAGE_REANIM_FIRE4B",      "assets/Particles/fire/fire4b.png"},
+      {"IMAGE_REANIM_FIRE5",       "assets/Particles/fire/fire5.png"},
+      {"IMAGE_REANIM_FIRE5B",      "assets/Particles/fire/fire5b.png"},
+      {"IMAGE_REANIM_FIRE6",       "assets/Particles/fire/fire6.png"},
+      {"IMAGE_REANIM_FIRE6B",      "assets/Particles/fire/fire6b.png"},
+      {"IMAGE_REANIM_FIRE7",       "assets/Particles/fire/fire7.png"},
+      {"IMAGE_REANIM_FIRE7B",      "assets/Particles/fire/fire7b.png"},
+      {"IMAGE_REANIM_FIRE8",       "assets/Particles/fire/fire8.png"}
+    });
+
+  definitions.push(def);
+
 
 }
 
@@ -1054,7 +1111,10 @@ void ReAnimator::setPosition(sf::Vector2f newPos) {
 }
 
 bool ReAnimator::isPlayingAnimation(std::string animName) {
-  for (auto lab : activeLabels)
+  if (animName == "")
+    return (activeLabels.size() > 0); // if any animation is playing
+
+  for (auto &lab : activeLabels)
     if (lab.label->name == animName)
       return true;
   return false;
@@ -1076,4 +1136,17 @@ void ReAnimator::switchDefinition(ReAnimationDef newDefID) {
   trackInstances.resize(reAnimDef->totalTracks);
   if (child)
     child = nullptr;
+}
+
+
+void ReAnimator::updateOrphans(float dt) {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].update(dt);
+  orphanAnimators.erase([](ReAnimator &re) { return !re.isPlayingAnimation(); });
+}
+
+
+void ReAnimator::drawOrphans() {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].draw();
 }
