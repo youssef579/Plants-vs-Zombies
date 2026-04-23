@@ -56,6 +56,7 @@ void loadLevelFile(int level) { // Rename the above function to something else t
       );
     }
   }
+  levelFile.close();
 }
 
 void loadSettingsFile() {
