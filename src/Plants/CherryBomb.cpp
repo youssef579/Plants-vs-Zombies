@@ -2,7 +2,7 @@
 #include <Plants/Plant.hpp>
 #include <Zombies/Zombie.hpp>
 #include <Grid.hpp>
-
+#include <ParticleSystem.hpp>
 
 
 
@@ -15,6 +15,8 @@ void updateCherryBomb(Plant& cherryBomb, float dt) {
   }
 
   if (cherryBomb.timer <= 0 && cherryBomb.health > 0) {
+    sounds.play("CherryBomb");
+    ParticleSystem::spawnParticleEffect(PEFF_POWIE, cherryBomb.reAnimator.getPosition());
     for (int row = cherryBomb.row - 1; row <= cherryBomb.row + 1; row++) {
 
       if (row < 0 || row >= ROWS_NUMBER)continue;
@@ -27,7 +29,7 @@ void updateCherryBomb(Plant& cherryBomb, float dt) {
         float dx = std::abs(zombie.reAnimator.getPosition().x - cherryBomb.reAnimator.getPosition().x);
 
         if (dx <= 160.f) {
-          zombie.takeDamage(5000.f);
+          zombie.takeDamage(5000.f, 2);
         }
       }
     }

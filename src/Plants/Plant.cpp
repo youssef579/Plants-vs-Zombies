@@ -137,7 +137,7 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int col, ReAnimatio
     reAnimator.playAnimation("anim_idle");
     break;
   case CHERRYBOMB: 
-    reAnimator.playAnimation("anim_idle");
+    reAnimator.playAnimation("anim_explode", LoopType::PlayOnce);
     break;
   }
 }

@@ -81,7 +81,7 @@ void updateGrid(float dt){
                     grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_TALLNUT));
                     break;
                   case CHERRYBOMB:
-                    grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_CHERRYBOMB));
                     break;
                   default:
                     break;

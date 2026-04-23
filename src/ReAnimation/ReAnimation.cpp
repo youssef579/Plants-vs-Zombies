@@ -944,7 +944,63 @@ void initReAnimDefs() {
       {"IMAGE_REANIM_ZOMBIE_FLAG3",        "assets/Zombies/Basic/Zombie_flag3.png"}
     });
   definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_cherrybomb[] = { "anim_explode", "anim_idle", "CherryBomb_leftstem", "CherryBomb_left1",
+    "CherryBomb_left3", "CherryBomb_lefteye11", "CherryBomb_lefteye21", "CherryBomb_leftmouth1",
+    "CherryBomb_rightstem", "CherryBomb_right1", "CherryBomb_right3", "CherryBomb_righteye11",
+    "CherryBomb_righteye21", "CherryBomb_rightmouth1", "CherryBomb_leaf3", "CherryBomb_leaf2tip",
+    "CherryBomb_leaf2", "CherryBomb_leaf1", "CherryBomb_leaf1tip" };
+  def->loadFiles("assets/Plants/cherrybomb/cherryBomb.json", 19, trackNames_cherrybomb, {
+      {"IMAGE_REANIM_CHERRYBOMB_LEFTSTEM",        "assets/Plants/cherrybomb/CherryBomb_leftstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT1",          "assets/Plants/cherrybomb/CherryBomb_left1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT3",          "assets/Plants/cherrybomb/CherryBomb_left3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE11",      "assets/Plants/cherrybomb/CherryBomb_lefteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE21",      "assets/Plants/cherrybomb/CherryBomb_lefteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTMOUTH1",     "assets/Plants/cherrybomb/CherryBomb_leftmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTSTEM",      "assets/Plants/cherrybomb/CherryBomb_rightstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT1",         "assets/Plants/cherrybomb/CherryBomb_right1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT3",         "assets/Plants/cherrybomb/CherryBomb_right3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE11",     "assets/Plants/cherrybomb/CherryBomb_righteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE21",     "assets/Plants/cherrybomb/CherryBomb_righteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTMOUTH1",    "assets/Plants/cherrybomb/CherryBomb_rightmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF3",          "assets/Plants/cherrybomb/CherryBomb_leaf3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf2tip.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2",          "assets/Plants/cherrybomb/CherryBomb_leaf2.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1",          "assets/Plants/cherrybomb/CherryBomb_leaf1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf1tip.png" }
+    });
+  definitions.push(def);
   
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieCharred[] = { "anim_blink", "anim_crumble", "Zombie_charred_body",
+    "Zombie_charred_tail", "Layer 10", "Zombie_charred_pile2", "Zombie_charred_pile2",
+    "Zombie_charred_pile1", "Zombie_charred_pile1.2", "Zombie_charred_head", "Zombie_hair",
+    "Zombie_charred_blink" };
+
+  def->loadFiles("assets/Zombies/Charred/zombie/zombie.json", 12, trackNames_zombieCharred, {
+    {"IMAGE_REANIM_ZOMBIE_CHARRED1",          "assets/Zombies/Charred/zombie/Zombie_charred1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED2",          "assets/Zombies/Charred/zombie/Zombie_charred2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED3",          "assets/Zombies/Charred/zombie/Zombie_charred3.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED4",          "assets/Zombies/Charred/zombie/Zombie_charred4.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED5",          "assets/Zombies/Charred/zombie/Zombie_charred5.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED6",          "assets/Zombies/Charred/zombie/Zombie_charred6.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED7",          "assets/Zombies/Charred/zombie/Zombie_charred7.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED8",          "assets/Zombies/Charred/zombie/Zombie_charred8.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED9",          "assets/Zombies/Charred/zombie/Zombie_charred9.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED10",         "assets/Zombies/Charred/zombie/Zombie_charred10.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_TAIL",      "assets/Zombies/Charred/zombie/Zombie_charred_tail.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE2",     "assets/Zombies/Charred/zombie/Zombie_charred_pile2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE1",     "assets/Zombies/Charred/zombie/Zombie_charred_pile1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_HEAD",      "assets/Zombies/Charred/zombie/Zombie_charred_head.png"},
+    {"IMAGE_REANIM_ZOMBIE_HAIR",              "assets/Zombies/Charred/zombie/Zombie_hair.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES1",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES2",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes2.png"}
+    });
+  definitions.push(def);
+
 
 
 }
@@ -1010,4 +1066,14 @@ void ReAnimator::drawHitbox() {
   rec.setPosition({ getGlobalBounds().position.x, getGlobalBounds().position.y });
   rec.setFillColor(sf::Color(255, 0, 0, 100));
   window->draw(rec);
+}
+
+
+void ReAnimator::switchDefinition(ReAnimationDef newDefID) {
+  reAnimDef = definitions[newDefID];
+  activeLabels.clear();
+  trackInstances.clear();
+  trackInstances.resize(reAnimDef->totalTracks);
+  if (child)
+    child = nullptr;
 }

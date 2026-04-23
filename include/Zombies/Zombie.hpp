@@ -62,6 +62,8 @@ struct Zombie {
     bool enraged = false;   // For Newspaper Zombie
     bool remove = false;
 
+    int deathCause = 0;     // 0 -> normal death, 1 -> explosion/fire
+
 
     sf::Sound sound_zombieBite;
     sf::Sound sound_zombieGulp;
@@ -77,7 +79,7 @@ struct Zombie {
     void checkState(float dt);
     void move(float dt);
     void attack(float dt);
-    void die();
+    void die(int effect = 0);
     void updateDeath(float dt);
     void draw();
 

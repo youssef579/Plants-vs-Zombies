@@ -112,7 +112,8 @@ enum ReAnimationDef {
   REANIM_TALLNUT = 6,
   REANIM_ZOMBIE_BASIC = 7,
   REANIM_FLAGPOLE = 8,
-  REANIM_CHERRYBOMB =9
+  REANIM_CHERRYBOMB = 9,
+  REANIM_ZOMBIE_CHARRED = 10
 };
 
 struct ReAnimator {
@@ -188,6 +189,7 @@ struct ReAnimator {
   void setPosition(sf::Vector2f newPos);
   sf::FloatRect getGlobalBounds();
   bool isPlayingAnimation(std::string animName);
+  void switchDefinition(ReAnimationDef newDefID);
 
   void setOverlayAlpha(float newAlpha);
 
