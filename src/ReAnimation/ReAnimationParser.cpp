@@ -146,6 +146,8 @@ void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string asset
 
   json data = json::parse(file);
 
+  std::vector<int> activeFrames;
+
   std::cout << "Tracks:\n";
   std::cout << "{";
   for (auto track : data["tracks"])
@@ -163,4 +165,21 @@ void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string asset
         seenIMGs.insert(keyF["i"]);
       }
   std::cout << "}\n";
+
+  bool currState;
+  int i;
+  for (auto track : data["tracks"]) {
+    currState = true;
+    i = 0;
+    for (auto kf : track["transforms"]) {
+      if (kf.contains("f") && kf["f"] == 0) currState = true;
+      else if (kf.contains("f") && kf["f"] == -1) currState = false;
+      if (currState) activeFrames.push_back(i);
+      i++;
+    }
+
+    std::cout << "{\"name\" : " << track["name"] << ", \"start\" : " << activeFrames.front() << ", \"end\" : " << activeFrames.back() << "}\n";
+    activeFrames.clear();
+  }
+
 }

@@ -40,8 +40,18 @@ void initPackets() {
   sf::Texture &tallNutTexture = getTexture("assets/Plants/tallnut/Tallnut_body.png");
   sf::Sprite tallNutSprite(tallNutTexture);
   tallNutSprite.setScale({0.8f, 0.8f});
-  //tallNutSprite.setTextureRect({ {0, 0}, {65, 73} });
   packets.push({ 125, 5, "tallnut", {90 + 59.0f * 5, 11}, tallNutSprite, TALLNUT });
+
+  sf::Texture &cherryBombTexture = getTexture("assets/Plants/cherrybomb.png");
+  sf::Sprite cherryBombSprite(cherryBombTexture);
+  //cherryBombSprite.setScale({ 0.8f, 0.8f });
+  packets.push({ 125, 1, "cherrybomb", {90 + 59.0f * 6, 11}, cherryBombSprite, CHERRYBOMB });
+
+
+  sf::Texture &jalapenoTexture = getTexture("assets/Plants/jalapeno.png");
+  sf::Sprite jalapenoSprite(jalapenoTexture);
+  jalapenoSprite.setScale({ 0.8f, 0.8f });
+  packets.push({ 125, 1, "jalapeno", {90 + 59.0f * 7, 11}, jalapenoSprite, JALAPENO });
 
 }
 

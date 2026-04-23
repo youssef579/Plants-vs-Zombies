@@ -63,22 +63,28 @@ void updateGrid(float dt){
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
-                    grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SUNFLOWER));
+                    grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SUNFLOWER));
                     break;
                   case WALLNUT:
-                    grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_WALLNUT));
+                    grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_WALLNUT));
                     break;
                   case PEASHOOTER:
-                    grid[i][j].plant = Plant(PEASHOOTER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_PEASHOOTER));
+                    grid[i][j].plant = Plant(PEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_PEASHOOTER));
                     break;
                   case SNOWPEASHOOTER:
-                    grid[i][j].plant = Plant(SNOWPEASHOOTER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SNOWPEA));
+                    grid[i][j].plant = Plant(SNOWPEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SNOWPEA));
                     break;
                   case REPEATERPEA:
-                    grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_REPEATER));
+                    grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_REPEATER));
                     break;
                   case TALLNUT:
-                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    grid[i][j].plant = Plant(TALLNUT, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_TALLNUT));
+                    break;
+                  case CHERRYBOMB:
+                    grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_CHERRYBOMB));
+                    break;
+                  case JALAPENO:
+                    grid[i][j].plant = Plant(JALAPENO, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_JALAPENO));
                     break;
                   default:
                     break;

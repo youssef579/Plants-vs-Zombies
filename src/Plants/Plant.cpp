@@ -2,6 +2,8 @@
 #include <Plants/Wallnut.hpp>
 #include <Plants/Tallnut.hpp>
 #include <Plants/Plant.hpp>
+#include <Plants/CherryBomb.hpp>
+#include <Plants/Jalapeno.hpp>
 #include <globals.hpp>
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
@@ -30,6 +32,13 @@ float getPlantHealth(PlantType type){
     case TALLNUT:
       health = TALLNUT_HEALTH;
       break;
+    case CHERRYBOMB:
+      health = CHERRY_HEALTH;
+      break;
+    case JALAPENO:
+      health = JALAPENO_HEALTH;
+      break;
+
   }
 
   return health;
@@ -56,13 +65,19 @@ float getPlantTimer(PlantType type){
     case TALLNUT:
       timer = 0;
       break;
+    case CHERRYBOMB:
+      timer = CHERRY_EXPLOSION_TIMER;
+      break;
+    case JALAPENO:
+      timer = JALAPENO_EXPLOSION_TIMER;
+      break;
   }
 
   return timer;
 }
 
 
-Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefinition *def)
+Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimationDefinition *def)
   : reAnimator(def, position.x, position.y, window){
 
   //ReAnimationDef defName;
@@ -94,6 +109,7 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefiniti
   timer = getPlantTimer(type);
   blinkTimer = PLANT_BLINK_INTERVAL;
   row = Row;
+  col = Col;
   state = 0;
 
   
@@ -128,6 +144,12 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, ReAnimationDefiniti
   case TALLNUT:
     reAnimator.playAnimation("anim_idle");
     break;
+  case CHERRYBOMB: 
+    reAnimator.playAnimation("anim_explode", LoopType::PlayOnce);
+    break;
+  case JALAPENO:
+    reAnimator.playAnimation("anim_explode", LoopType::PlayOnce);
+    break;
   }
 }
 
@@ -150,6 +172,12 @@ void Plant::update(float dt) {
       break;
     case TALLNUT:
       updateTallnut(*this, dt);
+      break;
+    case CHERRYBOMB:
+      updateCherryBomb(*this, dt);
+      break;
+    case JALAPENO:
+      updateJalapeno(*this, dt);
       break;
   }
 }
@@ -175,6 +203,12 @@ void Plant::draw() {
       break;
     case TALLNUT:
       drawTallnut(*this);
+      break;
+    case CHERRYBOMB:
+      drawCherryBomb(*this);
+      break;
+    case JALAPENO:
+      drawJalapeno(*this);
       break;
   }
 }

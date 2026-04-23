@@ -4,6 +4,7 @@
 const float TO_RAD = 3.141592653589793f / 180.0f;
 
 Array<ReAnimationDefinition*> definitions;
+Array<ReAnimator> ReAnimator::orphanAnimators;
 
 ReAnimator::ReAnimator(ReAnimationDefinition *def, float X, float Y, sf::RenderWindow *w) {
   reAnimDef = def;
@@ -83,7 +84,7 @@ void ReAnimator::update(float dt) {
   }
 
   for (auto ql : queuedLabels)
-    playAnimation(ql, LoopType::Loop);
+    playAnimation(ql, LoopType::PlayOnce);
 
 
   float deltaGround;
@@ -160,9 +161,15 @@ void ReAnimator::update(float dt) {
 }
 
 
-bool ReAnimator::updateLabel(ActiveLabel lab) {
+bool ReAnimator::updateLabel(ActiveLabel &lab) {
   Label label = *lab.label;
   float labelOffseted = timer - lab.offset;
+  if (labelOffseted > label.end - label.start)
+    lab.loopCount++;
+  //if(lab.label->name == "anim_flame" || lab.label->name == "anim_done") std::cout << "loopCount: " << lab.loopCount << " / targetLoops: " << lab.targetLoops << "\n";
+  if(lab.loop == LoopType::LoopTimes && lab.loopCount >= lab.targetLoops)
+    return false; // Label will be Destroyed
+    
   float labelTime = label.start + std::fmod(labelOffseted, (float)(label.end - label.start));
 
   //std::cout << "offs: " << labelOffseted << " / labEnd: " << label.end << "\n";
@@ -349,7 +356,7 @@ void ReAnimator::draw() {
     }*/
     //else {
       uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
-      sprite->setColor(sf::Color(255, 255, 255, alpha255));
+      sprite->setColor(sf::Color(globalColor.r, globalColor.g, globalColor.b, alpha255));
     //}
 
 
@@ -397,7 +404,12 @@ void ReAnimator::draw() {
     if (window) {
       window->draw(*sprite, states);
       if (trackInstances[idx].colorOverlay.a > 0.0f) {
-        sprite->setColor(trackInstances[idx].colorOverlay);
+        sprite->setColor({
+            trackInstances[idx].colorOverlay.r,
+            trackInstances[idx].colorOverlay.g,
+            trackInstances[idx].colorOverlay.b,
+            (uint8_t)(trackInstances[idx].colorOverlay.a * opacityMultiplier)
+          });
         states.blendMode = sf::BlendAdd;
         window->draw(*sprite, states);
       }
@@ -534,8 +546,14 @@ int ReAnimationDefinition::getLabelIndex(std::string labelName) {
 }
 
 void ReAnimator::playLabel(std::string labelName, LoopType loop, float holdTimer) {
-  activeLabels.push_back({&reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
-    loop, timer, holdTimer});
+  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, holdTimer });
+}
+
+void ReAnimator::playLabel(std::string labelName, LoopType loop, int loopCnt) {
+  ActiveLabel a;
+  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, 0, 0, loopCnt });
 }
 
 void ReAnimator::stopLabel(int labelIdx) {
@@ -559,6 +577,11 @@ void ReAnimator::playAnimation(std::string labelName, LoopType loop, float holdT
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
   playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
     loop, holdTimer);
+}
+void ReAnimator::playAnimation(std::string labelName, LoopType loop, int loopCnt) {
+  //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
+  playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, loopCnt);
 }
 
 void ReAnimator::stopAnimation(std::string labelName) {
@@ -939,7 +962,102 @@ void initReAnimDefs() {
       {"IMAGE_REANIM_ZOMBIE_FLAG3",        "assets/Zombies/Basic/Zombie_flag3.png"}
     });
   definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_cherrybomb[] = { "anim_explode", "anim_idle", "CherryBomb_leftstem", "CherryBomb_left1",
+    "CherryBomb_left3", "CherryBomb_lefteye11", "CherryBomb_lefteye21", "CherryBomb_leftmouth1",
+    "CherryBomb_rightstem", "CherryBomb_right1", "CherryBomb_right3", "CherryBomb_righteye11",
+    "CherryBomb_righteye21", "CherryBomb_rightmouth1", "CherryBomb_leaf3", "CherryBomb_leaf2tip",
+    "CherryBomb_leaf2", "CherryBomb_leaf1", "CherryBomb_leaf1tip" };
+  def->loadFiles("assets/Plants/cherrybomb/cherryBomb.json", 19, trackNames_cherrybomb, {
+      {"IMAGE_REANIM_CHERRYBOMB_LEFTSTEM",        "assets/Plants/cherrybomb/CherryBomb_leftstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT1",          "assets/Plants/cherrybomb/CherryBomb_left1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT3",          "assets/Plants/cherrybomb/CherryBomb_left3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE11",      "assets/Plants/cherrybomb/CherryBomb_lefteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE21",      "assets/Plants/cherrybomb/CherryBomb_lefteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTMOUTH1",     "assets/Plants/cherrybomb/CherryBomb_leftmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTSTEM",      "assets/Plants/cherrybomb/CherryBomb_rightstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT1",         "assets/Plants/cherrybomb/CherryBomb_right1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT3",         "assets/Plants/cherrybomb/CherryBomb_right3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE11",     "assets/Plants/cherrybomb/CherryBomb_righteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE21",     "assets/Plants/cherrybomb/CherryBomb_righteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTMOUTH1",    "assets/Plants/cherrybomb/CherryBomb_rightmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF3",          "assets/Plants/cherrybomb/CherryBomb_leaf3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf2tip.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2",          "assets/Plants/cherrybomb/CherryBomb_leaf2.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1",          "assets/Plants/cherrybomb/CherryBomb_leaf1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf1tip.png" }
+    });
+  definitions.push(def);
   
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieCharred[] = { "anim_blink", "anim_crumble", "Zombie_charred_body",
+    "Zombie_charred_tail", "Layer 10", "Zombie_charred_pile2", "Zombie_charred_pile2",
+    "Zombie_charred_pile1", "Zombie_charred_pile1.2", "Zombie_charred_head", "Zombie_hair",
+    "Zombie_charred_blink" };
+
+  def->loadFiles("assets/Zombies/Charred/zombie/zombie.json", 12, trackNames_zombieCharred, {
+    {"IMAGE_REANIM_ZOMBIE_CHARRED1",          "assets/Zombies/Charred/zombie/Zombie_charred1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED2",          "assets/Zombies/Charred/zombie/Zombie_charred2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED3",          "assets/Zombies/Charred/zombie/Zombie_charred3.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED4",          "assets/Zombies/Charred/zombie/Zombie_charred4.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED5",          "assets/Zombies/Charred/zombie/Zombie_charred5.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED6",          "assets/Zombies/Charred/zombie/Zombie_charred6.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED7",          "assets/Zombies/Charred/zombie/Zombie_charred7.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED8",          "assets/Zombies/Charred/zombie/Zombie_charred8.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED9",          "assets/Zombies/Charred/zombie/Zombie_charred9.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED10",         "assets/Zombies/Charred/zombie/Zombie_charred10.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_TAIL",      "assets/Zombies/Charred/zombie/Zombie_charred_tail.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE2",     "assets/Zombies/Charred/zombie/Zombie_charred_pile2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE1",     "assets/Zombies/Charred/zombie/Zombie_charred_pile1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_HEAD",      "assets/Zombies/Charred/zombie/Zombie_charred_head.png"},
+    {"IMAGE_REANIM_ZOMBIE_HAIR",              "assets/Zombies/Charred/zombie/Zombie_hair.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES1",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES2",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes2.png"}
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_jalapeno[] = { "anim_blink", "anim_idle", "anim_explode", "Jalapeno_stem",
+    "Jalapeno_body", "Jalapeno_mouth", "Jalapeno_eye1", "Jalapeno_eye2", "Jalapeno_cheek",
+    "Jalapeno_eyebrow1", "Jalapeno_eyebrow2" };
+
+  def->loadFiles("assets/Plants/jalapeno/jalapeno.json", 11, trackNames_jalapeno, {
+      {"IMAGE_REANIM_JALAPENO_STEM",     "assets/Plants/jalapeno/Jalapeno_stem.png"},
+      {"IMAGE_REANIM_JALAPENO_BODY",     "assets/Plants/jalapeno/Jalapeno_body.png"},
+      {"IMAGE_REANIM_JALAPENO_MOUTH",    "assets/Plants/jalapeno/Jalapeno_mouth.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE1",     "assets/Plants/jalapeno/Jalapeno_eye1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE2",     "assets/Plants/jalapeno/Jalapeno_eye2.png"},
+      {"IMAGE_REANIM_JALAPENO_CHEEK",    "assets/Plants/jalapeno/Jalapeno_cheek.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW1", "assets/Plants/jalapeno/Jalapeno_eyebrow1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW2", "assets/Plants/jalapeno/Jalapeno_eyebrow2.png"}
+    });
+  definitions.push(def);
+
+  //ReAnimationParser::reportImageMap("assets/Particles/fire/fire.json", "assets/Particles/fire/aaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_fire[] = { "anim_flame", "anim_done", "Layer 1" };
+  def->loadFiles("assets/Particles/fire/fire.json", 3, trackNames_fire, {
+      {"IMAGE_REANIM_FIRE1",       "assets/Particles/fire/fire1.png"},
+      {"IMAGE_REANIM_FIRE2",       "assets/Particles/fire/fire2.png"},
+      {"IMAGE_REANIM_FIRE3",       "assets/Particles/fire/fire3.png"},
+      {"IMAGE_REANIM_FIRE4",       "assets/Particles/fire/fire4.png"},
+      {"IMAGE_REANIM_FIRE4B",      "assets/Particles/fire/fire4b.png"},
+      {"IMAGE_REANIM_FIRE5",       "assets/Particles/fire/fire5.png"},
+      {"IMAGE_REANIM_FIRE5B",      "assets/Particles/fire/fire5b.png"},
+      {"IMAGE_REANIM_FIRE6",       "assets/Particles/fire/fire6.png"},
+      {"IMAGE_REANIM_FIRE6B",      "assets/Particles/fire/fire6b.png"},
+      {"IMAGE_REANIM_FIRE7",       "assets/Particles/fire/fire7.png"},
+      {"IMAGE_REANIM_FIRE7B",      "assets/Particles/fire/fire7b.png"},
+      {"IMAGE_REANIM_FIRE8",       "assets/Particles/fire/fire8.png"}
+    });
+
+  definitions.push(def);
 
 
 }
@@ -969,6 +1087,8 @@ sf::FloatRect ReAnimator::getGlobalBounds() {
 }
 
 void ReAnimator::setOverlayAlpha(float newAlpha) {
+  if (newAlpha > 1.0f) newAlpha = 1.0f;
+  else if (newAlpha < 0.0f) newAlpha = 0.0f;
   uint8_t castedAlpha = (uint8_t)(newAlpha * 255.0f);
   for (auto &trackI : trackInstances)
     trackI.colorOverlay.a = castedAlpha;
@@ -991,7 +1111,10 @@ void ReAnimator::setPosition(sf::Vector2f newPos) {
 }
 
 bool ReAnimator::isPlayingAnimation(std::string animName) {
-  for (auto lab : activeLabels)
+  if (animName == "")
+    return (activeLabels.size() > 0); // if any animation is playing
+
+  for (auto &lab : activeLabels)
     if (lab.label->name == animName)
       return true;
   return false;
@@ -1003,4 +1126,27 @@ void ReAnimator::drawHitbox() {
   rec.setPosition({ getGlobalBounds().position.x, getGlobalBounds().position.y });
   rec.setFillColor(sf::Color(255, 0, 0, 100));
   window->draw(rec);
+}
+
+
+void ReAnimator::switchDefinition(ReAnimationDef newDefID) {
+  reAnimDef = definitions[newDefID];
+  activeLabels.clear();
+  trackInstances.clear();
+  trackInstances.resize(reAnimDef->totalTracks);
+  if (child)
+    child = nullptr;
+}
+
+
+void ReAnimator::updateOrphans(float dt) {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].update(dt);
+  orphanAnimators.erase([](ReAnimator &re) { return !re.isPlayingAnimation(); });
+}
+
+
+void ReAnimator::drawOrphans() {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].draw();
 }

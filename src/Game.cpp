@@ -22,6 +22,7 @@
 #include <globals.hpp>
 #include <Grid.hpp>
 #include <Zombies/Zombie.hpp>
+#include <ParticleSystem.hpp>
 
 int gameState = 0;
 /*
@@ -139,17 +140,16 @@ void updateGame() {
     window->setView(*view);
     drawGrid();
     
-    for (int i = 0; i < bullets.size; i++) {
+    /*for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
-    }
+    }*/
+    Bullet::updateAll(dt);
+    Bullet::drawAll();
 
-    bullets.erase([](const Bullet& b) {
-      return b.remove;
-    });
 
     Zombie::updateAll(dt);
-    Zombie::drawAll(dt);
+    Zombie::drawAll();
 
     drawUI();
     shovel.drawBank();
@@ -161,6 +161,10 @@ void updateGame() {
 
     shovel.update();
 
+    ParticleSystem::update(dt);
+    ParticleSystem::draw();
+    ReAnimator::updateOrphans(dt);
+    ReAnimator::drawOrphans();
 
 
     //drawGrid();

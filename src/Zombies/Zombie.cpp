@@ -55,7 +55,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
       zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
       zombie->reAnimator.setTrackVisibility("anim_tongue", false);
       zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
-      zombie->reAnimator.animSpeedMulti = 1.5f;
+      //zombie->reAnimator.animSpeedMulti = 1.5f;
       break;
   case Zombie::Type::Conehead:
     zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
@@ -70,7 +70,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
     zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
-    zombie->reAnimator.animSpeedMulti = 1.5f;
+    //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Buckethead:
     zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
@@ -85,7 +85,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
     zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
-    zombie->reAnimator.animSpeedMulti = 1.5f;
+    //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Flag:
     zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
@@ -107,11 +107,13 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_innerarm3", false);
     zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     zombie->reAnimator.child->playAnimation("main");
-    zombie->reAnimator.animSpeedMulti = 1.8f;
+    //zombie->reAnimator.animSpeedMulti = 1.8f;
     break;
   }
   
-
+  zombie->reAnimator.animSpeedMulti = speeds[type];
+  for (int i = 0; i < zombie->reAnimator.trackInstances.size(); i++)
+    zombie->reAnimator.trackInstances[i].colorOverlay = {0, 0, 255, 0};
   zombie->type = type;
   zombie->state = Walking;
 
@@ -152,9 +154,50 @@ void Zombie::setSprite() {
     sprite.setOrigin(sprite.getLocalBounds().size / 2.0f);
     int count = frameCount[type][state][headless];
     sheet = Spritesheet{nullptr, 166, 144, count, 2.f / count};*/
+
+  //reAnimator.setOverlayAlpha(std::max(0.0f, std::min(freezeTimer*255, 255.0f)));
+  //std::cout << "set alpha to " << std::max(0.0f, std::min(freezeTimer*255, 255.0f)) << "\n";
+  //std::cout << "freeze timer: " << freezeTimer << "\n";
+  /*if (freezeTimer > 0) {
+    reAnimator.globalColor = sf::Color(140, 140, 255);
+    reAnimator.setOverlayAlpha(1.0f);
+  }
+  else {
+    reAnimator.globalColor = sf::Color::White;
+    reAnimator.setOverlayAlpha(0.0f);
+  }*/
+
+  
+  float lerpFactor;
+  if (freezeTimer > FreezeTimer - 0.1)
+    lerpFactor = (ReAnimator::lerp(1, 0, (freezeTimer - (FreezeTimer - 0.1)) / (FreezeTimer - (FreezeTimer - 0.1))));
+  else if (freezeTimer < 0.1)
+    lerpFactor = (ReAnimator::lerp(1, 0, (0.1 - freezeTimer) / 0.1));
+  else
+    lerpFactor = (1.0f);
+
+  reAnimator.globalColor = sf::Color(lerpFactor * 140 + (1 - lerpFactor) * 255, lerpFactor * 140 + (1 - lerpFactor) * 255, 255);
+  reAnimator.setOverlayAlpha(lerpFactor);
+
+  //std::cout << "a: " << (int)reAnimator.trackInstances[0].colorOverlay.a << "\n";
+
 }
 
 bool Zombie::update(float dt) {
+
+  if (inPlayArea || reAnimator.getPosition().x <= 1130)
+    inPlayArea = true;
+
+  if (freezeTimer > 0) {
+    freezeTimer -= dt;
+    if (freezeTimer > 0) {
+      reAnimator.animSpeedMulti = speeds[type] * 0.5f;
+    }
+    else {
+      freezeTimer = 0;
+      reAnimator.animSpeedMulti = speeds[type];
+    }
+  }
   reAnimator.update(dt);
   gridPosition = positionToGrid(reAnimator.getPosition());
   onGrid = (gridPosition != sf::Vector2{-1, -1});
@@ -162,12 +205,19 @@ bool Zombie::update(float dt) {
   //draw(dt);
   return health > 0;
 }
-
-void Zombie::takeDamage(float damage) {
+//effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire
+void Zombie::takeDamage(float damage, int effect) { // todo: change effect into enum
     health -= damage;
+    if (effect == 1) {
+      freezeTimer = FreezeTimer;
+    }
     if(health <= 0) {
-        die();
-        return;
+      /*if (effect == 2)
+        die(2);
+      else
+        die();*/
+      die(effect);
+      return;
     } else if(health <= 20) {
         headless = true;
     }
@@ -199,7 +249,7 @@ void Zombie::takeDamage(float damage) {
         reAnimator.child->stopAnimation("main"); // temporary
     }
 
-    if(damage) freezeTimer = FreezeTimer;
+    //if(damage) freezeTimer = FreezeTimer;
 }
 
 void Zombie::checkState(float dt) {
@@ -237,29 +287,40 @@ void Zombie::attack(float dt) {
     setSprite();
 }
 
-void Zombie::die() {
+void Zombie::die(int effect) {
     state = Dying;
     //velocity = {0, 0};
     reAnimator.stopAnimation("anim_walk");
     reAnimator.stopAnimation("anim_eat");
-    reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
+    if(effect == 0 || effect == 1)
+      reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
+    else if (effect == 2) {
+      reAnimator.switchDefinition(REANIM_ZOMBIE_CHARRED);
+      reAnimator.playAnimation("anim_crumble", LoopType::HoldLastFrame, 4.0f);
+      deathCause = 1;
+    }
     setSprite();
 }
 
 void Zombie::updateDeath(float dt) {
-  if (!reAnimator.isPlayingAnimation("anim_death")) {
+  if (deathCause == 0 && !reAnimator.isPlayingAnimation("anim_death")
+    || deathCause == 1 && !reAnimator.isPlayingAnimation("anim_crumble")) {
     remove = true;
+    if (reAnimator.child)
+      delete reAnimator.child;
   }
   else {
     // will be changed later into a better option
-    corpseDissapearTimer += dt;
-    if (corpseDissapearTimer >= 4)
-      corpseDissapearTimer = 4;
-    reAnimator.setOpacity((uint8_t)(255 - (int)(254 + (0 - 254) * corpseDissapearTimer / 4.0f)));
+    // 0 < timer < 2 -> do nothing
+    // 2 <= timer < 6 -> fade out
+    corpseDissapearTimer += dt * speeds[type] * (freezeTimer > 0 ? 0.5f : 1.0f);
+    if (corpseDissapearTimer >= 6)
+      corpseDissapearTimer = 6;
+    reAnimator.setOpacity((uint8_t)(255 - (int)(254 + (0 - 254) * std::max(corpseDissapearTimer-2, 0.0f) / 4.0f)));
   }
 }
 
-void Zombie::draw(float dt) {
+void Zombie::draw() {
   reAnimator.draw();
   //reAnimator.drawHitbox();                    // shows zombies hitbox as a red rectangle
   
@@ -267,10 +328,10 @@ void Zombie::draw(float dt) {
   //rec.setPosition(reAnimator.getPosition());  // shows zombies actual x, y position as a white dot
   //window->draw(rec);
 
-    if(freezeTimer <= 0) {
+    //if(freezeTimer <= 0) {
 
-        //animateSpritesheet(sheet, dt);
-    }
+    //    //animateSpritesheet(sheet, dt);
+    //}
 }
 
 
@@ -287,11 +348,11 @@ void Zombie::updateAll(float dt) {
 
 }
 
-void Zombie::drawAll(float dt) {
+void Zombie::drawAll() {
   window->setView(*gameView);
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
-      zombies[r][i].draw(dt);
+      zombies[r][i].draw();
     }
   }
 
@@ -308,7 +369,7 @@ bool Zombie::isZombieAliveInRow(int row, float startPosX) {
   for (int i = 0; i < zombies[row].size; i++) {
     if (zombies[row][i].health > 0 && // alive
       zombies[row][i].reAnimator.getPosition().x >= startPosX && // in front of plant
-      zombies[row][i].reAnimator.getPosition().x <= 1130) // inside play area
+      zombies[row][i].inPlayArea) // inside play area
       return true;
   }
   return false;
