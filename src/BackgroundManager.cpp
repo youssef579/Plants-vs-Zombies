@@ -3,7 +3,7 @@
 #include <iostream>
 #include <SFML/Audio.hpp>
 #include <Window.hpp>
-
+#include <LawnMower.hpp>
 
 LevelManager dayLevel;
 
@@ -308,6 +308,7 @@ void LevelManager::draw(sf::RenderWindow& window) {
 
   window.setView(camera);
 
+
   if (backGroundSprite) window.draw(*backGroundSprite);
 
 
@@ -332,6 +333,11 @@ void LevelManager::draw(sf::RenderWindow& window) {
       window.draw(*capSprites[i]);
     }
   }
+
+  //std::cout << "timer: " << introTimer << "\n";
+  if (introTimer > 2.5)
+    LawnMower::drawAll();
+
   window.setView(window.getDefaultView());
 }
 

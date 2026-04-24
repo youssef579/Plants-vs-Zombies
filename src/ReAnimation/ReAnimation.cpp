@@ -937,6 +937,8 @@ void initReAnimDefs() {
       { "IMAGE_REANIM_ZOMBIE_TONGUE",                   "assets/Zombies/Basic/Zombie_tongue.png" },
       { "IMAGE_REANIM_ZOMBIE_MUSTACHE1",                "assets/Zombies/Basic/Zombie_mustache1.png" },
       { "IMAGE_REANIM_ZOMBIE_SCREENDOOR1",              "assets/Zombies/Basic/Zombie_screendoor1.png" },
+      { "IMAGE_REANIM_ZOMBIE_SCREENDOOR2",              "assets/Zombies/Basic/Zombie_screendoor2.png" },
+      { "IMAGE_REANIM_ZOMBIE_SCREENDOOR3",              "assets/Zombies/Basic/Zombie_screendoor3.png" },
       { "IMAGE_REANIM_ZOMBIE_INNERARM_SCREENDOOR_HAND", "assets/Zombies/Basic/Zombie_innerarm_screendoor_hand.png" },
       { "IMAGE_REANIM_ZOMBIE_OUTERARM_SCREENDOOR",      "assets/Zombies/Basic/Zombie_outerarm_screendoor.png" },
       { "IMAGE_REANIM_ZOMBIE_OUTERARM_HAND",            "assets/Zombies/Basic/Zombie_outerarm_hand.png" },

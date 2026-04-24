@@ -10,14 +10,14 @@ struct Zombie {
 
     static constexpr int numberOfTypes = 5;
 
-    static constexpr float speeds[] = {1.0, 1.0, 1.0, 1.2}; // not used ?
-    static constexpr float healths[] = {270, 370, 1100, 270 };
-    static constexpr float strengths[] = { 36, 36, 36, 36 };
+    static constexpr float speeds[] = { 1.0, 1.0, 1.0, 1.2, 1.0 };
+    static constexpr float healths[] = { 270, 370, 1100, 270, 1290 };
+    static constexpr float strengths[] = { 36, 36, 36, 36, 36 };
 
     static constexpr float AttackTimer = 0.33f;
     static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
 
-    enum Type {Regular, Conehead, Buckethead, Flag, Newspaper};
+    enum Type {Regular, Conehead, Buckethead, Flag, Screendoor};
     enum State {Walking, Attacking, Dying};
 
     // For simple assets access

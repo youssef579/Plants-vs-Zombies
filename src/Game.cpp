@@ -90,6 +90,10 @@ void updateGame() {
         grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[3][8].rectangle.getGlobalBounds().getCenter().y,
         Zombie::Type::Flag, 3);
+      Zombie::createZombie(
+        grid[4][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[4][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Screendoor, 4);
 
 
       runOnce = false;
@@ -154,7 +158,6 @@ void updateGame() {
     Bullet::drawAll();
 
 
-    LawnMower::drawAll();
     Zombie::updateAll(dt);
     Zombie::drawAll();
 

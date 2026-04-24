@@ -1,4 +1,5 @@
 #include <LawnMower.hpp>
+#include <BackgroundManager.hpp>
 
 
 Array<LawnMower> LawnMower::lawnMowers;
@@ -50,7 +51,7 @@ void LawnMower::drawAll() {
     if(!lawnMowers[i].remove)
       lawnMowers[i].reAnimator.draw();
   }
-  window->setView(*view);
+  window->setView(dayLevel.camera);
 }
 
 

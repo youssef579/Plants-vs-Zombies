@@ -110,6 +110,26 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.child->playAnimation("main");
     //zombie->reAnimator.animSpeedMulti = 1.8f;
     break;
+  case Zombie::Type::Screendoor:
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie->reAnimator.setTrackVisibility("anim_cone", false);
+    zombie->reAnimator.setTrackVisibility("anim_bucket", false);
+    //zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
+    //zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
+    //zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
+    //zombie->reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_duckytube", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
+    zombie->reAnimator.setTrackVisibility("anim_tongue", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_outerarm_upper", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_outerarm_lower", false);
+    zombie->reAnimator.setTrackVisibility("Zombie_outerarm_hand", false);
+    zombie->reAnimator.setTrackVisibility("anim_innerarm3", false);
+    zombie->reAnimator.setTrackVisibility("anim_innerarm2", false);
+    zombie->reAnimator.setTrackVisibility("anim_innerarm1", false);
+    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    break;
   }
   
   zombie->reAnimator.animSpeedMulti = speeds[type];
@@ -211,7 +231,7 @@ bool Zombie::update(float dt) {
 //effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire , 3 -> mowed
 void Zombie::takeDamage(float damage, int effect) { // todo: change effect into enum
     health -= damage;
-    if (effect == 1) {
+    if (effect == 1 && !(type == Zombie::Type::Screendoor && health >= healths[type] * 0.2f)) {
       freezeTimer = FreezeTimer;
     }
     if(health <= 0) {
@@ -234,6 +254,9 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
       else if (type == Zombie::Type::Buckethead)
         reAnimator.trackInstances[41].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_BUCKET2"];
+      else if (type == Zombie::Type::Screendoor)
+        reAnimator.trackInstances[32].imageOverride
+        = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_SCREENDOOR2"];
     }
     else if (health < healths[type]*0.5f && health >= healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
@@ -242,6 +265,9 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
       else if (type == Zombie::Type::Buckethead)
         reAnimator.trackInstances[41].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_BUCKET3"];
+      else if (type == Zombie::Type::Screendoor)
+        reAnimator.trackInstances[32].imageOverride
+        = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_SCREENDOOR3"];
     }
     else if (health < healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
@@ -250,6 +276,18 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
         reAnimator.setTrackVisibility("anim_bucket", false);
       else if (type == Zombie::Type::Flag)
         reAnimator.child->stopAnimation("main"); // temporary
+      else if (type == Zombie::Type::Screendoor) {
+        reAnimator.setTrackVisibility("Zombie_outerarm_upper", true);
+        reAnimator.setTrackVisibility("Zombie_outerarm_lower", true);
+        reAnimator.setTrackVisibility("Zombie_outerarm_hand", true);
+        reAnimator.setTrackVisibility("anim_innerarm3", true);
+        reAnimator.setTrackVisibility("anim_innerarm2", true);
+        reAnimator.setTrackVisibility("anim_innerarm1", true);
+        reAnimator.setTrackVisibility("anim_screendoor", false);
+        reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
+        reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
+        reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
+      }
     }
 
     //if(damage) freezeTimer = FreezeTimer;
