@@ -1,6 +1,7 @@
 #include <Zombies/Zombie.hpp>
 #include <Window.hpp>
 #include <BackgroundManager.hpp>
+#include <LawnMower.hpp>
 
 Array<Zombie> zombies[ROWS_NUMBER];
 
@@ -187,6 +188,8 @@ bool Zombie::update(float dt) {
 
   if (inPlayArea || reAnimator.getPosition().x <= 1130)
     inPlayArea = true;
+  if (reAnimator.getPosition().x <= 150) // activate lawnmower
+    LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
 
   if (freezeTimer > 0) {
     freezeTimer -= dt;
@@ -205,7 +208,7 @@ bool Zombie::update(float dt) {
   //draw(dt);
   return health > 0;
 }
-//effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire
+//effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire , 3 -> mowed
 void Zombie::takeDamage(float damage, int effect) { // todo: change effect into enum
     health -= damage;
     if (effect == 1) {
@@ -299,12 +302,24 @@ void Zombie::die(int effect) {
       reAnimator.playAnimation("anim_crumble", LoopType::HoldLastFrame, 4.0f);
       deathCause = 1;
     }
+    else if (effect == 3) {
+      ReAnimator::orphanAnimators.push({ ReAnimator::getDefinition(REANIM_LAWNMOWERED_ZOMBIE) , reAnimator.getPosition().x , reAnimator.getPosition().y, window});
+      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].child = &reAnimator;
+      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].childsParentTrack = "locator";
+      reAnimator.hasParent = true;
+      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].playAnimation("main", HoldLastFrame, 2.0f);
+      reAnimator.playAnimation("anim_idle");
+
+      corpseDissapearTimer = 2.5f;
+      deathCause = 2;
+    }
     setSprite();
 }
 
 void Zombie::updateDeath(float dt) {
   if (deathCause == 0 && !reAnimator.isPlayingAnimation("anim_death")
-    || deathCause == 1 && !reAnimator.isPlayingAnimation("anim_crumble")) {
+    || deathCause == 1 && !reAnimator.isPlayingAnimation("anim_crumble")
+    || deathCause == 2 && corpseDissapearTimer >= 6) {
     remove = true;
     if (reAnimator.child)
       delete reAnimator.child;
@@ -316,12 +331,14 @@ void Zombie::updateDeath(float dt) {
     corpseDissapearTimer += dt * speeds[type] * (freezeTimer > 0 ? 0.5f : 1.0f);
     if (corpseDissapearTimer >= 6)
       corpseDissapearTimer = 6;
+    //std::cout << "set opacity to " << (int)(uint8_t)(255 - (int)(254 + (0 - 254) * std::max(corpseDissapearTimer - 2, 0.0f) / 4.0f)) << "\n";
     reAnimator.setOpacity((uint8_t)(255 - (int)(254 + (0 - 254) * std::max(corpseDissapearTimer-2, 0.0f) / 4.0f)));
   }
 }
 
 void Zombie::draw() {
-  reAnimator.draw();
+  if(deathCause != 2) // if not mowed
+    reAnimator.draw();
   //reAnimator.drawHitbox();                    // shows zombies hitbox as a red rectangle
   
   //sf::RectangleShape rec({2, 2});
@@ -343,7 +360,7 @@ void Zombie::updateAll(float dt) {
   }
 
   for (int r = 0; r < ROWS_NUMBER; r++) {
-    zombies[r].erase([](Zombie& z) { return z.remove; });
+    zombies[r].erase([](Zombie &z) { return z.remove; });
   }
 
 }

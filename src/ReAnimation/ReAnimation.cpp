@@ -310,12 +310,16 @@ void ReAnimator::draw() {
   }
 
   if (child) {
-    sf::Transform parCur = getEffectiveTransform(childsParentTrack);
-    sf::Transform parBase = getEffectiveBasePose(childsParentTrack);
-
-    // child inherits transformation of difference of parent
-    child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
-
+    //sf::Transform parCur;
+    //sf::Transform parBase;
+    if (childsParentTrack == "") {
+      child->rootMatrix = rootMatrix;
+    }
+    else { // child inherits transformation of difference of parent
+      sf::Transform parCur = getEffectiveTransform(childsParentTrack);
+      sf::Transform parBase = getEffectiveBasePose(childsParentTrack);
+      child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
+    }
     child->draw();
   }
 
@@ -339,6 +343,7 @@ void ReAnimator::draw() {
       }
       else idx++;
 
+    //std::cout << "Track[" << name << "]: " << idx << "\n";
     if (!trackInstances[idx].isVisible) continue;
 
     //std::cout << "idx: " << idx << "\n";
@@ -1058,6 +1063,40 @@ void initReAnimDefs() {
     });
 
   definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  //ReAnimationParser::reportImageMap("assets/Background/LawnMower/lawnmower.json", "assets/Background/LawnMower/aaaaaaa.png");
+  std::string trackNames_lawnmower[] = { "anim_normal", "anim_tricked", "lawnmower_backwheelpiece1",
+    "Lawnmower_backwheel1", "Lawnmower_backwheelshine1", "lawnmower_backwheelpiece2",
+    "Lawnmower_backwheel2", "Lawnmower_backwheelshine2", "LawnMower_dice", "LawnMower_body",
+    "LawnMower_pull", "LawnMower_engine", "lawnmower_frontwheelpiece1", "Lawnmower_frontwheel1",
+    "Lawnmower_wheelshine1", "lawnmower_frontwheelpiece2", "Lawnmower_frontwheel2",
+    "Lawnmower_wheelshine2", "Lawnmower_exhaust" };
+  def->loadFiles("assets/Background/LawnMower/lawnmower.json", 19, trackNames_lawnmower, {
+      {"IMAGE_REANIM_LAWNMOWER_WHEELPIECE",      "assets/Background/LawnMower/LawnMower_wheelpiece.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEEL2",          "assets/Background/LawnMower/LawnMower_wheel2.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEELSHINE",      "assets/Background/LawnMower/LawnMower_wheelshine.png"},
+      {"IMAGE_REANIM_LAWNMOWER_DICE_TRICKED",    "assets/Background/LawnMower/LawnMower_dice_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_BODY",            "assets/Background/LawnMower/LawnMower_body.png"},
+      {"IMAGE_REANIM_LAWNMOWER_BODY_TRICKED",    "assets/Background/LawnMower/LawnMower_body_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_PULL",            "assets/Background/LawnMower/LawnMower_pull.png"},
+      {"IMAGE_REANIM_LAWNMOWER_ENGINE",          "assets/Background/LawnMower/LawnMower_engine.png"},
+      {"IMAGE_REANIM_LAWNMOWER_ENGINE_TRICKED",  "assets/Background/LawnMower/LawnMower_engine_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEEL1",          "assets/Background/LawnMower/LawnMower_wheel1.png"},
+      {"IMAGE_REANIM_LAWNMOWER_EXHAUST",         "assets/Background/LawnMower/LawnMower_exhaust.png"},
+      {"IMAGE_REANIM_LAWNMOWER_EXHAUST_TRICKED", "assets/Background/LawnMower/LawnMower_exhaust_tricked.png"}
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_lawnmoweredZombie[] = { "locator" };
+
+  def->loadFiles("assets/Background/LawnMower/lawnmoweredZombie.json", 1, trackNames_lawnmoweredZombie, {
+    });
+  definitions.push(def);
+
 
 
 }

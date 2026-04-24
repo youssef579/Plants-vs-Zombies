@@ -23,6 +23,7 @@
 #include <Grid.hpp>
 #include <Zombies/Zombie.hpp>
 #include <ParticleSystem.hpp>
+#include <LawnMower.hpp>
 
 int gameState = 0;
 /*
@@ -66,10 +67,15 @@ void updateGame() {
       music.play("DayStage");
 
       Zombie::init();
+      LawnMower::init();
 
       //Zombie Testing
       Zombie::createZombie(
         grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
+        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+        Zombie::Type::Regular, 2);
+      Zombie::createZombie(
+        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 400,
         grid[2][8].rectangle.getGlobalBounds().getCenter().y,
         Zombie::Type::Regular, 2);
       Zombie::createZombie(
@@ -148,6 +154,7 @@ void updateGame() {
     Bullet::drawAll();
 
 
+    LawnMower::drawAll();
     Zombie::updateAll(dt);
     Zombie::drawAll();
 
@@ -165,6 +172,8 @@ void updateGame() {
     ParticleSystem::draw();
     ReAnimator::updateOrphans(dt);
     ReAnimator::drawOrphans();
+
+    LawnMower::updateAll(dt);
 
 
     //drawGrid();
