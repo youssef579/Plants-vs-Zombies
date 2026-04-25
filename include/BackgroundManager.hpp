@@ -28,6 +28,7 @@ struct LevelManager {
   sf::Texture rollTexture;
   sf::Texture capTexture;
   sf::Texture dirtTexture;
+  sf::Texture zombiesWonTexture;
 
   sf::Sprite* backGroundSprite = nullptr;
   sf::Sprite* threeMiddleGrassSprite = nullptr;
@@ -35,6 +36,7 @@ struct LevelManager {
   sf::Sprite* grassSprites[5] = { nullptr };
   sf::Sprite* rollSprites[5] = { nullptr };
   sf::Sprite* capSprites[5] = { nullptr };
+  sf::Sprite *zombiesWon = nullptr;
 
   sf::SoundBuffer* dirtBuffer = nullptr;
   sf::Sound* dirtSound = nullptr;
@@ -66,6 +68,7 @@ struct LevelManager {
   void startPlanting();
   void update(float dt);
   void draw(sf::RenderWindow& window);
+  void drawOverlays(sf::RenderWindow &window);
   void spawnDirt(sf::Vector2f position);
   void updateDirt(float dt);
   void playGameOverScreen();

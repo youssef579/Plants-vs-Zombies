@@ -6,4 +6,5 @@
 #include <UI/Pause.hpp>
 
 extern int gameState;
+extern float globalTimeModifier;
 void updateGame();

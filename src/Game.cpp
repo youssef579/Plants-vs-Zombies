@@ -29,6 +29,7 @@ int gameState = 0;
 /*
   0 -> Home menu
 */
+float globalTimeModifier = 1.0f;
 
 Array<Bullet>bullets;
 
@@ -45,7 +46,7 @@ void updateGame() {
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
-  dt *= settings.timeModifier;
+  dt *= settings.timeModifier * globalTimeModifier;
 
   switch (gameState) {
   case 0:
@@ -197,6 +198,10 @@ void updateGame() {
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
     gameWeather.update(dt);
+
+
+    dayLevel.drawOverlays(*window);
+
     break;
   }
 }

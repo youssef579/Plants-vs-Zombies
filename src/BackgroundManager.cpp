@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <Window.hpp>
 #include <LawnMower.hpp>
+#include <Game.hpp>
 
 LevelManager dayLevel;
 
@@ -14,11 +15,15 @@ void LevelManager::init() {
     threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
     fullGrassTexture.loadFromFile("assets/BackGround/fullGrass1.png") &&
     rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
-    capTexture.loadFromFile("assets/BackGround/SodRollCap.png"))
+    capTexture.loadFromFile("assets/BackGround/SodRollCap.png") &&
+    zombiesWonTexture.loadFromFile("assets/Background/ZombiesWon.png"))
   {
     if (!backGroundSprite) backGroundSprite = new sf::Sprite(backGroundTexture);
     else backGroundSprite->setTexture(backGroundTexture);
     backGroundSprite->setPosition(sf::Vector2f(0, 0));
+
+    zombiesWon = new sf::Sprite(zombiesWonTexture);
+    zombiesWon->setScale({0.5, 0.5});
 
     if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
       dirtPool.clear();
@@ -178,6 +183,15 @@ void LevelManager::update(float dt) {
       camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
       gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
+      
+      //Center(490, 317)
+      //Size(735, 551)
+      //camera.setCenter({ 490, 317 });
+      //camera.setSize({735, 551});
+      //gameView->setCenter({ 490, 317 });
+      //gameView->setSize({735, 551});
+
+
       startPlanting();
     }
   }
@@ -301,7 +315,19 @@ void LevelManager::update(float dt) {
     else {
       if (dirtSoundStarted) { 
         dirtSound->stop();
-        dirtSoundStarted = false; 
+        dirtSoundStarted = false;
+        dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
+        dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
+        dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
+        //dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
+        dayLevel.fullGrassSprite->setPosition({ 528, 372 });
+        dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
+        dayLevel.backGroundSprite->setPosition({ 620, 300 });
+        dayLevel.backGroundSprite->setScale({ 1.555, 1.06 });
+
+        dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
+        dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
+        dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
       }
     }
   }
@@ -340,10 +366,20 @@ void LevelManager::draw(sf::RenderWindow& window) {
   }
 
   //std::cout << "timer: " << introTimer << "\n";
-  if (introTimer > 2.5)
-    LawnMower::drawAll();
+  //if (introTimer > 2.5)
+  LawnMower::drawAll();
+
 
   window.setView(window.getDefaultView());
+}
+
+void LevelManager::drawOverlays(sf::RenderWindow &window) {
+  if (state == GameOver && gameOverTimer >= 2) {
+    window.setView(camera);
+    window.draw(overlay->overlayRect);
+    window.draw(*zombiesWon);
+    window.setView(window.getDefaultView());
+  }
 }
 
 void LevelManager::startPlanting() {
@@ -356,20 +392,36 @@ void LevelManager::playGameOverScreen() {
   if (state != GameOver) {
     state = GameOver;
     gameOverTimer = 0;
+    globalTimeModifier = 0.1;
   }
 }
 
 void LevelManager::updateGameOverScreen(float dt) {
-  gameOverTimer += dt;
-  //float currentZoom = 1 - (gameOverTimer / 1.5f) * 0.075f;
-  if (gameOverTimer > 2) gameOverTimer = 2;
+  static float zombiesWonTimer = 0.0f;
+  gameOverTimer += dt / globalTimeModifier;
+  zombiesWonTimer += dt / globalTimeModifier;
+
+  //static sf::Texture zombiesWonT = getTexture("assets/Background/ZombiesWon.png");
+  //static sf::Sprite zombiesWon(zombiesWonT);
+
+  if (gameOverTimer > 2.0f) {
+    gameOverTimer = 2.0f;
+  }
+
   float lerpF = gameOverTimer / 2.0f;
+  
+
+
+  static sf::Vector2f targetPos = { 100.0f + 100.0f, 400.0f };
+  static sf::Vector2f targetSize = { 600.0f, 158.086956521739f * 2 };
 
 
   static sf::Vector2f startCenterView;
   static sf::Vector2f startSizeView;
+
   static sf::Vector2f startCenterCamera;
   static sf::Vector2f startSizeCamera;
+
   static sf::Vector2f startCenterGameView;
   static sf::Vector2f startSizeGameView;
 
@@ -388,36 +440,6 @@ void LevelManager::updateGameOverScreen(float dt) {
   }
 
 
-
-
-  std::cout << "timer: " << gameOverTimer << " / lerpF: " << lerpF << "\n";
-
-  static sf::Vector2f targetPos = {100+100, 400};
-  static sf::Vector2f targetSize = { 300, 225 };
-
-  float newCenterX = startCenterView.x + (targetPos.x - startCenterView.x) * lerpF;
-  float newCenterY = startCenterView.y + (targetPos.y - startCenterView.y) * lerpF;
-
-  float newSizeX = startSizeView.x + (targetSize.x - startSizeView.x) * lerpF;
-  float newSizeY = startSizeView.y + (targetSize.y - startSizeView.y) * lerpF;
-
-  view->setCenter({ newCenterX, newCenterY });
-  view->setSize({ newSizeX, newSizeY });
-
-
-
-
-  float newCenterX2 = startCenterCamera.x + (targetPos.x - startCenterCamera.x) * lerpF;
-  float newCenterY2 = startCenterCamera.y + (targetPos.y - startCenterCamera.y) * lerpF;
-
-  float newSizeX2 = startSizeCamera.x + (targetSize.x - startSizeCamera.x) * lerpF;
-  float newSizeY2 = startSizeCamera.y + (targetSize.y - startSizeCamera.y) * lerpF;
-
-  camera.setCenter({ newCenterX2, newCenterY2 });
-  camera.setSize({ newSizeX2, newSizeY2 });
-
-
-
   float newCenterX3 = startCenterGameView.x + (targetPos.x - startCenterGameView.x) * lerpF;
   float newCenterY3 = startCenterGameView.y + (targetPos.y - startCenterGameView.y) * lerpF;
 
@@ -428,19 +450,163 @@ void LevelManager::updateGameOverScreen(float dt) {
   gameView->setSize({ newSizeX3, newSizeY3 });
 
 
+  float deltaX = newCenterX3 - startCenterGameView.x;
+  float deltaY = newCenterY3 - startCenterGameView.y;
+
+  float scaleRatioX = newSizeX3 / startSizeGameView.x;
+  float scaleRatioY = newSizeY3 / startSizeGameView.y;
+
+  float newCenterX2 = startCenterCamera.x + deltaX;
+  float newCenterY2 = startCenterCamera.y + deltaY;
+
+  float newSizeX2 = startSizeCamera.x * scaleRatioX;
+  float newSizeY2 = startSizeCamera.y * scaleRatioY;
+
+  camera.setCenter({ newCenterX2, newCenterY2 });
+  camera.setSize({ newSizeX2, newSizeY2 });
 
 
+  float newCenterX = startCenterView.x + (targetPos.x - startCenterView.x) * lerpF;
+  float newCenterY = startCenterView.y + (targetPos.y - startCenterView.y) * lerpF;
+  float newSizeX = startSizeView.x + (targetSize.x - startSizeView.x) * lerpF;
+  float newSizeY = startSizeView.y + (targetSize.y - startSizeView.y) * lerpF;
+
+  view->setCenter({ newCenterX, newCenterY });
+  view->setSize({ newSizeX, newSizeY });
+
+
+
+
+  zombiesWon->setOrigin(zombiesWon->getLocalBounds().size / 2.0f);
+  zombiesWon->setPosition(camera.getCenter());
+  if (zombiesWonTimer >= 2) {
+    //if (zombiesWonTimer > 2 + 0.5) zombiesWonTimer = 2 + 0.5;
+    sf::Color oldColor = zombiesWon->getColor();
+    zombiesWon->setColor({oldColor.r, oldColor.g, oldColor.b, (uint8_t)(0 + (255)*std::min(zombiesWonTimer-2, 0.5f)/0.5f)  });
+  }
+  if (zombiesWonTimer >= 5) {
+    view->setCenter(startCenterView);
+    view->setSize(startSizeView);
+    gameView->setCenter(startCenterGameView);
+    gameView->setSize(startSizeGameView);
+    camera.setCenter(startCenterCamera);
+    camera.setSize(startSizeCamera);
+
+    gameState = 0;
+    homeState = 0;
+    music.play("Menu");
+  }
 
 }
 
 
 void testKeybinds(std::string key) {
-  if (key == "j")
-    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 10, 0 });
+  const float x = 5;
+  const float sF = 0.001f;
+
+  // Background sprite
+  //BG_Pos(620, 300)          620, 300
+  //BG_Size(1.575, 1.07)      1.545, 1.095
+  
+  //Full Grass--------------------------------------------
+    //FG_Pos(528, 367)          FG_Pos(522, 363)          
+    //FG_Size(1.295, 0.925)     FG_Size(1.27, 0.895)
+
+  // Three middle
+    //FG_Pos(532, 358)
+    //FG_Size(1.27, 0.835)
+
+
+
+  static bool state = [](){
+    dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
+    dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
+    dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
+    //dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
+    dayLevel.fullGrassSprite->setPosition({ 528, 372});
+    dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
+    dayLevel.backGroundSprite->setPosition({620, 300});
+    dayLevel.backGroundSprite->setScale({1.575, 1.06});
+
+    dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
+    dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
+    dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
+    //dayLevel.state = dayLevel.State::GameOver;
+    return false;
+  }();
+
+  /*if (key == "j")
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ x, 0 });
   if (key == "k")
-    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ -10, 0 });
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ -x, 0 });
   if (key == "i")
-    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, 10 });
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, x });
   if (key == "m")
-    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, -10 });
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, -x });
+
+  if (key == "up")
+    dayLevel.camera.setSize(dayLevel.camera.getSize() + sf::Vector2f{ 0, -x });
+  if (key == "down")
+    dayLevel.camera.setSize(dayLevel.camera.getSize() + sf::Vector2f{ 0, x });
+  if (key == "right")
+    dayLevel.camera.setSize(dayLevel.camera.getSize() + sf::Vector2f{ -x, 0 });
+  if (key == "left")
+    dayLevel.camera.setSize(dayLevel.camera.getSize() + sf::Vector2f{ x, 0 });*/
+
+  if (key == "sw")
+    state = !state;
+
+  if (!state) {
+    if (key == "j")
+      dayLevel.backGroundSprite->move(sf::Vector2f{ -x, 0 });
+    if (key == "k")
+      dayLevel.backGroundSprite->move(sf::Vector2f{ x, 0 });
+    if (key == "i")
+      dayLevel.backGroundSprite->move(sf::Vector2f{ 0, -x });
+    if (key == "m")
+      dayLevel.backGroundSprite->move(sf::Vector2f{ 0, x });
+
+    if (key == "up")
+      dayLevel.backGroundSprite->setScale(dayLevel.backGroundSprite->getScale() + sf::Vector2f{ 0, x * sF });
+    if (key == "down")
+      dayLevel.backGroundSprite->setScale(dayLevel.backGroundSprite->getScale() + sf::Vector2f{ 0, -x * sF });
+    if (key == "right")
+      dayLevel.backGroundSprite->setScale(dayLevel.backGroundSprite->getScale() + sf::Vector2f{ x * sF, 0 });
+    if (key == "left")
+      dayLevel.backGroundSprite->setScale(dayLevel.backGroundSprite->getScale() + sf::Vector2f{ -x * sF, 0 });
+
+    std::cout << "BG--------------------------------------------\n";
+    std::cout << "BG_Pos (" << dayLevel.backGroundSprite->getPosition().x << ", " << dayLevel.backGroundSprite->getPosition().y << ")\n";
+    std::cout << "BG_Size(" << dayLevel.backGroundSprite->getScale().x << ", " << dayLevel.backGroundSprite->getScale().y << ")\n";
+    return;
+  }
+
+
+  //Grass
+  //for (int i = 0; i < 5; i++) {
+    sf::Sprite *sp = dayLevel.fullGrassSprite;
+    if (key == "j")
+      sp->move(sf::Vector2f{ -x, 0 });
+    if (key == "k")
+      sp->move(sf::Vector2f{ x, 0 });
+    if (key == "i")
+      sp->move(sf::Vector2f{ 0, -x });
+    if (key == "m")
+      sp->move(sf::Vector2f{ 0, x });
+
+
+    if (key == "up")
+      sp->setScale(sp->getScale() + sf::Vector2f{ 0, x * sF });
+    if (key == "down")
+      sp->setScale(sp->getScale() + sf::Vector2f{ 0, -x * sF });
+    if (key == "right")
+      sp->setScale(sp->getScale() + sf::Vector2f{ x * sF, 0 });
+    if (key == "left")
+      sp->setScale(sp->getScale() + sf::Vector2f{ -x * sF, 0 });
+  //}
+    std::cout << "Full Grass--------------------------------------------\n";
+    std::cout << "FG_Pos (" << sp->getPosition().x << ", " << sp->getPosition().y << ")\n";
+    std::cout << "FG_Size(" << sp->getScale().x << ", " << sp->getScale().y << ")\n";
+    return;
+
 }

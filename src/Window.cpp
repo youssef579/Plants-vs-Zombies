@@ -117,7 +117,7 @@ void handleEvents() {
         break;
 
       case sf::Keyboard::Key::Escape:
-        if (gameState != 0) { // Pause / UnPause
+        if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
           if (!isPaused) {
             sounds.play("Pause");
             gameWeather.isPaused = true;
@@ -144,6 +144,21 @@ void handleEvents() {
         break;
       case sf::Keyboard::Key::M: // REMOVE LATER
         testKeybinds("m");
+        break;
+      case sf::Keyboard::Key::Up:
+        testKeybinds("up");
+        break;
+      case sf::Keyboard::Key::Down:
+        testKeybinds("down");
+        break;
+      case sf::Keyboard::Key::Left:
+        testKeybinds("left");
+        break;
+      case sf::Keyboard::Key::Right:
+        testKeybinds("right");
+        break;
+      case sf::Keyboard::Key::RShift:
+        testKeybinds("sw");
         break;
       }
     }
