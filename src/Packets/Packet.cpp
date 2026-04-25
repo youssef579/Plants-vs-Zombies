@@ -53,6 +53,11 @@ void initPackets() {
   jalapenoSprite.setScale({ 0.8f, 0.8f });
   packets.push({ 125, 1, "jalapeno", {90 + 59.0f * 7, 11}, jalapenoSprite, JALAPENO });
 
+  sf::Texture &potatoMineTexture = getTexture("assets/Plants/potatoMine.png");
+  sf::Sprite potatoMineSprite(potatoMineTexture);
+  potatoMineSprite.setScale({ 0.135f, 0.135f });
+  packets.push({ 25, 1, "potatomine", {90 + 59.0f * 8, 11}, potatoMineSprite, POTATOMINE });
+
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
