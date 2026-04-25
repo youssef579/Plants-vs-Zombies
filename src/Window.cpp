@@ -133,6 +133,18 @@ void handleEvents() {
         if(gameState != 0 && !isPaused)
           settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
+      case sf::Keyboard::Key::J: // REMOVE LATER
+        testKeybinds("j");
+        break;
+      case sf::Keyboard::Key::K: // REMOVE LATER
+        testKeybinds("k");
+        break;
+      case sf::Keyboard::Key::I: // REMOVE LATER
+        testKeybinds("i");
+        break;
+      case sf::Keyboard::Key::M: // REMOVE LATER
+        testKeybinds("m");
+        break;
       }
     }
   }

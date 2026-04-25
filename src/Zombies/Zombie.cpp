@@ -210,6 +210,9 @@ bool Zombie::update(float dt) {
     inPlayArea = true;
   if (reAnimator.getPosition().x <= 150) // activate lawnmower
     LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
+  if (reAnimator.getPosition().x <= 100)
+    dayLevel.playGameOverScreen();
+    //std::system("pause");
 
   if (freezeTimer > 0) {
     freezeTimer -= dt;
@@ -375,7 +378,7 @@ void Zombie::updateDeath(float dt) {
 }
 
 void Zombie::draw() {
-  if(deathCause != 2) // if not mowed
+  if(deathCause != 2) // if it is mowed the orphaned locator will draw it
     reAnimator.draw();
   //reAnimator.drawHitbox();                    // shows zombies hitbox as a red rectangle
   

@@ -17,6 +17,9 @@ struct DirtParticle {
 
 struct LevelManager {
 
+  enum State {Intro, Game, GameOver}; // Intro and Game not implemented yet LATER
+  State state = Game;
+  float gameOverTimer;
 
   sf::Texture backGroundTexture;
   sf::Texture grassTexture;
@@ -65,8 +68,13 @@ struct LevelManager {
   void draw(sf::RenderWindow& window);
   void spawnDirt(sf::Vector2f position);
   void updateDirt(float dt);
+  void playGameOverScreen();
+  void updateGameOverScreen(float dt);
  
 };
 
 
 extern LevelManager dayLevel;
+
+
+void testKeybinds(std::string key);

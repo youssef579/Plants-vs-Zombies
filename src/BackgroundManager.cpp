@@ -144,6 +144,11 @@ void LevelManager::updateDirt(float dt) {
 
 void LevelManager::update(float dt) {
 
+  if (state == GameOver) {
+    updateGameOverScreen(dt);
+    return;
+  }
+
   if (isIntroRunning) {
     introTimer += dt;
     float gameViewOffset = 1.5f;
@@ -344,4 +349,98 @@ void LevelManager::draw(sf::RenderWindow& window) {
 void LevelManager::startPlanting() {
   isRolling[2] = true;
   shouldStartRolling[2] = true;
+}
+
+
+void LevelManager::playGameOverScreen() {
+  if (state != GameOver) {
+    state = GameOver;
+    gameOverTimer = 0;
+  }
+}
+
+void LevelManager::updateGameOverScreen(float dt) {
+  gameOverTimer += dt;
+  //float currentZoom = 1 - (gameOverTimer / 1.5f) * 0.075f;
+  if (gameOverTimer > 2) gameOverTimer = 2;
+  float lerpF = gameOverTimer / 2.0f;
+
+
+  static sf::Vector2f startCenterView;
+  static sf::Vector2f startSizeView;
+  static sf::Vector2f startCenterCamera;
+  static sf::Vector2f startSizeCamera;
+  static sf::Vector2f startCenterGameView;
+  static sf::Vector2f startSizeGameView;
+
+  static bool capturedStart = false;
+  if (!capturedStart) {
+    startCenterView = view->getCenter();
+    startSizeView = view->getSize();
+
+    startCenterCamera = camera.getCenter();
+    startSizeCamera = camera.getSize();
+
+    startCenterGameView = gameView->getCenter();
+    startSizeGameView = gameView->getSize();
+
+    capturedStart = true;
+  }
+
+
+
+
+  std::cout << "timer: " << gameOverTimer << " / lerpF: " << lerpF << "\n";
+
+  static sf::Vector2f targetPos = {100+100, 400};
+  static sf::Vector2f targetSize = { 300, 225 };
+
+  float newCenterX = startCenterView.x + (targetPos.x - startCenterView.x) * lerpF;
+  float newCenterY = startCenterView.y + (targetPos.y - startCenterView.y) * lerpF;
+
+  float newSizeX = startSizeView.x + (targetSize.x - startSizeView.x) * lerpF;
+  float newSizeY = startSizeView.y + (targetSize.y - startSizeView.y) * lerpF;
+
+  view->setCenter({ newCenterX, newCenterY });
+  view->setSize({ newSizeX, newSizeY });
+
+
+
+
+  float newCenterX2 = startCenterCamera.x + (targetPos.x - startCenterCamera.x) * lerpF;
+  float newCenterY2 = startCenterCamera.y + (targetPos.y - startCenterCamera.y) * lerpF;
+
+  float newSizeX2 = startSizeCamera.x + (targetSize.x - startSizeCamera.x) * lerpF;
+  float newSizeY2 = startSizeCamera.y + (targetSize.y - startSizeCamera.y) * lerpF;
+
+  camera.setCenter({ newCenterX2, newCenterY2 });
+  camera.setSize({ newSizeX2, newSizeY2 });
+
+
+
+  float newCenterX3 = startCenterGameView.x + (targetPos.x - startCenterGameView.x) * lerpF;
+  float newCenterY3 = startCenterGameView.y + (targetPos.y - startCenterGameView.y) * lerpF;
+
+  float newSizeX3 = startSizeGameView.x + (targetSize.x - startSizeGameView.x) * lerpF;
+  float newSizeY3 = startSizeGameView.y + (targetSize.y - startSizeGameView.y) * lerpF;
+
+  gameView->setCenter({ newCenterX3, newCenterY3 });
+  gameView->setSize({ newSizeX3, newSizeY3 });
+
+
+
+
+
+}
+
+
+void testKeybinds(std::string key) {
+  if (key == "j")
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 10, 0 });
+  if (key == "k")
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ -10, 0 });
+  if (key == "i")
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, 10 });
+  if (key == "m")
+    dayLevel.camera.setCenter(dayLevel.camera.getCenter() + sf::Vector2f{ 0, -10 });
 }

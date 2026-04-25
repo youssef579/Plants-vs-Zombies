@@ -95,6 +95,12 @@ void updateGame() {
         grid[4][8].rectangle.getGlobalBounds().getCenter().y,
         Zombie::Type::Screendoor, 4);
 
+      // REMOVE LATER
+      LawnMower::activateLawnMower(0);
+      LawnMower::activateLawnMower(1);
+      LawnMower::activateLawnMower(2);
+      LawnMower::activateLawnMower(3);
+      LawnMower::activateLawnMower(4);
 
       runOnce = false;
 
