@@ -6,10 +6,10 @@
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
 void initGrid(){
-  float y = 120;
-  const float offsetY = -12, offsetX = 3;
+  float y = 122;
+  const float offsetY = -10, offsetX = 0;
   for (int i = 0; i < ROWS_NUMBER; i++){
-    float x = 134;
+    float x = 132;
     for (int j = 0; j < COLUMNS_NUMBER; j++){
       grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
@@ -116,7 +116,7 @@ void drawGrid(){
   window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
     for (int j = 0; j < COLUMNS_NUMBER; j++){
-      //window->draw(grid[i][j].rectangle);
+      window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
         grid[i][j].plant.value().draw();
