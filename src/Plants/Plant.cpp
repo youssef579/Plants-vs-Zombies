@@ -8,6 +8,7 @@
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Repeaterpea.hpp>
+#include <Plants/potatoMine.hpp>
 #include <iostream>
 
 
@@ -37,6 +38,9 @@ float getPlantHealth(PlantType type){
       break;
     case JALAPENO:
       health = JALAPENO_HEALTH;
+      break;
+    case POTATOMINE:
+      health = POTATO_MINE_HEALTH;
       break;
 
   }
@@ -70,6 +74,9 @@ float getPlantTimer(PlantType type){
       break;
     case JALAPENO:
       timer = JALAPENO_EXPLOSION_TIMER;
+      break;
+    case POTATOMINE:
+      timer = POTATO_MINE_TIMER_BEFORE_EXPLOSION;
       break;
   }
 
@@ -150,6 +157,9 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case JALAPENO:
     reAnimator.playAnimation("anim_explode", LoopType::PlayOnce);
     break;
+  case POTATOMINE:
+    reAnimator.playAnimation("anim_idle");
+    break;
   }
 }
 
@@ -178,6 +188,9 @@ void Plant::update(float dt) {
       break;
     case JALAPENO:
       updateJalapeno(*this, dt);
+      break;
+    case POTATOMINE:
+      updatePotatoMine(*this, dt);
       break;
   }
 }
@@ -209,6 +222,9 @@ void Plant::draw() {
       break;
     case JALAPENO:
       drawJalapeno(*this);
+      break;
+    case POTATOMINE:
+      drawPotatoMine(*this);
       break;
   }
 }
