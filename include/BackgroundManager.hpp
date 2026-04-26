@@ -15,11 +15,13 @@ struct DirtParticle {
 };
 
 
-struct LevelManager {
+struct BackgroundManager {
 
   enum State {Intro, Game, GameOver}; // Intro and Game not implemented yet LATER
   State state = Game;
-  float gameOverTimer;
+  float gameOverTimer = 0;
+  float zombiesWonTimer = 0;
+  int deathRow = 2;
 
   sf::Texture backGroundTexture;
   sf::Texture grassTexture;
@@ -71,13 +73,13 @@ struct LevelManager {
   void drawOverlays(sf::RenderWindow &window);
   void spawnDirt(sf::Vector2f position);
   void updateDirt(float dt);
-  void playGameOverScreen();
+  void playGameOverScreen(int deathRow);
   void updateGameOverScreen(float dt);
  
 };
 
 
-extern LevelManager dayLevel;
+extern BackgroundManager dayLevel;
 
 
 void testKeybinds(std::string key);

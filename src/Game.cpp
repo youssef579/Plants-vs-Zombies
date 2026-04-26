@@ -24,6 +24,7 @@
 #include <Zombies/Zombie.hpp>
 #include <ParticleSystem.hpp>
 #include <LawnMower.hpp>
+#include <LevelManager.hpp>
 
 int gameState = 0;
 /*
@@ -56,7 +57,7 @@ void updateGame() {
     if (runOnce) {
       shovel.init();
       initPackets();
-      initGrid();
+      //initGrid();
       dayLevel.init();
       gameWeather.isRaining = true;
       for (int i = 0; i < ROWS_NUMBER; i++){
@@ -70,38 +71,39 @@ void updateGame() {
       Zombie::init();
       LawnMower::init();
 
-      //Zombie Testing
-      Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular, 2);
-      Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 400,
-        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular, 2);
-      Zombie::createZombie(
-        grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Conehead, 1);
-      Zombie::createZombie(
-        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Buckethead, 0);
-      Zombie::createZombie(
-        grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Flag, 3);
-      Zombie::createZombie(
-        grid[4][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[4][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Screendoor, 4);
+      ////Zombie Testing
+      //Zombie::createZombie(
+      //  grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //  grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Regular, 2, 0);
+      //Zombie::createZombie(
+      //  grid[2][8].rectangle.getGlobalBounds().getCenter().x + 400,
+      //  grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Regular, 2, 0);
+      //Zombie::createZombie(
+      //  grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //  grid[1][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Conehead, 1, 0);
+      //Zombie::createZombie(
+      //  grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //  grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Buckethead, 0, 0);
+      //Zombie::createZombie(
+      //  grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //  grid[3][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Flag, 3, 0);
+      //Zombie::createZombie(
+      //  grid[4][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //  grid[4][8].rectangle.getGlobalBounds().getCenter().y,
+      //  Zombie::Type::Screendoor, 4, 0);
+      //zombies[4][0].startDelay = 4.0f;
 
       // REMOVE LATER
-      LawnMower::activateLawnMower(0);
+      /*LawnMower::activateLawnMower(0);
       LawnMower::activateLawnMower(1);
       LawnMower::activateLawnMower(2);
       LawnMower::activateLawnMower(3);
-      LawnMower::activateLawnMower(4);
+      LawnMower::activateLawnMower(4);*/
 
       runOnce = false;
 
@@ -149,7 +151,7 @@ void updateGame() {
     //}
     
     
-
+    levelManager.update(dt);
     updateGrid(dt);
 
     dayLevel.update(dt);

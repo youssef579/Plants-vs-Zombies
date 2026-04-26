@@ -1,6 +1,7 @@
 #include <UI/Pause.hpp>
 #include <Zombies/Zombie.hpp>
 #include <Bullet.hpp>
+#include <LevelManager.hpp>
 
 PauseMenu pauseMenu;
 
@@ -110,8 +111,10 @@ void PauseMenu::update() {
   // Main Menu Button
   onClick(*mainMenuBtn, []() {
     gameState = 0, homeState = 0; //go to home menu not level selector
-    sounds.play("ButtonClick"); music.play("Menu");
     isPaused = false;
+    gameWeather.isPaused = false;
+    levelManager.resetLevelData();
+    sounds.play("ButtonClick"); music.play("Menu");
     });
 
 // Restart Level Button

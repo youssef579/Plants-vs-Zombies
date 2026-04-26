@@ -73,6 +73,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
 void drawPeashooter(Plant& peashooter) {
   //peashooter.reAnimator.drawHitbox();
+  //peashooter.reAnimator.drawHitbox();
   //static sf::RectangleShape rec({3, 3});
   //rec.setPosition({300, 300});
   //rec.setFillColor(sf::Color(0, 255, 0, 255));

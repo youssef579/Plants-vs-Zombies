@@ -6,9 +6,9 @@
 #include <LawnMower.hpp>
 #include <Game.hpp>
 
-LevelManager dayLevel;
+BackgroundManager dayLevel;
 
-void LevelManager::init() {
+void BackgroundManager::init() {
   
   if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
@@ -22,7 +22,7 @@ void LevelManager::init() {
     else backGroundSprite->setTexture(backGroundTexture);
     backGroundSprite->setPosition(sf::Vector2f(0, 0));
 
-    zombiesWon = new sf::Sprite(zombiesWonTexture);
+    if(!zombiesWon) zombiesWon = new sf::Sprite(zombiesWonTexture);
     zombiesWon->setScale({0.5, 0.5});
 
     if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
@@ -103,7 +103,7 @@ void LevelManager::init() {
   //gameView->setCenter(view->getCenter());
 }
 
-void LevelManager::spawnDirt(sf::Vector2f position) {
+void BackgroundManager::spawnDirt(sf::Vector2f position) {
   int count = 0;
   for (auto& p : dirtPool) {
     if (!p.active) {
@@ -126,7 +126,7 @@ void LevelManager::spawnDirt(sf::Vector2f position) {
   }
 }
 
-void LevelManager::updateDirt(float dt) {
+void BackgroundManager::updateDirt(float dt) {
   for (auto& p : dirtPool) {
     if (p.active) {
       p.lifetime -= dt;
@@ -147,7 +147,7 @@ void LevelManager::updateDirt(float dt) {
   }
 }
 
-void LevelManager::update(float dt) {
+void BackgroundManager::update(float dt) {
 
   if (state == GameOver) {
     updateGameOverScreen(dt);
@@ -335,7 +335,7 @@ void LevelManager::update(float dt) {
 }
 
 
-void LevelManager::draw(sf::RenderWindow& window) {
+void BackgroundManager::draw(sf::RenderWindow& window) {
 
   window.setView(camera);
 
@@ -366,14 +366,14 @@ void LevelManager::draw(sf::RenderWindow& window) {
   }
 
   //std::cout << "timer: " << introTimer << "\n";
-  //if (introTimer > 2.5)
-  LawnMower::drawAll();
+  if (introTimer > 2.5)
+    LawnMower::drawAll();
 
 
   window.setView(window.getDefaultView());
 }
 
-void LevelManager::drawOverlays(sf::RenderWindow &window) {
+void BackgroundManager::drawOverlays(sf::RenderWindow &window) {
   if (state == GameOver && gameOverTimer >= 2) {
     window.setView(camera);
     window.draw(overlay->overlayRect);
@@ -382,22 +382,27 @@ void LevelManager::drawOverlays(sf::RenderWindow &window) {
   }
 }
 
-void LevelManager::startPlanting() {
+void BackgroundManager::startPlanting() {
   isRolling[2] = true;
   shouldStartRolling[2] = true;
+
+  // Kill Dummy Zombies
+  //std::cout << "KILLED ALL ZOMBIES\n";
+  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
+
 }
 
 
-void LevelManager::playGameOverScreen() {
+void BackgroundManager::playGameOverScreen(int dr) {
   if (state != GameOver) {
     state = GameOver;
     gameOverTimer = 0;
     globalTimeModifier = 0.1;
+    deathRow = dr;
   }
 }
 
-void LevelManager::updateGameOverScreen(float dt) {
-  static float zombiesWonTimer = 0.0f;
+void BackgroundManager::updateGameOverScreen(float dt) {
   gameOverTimer += dt / globalTimeModifier;
   zombiesWonTimer += dt / globalTimeModifier;
 
@@ -411,8 +416,9 @@ void LevelManager::updateGameOverScreen(float dt) {
   float lerpF = gameOverTimer / 2.0f;
   
 
-
-  static sf::Vector2f targetPos = { 100.0f + 100.0f, 400.0f };
+  
+  //static sf::Vector2f targetPos = { 100.0f + 100.0f, 400.0f };
+  static sf::Vector2f targetPos = grid[deathRow][0].rectangle.getGlobalBounds().getCenter() - sf::Vector2f(20, 0);
   static sf::Vector2f targetSize = { 600.0f, 158.086956521739f * 2 };
 
 

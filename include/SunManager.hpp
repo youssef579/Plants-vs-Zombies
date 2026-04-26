@@ -53,4 +53,5 @@ struct Sun {
   static void drawAll();
   static void generate(sf::Vector2f pos, int val, bool isSunFlower);
   static void spawn(int val = 25);
+  static void clear(); // Resets the Sun Array to be used in a new level
 };

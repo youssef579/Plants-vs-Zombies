@@ -8,6 +8,7 @@
 #include <globals.hpp>
 #include <ReAnimation/ReAnimation.hpp>
 #include <ParticleSystem.hpp>
+#include <Grid.hpp>
 
 sf::Vector2f mousePosition;
 
@@ -23,11 +24,13 @@ int main() {
   initReAnimDefs();
   ParticleSystem::init();
   pauseMenu.init();
+  initGrid();
   setWindowMetaData();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     handleEvents();
+
 
     window->clear();
     window->setView(*view);

@@ -18,7 +18,7 @@ struct Zombie {
     static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
 
     enum Type {Regular, Conehead, Buckethead, Flag, Screendoor};
-    enum State {Walking, Attacking, Dying};
+    enum State {Idle, Walking, Attacking, Dying};
 
     // For simple assets access
     static std::string types[];
@@ -32,7 +32,7 @@ struct Zombie {
         {{{}, {}}, {{}, {}}, {{}, {}}},
     };
 
-    static void createZombie(float x, float y, Type type, int row);
+    static void createZombie(float x, float y, Type type, int ROW, float startDel);
     static void manageZombies(float dt);
 
     //
@@ -49,12 +49,14 @@ struct Zombie {
     //sf::Vector2f velocity;
     bool onGrid = false;
     bool inPlayArea = false; // if the zombie is on screen or idle outside
+    int row;
 
     float health;
     float strength;
 
     float attackTimer = 0;
     float freezeTimer = 0;
+    float startDelay  = 0; // time the zombie waits in idle before it starts walking
 
     float corpseDissapearTimer = 0.0f;
 

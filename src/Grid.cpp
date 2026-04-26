@@ -14,9 +14,9 @@ void initGrid(){
       grid[i][j].rectangle.setSize({columnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + columnLenth[j] / 2, y + rowLenth[i] / 2});
-      grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
-      grid[i][j].rectangle.setOutlineThickness(1);
+      //grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
+      //grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
+      //grid[i][j].rectangle.setOutlineThickness(1);
       grid[i][j].plantPosition = {x + columnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth[j];
@@ -116,7 +116,7 @@ void drawGrid(){
   window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
     for (int j = 0; j < COLUMNS_NUMBER; j++){
-      window->draw(grid[i][j].rectangle);
+      //window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
         grid[i][j].plant.value().draw();
@@ -134,6 +134,14 @@ void drawGrid(){
   window->setView(*view);
 }
 
+void clearGrid() {
+  for (int i = 0; i < ROWS_NUMBER; i++) {
+    for (int j = 0; j < COLUMNS_NUMBER; j++) {
+      if (grid[i][j].plant.has_value())
+        grid[i][j].plant.value().health = 0;
+      }
+  }
+}
 
 sf::Vector2i positionToGrid(sf::Vector2f pos) {
   for (int i = 0; i < ROWS_NUMBER; i++) {

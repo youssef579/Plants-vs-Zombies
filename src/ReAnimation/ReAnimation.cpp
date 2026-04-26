@@ -1166,6 +1166,13 @@ void ReAnimator::drawHitbox() {
   sf::RectangleShape rec(getGlobalBounds().size);
   rec.setPosition({ getGlobalBounds().position.x, getGlobalBounds().position.y });
   rec.setFillColor(sf::Color(255, 0, 0, 100));
+
+  window->draw(rec);
+
+  rec.setFillColor(sf::Color::White);
+  rec.setSize({2, 2});
+  rec.setPosition(getPosition());
+
   window->draw(rec);
 }
 

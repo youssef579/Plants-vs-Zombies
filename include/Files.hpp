@@ -28,7 +28,8 @@ extern Settings settings;
 
 
 void initFiles();
-void loadLevelsFile();
+void loadPlayerData();
+void loadLevelsFiles();
 void loadSettingsFile();
 void updateFiles();
 

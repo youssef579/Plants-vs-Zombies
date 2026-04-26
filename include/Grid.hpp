@@ -27,4 +27,6 @@ void updateGrid(float dt);
 
 void drawGrid();
 
+void clearGrid();
+
 sf::Vector2i positionToGrid(sf::Vector2f pos);

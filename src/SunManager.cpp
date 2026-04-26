@@ -183,3 +183,10 @@ void Sun::drawAll() {
     Sun::sunArray[i].draw();
   }
 }
+
+void Sun::clear() {
+  sunArray.erase([](Sun &s) {return true; });
+  sunBalance = 5000;
+  spawnTimer = -20;
+  hovering = false;
+}

@@ -5,5 +5,5 @@ out
 .vs
 .vscode
 run.sh
-storage/levels.txt
+storage/playerData.txt
 storage/settings.txt

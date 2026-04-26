@@ -7,6 +7,7 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <cmath>
+#include <LevelManager.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -234,8 +235,9 @@ void updateHome() {
           int currentLevel = getLevelFromIndex(i);
 
           if (currentLevel <= maxLevelUnlocked)
-            onClick(text, [&]() {
-            music.play("DayStage");
+            onClick(text, [&]() { // Play Level
+              levelManager.loadLevelData(1);
+              music.play("DayStage");
               gameState = currentLevel;
             });
         },

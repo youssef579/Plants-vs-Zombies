@@ -23,7 +23,7 @@ void Zombie::init() {
   soundBuffer_zombieGulp = getSoundBuffer("assets/sounds/sfx_zombieGulp.ogg");
 }
 
-void Zombie::createZombie(float x, float y, Type type, int row) {
+void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) {
     //sf::Texture tempTexture; sf::Sprite tempSprite(tempTexture); 
 
     //Zombie zombie;
@@ -44,7 +44,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
 
   switch (type) {
   case Zombie::Type::Regular:
-      zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+      zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
       zombie->reAnimator.setTrackVisibility("anim_cone", false);
       zombie->reAnimator.setTrackVisibility("anim_bucket", false);
       zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
@@ -55,11 +55,12 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
       zombie->reAnimator.setTrackVisibility("Zombie_flaghand", false);
       zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
       zombie->reAnimator.setTrackVisibility("anim_tongue", false);
-      zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+      //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+      zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
       //zombie->reAnimator.animSpeedMulti = 1.5f;
       break;
   case Zombie::Type::Conehead:
-    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
     zombie->reAnimator.setTrackVisibility("anim_bucket", false);
     zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
     zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
@@ -70,11 +71,12 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
     //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Buckethead:
-    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
     zombie->reAnimator.setTrackVisibility("anim_cone", false);
     zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
     zombie->reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
@@ -85,11 +87,12 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("Zombie_mustache", false);
     zombie->reAnimator.setTrackVisibility("anim_tongue", false);
     zombie->reAnimator.setTrackVisibility("anim_hair", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
     //zombie->reAnimator.animSpeedMulti = 1.5f;
     break;
   case Zombie::Type::Flag:
-    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
     zombie->reAnimator.child = new ReAnimator(ReAnimator::getDefinition(REANIM_FLAGPOLE), 0, 0, window);
     zombie->reAnimator.child->hasParent = true;
     zombie->reAnimator.childsParentTrack = "Zombie_flaghand";
@@ -106,12 +109,13 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_innerarm1", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm2", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm3", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
     zombie->reAnimator.child->playAnimation("main");
     //zombie->reAnimator.animSpeedMulti = 1.8f;
     break;
   case Zombie::Type::Screendoor:
-    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), row);
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
     zombie->reAnimator.setTrackVisibility("anim_cone", false);
     zombie->reAnimator.setTrackVisibility("anim_bucket", false);
     //zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
@@ -128,7 +132,8 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
     zombie->reAnimator.setTrackVisibility("anim_innerarm3", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm2", false);
     zombie->reAnimator.setTrackVisibility("anim_innerarm1", false);
-    zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
+    zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
   }
   
@@ -136,8 +141,9 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
   for (int i = 0; i < zombie->reAnimator.trackInstances.size(); i++)
     zombie->reAnimator.trackInstances[i].colorOverlay = {0, 0, 255, 0};
   zombie->type = type;
-  zombie->state = Walking;
-
+  zombie->row = ROW;
+  zombie->state = Idle;
+  zombie->startDelay = startDel;
   zombie->position = {x, y};
   //zombie->gridPosition = positionToGrid({ x, y });
   //zombie->velocity = {-speeds[type], 0};
@@ -147,7 +153,7 @@ void Zombie::createZombie(float x, float y, Type type, int row) {
 
   zombie->setSprite();
 
-  zombies[row].push(*zombie);
+  zombies[ROW].push(*zombie);
 }
 
 void Zombie::setSprite() {
@@ -211,7 +217,7 @@ bool Zombie::update(float dt) {
   if (reAnimator.getPosition().x <= 150) // activate lawnmower
     LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
   if (reAnimator.getPosition().x <= 100)
-    dayLevel.playGameOverScreen();
+    dayLevel.playGameOverScreen(row);
     //std::system("pause");
 
   if (freezeTimer > 0) {
@@ -224,6 +230,12 @@ bool Zombie::update(float dt) {
       reAnimator.animSpeedMulti = speeds[type];
     }
   }
+
+  if (startDelay > 0)
+    startDelay -= dt;
+  else if (state == Idle)
+    state = Walking;
+
   reAnimator.update(dt);
   gridPosition = positionToGrid(reAnimator.getPosition());
   onGrid = (gridPosition != sf::Vector2{-1, -1});
@@ -336,6 +348,7 @@ void Zombie::die(int effect) {
     //velocity = {0, 0};
     reAnimator.stopAnimation("anim_walk");
     reAnimator.stopAnimation("anim_eat");
+    reAnimator.stopAnimation("anim_idle");
     if(effect == 0 || effect == 1)
       reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
     else if (effect == 2) {
