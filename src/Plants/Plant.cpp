@@ -158,7 +158,7 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
     reAnimator.playAnimation("anim_explode", LoopType::PlayOnce);
     break;
   case POTATOMINE:
-    reAnimator.playAnimation("anim_idle");
+    reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
   }
 }

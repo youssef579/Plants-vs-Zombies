@@ -88,7 +88,7 @@ void updateGrid(float dt){
                     break;
                   case POTATOMINE:
                     /// الانيميشن ي ابويا
-                    grid[i][j].plant = Plant(POTATOMINE, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_WALLNUT));
+                    grid[i][j].plant = Plant(POTATOMINE, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_POTATO_MINE));
                     break;
                   default:
                     break;
@@ -120,7 +120,7 @@ void drawGrid(){
   window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
     for (int j = 0; j < COLUMNS_NUMBER; j++){
-      window->draw(grid[i][j].rectangle);
+      //window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
         grid[i][j].plant.value().draw();

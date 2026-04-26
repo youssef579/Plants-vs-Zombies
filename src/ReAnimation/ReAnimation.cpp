@@ -171,7 +171,10 @@ bool ReAnimator::updateLabel(ActiveLabel &lab) {
     return false; // Label will be Destroyed
     
   float labelTime = label.start + std::fmod(labelOffseted, (float)(label.end - label.start));
-
+  if (label.end - label.start == 0) {
+    labelOffseted = 0;
+    labelTime = 0;
+  }
   //std::cout << "offs: " << labelOffseted << " / labEnd: " << label.end << "\n";
   //std::cout << "conditions: " << (labelOffseted >= label.end - 1) << "&" << (lab.loop == LoopType::HoldLastFrame) << "\n";
   if (labelOffseted >= label.end - label.start - 1 && lab.loop == LoopType::HoldLastFrame) {
@@ -1099,6 +1102,34 @@ void initReAnimDefs() {
     });
   definitions.push(def);
 
+
+  //ReAnimationParser::reportImageMap("assets/Plants/potatomine/potatomine.json", "assets/Plants/potatomine/aaaaaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_potatoMine[] = { "anim_armed", "anim_rise", "anim_idle", "anim_blink",
+      "anim_mashed", "PotatoMine_rock4", "PotatoMine_rock2", "anim_face", "PotatoMine_stem",
+      "anim_eye", "PotatoMine_blink", "PotatoMine_rock4", "PotatoMine_rock3b", "PotatoMine_rock1b",
+      "PotatoMine_rock6b", "PotatoMine_rock5b", "anim_light", "anim_glow", "PotatoMine_rock6",
+      "PotatoMine_rock1", "PotatoMine_rock3", "PotatoMine_rock5" };
+
+  def->loadFiles("assets/Plants/potatomine/potatomine.json", 22, trackNames_potatoMine, {
+    {"IMAGE_REANIM_POTATOMINE_MASHED",        "assets/Plants/potatomine/PotatoMine_mashed.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK4",         "assets/Plants/potatomine/PotatoMine_rock4.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK2",         "assets/Plants/potatomine/PotatoMine_rock2.png"},
+    {"IMAGE_REANIM_POTATOMINE_BODY",          "assets/Plants/potatomine/PotatoMine_body.png"},
+    {"IMAGE_REANIM_POTATOMINE_STEM",          "assets/Plants/potatomine/PotatoMine_stem.png"},
+    {"IMAGE_REANIM_POTATOMINE_EYES",          "assets/Plants/potatomine/PotatoMine_eyes.png"},
+    {"IMAGE_REANIM_POTATOMINE_BLINK1",        "assets/Plants/potatomine/PotatoMine_blink1.png"},
+    {"IMAGE_REANIM_POTATOMINE_BLINK2",        "assets/Plants/potatomine/PotatoMine_blink2.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK3",         "assets/Plants/potatomine/PotatoMine_rock3.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK1",         "assets/Plants/potatomine/PotatoMine_rock1.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK6",         "assets/Plants/potatomine/PotatoMine_rock6.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK5",         "assets/Plants/potatomine/PotatoMine_rock5.png"},
+    {"IMAGE_REANIM_POTATOMINE_LIGHT1",        "assets/Plants/potatomine/PotatoMine_light1.png"},
+    {"IMAGE_REANIM_POTATOMINE_LIGHT2",        "assets/Plants/potatomine/PotatoMine_light2.png"}
+    });
+  definitions.push(def);
 
 
 }

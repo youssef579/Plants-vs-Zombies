@@ -12,13 +12,22 @@ void updatePotatoMine(Plant &potatoMine, float dt) {
     potatoMine.timer -= dt;
   }
 
-  if (potatoMine.timer <= 0 && !potatoMine.state){
+  if (potatoMine.timer <= 0 && !potatoMine.state){ // init rise animation
     // صوت بطاطس بتطلع مش عارف موجود في اللعبة ولا لا
-    //انيميشن بطاطس بتطلع + تثبت 
+    //انيميشن بطاطس بتطلع + تثبت
+    potatoMine.reAnimator.stopAnimation("anim_idle");
+    potatoMine.reAnimator.playAnimation("anim_rise", LoopType::PlayOnce);
 
     
     potatoMine.state = 1;
-  }else if (potatoMine.timer <= 0 && potatoMine.state == 1){
+  }
+  else if (potatoMine.timer <= 0 && potatoMine.state == 1) { // init idle animations
+    if (!potatoMine.reAnimator.isPlayingAnimation("anim_rise")) {
+      potatoMine.reAnimator.playAnimation("anim_armed");
+      potatoMine.state = 2;
+    }
+  }
+  else if (potatoMine.timer <= 0 && potatoMine.state == 2){ // armed
 
     bool is_explosion = 0;
     for (int i = 0; i < zombies[potatoMine.row].size;i++) {
