@@ -2,6 +2,7 @@
 #include <BackgroundManager.hpp>
 #include <Game.hpp>
 #include <Bullet.hpp>
+#include <Rewards.hpp>
 
 LevelManager levelManager;
 
@@ -31,8 +32,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   if(dayLevel.backGroundSprite) dayLevel.backGroundSprite->setScale({ 1, 1 });
 
   for (int i = 0; i < 5; i++) if(dayLevel.grassSprites[i]) dayLevel.grassSprites[i]->setOrigin({0.0f, 0.0f});
-  dayLevel.threeMiddleGrassSprite->setOrigin({ 0.0f, 0.0f });
-  dayLevel.fullGrassSprite->setOrigin({ 0.0f, 0.0f });
+  if(dayLevel.threeMiddleGrassSprite) dayLevel.threeMiddleGrassSprite->setOrigin({ 0.0f, 0.0f });
+  if(dayLevel.fullGrassSprite) dayLevel.fullGrassSprite->setOrigin({ 0.0f, 0.0f });
   globalTimeModifier = 1.0f;
   dayLevel.init();
 
@@ -42,11 +43,21 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   // Bullets
   bullets.erase([](Bullet &b) {return true; });
 
+  gameView->setCenter({0, 0});
+
+  spawningFinished = false;
+
+  // Rewards
+  RewardManager::spawnedLevelReward = false;
+  RewardManager::isPacketCollected = false;
+  RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
+
 
 }
 
 
 void LevelManager::loadLevelData(int levelNum) {
+  resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
   timer = -20;
@@ -63,13 +74,21 @@ void LevelManager::loadLevelData(int levelNum) {
 
 }
 
+void LevelManager::restartLevel() {
+  resetLevelData();
+  loadLevelData(currentLevel);
+  isPaused = false;
+  gameWeather.isPaused = false;
+}
+
 void LevelManager::update(float dt) {
   timer += dt;
   static int lastRow = 0;
 
 
-  if (currentWave >= levels[currentLevel - 1]->waves.size) // Level Spawning finished
+  if (spawningFinished || currentWave >= levels[currentLevel - 1]->waves.size) { // Level Spawning finished
     return;
+  }
 
   static LevelManager::Level::Wave *currWave = nullptr;
   currWave = levels[currentLevel - 1]->waves[currentWave];
@@ -115,6 +134,7 @@ void LevelManager::update(float dt) {
     Zombie::createZombie(1250, grid[newRow][COLUMNS_NUMBER-1].rectangle.getGlobalBounds().getCenter().y, currWave->zombieTypes[zombiesSpawned], newRow, 0);
     zombieSpawnTimer -= zombieSpawnDelay;
     zombiesSpawned++;
+    Zombie::totalZombies++;
   }
 
   if (zombiesSpawned == currWave->zombieTypes.size) {
@@ -122,6 +142,9 @@ void LevelManager::update(float dt) {
     zombieSpawnTimer = 0;
     zombiesSpawned = 0;
   }
+
+  if (currentWave == levels[currentLevel - 1]->waves.size)
+    spawningFinished = true;
 
 
 

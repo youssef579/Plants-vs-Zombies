@@ -25,6 +25,7 @@
 #include <ParticleSystem.hpp>
 #include <LawnMower.hpp>
 #include <LevelManager.hpp>
+#include <Rewards.hpp>
 
 int gameState = 0;
 /*
@@ -70,6 +71,7 @@ void updateGame() {
 
       Zombie::init();
       LawnMower::init();
+      RewardManager::init();
 
       ////Zombie Testing
       //Zombie::createZombie(
@@ -169,6 +171,7 @@ void updateGame() {
 
     Zombie::updateAll(dt);
     Zombie::drawAll();
+    RewardManager::update(dt);
 
     drawUI();
     shovel.drawBank();
@@ -203,6 +206,7 @@ void updateGame() {
 
 
     dayLevel.drawOverlays(*window);
+    RewardManager::draw();
 
     break;
   }

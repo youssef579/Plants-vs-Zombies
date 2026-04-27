@@ -77,6 +77,18 @@ void loadLevelsFiles() {
     else if (input == "Pool")  newLevel->location = LevelManager::Level::Pool;
     else if (input == "Roof")  newLevel->location = LevelManager::Level::Roof;
 
+    file >> input; // Reward
+    if      (input == "SUN_FLOWER")      newLevel->reward = SUN_FLOWER;
+    else if (input == "WALLNUT")         newLevel->reward = WALLNUT;
+    else if (input == "SNOWPEASHOOTER")  newLevel->reward = SNOWPEASHOOTER;
+    else if (input == "REPEATERPEA")     newLevel->reward = REPEATERPEA;
+    else if (input == "TALLNUT")         newLevel->reward = TALLNUT;
+    else if (input == "CHERRYBOMB")      newLevel->reward = CHERRYBOMB;
+    else if (input == "JALAPENO")        newLevel->reward = JALAPENO;
+    else if (input == "POTATOMINE")      newLevel->reward = POTATOMINE;
+
+
+
     file >> inputI; // number of waves
     newLevel->numberOfWaves = inputI;
 

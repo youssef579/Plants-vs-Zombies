@@ -2,6 +2,7 @@
 #include <Window.hpp>
 #include <BackgroundManager.hpp>
 #include <LawnMower.hpp>
+#include <Rewards.hpp>
 
 Array<Zombie> zombies[ROWS_NUMBER];
 
@@ -10,6 +11,9 @@ std::string Zombie::states[] = {"zombie", "attack", "die"};
 
 sf::SoundBuffer Zombie::soundBuffer_zombieBite;
 sf::SoundBuffer Zombie::soundBuffer_zombieGulp;
+
+sf::Vector2f Zombie::lastZombieDeathPosition = {0, 0};
+int Zombie::totalZombies = 0;
 
 Zombie::Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row)
   : reAnimator(def, pos.x, pos.y, window),
@@ -344,30 +348,33 @@ void Zombie::attack(float dt) {
 }
 
 void Zombie::die(int effect) {
-    state = Dying;
-    //velocity = {0, 0};
-    reAnimator.stopAnimation("anim_walk");
-    reAnimator.stopAnimation("anim_eat");
-    reAnimator.stopAnimation("anim_idle");
-    if(effect == 0 || effect == 1)
-      reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
-    else if (effect == 2) {
-      reAnimator.switchDefinition(REANIM_ZOMBIE_CHARRED);
-      reAnimator.playAnimation("anim_crumble", LoopType::HoldLastFrame, 4.0f);
-      deathCause = 1;
-    }
-    else if (effect == 3) {
-      ReAnimator::orphanAnimators.push({ ReAnimator::getDefinition(REANIM_LAWNMOWERED_ZOMBIE) , reAnimator.getPosition().x , reAnimator.getPosition().y, window});
-      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].child = &reAnimator;
-      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].childsParentTrack = "locator";
-      reAnimator.hasParent = true;
-      ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].playAnimation("main", HoldLastFrame, 2.0f);
-      reAnimator.playAnimation("anim_idle");
+  totalZombies--;
+  //RewardManager::spawnReward(reAnimator.getPosition(), {0, -400}, SUN_FLOWER);
+  lastZombieDeathPosition = reAnimator.getPosition();
+  state = Dying;
+  //velocity = {0, 0};
+  reAnimator.stopAnimation("anim_walk");
+  reAnimator.stopAnimation("anim_eat");
+  reAnimator.stopAnimation("anim_idle");
+  if(effect == 0 || effect == 1)
+    reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
+  else if (effect == 2) {
+    reAnimator.switchDefinition(REANIM_ZOMBIE_CHARRED);
+    reAnimator.playAnimation("anim_crumble", LoopType::HoldLastFrame, 4.0f);
+    deathCause = 1;
+  }
+  else if (effect == 3) {
+    ReAnimator::orphanAnimators.push({ ReAnimator::getDefinition(REANIM_LAWNMOWERED_ZOMBIE) , reAnimator.getPosition().x , reAnimator.getPosition().y, window});
+    ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].child = &reAnimator;
+    ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].childsParentTrack = "locator";
+    reAnimator.hasParent = true;
+    ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].playAnimation("main", HoldLastFrame, 2.0f);
+    reAnimator.playAnimation("anim_idle");
 
-      corpseDissapearTimer = 2.5f;
-      deathCause = 2;
-    }
-    setSprite();
+    corpseDissapearTimer = 2.5f;
+    deathCause = 2;
+  }
+  setSprite();
 }
 
 void Zombie::updateDeath(float dt) {

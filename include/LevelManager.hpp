@@ -10,6 +10,7 @@ struct LevelManager {
   float timer = 0;
   float zombieSpawnDelay = 0;
   float zombieSpawnTimer = 0;
+  bool spawningFinished = false;
 
   struct Level {
     enum Location {Day, Night, Pool, Roof};
@@ -23,6 +24,7 @@ struct LevelManager {
     Location location = Day;
     int numberOfWaves = 0;
     Array<Wave*> waves;
+    PlantType reward;
   };
 
   Array<Level*> levels;
@@ -30,6 +32,7 @@ struct LevelManager {
 
   void resetLevelData();
   void loadLevelData(int levelIdx);
+  void restartLevel();
   void update(float dt);
 
 };

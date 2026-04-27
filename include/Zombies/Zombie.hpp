@@ -17,6 +17,9 @@ struct Zombie {
     static constexpr float AttackTimer = 0.33f;
     static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
 
+    static int totalZombies;
+    static sf::Vector2f lastZombieDeathPosition;
+
     enum Type {Regular, Conehead, Buckethead, Flag, Screendoor};
     enum State {Idle, Walking, Attacking, Dying};
 
