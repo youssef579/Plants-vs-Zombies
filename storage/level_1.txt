@@ -1,24 +1,13 @@
 Day
-JALAPENO
-4
-1 20 45 100
-5 10 15 15
-2 3 5 4
+SUN_FLOWER
+2
+1 20
+5 10
+2 3
 
 Regular
 Regular
-
-Regular
-Regular
-Conehead
 
 Flag
 Regular
-Conehead
-Regular
-Conehead
-
-Flag
-Conehead
-Conehead
 Conehead
