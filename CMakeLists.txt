@@ -21,7 +21,7 @@ FetchContent_MakeAvailable(SFML)
 FetchContent_Declare(json
   URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
 )
-FetchContent_MakeAvailable(json) 
+FetchContent_MakeAvailable(json)
 
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
@@ -32,6 +32,12 @@ add_custom_command(TARGET main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/assets
     $<TARGET_FILE_DIR:main>/assets
+)
+
+add_custom_command(TARGET main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/storage
+    $<TARGET_FILE_DIR:main>/storage
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

@@ -1,3 +1,4 @@
+#include "Plants/Plant.hpp"
 #include <Packets/Shovel.hpp>
 #include <Packets/Packet.hpp>
 #include <AssetsManager.hpp>
@@ -57,7 +58,15 @@ void updateGame() {
   default:
     if (runOnce) {
       shovel.init();
-      initPackets();
+      Array<PlantType> plantTypes;
+      plantTypes.push(PEASHOOTER);
+      plantTypes.push(SUN_FLOWER);
+      plantTypes.push(WALLNUT);
+      plantTypes.push(SNOWPEASHOOTER);
+      plantTypes.push(CHERRYBOMB);
+      plantTypes.push(JALAPENO);
+      plantTypes.push(POTATOMINE);
+      fillPackets(plantTypes);
       //initGrid();
       dayLevel.init();
       gameWeather.isRaining = true;
@@ -117,7 +126,7 @@ void updateGame() {
     if (isPaused) {
       if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
-        dayLevel.dirtSoundStarted = false; 
+        dayLevel.dirtSoundStarted = false;
       }
       dayLevel.draw(*window);
       window->setView(*view);
@@ -127,7 +136,7 @@ void updateGame() {
       break;
     }
 
-    
+
 
     //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
     /*if (z4.health > 0)
@@ -154,8 +163,8 @@ void updateGame() {
     //  if(z1.health > 0)
     //    z1.takeDamage(10);
     //}
-    
-    
+
+
     levelManager.update(dt);
     updateGrid(dt);
 
@@ -163,7 +172,7 @@ void updateGame() {
     dayLevel.draw(*window);
     window->setView(*view);
     drawGrid();
-    
+
     /*for (int i = 0; i < bullets.size; i++) {
       bullets[i].update(dt);
       bullets[i].draw();
@@ -182,7 +191,7 @@ void updateGame() {
 
     updateSeedPackets(dt);
     drawSeedPackets();
-    
+
 
     shovel.update();
 

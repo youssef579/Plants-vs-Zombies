@@ -9,14 +9,14 @@
 BackgroundManager dayLevel;
 
 void BackgroundManager::init() {
-  
-  if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
-    grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
-    threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
-    fullGrassTexture.loadFromFile("assets/BackGround/fullGrass1.png") &&
-    rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
-    capTexture.loadFromFile("assets/BackGround/SodRollCap.png") &&
-    zombiesWonTexture.loadFromFile("assets/Background/ZombiesWon.png"))
+
+  if (backGroundTexture.loadFromFile("assets/Background/background.png") &&
+    grassTexture.loadFromFile("assets/Background/sod1row.png") &&
+    threeMiddleGrassTexture.loadFromFile("assets/Background/sod3row.png") &&
+    fullGrassTexture.loadFromFile("assets/Background/fullGrass1.png") &&
+    rollTexture.loadFromFile("assets/Background/SodRoll.png") &&
+    capTexture.loadFromFile("assets/Background/SodRollCap.png") &&
+    zombiesWonTexture.loadFromFile("assets/Background/zombiesWon.png"))
   {
     if (!backGroundSprite) backGroundSprite = new sf::Sprite(backGroundTexture);
     else backGroundSprite->setTexture(backGroundTexture);
@@ -25,7 +25,7 @@ void BackgroundManager::init() {
     if(!zombiesWon) zombiesWon = new sf::Sprite(zombiesWonTexture);
     zombiesWon->setScale({0.5, 0.5});
 
-    if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
+    if (dirtTexture.loadFromFile("assets/Background/dirtsmall.png")) {
       dirtPool.clear();
       for (int i = 0; i < 250; i++) {
         DirtParticle p;
@@ -64,7 +64,7 @@ void BackgroundManager::init() {
       currentX[i] = 0.0f;
       isRolling[i] = false;
       shouldStartRolling[i] = false;
-     
+
       if (i == 0 || i == 2 || i == 4) {
         if (!grassSprites[i]) grassSprites[i] = new sf::Sprite(grassTexture);
         grassSprites[i]->setScale(sf::Vector2f(grassSizeX, grassSizeY));
@@ -90,7 +90,7 @@ void BackgroundManager::init() {
     threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)threeMiddleGrassTexture.getSize().y }));
 
     if (!fullGrassSprite) fullGrassSprite = new sf::Sprite(fullGrassTexture);
-    fullGrassSprite->setScale(sf::Vector2f(grassSizeX + 0.01f, grassSizeY + 0.05f)); 
+    fullGrassSprite->setScale(sf::Vector2f(grassSizeX + 0.01f, grassSizeY + 0.05f));
     fullGrassSprite->setPosition(sf::Vector2f(startX - 12.0f, groundY[0] - 48.0f));
     fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)fullGrassTexture.getSize().y }));
   }
@@ -108,10 +108,10 @@ void BackgroundManager::spawnDirt(sf::Vector2f position) {
   for (auto& p : dirtPool) {
     if (!p.active) {
       p.active = true;
-      
+
       float offsetX = static_cast<float>(rand() % 40 - 20);
       p.sprite->setPosition(sf::Vector2f(position.x + offsetX, position.y));
-     
+
       float vx = (static_cast<float>(rand() % 400 - 200));
       float vy = -(static_cast<float>(rand() % 250 + 100));
       p.velocity = sf::Vector2f(vx, vy);
@@ -130,12 +130,12 @@ void BackgroundManager::updateDirt(float dt) {
   for (auto& p : dirtPool) {
     if (p.active) {
       p.lifetime -= dt;
-      p.velocity.y += 800.f * dt; 
+      p.velocity.y += 800.f * dt;
 
       p.sprite->move(p.velocity * dt);
       p.sprite->rotate(sf::degrees(p.rotationSpeed * dt));
 
-      
+
       if (p.lifetime < 0.3f) {
         sf::Color c = p.sprite->getColor();
         c.a = static_cast<unsigned char>((p.lifetime / 0.3f) * 255);
@@ -183,7 +183,7 @@ void BackgroundManager::update(float dt) {
       camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
       gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
-      
+
       //Center(490, 317)
       //Size(735, 551)
       //camera.setCenter({ 490, 317 });
@@ -233,7 +233,7 @@ void BackgroundManager::update(float dt) {
 
     if (isThreeMiddleRunning && threeMiddleCurrentX < bigTargetX) {
       threeMiddleCurrentX += rollSpeed * dt;
-     
+
       int currentBigRectW = std::min((int)threeMiddleCurrentX, (int)bigTargetX);
       threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentBigRectW , (int)threeMiddleGrassTexture.getSize().y }));
 
@@ -276,14 +276,14 @@ void BackgroundManager::update(float dt) {
       for (int j : {0, 4}) {
         spawnDirt(rollSprites[j]->getPosition());
         float finalX = (200.0f - 12.0f) + (fullGrassCurrentX * (grassSizeX + 0.01));
-        float centerY = groundY[j] + (grassTexture.getSize().y * (0.82f + 0.04f)) / 2.0f; 
+        float centerY = groundY[j] + (grassTexture.getSize().y * (0.82f + 0.04f)) / 2.0f;
         if (j == 0) centerY -= 25.0f;
         if (j == 4) centerY += 20.0f;
 
         float scaleM = std::max(0.35f, 1.0f - (fullGrassCurrentX / fullTargetX));
         float customRollSize = 0.85f;
         float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
-        
+
         rollSprites[j]->setPosition({ finalX - (rollW * 0.05f), centerY });
         rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
         sf::Vector2f rPos = rollSprites[j]->getPosition();
@@ -309,11 +309,11 @@ void BackgroundManager::update(float dt) {
       dirtSound->setVolume(settings.soundFXVolume); // update volume
       if (!dirtSoundStarted) {
         dirtSound->play();
-        dirtSoundStarted = true; 
+        dirtSoundStarted = true;
       }
     }
     else {
-      if (dirtSoundStarted) { 
+      if (dirtSoundStarted) {
         dirtSound->stop();
         dirtSoundStarted = false;
         dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
@@ -414,9 +414,9 @@ void BackgroundManager::updateGameOverScreen(float dt) {
   }
 
   float lerpF = gameOverTimer / 2.0f;
-  
 
-  
+
+
   //static sf::Vector2f targetPos = { 100.0f + 100.0f, 400.0f };
   static sf::Vector2f targetPos = grid[deathRow][0].rectangle.getGlobalBounds().getCenter() - sf::Vector2f(20, 0);
   static sf::Vector2f targetSize = { 600.0f, 158.086956521739f * 2 };
@@ -513,9 +513,9 @@ void testKeybinds(std::string key) {
   // Background sprite
   //BG_Pos(620, 300)          620, 300
   //BG_Size(1.575, 1.07)      1.545, 1.095
-  
+
   //Full Grass--------------------------------------------
-    //FG_Pos(528, 367)          FG_Pos(522, 363)          
+    //FG_Pos(528, 367)          FG_Pos(522, 363)
     //FG_Size(1.295, 0.925)     FG_Size(1.27, 0.895)
 
   // Three middle

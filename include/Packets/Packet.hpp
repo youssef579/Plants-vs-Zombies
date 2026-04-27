@@ -24,7 +24,7 @@ struct SeedPacket {
   void drawSelectedPlant();
 };
 
-void initPackets();
+void fillPackets(Array<PlantType> &types);
 void updateSeedPackets(float dt);
 void drawSeedPackets();
 

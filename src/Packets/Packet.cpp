@@ -1,3 +1,4 @@
+#include <Array.hpp>
 #include <Window.hpp>
 #include <algorithm>
 #include <globals.hpp>
@@ -8,56 +9,96 @@
 
 Array<SeedPacket> packets;
 
-void initPackets() {
-  sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
-  sf::Sprite peashooterSprite(peashooterTexture);
-  peashooterSprite.setTextureRect({{0,0},{348,359}});
-  peashooterSprite.setScale({0.225, 0.225});
-  packets.push({100, 5, "peashooter", {90 + 59.0f * 0, 11}, peashooterSprite, PEASHOOTER});
+void fillPackets(Array<PlantType> &types) {
+  static bool runOnce = true;
+  static sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
+  static sf::Sprite peashooterSprite(peashooterTexture);
 
-  sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
-  sf::Sprite sunFlowerSprite(sunFlowerTexture);
-  sunFlowerSprite.setTextureRect({{0, 0}, {80, 80}});
-  packets.push({50, 5, "sunflower", {90 + 59.0f * 1, 11}, sunFlowerSprite, SUN_FLOWER});
+  static sf::Texture& sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
+  static sf::Sprite sunFlowerSprite(sunFlowerTexture);
 
-  sf::Texture& wallNutTexture = getTexture("assets/Plants/wallnut.png");
-  sf::Sprite wallNutSprite(wallNutTexture);
-  wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
-  packets.push({50, 5, "wallnut", {90 + 59.0f * 2, 11}, wallNutSprite, WALLNUT});
+  static sf::Texture& wallNutTexture = getTexture("assets/Plants/wallnut.png");
+  static sf::Sprite wallNutSprite(wallNutTexture);
 
-  sf::Texture& icepeaTexture = getTexture("assets/Plants/Icepea.png");
-  sf::Sprite icepeaSprite(icepeaTexture);
-  icepeaSprite.setTextureRect({ {0,0},{353, 368}});
-  icepeaSprite.setScale({0.218, 0.217});
-  packets.push({175, 5, "peaice", {90 + 59.0f * 3, 11}, icepeaSprite, SNOWPEASHOOTER});
+  static sf::Texture& icepeaTexture = getTexture("assets/Plants/Icepea.png");
+  static sf::Sprite icepeaSprite(icepeaTexture);
 
-  sf::Texture& repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
-  repeaterpeaTexture.setSmooth(true);
-  sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
-  repeaterpeaSprite.setTextureRect({ {0,0},{73, 71}});
-  packets.push({200, 5, "repeated", {90 + 59.0f * 4, 11}, repeaterpeaSprite, REPEATERPEA});
+  static sf::Texture& repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
+  static sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
 
-  sf::Texture &tallNutTexture = getTexture("assets/Plants/tallnut/Tallnut_body.png");
-  sf::Sprite tallNutSprite(tallNutTexture);
-  tallNutSprite.setScale({0.8f, 0.8f});
-  packets.push({ 125, 5, "tallnut", {90 + 59.0f * 5, 11}, tallNutSprite, TALLNUT });
+  static sf::Texture &tallNutTexture = getTexture("assets/Plants/tallnut/Tallnut_body.png");
+  static sf::Sprite tallNutSprite(tallNutTexture);
 
-  sf::Texture &cherryBombTexture = getTexture("assets/Plants/cherrybomb.png");
-  sf::Sprite cherryBombSprite(cherryBombTexture);
-  //cherryBombSprite.setScale({ 0.8f, 0.8f });
-  packets.push({ 125, 1, "cherrybomb", {90 + 59.0f * 6, 11}, cherryBombSprite, CHERRYBOMB });
+  static sf::Texture &cherryBombTexture = getTexture("assets/Plants/cherrybomb.png");
+  static sf::Sprite cherryBombSprite(cherryBombTexture);
 
+  static sf::Texture &jalapenoTexture = getTexture("assets/Plants/jalapeno.png");
+  static sf::Sprite jalapenoSprite(jalapenoTexture);
 
-  sf::Texture &jalapenoTexture = getTexture("assets/Plants/jalapeno.png");
-  sf::Sprite jalapenoSprite(jalapenoTexture);
-  jalapenoSprite.setScale({ 0.8f, 0.8f });
-  packets.push({ 125, 1, "jalapeno", {90 + 59.0f * 7, 11}, jalapenoSprite, JALAPENO });
+  static sf::Texture &potatoMineTexture = getTexture("assets/Plants/potatoMine.png");
+  static sf::Sprite potatoMineSprite(potatoMineTexture);
 
-  sf::Texture &potatoMineTexture = getTexture("assets/Plants/potatoMine.png");
-  sf::Sprite potatoMineSprite(potatoMineTexture);
-  potatoMineSprite.setScale({ 0.135f, 0.135f });
-  packets.push({ 25, 1, "potatomine", {90 + 59.0f * 8, 11}, potatoMineSprite, POTATOMINE });
+  if (runOnce) {
+    peashooterSprite.setTextureRect({{0,0},{348,359}});
+    peashooterSprite.setScale({0.225, 0.225});
 
+    wallNutSprite.setTextureRect({{0, 0}, {65, 73}});
+
+    icepeaSprite.setTextureRect({ {0,0},{353, 368}});
+    icepeaSprite.setScale({0.218, 0.217});
+
+    repeaterpeaTexture.setSmooth(true);
+    repeaterpeaSprite.setTextureRect({ {0,0},{73, 71}});
+
+    tallNutSprite.setScale({0.8f, 0.8f});
+
+    // cherryBombSprite.setScale({ 0.8f, 0.8f });
+
+    jalapenoSprite.setScale({ 0.8f, 0.8f });
+
+    potatoMineSprite.setScale({ 0.135f, 0.135f });
+    runOnce = false;
+  }
+
+  for (int i = 0; i < types.size; i++) {
+    switch (types[i]) {
+    case PEASHOOTER:
+      packets.push({100, 5, "peashooter", {90 + 59.0f * i, 11}, peashooterSprite, PEASHOOTER});
+      break;
+
+    case SUN_FLOWER:
+      packets.push({50, 5, "sunflower", {90 + 59.0f * i, 11}, sunFlowerSprite, SUN_FLOWER});
+      break;
+
+    case WALLNUT:
+      packets.push({50, 5, "wallnut", {90 + 59.0f * i, 11}, wallNutSprite, WALLNUT});
+      break;
+
+    case SNOWPEASHOOTER:
+      packets.push({175, 5, "peaice", {90 + 59.0f * i, 11}, icepeaSprite, SNOWPEASHOOTER});
+      break;
+
+    case REPEATERPEA:
+      packets.push({200, 5, "repeated", {90 + 59.0f * i, 11}, repeaterpeaSprite, REPEATERPEA});
+      break;
+
+    case TALLNUT:
+      packets.push({ 125, 5, "tallnut", {90 + 59.0f * i, 11}, tallNutSprite, TALLNUT });
+      break;
+
+    case CHERRYBOMB:
+      packets.push({ 125, 1, "cherrybomb", {90 + 59.0f * i, 11}, cherryBombSprite, CHERRYBOMB });
+      break;
+
+    case JALAPENO:
+      packets.push({ 125, 1, "jalapeno", {90 + 59.0f * i, 11}, jalapenoSprite, JALAPENO });
+      break;
+
+    case POTATOMINE:
+      packets.push({ 25, 1, "potatomine", {90 + 59.0f * i, 11}, potatoMineSprite, POTATOMINE });
+      break;
+    }
+  }
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
