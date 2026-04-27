@@ -31,6 +31,7 @@ int main() {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
     handleEvents();
 
+    //std::cout << "maxLevel: " << maxLevelUnlocked << "\n";
 
     window->clear();
     window->setView(*view);

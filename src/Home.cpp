@@ -236,7 +236,7 @@ void updateHome() {
 
           if (currentLevel <= maxLevelUnlocked)
             onClick(text, [&]() { // Play Level
-              levelManager.loadLevelData(1);
+              levelManager.loadLevelData(currentLevel);
               music.play("DayStage");
               gameState = currentLevel;
             });

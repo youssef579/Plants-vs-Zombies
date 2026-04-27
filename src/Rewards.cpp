@@ -2,7 +2,7 @@
 #include <Zombies/Zombie.hpp>
 #include <LevelManager.hpp>
 
-sf::Texture RewardManager::packetTextures[9] = {};
+sf::Texture RewardManager::packetTextures[9] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
 RewardManager::CollectedPacket RewardManager::collectedPacket;
 bool RewardManager::isPacketCollected = false;
@@ -127,7 +127,8 @@ void RewardManager::CollectedPacket::update(float dt) {
       gameState = 0;
       homeState = 0;
       music.play("Menu");
-      if(levelManager.currentLevel+1 == maxLevelUnlocked) maxLevelUnlocked++;
+      //std::cout << "currLevel: " << levelManager.currentLevel << "\n";
+      if(levelManager.currentLevel == maxLevelUnlocked) maxLevelUnlocked++;
       // Add reward plant to available collection LATER
       }, []() {});
   }

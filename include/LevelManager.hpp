@@ -31,7 +31,7 @@ struct LevelManager {
 
 
   void resetLevelData();
-  void loadLevelData(int levelIdx);
+  void loadLevelData(int levelNum);
   void restartLevel();
   void update(float dt);
 

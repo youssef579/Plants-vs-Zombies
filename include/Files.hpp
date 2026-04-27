@@ -38,3 +38,4 @@ const int LEVEL_SELECTOR_MAX_LEVELS_PER_PAGE = 6;
 
 extern int levelSelectorCurrentPage;
 extern int maxLevelUnlocked;
+extern const int ACTUAL_MAX_LEVELS;

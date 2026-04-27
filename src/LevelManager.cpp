@@ -57,6 +57,10 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
 
 void LevelManager::loadLevelData(int levelNum) {
+  if (levelNum > ACTUAL_MAX_LEVELS) {
+    std::cout << "Level " << levelNum << " not implemented yet!\nLoading latest Level..\n";
+    levelNum--;
+  }
   resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
