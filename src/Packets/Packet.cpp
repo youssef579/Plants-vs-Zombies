@@ -55,8 +55,14 @@ void initPackets() {
 
   sf::Texture &potatoMineTexture = getTexture("assets/Plants/potatoMine.png");
   sf::Sprite potatoMineSprite(potatoMineTexture);
-  potatoMineSprite.setScale({ 0.135f, 0.135f });
+  potatoMineSprite.setScale({ 0.145f, 0.155f });
   packets.push({ 25, 1, "potatomine", {90 + 59.0f * 8, 11}, potatoMineSprite, POTATOMINE });
+
+  sf::Texture &iceShroomTexture = getTexture("assets/Plants/iceshroom.png");
+  iceShroomTexture.setSmooth(true);
+  sf::Sprite iceShroomSprite(iceShroomTexture);
+  iceShroomSprite.setScale({ 0.21f, 0.23f });
+  packets.push({ 75, 1, "iceshroom", {90 + 59.0f * 9, 11}, iceShroomSprite, ICESHROOM });
 
 }
 
@@ -80,7 +86,11 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
-  plantShadow.setColor(sf::Color{255, 255, 255, 100});
+
+  if (plantType == ICESHROOM)
+    plantShadow.setColor(sf::Color{255, 255, 255, 150});
+  else
+    plantShadow.setColor(sf::Color{255, 255, 255, 100});
 }
 
 void SeedPacket::update(float dt) {

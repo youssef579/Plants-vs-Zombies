@@ -36,7 +36,7 @@ void updatePotatoMine(Plant &potatoMine, float dt) {
       if (zombie.health <= 0) continue;
 
       float dx = std::abs(zombie.reAnimator.getPosition().x - potatoMine.reAnimator.getPosition().x);
-      if (dx <= 65.f && dx >= -70.0f) {
+      if (dx <= 65.f && dx >= -30.0f) {
         is_explosion = 1;
         zombie.takeDamage(5000.f, 2);
       }
