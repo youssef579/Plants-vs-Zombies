@@ -4,6 +4,7 @@
 #include <Plants/Plant.hpp>
 #include <Plants/CherryBomb.hpp>
 #include <Plants/Jalapeno.hpp>
+#include <Plants/Squash.hpp>
 #include <globals.hpp>
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
@@ -42,6 +43,9 @@ float getPlantHealth(PlantType type){
     case POTATOMINE:
       health = POTATO_MINE_HEALTH;
       break;
+    case SQUASH:
+      health = SQUASH_HEALTH;
+      break;
 
   }
 
@@ -77,6 +81,9 @@ float getPlantTimer(PlantType type){
       break;
     case POTATOMINE:
       timer = POTATO_MINE_TIMER_BEFORE_EXPLOSION;
+      break;
+    case SQUASH:
+      timer = 0;
       break;
   }
 
@@ -160,6 +167,9 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case POTATOMINE:
     reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
+  case SQUASH:
+    reAnimator.playAnimation("anim_idle", LoopType::Loop);
+    break;
   }
 }
 
@@ -191,6 +201,9 @@ void Plant::update(float dt) {
       break;
     case POTATOMINE:
       updatePotatoMine(*this, dt);
+      break;
+    case SQUASH:
+      updateSquash(*this, dt);
       break;
   }
 }
@@ -225,6 +238,9 @@ void Plant::draw() {
       break;
     case POTATOMINE:
       drawPotatoMine(*this);
+      break;
+    case SQUASH:
+      drawSquash(*this);
       break;
   }
 }

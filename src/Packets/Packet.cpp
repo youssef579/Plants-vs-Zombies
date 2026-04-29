@@ -139,6 +139,14 @@ void fillPackets(Array<PlantType> &types) {
                     potatoMineSprite,
                     POTATOMINE});
       break;
+    case SQUASH:
+      packets.push({ 25,
+                    1,
+                    "potatomine",
+                    {90 + 59.0f * i, 11},
+                    potatoMineSprite,
+                    SQUASH });
+      break;
     }
   }
 }

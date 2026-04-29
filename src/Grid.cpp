@@ -90,6 +90,9 @@ void updateGrid(float dt){
                     /// الانيميشن ي ابويا
                     grid[i][j].plant = Plant(POTATOMINE, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_POTATO_MINE));
                     break;
+                  case SQUASH:
+                    grid[i][j].plant = Plant(SQUASH, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_POTATO_MINE));
+                    break;
                   default:
                     break;
                 }
