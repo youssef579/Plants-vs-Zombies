@@ -22,6 +22,8 @@ struct BackgroundManager {
   float gameOverTimer = 0;
   float zombiesWonTimer = 0;
   int deathRow = 2;
+  float iceFlashTimer = 0.0f;
+  const float iceFlashDuration = 0.75f;
 
   sf::Texture backGroundTexture;
   sf::Texture grassTexture;

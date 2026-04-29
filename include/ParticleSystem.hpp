@@ -6,7 +6,8 @@
 #include <Window.hpp>
 
 enum ParticleEffect {
-  PEFF_POWIE = 0
+  PEFF_POWIE = 0,
+  PEFF_ICEEXPLOSION = 1
 };
 
 struct ParticleSystem {

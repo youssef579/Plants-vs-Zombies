@@ -1131,6 +1131,22 @@ void initReAnimDefs() {
     });
   definitions.push(def);
 
+  //ReAnimationParser::reportImageMap("assets/Plants/iceshroom/iceshroom.json", "assets/Plants/iceshroom/aaaaaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_iceshroom[] = { "anim_idle", "anim_sleep", "anim_face",
+    "IceShroom_base", "anim_sleep", "anim_blink", "IceShroom_head" };
+
+  def->loadFiles("assets/Plants/iceshroom/iceshroom.json", 7, trackNames_iceshroom, {
+      {"IMAGE_REANIM_ICESHROOM_BODY", "assets/Plants/iceshroom/IceShroom_body.png"},
+      {"IMAGE_REANIM_ICESHROOM_BASE", "assets/Plants/iceshroom/IceShroom_base.png"},
+      {"IMAGE_REANIM_ICESHROOM_BLINK2", "assets/Plants/iceshroom/IceShroom_blink2.png"},
+      {"IMAGE_REANIM_ICESHROOM_BLINK1", "assets/Plants/iceshroom/IceShroom_blink1.png"},
+      {"IMAGE_REANIM_ICESHROOM_HEAD", "assets/Plants/iceshroom/IceShroom_head.png"}
+    });
+  definitions.push(def);
+
 
 }
 

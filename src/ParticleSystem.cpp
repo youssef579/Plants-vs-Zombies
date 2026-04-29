@@ -157,6 +157,48 @@ void ParticleSystem::init() {
 
 
 
+  def = new ParticleDefintion;
+
+  std::string snowflakePaths[3] = {
+      "assets/Particles/Snowflake1.png",
+      "assets/Particles/Snowflake2.png",
+      "assets/Particles/Snowflake3.png"
+  };
+
+  for (int i = 0; i < 3; i++) {
+
+    //const float m = 3.0f;
+
+    ParticleSystem::Emitter snowBurst;
+    snowBurst.tex = &getTexture(snowflakePaths[i]);
+
+    snowBurst.spawnCount = 12*3;
+
+    snowBurst.radius = { 0.0f, 80.0f };
+    snowBurst.angle = { 0.0f, 6.28318f };
+
+    snowBurst.speed = { 150.0f*5, 850.0f*5 };
+
+    snowBurst.frictionX = 6.0f;
+    snowBurst.frictionY = 6.0f;
+
+    snowBurst.duration = { 0.6f, 1.2f };
+
+    snowBurst.spinSpeed = { -250.0f, 250.0f };
+
+    snowBurst.scale = { 0.8f, 0.0f, 0.6f };
+
+    snowBurst.alpha = { 1.0f, 0.0f, 0.75f };
+
+    snowBurst.startR = 0.9f; snowBurst.endR = 0.7f;
+    snowBurst.startG = 1.0f; snowBurst.endG = 0.9f;
+    snowBurst.startB = 1.0f; snowBurst.endB = 1.0f;
+
+    def->emitters.push(snowBurst);
+  }
+
+  definitions.push(def);
+
 
 
 }

@@ -154,6 +154,12 @@ void BackgroundManager::update(float dt) {
     return;
   }
 
+  if (iceFlashTimer > 0) {
+    iceFlashTimer -= dt;
+    iceFlashTimer = std::max(0.0f, iceFlashTimer);
+  }
+
+
   if (isIntroRunning) {
     introTimer += dt;
     float gameViewOffset = 1.5f;
@@ -379,7 +385,21 @@ void BackgroundManager::drawOverlays(sf::RenderWindow &window) {
     window.draw(overlay->overlayRect);
     window.draw(*zombiesWon);
     window.setView(window.getDefaultView());
+    return;
   }
+
+  static sf::RectangleShape iceFlash = []() {
+      sf::RectangleShape rec((sf::Vector2f)WINDOW_SIZE);
+      //rec.setFillColor(sf::Color(0, 0, 100, 0));
+      return rec;
+    }();
+  if (iceFlashTimer > 0) {
+    iceFlash.setFillColor(sf::Color(100, 200, 255, (uint8_t)ReAnimator::lerp(0, 200, iceFlashTimer/iceFlashDuration) ));
+    window.draw(iceFlash);
+  }
+
+
+
 }
 
 void BackgroundManager::startPlanting() {

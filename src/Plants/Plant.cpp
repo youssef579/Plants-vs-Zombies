@@ -9,6 +9,7 @@
 #include <Plants/SnowpeaShooter.hpp>
 #include <Plants/Repeaterpea.hpp>
 #include <Plants/potatoMine.hpp>
+#include <Plants/iceShroom.hpp>
 #include <iostream>
 
 
@@ -42,7 +43,9 @@ float getPlantHealth(PlantType type){
     case POTATOMINE:
       health = POTATO_MINE_HEALTH;
       break;
-
+    case ICESHROOM:
+      health = ICESHROOM_HEALTH;
+      break;
   }
 
   return health;
@@ -77,6 +80,9 @@ float getPlantTimer(PlantType type){
       break;
     case POTATOMINE:
       timer = POTATO_MINE_TIMER_BEFORE_EXPLOSION;
+      break;
+    case ICESHROOM:
+      timer = ICESHROOM_EXPLOSION_TIMER;
       break;
   }
 
@@ -160,6 +166,9 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case POTATOMINE:
     reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
+  case ICESHROOM:
+    reAnimator.playAnimation("anim_idle", LoopType::Loop);
+    break;
   }
 }
 
@@ -191,6 +200,9 @@ void Plant::update(float dt) {
       break;
     case POTATOMINE:
       updatePotatoMine(*this, dt);
+      break;
+    case ICESHROOM:
+      updateIceShroom(*this, dt);
       break;
   }
 }
@@ -225,6 +237,9 @@ void Plant::draw() {
       break;
     case POTATOMINE:
       drawPotatoMine(*this);
+      break;
+    case ICESHROOM:
+      drawIceShroom(*this);
       break;
   }
 }

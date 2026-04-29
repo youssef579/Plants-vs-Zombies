@@ -66,6 +66,7 @@ void updateGame() {
       plantTypes.push(CHERRYBOMB);
       plantTypes.push(JALAPENO);
       plantTypes.push(POTATOMINE);
+      plantTypes.push(ICESHROOM);
       fillPackets(plantTypes);
       //initGrid();
       dayLevel.init();
@@ -81,43 +82,6 @@ void updateGame() {
       Zombie::init();
       LawnMower::init();
       RewardManager::init();
-
-      ////Zombie Testing
-      //Zombie::createZombie(
-      //  grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
-      //  grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Regular, 2, 0);
-      //Zombie::createZombie(
-      //  grid[2][8].rectangle.getGlobalBounds().getCenter().x + 400,
-      //  grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Regular, 2, 0);
-      //Zombie::createZombie(
-      //  grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
-      //  grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Conehead, 1, 0);
-      //Zombie::createZombie(
-      //  grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
-      //  grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Buckethead, 0, 0);
-      //Zombie::createZombie(
-      //  grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
-      //  grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Flag, 3, 0);
-      //Zombie::createZombie(
-      //  grid[4][8].rectangle.getGlobalBounds().getCenter().x + 300,
-      //  grid[4][8].rectangle.getGlobalBounds().getCenter().y,
-      //  Zombie::Type::Screendoor, 4, 0);
-      //zombies[4][0].startDelay = 4.0f;
-
-      // REMOVE LATER
-      /*LawnMower::activateLawnMower(0);
-      LawnMower::activateLawnMower(1);
-      LawnMower::activateLawnMower(2);
-      LawnMower::activateLawnMower(3);
-      LawnMower::activateLawnMower(4);*/
-
-
-
 
       runOnce = false;
 
@@ -138,33 +102,6 @@ void updateGame() {
 
 
 
-    //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
-    /*if (z4.health > 0)
-      z4.takeDamage(0.2);
-    if (z3.health > 0)
-      z3.takeDamage(0.2);
-    if (z2.health > 0)
-      z2.takeDamage(0.2);
-    if (z1.health > 0)
-      z1.takeDamage(0.2);*/
-    //static sf::Clock tmpC;
-    //static float tmp = 0;
-    //tmp = tmpC.getElapsedTime().asSeconds();
-    ////std::cout << "state: " << z1.state << "\n";
-    //if (tmp >= 2 && tmp <= 5) {
-    //  //tmp = 0;
-    //  z1.state = Zombie::State::Attacking;
-    //  //tmpC.reset();
-    //}
-    //else if (tmp >= 5 && tmp <= 8) {
-    //  z1.state = Zombie::State::Walking;
-    //}
-    //else if (tmp >= 8) {
-    //  if(z1.health > 0)
-    //    z1.takeDamage(10);
-    //}
-
-
     levelManager.update(dt);
     updateGrid(dt);
 
@@ -173,10 +110,6 @@ void updateGame() {
     window->setView(*view);
     drawGrid();
 
-    /*for (int i = 0; i < bullets.size; i++) {
-      bullets[i].update(dt);
-      bullets[i].draw();
-    }*/
     Bullet::updateAll(dt);
     Bullet::drawAll();
 

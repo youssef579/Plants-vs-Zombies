@@ -42,8 +42,12 @@ void fillPackets(Array<PlantType> &types) {
   static sf::Sprite jalapenoSprite(jalapenoTexture);
 
   static sf::Texture &potatoMineTexture =
-      getTexture("assets/Plants/potatoMine.png");
+    getTexture("assets/Plants/potatoMine.png");
   static sf::Sprite potatoMineSprite(potatoMineTexture);
+
+  static sf::Texture &iceShroomTexture =
+    getTexture("assets/Plants/iceshroom.png");
+  static sf::Sprite iceShroomSprite(iceShroomTexture);
 
   if (runOnce) {
     peashooterSprite.setTextureRect({{0, 0}, {348, 359}});
@@ -66,78 +70,74 @@ void fillPackets(Array<PlantType> &types) {
     jalapenoSprite.setScale({0.8f, 0.8f});
 
     potatoMineSprite.setScale({0.135f, 0.135f});
+
+    iceShroomSprite.setScale({0.21f, 0.21f});
+
     runOnce = false;
   }
 
   for (int i = 0; i < types.size; i++) {
     switch (types[i]) {
     case PEASHOOTER:
-      packets.push({100,
-                    5,
-                    "peashooter",
+      packets.push({100, 5, "peashooter",
                     {90 + 59.0f * i, 11},
-                    peashooterSprite,
-                    PEASHOOTER});
+                    peashooterSprite, PEASHOOTER});
       break;
 
     case SUN_FLOWER:
-      packets.push({50,
-                    5,
-                    "sunflower",
+      packets.push({50, 5, "sunflower",
                     {90 + 59.0f * i, 11},
-                    sunFlowerSprite,
-                    SUN_FLOWER});
+                    sunFlowerSprite, SUN_FLOWER});
       break;
 
     case WALLNUT:
       packets.push(
-          {50, 5, "wallnut", {90 + 59.0f * i, 11}, wallNutSprite, WALLNUT});
+          {50, 5, "wallnut",
+        {90 + 59.0f * i, 11},
+        wallNutSprite, WALLNUT});
       break;
 
     case SNOWPEASHOOTER:
-      packets.push({175,
-                    5,
-                    "peaice",
+      packets.push({175, 5, "peaice",
                     {90 + 59.0f * i, 11},
-                    icepeaSprite,
-                    SNOWPEASHOOTER});
+                    icepeaSprite, SNOWPEASHOOTER});
       break;
 
     case REPEATERPEA:
-      packets.push({200,
-                    5,
-                    "repeated",
+      packets.push({200, 5, "repeated",
                     {90 + 59.0f * i, 11},
-                    repeaterpeaSprite,
-                    REPEATERPEA});
+                    repeaterpeaSprite, REPEATERPEA});
       break;
 
     case TALLNUT:
       packets.push(
-          {125, 5, "tallnut", {90 + 59.0f * i, 11}, tallNutSprite, TALLNUT});
+          {125, 5, "tallnut",
+        {90 + 59.0f * i, 11},
+        tallNutSprite, TALLNUT});
       break;
 
     case CHERRYBOMB:
-      packets.push({125,
-                    1,
-                    "cherrybomb",
+      packets.push({125, 1, "cherrybomb",
                     {90 + 59.0f * i, 11},
-                    cherryBombSprite,
-                    CHERRYBOMB});
+                    cherryBombSprite, CHERRYBOMB});
       break;
 
     case JALAPENO:
       packets.push(
-          {125, 1, "jalapeno", {90 + 59.0f * i, 11}, jalapenoSprite, JALAPENO});
+          {125, 1, "jalapeno",
+        {90 + 59.0f * i, 11},
+        jalapenoSprite, JALAPENO});
       break;
 
     case POTATOMINE:
-      packets.push({25,
-                    1,
-                    "potatomine",
+      packets.push({ 25, 1, "potatomine",
                     {90 + 59.0f * i, 11},
-                    potatoMineSprite,
-                    POTATOMINE});
+                    potatoMineSprite, POTATOMINE });
+      break;
+    case ICESHROOM:
+      packets.push({ 75, 1, "iceshroom",
+                    {90 + 59.0f * i, 11},
+                    iceShroomSprite, ICESHROOM });
       break;
     }
   }
@@ -162,7 +162,11 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
-  plantShadow.setColor(sf::Color{255, 255, 255, 100});
+
+  if (plantType == ICESHROOM)
+    plantShadow.setColor(sf::Color{255, 255, 255, 150});
+  else
+    plantShadow.setColor(sf::Color{255, 255, 255, 100});
 }
 
 void SeedPacket::update(float dt) {

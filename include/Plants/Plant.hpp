@@ -17,7 +17,8 @@ enum PlantType {
   TALLNUT,
   CHERRYBOMB,
   JALAPENO,
-  POTATOMINE
+  POTATOMINE,
+  ICESHROOM
 }; // will add the other sorts of plants
 
 float getPlantHealth(PlantType type);
