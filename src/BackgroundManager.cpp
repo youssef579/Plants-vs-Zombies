@@ -5,12 +5,12 @@
 #include <Window.hpp>
 #include <LawnMower.hpp>
 #include <Game.hpp>
-
+ 
 BackgroundManager dayLevel;
 
 void BackgroundManager::init() {
   
-  if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
+  if (backGroundTexture.loadFromFile("assets/BackGround/background(1).png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
     threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
     fullGrassTexture.loadFromFile("assets/BackGround/fullGrass1.png") &&
@@ -176,12 +176,16 @@ void BackgroundManager::update(float dt) {
       gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 5.5f && introTimer < 6.2f) {
-      camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
-      gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
+      //camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      //gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 8.5f) {
-      camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
-      gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
+     // camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      //gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
       
       //Center(490, 317)
@@ -316,18 +320,22 @@ void BackgroundManager::update(float dt) {
       if (dirtSoundStarted) { 
         dirtSound->stop();
         dirtSoundStarted = false;
-        dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
-        dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
-        dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
-        //dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
-        dayLevel.fullGrassSprite->setPosition({ 528, 372 });
-        dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
-        dayLevel.backGroundSprite->setPosition({ 620, 300 });
-        dayLevel.backGroundSprite->setScale({ 1.555, 1.06 });
+        //dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
+        //dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
+        //dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
+        ////dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
 
-        dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
-        dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
-        dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
+        //dayLevel.fullGrassSprite->setPosition({ 528, 372 });
+        //dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
+
+        //dayLevel.backGroundSprite->setPosition({ 620, 300 });
+        //dayLevel.backGroundSprite->setScale({ 1.555, 1.06 });
+
+        //dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
+        //dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
+        //dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
+
+       
       }
     }
   }

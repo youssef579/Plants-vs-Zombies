@@ -25,7 +25,9 @@
 #include <ParticleSystem.hpp>
 #include <LawnMower.hpp>
 #include <LevelManager.hpp>
+#include <newPauseMenu.hpp>
 
+//bool isOpen = false;
 int gameState = 0;
 /*
   0 -> Home menu
@@ -49,6 +51,34 @@ void updateGame() {
   // (dt)
   dt *= settings.timeModifier * globalTimeModifier;
 
+
+  static bool pPressed = false;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
+    if (!pPressed) {
+      newPause.isOpen = !newPause.isOpen;
+      pPressed = true;
+    }
+  }
+  else {
+    pPressed = false;
+  }
+  if (newPause.isOpen) {
+    newPause.update(*window);
+
+
+    dayLevel.draw(*window);
+    window->setView(*view);
+    gameWeather.draw(*window);
+    drawUI();
+    drawSeedPackets();
+
+
+    newPause.draw(*window);
+
+    return;
+  }
+
+
   switch (gameState) {
   case 0:
     updateHome();
@@ -59,6 +89,7 @@ void updateGame() {
       initPackets();
       //initGrid();
       dayLevel.init();
+      newPause.init();
       gameWeather.isRaining = true;
       for (int i = 0; i < ROWS_NUMBER; i++){
         for (int j = 0; j < COLUMNS_NUMBER; j++){
@@ -109,7 +140,7 @@ void updateGame() {
 
     }
 
-    if (isPaused) {
+    if (isPaused || newPause.isOpen) {
       if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
         dayLevel.dirtSoundStarted = false; 
