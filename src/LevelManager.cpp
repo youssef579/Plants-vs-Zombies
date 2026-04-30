@@ -3,6 +3,7 @@
 #include <Game.hpp>
 #include <Bullet.hpp>
 #include <Rewards.hpp>
+#include <LawnMower.hpp>
 
 LevelManager levelManager;
 
@@ -52,7 +53,6 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   RewardManager::isPacketCollected = false;
   RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
 
-
 }
 
 
@@ -74,6 +74,11 @@ void LevelManager::loadLevelData(int levelNum) {
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 10.0f);
   }
+
+   LawnMower::init();
+  //static bool runOnce = [](){
+      //return true;
+    //}();
 
 
 }

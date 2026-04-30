@@ -5,12 +5,15 @@
 Array<LawnMower> LawnMower::lawnMowers;
 
 
-void LawnMower::init() {
+void LawnMower::init() { // can be called multiple times to reset
+  lawnMowers.erase([](LawnMower &l) {return true; });
   for (int i = 0; i < ROWS_NUMBER; i++) {
     lawnMowers.push(LawnMower{ ReAnimator(ReAnimator::getDefinition(REANIM_LAWNMOWER), 100, grid[i][0].plantPosition.y, window) });
     lawnMowers[i].reAnimator.playAnimation("anim_normal");
     lawnMowers[i].reAnimator.update(0); // init first frame and freeze it by not updating
     lawnMowers[i].reAnimator.animSpeedMulti = 2.0f;
+    lawnMowers[i].isActivated = false;
+    lawnMowers[i].remove = false;
   }
 }
 

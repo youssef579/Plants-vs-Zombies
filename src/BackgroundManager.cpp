@@ -178,19 +178,20 @@ void BackgroundManager::update(float dt) {
       gameView->move(sf::Vector2f(-400.f * dt * gameViewOffset, 0.f));
     }*/
     else if (introTimer >= 1.5f && introTimer < 2.2f) {
+      camera.setSize({800.0f * 0.925f, 600.0f * 0.925f});
       camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
       gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
     }
-    else if (introTimer >= 5.5f && introTimer < 6.2f) {
+    else if (introTimer >= 5.5f && introTimer < 8.5f) {
       //camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
-      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
-      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.2f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.2f) - 5.5f) * 600.f), 303.f });
       //gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 8.5f) {
-     // camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
-      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
-      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      // camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.2f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.2f) - 5.5f) * 600.f), 303.f });
       //gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
 

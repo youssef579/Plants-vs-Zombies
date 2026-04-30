@@ -112,7 +112,6 @@ void updateGame() {
       music.play("DayStage");
 
       Zombie::init();
-      LawnMower::init();
       RewardManager::init();
 
       runOnce = false;
