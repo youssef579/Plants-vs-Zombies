@@ -99,7 +99,8 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
     zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC), ROW);
     zombie->reAnimator.child = new ReAnimator(ReAnimator::getDefinition(REANIM_FLAGPOLE), 0, 0, window);
     zombie->reAnimator.child->hasParent = true;
-    zombie->reAnimator.childsParentTrack = "Zombie_flaghand";
+    zombie->reAnimator.childsParentTrackIdx
+      = zombie->reAnimator.reAnimDef->getTrackIndex("Zombie_flaghand");
     zombie->reAnimator.setTrackVisibility("anim_cone", false);
     zombie->reAnimator.setTrackVisibility("anim_bucket", false);
     zombie->reAnimator.setTrackVisibility("anim_screendoor", false);
@@ -142,7 +143,7 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
   }
   
   zombie->reAnimator.animSpeedMulti = speeds[type];
-  for (int i = 0; i < zombie->reAnimator.trackInstances.size(); i++)
+  for (int i = 0; i < zombie->reAnimator.trackInstances.size; i++)
     zombie->reAnimator.trackInstances[i].colorOverlay = {0, 0, 255, 0};
   zombie->type = type;
   zombie->row = ROW;
@@ -366,7 +367,7 @@ void Zombie::die(int effect) {
   else if (effect == 3) {
     ReAnimator::orphanAnimators.push({ ReAnimator::getDefinition(REANIM_LAWNMOWERED_ZOMBIE) , reAnimator.getPosition().x , reAnimator.getPosition().y, window});
     ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].child = &reAnimator;
-    ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].childsParentTrack = "locator";
+    ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].childsParentTrackIdx = 0; // track[0] = "locator"
     reAnimator.hasParent = true;
     ReAnimator::orphanAnimators[ReAnimator::orphanAnimators.size - 1].playAnimation("main", HoldLastFrame, 2.0f);
     reAnimator.playAnimation("anim_idle");

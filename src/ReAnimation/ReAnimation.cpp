@@ -10,7 +10,16 @@ ReAnimator::ReAnimator(ReAnimationDefinition *def, float X, float Y, sf::RenderW
   reAnimDef = def;
   window = w;
   x = X + def->offset.x, y = Y + def->offset.y;
-  trackInstances.resize(reAnimDef->totalTracks);
+  //trackInstances.resize(reAnimDef->totalTracks);
+  for (int i = 0; i < def->totalTracks; i++) { // resize all arrays by adding default values
+    trackInstances.push(TrackInstance());
+    curTransforms.push(Transform());
+    curTransformsValid.push(false);
+    effectiveBasePoses.push(sf::Transform());
+    effectiveBasePosesValid.push(false);
+    effectiveTransforms.push(sf::Transform());
+    effectiveTransformsValid.push(false);
+  }
 }
 
 void ReAnimationDefinition::loadFiles(std::string reAnimPath, int tracksNum, std::string tracks[],
@@ -24,7 +33,7 @@ void ReAnimationDefinition::loadFiles(std::string reAnimPath, int tracksNum, std
 
   ReAnimationParser::parse(*this, reAnimPath);
 
-  createTrackMap();
+  //createTrackMap();
   calculateBasePoses();
   ReAnimationParser::bindAllParents(reAnimPath, *this);
 
@@ -50,11 +59,18 @@ Transform ReAnimator::lerpTransform(Transform a, Transform b, float t) {
 
 void ReAnimator::update(float dt) {
 
-  float lastGroundX;
-  if (curTransforms.count("_ground")) lastGroundX = curTransforms["_ground"].x;
-  else lastGroundX = 0;
+  int groundIdx = reAnimDef->getTrackIndex("_ground");
+  float lastGroundX = 0;
+  if (groundIdx != -1 && curTransformsValid[groundIdx]) {
+    lastGroundX = curTransforms[groundIdx].x;
+  }
 
   timer += (dt * reAnimDef->fps * animSpeedMulti);
+
+  for (int i = 0; i < reAnimDef->totalTracks; i++) { // reset valid states
+    curTransformsValid[i] = false;
+  }
+
   //std::cout << "dt: " << dt << " / fps: " << reAnimDef->fps << " / animSpeedMulti: " << animSpeedMulti << "\n";
     //std::cout << "timer += " << (dt * reAnimDef->fps * animSpeedMulti) << "\n";
   //if(x == 400)
@@ -69,9 +85,9 @@ void ReAnimator::update(float dt) {
 
   //float labelTime = (((int)label.start + (int)timer)%((int)label.end - (int)label.start));
 
-  curTransforms.clear();
+  //curTransforms.clear();
 
-  std::vector<std::string> queuedLabels;
+  /*std::vector<std::string> queuedLabels;
   for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
     if (!updateLabel(*lab)) {
       if (lab->label->next != "") {
@@ -81,21 +97,32 @@ void ReAnimator::update(float dt) {
     }
     else
       lab++;
+  }*/
+  Array<std::string> queuedLabels;
+
+  for (int i = 0; i < activeLabels.size; i++) {
+    if (!updateLabel(activeLabels[i])) {
+      if (activeLabels[i].label->next != "")
+        queuedLabels.push(activeLabels[i].label->next);
+      activeLabels[i].remove = true; // delete current label
+    }
+  }
+  activeLabels.erase([](ActiveLabel &lab) {return lab.remove; });
+
+  for (int i = 0; i < queuedLabels.size; i++)
+    playAnimation(queuedLabels[i], LoopType::PlayOnce);
+
+
+  float deltaGround = 0;
+  if (groundIdx != -1 && curTransformsValid[groundIdx]) {
+    deltaGround = curTransforms[groundIdx].x - lastGroundX;
   }
 
-  for (auto ql : queuedLabels)
-    playAnimation(ql, LoopType::PlayOnce);
-
-
-  float deltaGround;
-  if (curTransforms.count("_ground"))
-    deltaGround = curTransforms["_ground"].x - lastGroundX;
-  else deltaGround = 0;
+  // TODO: set dg threshold
+  if (deltaGround > 0.0f && allowMotion) x -= deltaGround;
 
   //std::cout << "DG: " << deltaGround << "\n";
 
-  // TODO: set dg threshold
-  if(deltaGround > 0.0f && allowMotion) x -= deltaGround;
 
 
   //std::cout << "END\n";
@@ -190,12 +217,25 @@ bool ReAnimator::updateLabel(ActiveLabel &lab) {
   //std::cout << "labelTime: " << labelTime << "\n";
   //std::cout << "Update Label " << label.name << ": " << timer << " / labelTime: " << labelTime << "\n";
 
-  for (auto track : reAnimDef->tracks) {
+  for (int i = 0; i < reAnimDef->tracks.size; i++) {
+    Track &track = reAnimDef->tracks[i];
     if (track.transforms[(int)labelTime].f == -1) continue;
+
+    int nextFrame = (int)labelTime +1;
+    if (nextFrame >= label.end) {
+      if (lab.loop == LoopType::PlayOnce || lab.loop == LoopType::HoldLastFrame) {
+        nextFrame--;
+      }
+      else {
+        nextFrame = label.start;
+      }
+    }
+
+
     //std::cout << "Frame " << labelTime << "\n";
     //std::cout << "lerping (" << (int)labelTime << " -> " << (int)labelTime + 1 << ")\n";
-    curTransforms[track.name] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], labelOffseted - (int)labelOffseted);
-
+    curTransforms[i] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], labelOffseted - (int)labelOffseted);
+    curTransformsValid[i] = true;
   }
   return true;
 }
@@ -307,90 +347,54 @@ bool ReAnimator::updateLabel(ActiveLabel &lab) {
 
 void ReAnimator::draw() {
   if (!hasParent) {
-    rootMatrix = sf::Transform::Identity; // reset root
+    rootMatrix = sf::Transform::Identity;
     rootMatrix.translate({ x, y });
     rootMatrix.scale({ sx, sy });
   }
 
   if (child) {
-    //sf::Transform parCur;
-    //sf::Transform parBase;
-    if (childsParentTrack == "") {
+    if (childsParentTrackIdx == -1) {
       child->rootMatrix = rootMatrix;
     }
-    else { // child inherits transformation of difference of parent
-      sf::Transform parCur = getEffectiveTransform(childsParentTrack);
-      sf::Transform parBase = getEffectiveBasePose(childsParentTrack);
+    else {
+      sf::Transform parCur = getEffectiveTransform(childsParentTrackIdx);
+      sf::Transform parBase = getEffectiveBasePose(childsParentTrackIdx);
       child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
     }
     child->draw();
   }
 
-  effectiveBasePoses.clear();
-  effectiveTransforms.clear();
+  for (int i = 0; i < reAnimDef->totalTracks; i++) {
+    effectiveBasePosesValid[i] = false;
+    effectiveTransformsValid[i] = false;
+  }
 
-  for (auto &trackDef : reAnimDef->tracks) {
-    const std::string &name = trackDef.name;
+  for (int i = 0; i < reAnimDef->tracks.size; i++) {
+    if (!curTransformsValid[i]) continue;
+    Transform &t = curTransforms[i];
+    if (!t.i || t.a <= 0.0f) continue;
+    if (!trackInstances[i].isVisible) continue;
 
-    auto curIt = curTransforms.find(name);
-    if (curIt == curTransforms.end()) continue;
+    sf::Sprite sprite(*t.i);
+    if (trackInstances[i].imageOverride)
+      sprite.setTexture(*trackInstances[i].imageOverride);
 
-    Transform &t = curIt->second;
-    if (!t.i || t.a <= 0.0f) continue; // Skip no image / invisible
-
-    //change loop later:
-    int idx = 0;
-    for (auto tr : reAnimDef->tracks)
-      if (tr.name == name) {
-        break;
-      }
-      else idx++;
-
-    //std::cout << "Track[" << name << "]: " << idx << "\n";
-    if (!trackInstances[idx].isVisible) continue;
-
-    //std::cout << "idx: " << idx << "\n";
-    //std::cout << "size: " << trackInstances.size() << "\n";
-
-    sf::Sprite *sprite;
-    if(!trackInstances[idx].imageOverride)
-      sprite = new sf::Sprite(*t.i);
-    else
-      sprite = new sf::Sprite(*trackInstances[idx].imageOverride);
-
-    /*if(trackInstances[idx].colorOverlay.a > 0.0f){
-      uint8_t alpha255 = (uint8_t)(t.a * 255.0f);
-      sprite->setColor(multiplyColor(trackInstances[idx].colorOverlay, trackInstances[idx].colorOverlayIntensity));
-    }*/
-    //else {
-      uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
-      sprite->setColor(sf::Color(globalColor.r, globalColor.g, globalColor.b, alpha255));
-    //}
-
-
+    uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
+    sprite.setColor(sf::Color(globalColor.r, globalColor.g, globalColor.b, alpha255));
 
     sf::Transform localMatrix = transformToSFML(t);
     sf::Transform finalLocal = localMatrix;
 
-    if (trackDef.parent) {
-      Track *parent = trackDef.parent;
-      const std::string &pname = parent->name;
+    Track &trackDef = reAnimDef->tracks[i];
 
+    if (trackDef.parent) {
+      int pIdx = reAnimDef->getTrackIndex(trackDef.parent->name);
       if (trackDef.fullInherit) {
-        //if (name == "anim_sprout")
-          //std::cout << "Sprout is inheriting\n";
-        finalLocal = getEffectiveTransform(name);
+        finalLocal = getEffectiveTransform(i);
       }
       else {
-        //if (name == "anim_sprout")
-          //std::cout << "Sprout is NOT inheriting\n";
-        sf::Transform parentCurEff = getEffectiveTransform(pname);
-        sf::Transform parentBaseEff = getEffectiveBasePose(pname);
-
-        //if (name == "anim_face") {
-        //  //std::cout << "Effective Cur for " << pname << ": " << parentCurEff.getMatrix()[12] << ", " << parentCurEff.getMatrix()[13] << "\n";
-        //  //std::cout << "Effective Base for " << pname << ": " << parentBaseEff.getMatrix()[12] << ", " << parentBaseEff.getMatrix()[13] << "\n";
-        //}
+        sf::Transform parentCurEff = getEffectiveTransform(pIdx);
+        sf::Transform parentBaseEff = getEffectiveBasePose(pIdx);
 
         sf::Vector2f parentCurPoint = parentCurEff.transformPoint({ 0.0f, 0.0f });
         sf::Vector2f parentBasePoint = parentBaseEff.transformPoint({ 0.0f, 0.0f });
@@ -403,83 +407,85 @@ void ReAnimator::draw() {
     }
 
     sf::RenderStates states;
-
-    //if (name == "anim_sprout")
-      //debugTransform(finalLocal);
-
     states.transform = rootMatrix * finalLocal;
-    //if(name == "anim_face")
+
     if (window) {
-      window->draw(*sprite, states);
-      if (trackInstances[idx].colorOverlay.a > 0.0f) {
-        sprite->setColor({
-            trackInstances[idx].colorOverlay.r,
-            trackInstances[idx].colorOverlay.g,
-            trackInstances[idx].colorOverlay.b,
-            (uint8_t)(trackInstances[idx].colorOverlay.a * opacityMultiplier)
+      window->draw(sprite, states);
+      if (trackInstances[i].colorOverlay.a > 0.0f) {
+        sprite.setColor({
+            trackInstances[i].colorOverlay.r,
+            trackInstances[i].colorOverlay.g,
+            trackInstances[i].colorOverlay.b,
+            (uint8_t)(trackInstances[i].colorOverlay.a * opacityMultiplier)
           });
         states.blendMode = sf::BlendAdd;
-        window->draw(*sprite, states);
+        window->draw(sprite, states);
       }
     }
-
-    delete sprite;
+    //delete sprite;
   }
-
-  
 }
 
 
 
-sf::Transform ReAnimator::getEffectiveBasePose(std::string trackName) {
+sf::Transform ReAnimator::getEffectiveBasePose(int trackIndex) {
 
-  if (effectiveBasePoses.count(trackName))
-    return effectiveBasePoses[trackName];
-
-
-  Track *track = reAnimDef->trackMap[trackName];
-  sf::Transform base = reAnimDef->basePoses[trackName];
+  //if (effectiveBasePoses.count(trackName))
+    //return effectiveBasePoses[trackName];
+  if (effectiveBasePosesValid[trackIndex]) return effectiveBasePoses[trackIndex];
 
 
-  if (track->parent && reAnimDef->basePoses.find(track->parent->name) != reAnimDef->basePoses.end()) {
-    sf::Transform parentEff = getEffectiveBasePose(track->parent->name);
-    sf::Transform parentBaseInv = reAnimDef->basePoses[track->parent->name].getInverse();
+  Track *track = &reAnimDef->tracks[trackIndex];
+  sf::Transform base = reAnimDef->basePoses[trackIndex];
+
+
+  if (track->parent) {
+    sf::Transform parentEff = getEffectiveBasePose(reAnimDef->getTrackIndex(track->parent->name));
+    sf::Transform parentBaseInv = reAnimDef->basePoses[reAnimDef->getTrackIndex(track->parent->name)].getInverse();
     sf::Transform res = parentEff * parentBaseInv * base;
-    effectiveBasePoses[trackName] = res;
+    effectiveBasePoses[trackIndex] = res;
   }
   else {
-    effectiveBasePoses[trackName] = base;
+    effectiveBasePoses[trackIndex] = base;
   }
-  return effectiveBasePoses[trackName];
+  effectiveBasePosesValid[trackIndex] = true;
+  return effectiveBasePoses[trackIndex];
 }
 
-sf::Transform ReAnimator::getEffectiveTransform(std::string trackName) {
+sf::Transform ReAnimator::getEffectiveTransform(int trackIndex) {
 
-  if (effectiveTransforms.count(trackName)) // if calculated before
-    return effectiveTransforms[trackName];
+  //if (effectiveTransforms.count(trackName)) // if calculated before
+    //return effectiveTransforms[trackName];
 
-  Track *track = reAnimDef->trackMap[trackName];
+  if (effectiveTransformsValid[trackIndex]) return effectiveTransforms[trackIndex];
 
+  //Track *track = reAnimDef->trackMap[trackName];
+  Track *track = &reAnimDef->tracks[trackIndex];
   sf::Transform local;
-  auto curIt = curTransforms.find(trackName);
+
+  /*auto curIt = curTransforms.find(trackName);
   if (curIt != curTransforms.end()) {
     local = transformToSFML(curIt->second);
   }
   else {
     auto baseIt = reAnimDef->basePoses.find(trackName);
     local = (baseIt != reAnimDef->basePoses.end()) ? baseIt->second : sf::Transform();
-  }
+  }*/
+  if(curTransformsValid[trackIndex])
+    local = transformToSFML(curTransforms[trackIndex]);
+  else
+    local = reAnimDef->basePoses[trackIndex];
 
-  if (track->parent && reAnimDef->basePoses.find(track->parent->name) != reAnimDef->basePoses.end()) {
-    sf::Transform parentEff = getEffectiveTransform(track->parent->name);
-    sf::Transform parentBaseInv = reAnimDef->basePoses[track->parent->name].getInverse();
-    sf::Transform res = parentEff * parentBaseInv * local;
-    effectiveTransforms[trackName] = res;
+  if (track->parent) {
+    sf::Transform parentEff = getEffectiveTransform(reAnimDef->getTrackIndex(track->parent->name));
+    sf::Transform parentBaseInv = reAnimDef->basePoses[reAnimDef->getTrackIndex(track->parent->name)].getInverse();
+    effectiveTransforms[trackIndex] = parentEff * parentBaseInv * local;
   }
   else {
-    effectiveTransforms[trackName] = local;
+    effectiveTransforms[trackIndex] = local;
   }
-  return effectiveTransforms[trackName];
+  effectiveTransformsValid[trackIndex] = true;
+  return effectiveTransforms[trackIndex];
 }
 
 
@@ -506,9 +512,9 @@ sf::Vector2f ReAnimationDefinition::getBasePose(Track &track) {
 }
 
 void ReAnimationDefinition::calculateBasePoses() {
-  for (auto &track : tracks) {
+  for (int i = 0; i < tracks.size; i++) {
     //basePoses[track.name] = transformToSFML((Track&)getBasePose(track));
-    basePoses[track.name] = ReAnimator::transformToSFML(getBaseTransform(track));
+    basePoses.push(ReAnimator::transformToSFML(getBaseTransform(tracks[i])));
   }
 }
 
@@ -539,28 +545,34 @@ sf::Transform ReAnimator::transformToSFML(Transform t) {
   );
 }
 
-void ReAnimationDefinition::createTrackMap() {
-  for (auto &track : tracks) {
-    trackMap[track.name] = &track;
-  }
-}
+//void ReAnimationDefinition::createTrackMap() {
+//  for (auto &track : tracks) {
+//    trackMap[track.name] = &track;
+//  }
+//}
 
 int ReAnimationDefinition::getLabelIndex(std::string labelName) {
-  for (int i = 0; i < labels.size(); i++) {
+  for (int i = 0; i < labels.size; i++) {
     if (labels[i].name == labelName)
       return i;
   }
   return -1; // label not found
 }
 
+int ReAnimationDefinition::getTrackIndex(std::string name) {
+  for (int i = 0; i < tracks.size; i++) {
+    if (tracks[i].name == name) return i;
+  }
+  return -1;
+}
+
 void ReAnimator::playLabel(std::string labelName, LoopType loop, float holdTimer) {
-  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+  activeLabels.push({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
     loop, timer, holdTimer });
 }
 
 void ReAnimator::playLabel(std::string labelName, LoopType loop, int loopCnt) {
-  ActiveLabel a;
-  activeLabels.push_back({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+  activeLabels.push({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
     loop, timer, 0, 0, loopCnt });
 }
 
@@ -583,40 +595,44 @@ void ReAnimator::stopLabel(int labelIdx) {
 
 void ReAnimator::playAnimation(std::string labelName, LoopType loop, float holdTimer) {
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
-  playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
-    loop, holdTimer);
+  /*playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, holdTimer);*/
+  playLabel(labelName, loop, holdTimer);
 }
 void ReAnimator::playAnimation(std::string labelName, LoopType loop, int loopCnt) {
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
-  playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
-    loop, loopCnt);
+  /*playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, loopCnt);*/
+  playLabel(labelName, loop, loopCnt);
 }
 
 void ReAnimator::stopAnimation(std::string labelName) {
-  for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
+  /*for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
     if (lab->label->name == labelName) {
       lab = activeLabels.erase(lab);
     }
     else
       lab++;
-  }
+  }*/
+  activeLabels.erase([&](ActiveLabel &lab) {
+      return lab.label->name == labelName;
+    });
 }
 
 void ReAnimator::setTrackVisibility(std::string trackName, bool newVisibility) {
-  for(int i=0; i<reAnimDef->tracks.size(); i++)
+  /*for(int i=0; i<reAnimDef->tracks.size(); i++)
     if (reAnimDef->tracks[i].name == trackName) {
       trackInstances[i].isVisible = newVisibility;
       return;
-    }
+    }*/
+  trackInstances[reAnimDef->getTrackIndex(trackName)].isVisible = newVisibility;
 }
 
-void ReAnimator::setTrackVisibility(std::vector<std::string> trackNames, bool newVisibility) {
-  for (int i = 0; i < reAnimDef->tracks.size(); i++)
-    for(auto trackName : trackNames)
-      if (reAnimDef->tracks[i].name == trackName) {
-        trackInstances[i].isVisible = newVisibility;
-        return;
-      }
+void ReAnimator::setTrackVisibility(Array<std::string> &trackNames, bool newVisibility) {
+  for (int i = 0; i < trackNames.size; i++) {
+    trackInstances[reAnimDef->getTrackIndex(trackNames[i])]
+      .isVisible = newVisibility;
+  }
 }
 
 
@@ -654,11 +670,11 @@ void ReAnimator::setTrackVisibility(std::vector<std::string> trackNames, bool ne
 //}
 
 
-void ReAnimator::forceSyncAll() {
-  for (auto &lab : activeLabels) {
-    lab.offset = timer;
-  }
-}
+//void ReAnimator::forceSyncAll() {
+//  for (auto &lab : activeLabels) {
+//    lab.offset = timer;
+//  }
+//}
 
 sf::Color ReAnimator::multiplyColor(sf::Color color, float multiplier) {
   return sf::Color(
@@ -678,28 +694,28 @@ void ReAnimator::setOpacity(uint8_t newOpacity) {
 }
 
 
-void ReAnimator::report() {
-  std::cout << "FPS: " << reAnimDef->fps << "\n";
-
-  std::cout << "Labels:\n";
-  for (auto label : reAnimDef->labels) {
-    std::cout << "Label(" << label.name << "): " << label.start << " -> " << label.end << "\n";
-  }
-
-  std::cout << "\n----------------------------------\nTracks:\n";
-  for (auto track : reAnimDef->tracks) {
-    std::cout << "Track(" << track.name << "):\n";
-    if (track.name != "stalk_bottom") continue;
-    for (auto &frame : track.transforms) {
-      std::cout << "  Transform: x=" << frame.x << ", y=" << frame.y << ", sx=" << frame.sx
-        << ", sy=" << frame.sy << ", kx=" << frame.kx << ", ky=" << frame.ky
-        << ", f=" << frame.f << ", a=" << frame.a
-        << ", i=" << (frame.i ? "Texture Loaded" : "No Texture") << "\n";
-    }
-    std::cout << "\n----------------------------------\n";
-  }
-
-}
+//void ReAnimator::report() {
+//  std::cout << "FPS: " << reAnimDef->fps << "\n";
+//
+//  std::cout << "Labels:\n";
+//  for (auto label : reAnimDef->labels) {
+//    std::cout << "Label(" << label.name << "): " << label.start << " -> " << label.end << "\n";
+//  }
+//
+//  std::cout << "\n----------------------------------\nTracks:\n";
+//  for (auto track : reAnimDef->tracks) {
+//    std::cout << "Track(" << track.name << "):\n";
+//    if (track.name != "stalk_bottom") continue;
+//    for (auto &frame : track.transforms) {
+//      std::cout << "  Transform: x=" << frame.x << ", y=" << frame.y << ", sx=" << frame.sx
+//        << ", sy=" << frame.sy << ", kx=" << frame.kx << ", ky=" << frame.ky
+//        << ", f=" << frame.f << ", a=" << frame.a
+//        << ", i=" << (frame.i ? "Texture Loaded" : "No Texture") << "\n";
+//    }
+//    std::cout << "\n----------------------------------\n";
+//  }
+//
+//}
 
 
 
@@ -1178,8 +1194,8 @@ void ReAnimator::setOverlayAlpha(float newAlpha) {
   if (newAlpha > 1.0f) newAlpha = 1.0f;
   else if (newAlpha < 0.0f) newAlpha = 0.0f;
   uint8_t castedAlpha = (uint8_t)(newAlpha * 255.0f);
-  for (auto &trackI : trackInstances)
-    trackI.colorOverlay.a = castedAlpha;
+  for (int i=0; i<trackInstances.size; i++)
+    trackInstances[i].colorOverlay.a = castedAlpha;
 }
 
 void ReAnimator::move(sf::Vector2f OFFSET) {
@@ -1200,12 +1216,13 @@ void ReAnimator::setPosition(sf::Vector2f newPos) {
 
 bool ReAnimator::isPlayingAnimation(std::string animName) {
   if (animName == "")
-    return (activeLabels.size() > 0); // if any animation is playing
+    return (activeLabels.size > 0); // if any animation is playing
 
-  for (auto &lab : activeLabels)
-    if (lab.label->name == animName)
-      return true;
-  return false;
+  for (int i = 0; i < activeLabels.size; i++)
+    if (activeLabels[i].label->name == animName) return true; // anim found
+
+
+  return false; // not playing
 }
 
 
@@ -1226,11 +1243,27 @@ void ReAnimator::drawHitbox() {
 
 void ReAnimator::switchDefinition(ReAnimationDef newDefID) {
   reAnimDef = definitions[newDefID];
-  activeLabels.clear();
-  trackInstances.clear();
-  trackInstances.resize(reAnimDef->totalTracks);
-  if (child)
-    child = nullptr;
+
+  activeLabels.size = 0;
+  trackInstances.size = 0;
+  curTransforms.size = 0;
+  curTransformsValid.size = 0;
+  effectiveBasePoses.size = 0;
+  effectiveBasePosesValid.size = 0;
+  effectiveTransforms.size = 0;
+  effectiveTransformsValid.size = 0;
+
+  for (int i = 0; i < reAnimDef->totalTracks; i++) {
+    trackInstances.push(TrackInstance());
+    curTransforms.push(Transform());
+    curTransformsValid.push(false);
+    effectiveBasePoses.push(sf::Transform());
+    effectiveBasePosesValid.push(false);
+    effectiveTransforms.push(sf::Transform());
+    effectiveTransformsValid.push(false);
+  }
+
+  if (child) child = nullptr;
 }
 
 

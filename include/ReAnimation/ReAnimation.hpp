@@ -69,17 +69,19 @@ struct ActiveLabel {
   float holdTimer = 0.0f; // Time to hold after animation end
   int loopCount = 0;      // counts how many loops have passed
   int targetLoops = 0;
+
+  bool remove = false;
 };
 
 struct ReAnimationDefinition {
   float fps;
   int frameCount=0;
   int totalTracks=0;
-  std::vector<Label> labels;
-  std::vector<Track> tracks;
+  Array<Label> labels;
+  Array<Track> tracks;
+  Array<sf::Transform> basePoses;  // constant
   std::unordered_map<std::string, sf::Texture *> textureMap;
-  std::unordered_map<std::string, sf::Transform> basePoses;  // constant
-  std::unordered_map<std::string, Track *> trackMap;         // constant
+  //std::unordered_map<std::string, Track *> trackMap;         // constant
 
   sf::FloatRect hitbox = sf::FloatRect({ 0, 0 }, { 0, 0 });
   sf::Vector2f offset = {0, 0}; // to change origin (top left by default)
@@ -89,13 +91,14 @@ struct ReAnimationDefinition {
   void loadFiles(std::string reAnimPath, int tracksNum, std::string tracks[],
     std::unordered_map<std::string, std::string> images);
 
-  void createTrackMap();
+  //void createTrackMap();
 
   sf::Vector2f getBasePose(Track &track);
   void calculateBasePoses();
   Transform getBaseTransform(Track &track);
 
   int getLabelIndex(std::string labelName);
+  int getTrackIndex(std::string name);
 
 
   //void defineAnimation(std::string name, int labelCount, int labels[], bool loop = true);
@@ -127,7 +130,7 @@ enum ReAnimationDef {
 struct ReAnimator {
 
   ReAnimator *child = nullptr;
-  std::string childsParentTrack = "";
+  int childsParentTrackIdx = -1;
   bool hasParent = false;
 
   ReAnimationDefinition *reAnimDef = nullptr;
@@ -142,34 +145,37 @@ struct ReAnimator {
   sf::Transform rootMatrix;
 
   float timer=0.0f; // Global animTime
-  std::vector<TrackInstance> trackInstances;
+  Array<TrackInstance>     trackInstances;
+  Array<Transform>         curTransforms;
+  Array<bool>              curTransformsValid;
+  Array<sf::Transform>     effectiveBasePoses;
+  Array<bool>              effectiveBasePosesValid;
+  Array<sf::Transform>     effectiveTransforms;
+  Array<bool>              effectiveTransformsValid;
+  Array<ActiveLabel>       activeLabels;
 
 
 
-  std::unordered_map<std::string, sf::Transform> effectiveBasePoses;
-  std::unordered_map<std::string, sf::Transform> effectiveTransforms;
 
 
 
 
 
   void update(float dt);
+  void draw();
 
   static float lerp(float a, float b, float t);
   static Transform lerpTransform(Transform a, Transform b, float t);
 
-  void draw();
 
   bool updateLabel(ActiveLabel &lab);
 
 
 
-  std::vector<ActiveLabel> activeLabels;
 
-  std::unordered_map<std::string, Transform> curTransforms;
 
-  sf::Transform getEffectiveBasePose(std::string trackName);
-  sf::Transform getEffectiveTransform(std::string trackName);
+  sf::Transform getEffectiveBasePose(int trackIndex);
+  sf::Transform getEffectiveTransform(int trackIndex);
   static sf::Transform transformToSFML(Transform t);
   static int getFirstValidIdx(Track &track);
 
@@ -184,9 +190,8 @@ struct ReAnimator {
   //void replaceWithQueueAnimation(std::string labelNameA, std::string labelNameB);
 
   void setTrackVisibility(std::string trackName, bool newVisibility);
-  void setTrackVisibility(std::vector<std::string> trackNames, bool newVisibility);
+  void setTrackVisibility(Array<std::string> &trackNames, bool newVisibility);
 
-  void report();
   void forceSyncAll();
 
   static sf::Color multiplyColor(sf::Color color, float multiplier);
@@ -203,7 +208,6 @@ struct ReAnimator {
 
   void setOverlayAlpha(float newAlpha);
 
-  void drawHitbox();
 
   static ReAnimationDefinition* getDefinition(ReAnimationDef defId);
   static void updateOrphans(float dt);
@@ -211,6 +215,10 @@ struct ReAnimator {
   ReAnimator(ReAnimationDefinition *def, float x, float y, sf::RenderWindow *w);
 
   static Array<ReAnimator> orphanAnimators;
+
+  // Debugging Functions
+  void drawHitbox();
+  void report();
 };
 
 void debugTransform(const sf::Transform &matrix);

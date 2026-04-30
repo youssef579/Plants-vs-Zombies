@@ -45,13 +45,14 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
       };*/
 
+      //currTransforms["anim_face"] = currTransforms[14]
       sf::Vector2f currPOS =
       {
         ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[12] + 50,
+          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms[14])).getMatrix()[12] + 50,
 
           ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
+          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms[14])).getMatrix()[13] + 7
 
       };
 

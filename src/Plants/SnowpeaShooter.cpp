@@ -32,14 +32,14 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
     //peashooter.reAnimator.effectiveTransforms
     if (snowpeaShooter.timer <= -10000 - 0.8) { // -10000 - time after animation start to actual shoot
       snowpeaShooter.timer = GENERATE_SNOWBULLET_TIMER;
-
+      //currTransforms["anim_face"] = currTransforms[16]
       sf::Vector2f currPOS =
       {
         ((sf::Transform().translate({snowpeaShooter.reAnimator.x, snowpeaShooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms["anim_face"])).getMatrix()[12] + 50,
+          * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms[16])).getMatrix()[12] + 50,
 
           ((sf::Transform().translate({snowpeaShooter.reAnimator.x, snowpeaShooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
+          * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms[16])).getMatrix()[13] + 7
 
       };
       //sounds.play((rand() & 1) ? "Throw1" : "Throw2");
