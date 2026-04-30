@@ -59,12 +59,10 @@ void updateSquash(Plant &squash, float dt) {
       squash.state = 3;
       startPos = squash.reAnimator.getPosition();
       endPos = grid[squash.row][squash.col].rectangle.getGlobalBounds().getCenter() + sf::Vector2f{ 100, -100 };
-      //std::cout << "set startPos to " << startPos.x << " " << startPos.y << "\n";
 
     }
 
     squash.reAnimator.playAnimation("anim_jumpup", LoopType::HoldLastFrame, 4.0f);
-    //squash.state = 3;
   }
   else if (squash.state == 3) {
 
@@ -90,18 +88,12 @@ void updateSquash(Plant &squash, float dt) {
         }
       }
 
-      //squash.timer = 0.2f;
-      //squash.state = 2;
     }
 
-    //std::cout << "startPos: (" << startPos.x << ", " << startPos.y << ")\n";
-    //std::cout << "endPos: (" << endPos.x << ", " << endPos.y << ")\n";
-    //std::cout << "t: " << (1 - squash.timer / 0.8f) << "\n";
     if(squash.timer <= 0.2f)
       squash.reAnimator.setPosition(
         startPos + (endPos - startPos) * (1 - std::min(squash.timer, 0.2f) / 0.2f)
       );
-    //std::cout << "pos: (" << squash.reAnimator.getPosition().x << ", " << squash.reAnimator.getPosition().y << ")\n";
   }
   else if (squash.state == 4) {
     if (squash.timer > 0) {

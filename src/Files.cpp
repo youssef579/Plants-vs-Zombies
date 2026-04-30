@@ -4,6 +4,7 @@
 #include <globals.hpp>
 #include <Weather.hpp>
 #include <LevelManager.hpp>
+#include <BackgroundManager.hpp>
 
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
@@ -158,4 +159,18 @@ void initFiles() {
   loadPlayerData();
   loadSettingsFile();
   loadLevelsFiles();
+
+
+  // ensure correct fullscreen state on startup
+  if (settings.fullscreen) {
+    window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
+    view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+    dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+    gameView->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+  }
+  else {
+    window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
+    getLetterboxView(window->getSize().x, window->getSize().y);
+  }
+  setWindowMetaData();
 }
