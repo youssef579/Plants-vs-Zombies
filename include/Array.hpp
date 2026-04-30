@@ -19,7 +19,7 @@ struct Array {
     data = new std::optional<elementType>[capacity];
 
     for (int i = 0; i < size; i++)
-      data[i] = otherArray[i];
+      data[i] = otherArray.data[i];
   }
 
   ~Array() {
@@ -39,7 +39,7 @@ struct Array {
     data = new std::optional<elementType>[capacity];
 
     for (int i = 0; i < size; i++)
-      data[i] = otherArray[i];
+      data[i] = otherArray.data[i];
 
     return *this;
   }

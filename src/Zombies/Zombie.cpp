@@ -217,7 +217,7 @@ void Zombie::setSprite() {
 
 bool Zombie::update(float dt) {
 
-  if (inPlayArea || reAnimator.getPosition().x <= 1130)
+  if (inPlayArea || reAnimator.getPosition().x <= 1130 + 15)
     inPlayArea = true;
   if (reAnimator.getPosition().x <= 150) // activate lawnmower
     LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
