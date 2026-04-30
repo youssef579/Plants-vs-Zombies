@@ -4,6 +4,7 @@
 #include <Plants/Plant.hpp>
 #include <Plants/CherryBomb.hpp>
 #include <Plants/Jalapeno.hpp>
+#include <Plants/Squash.hpp>
 #include <globals.hpp>
 #include <Plants/Peashooter.hpp>
 #include <Plants/SnowpeaShooter.hpp>
@@ -46,6 +47,10 @@ float getPlantHealth(PlantType type){
     case ICESHROOM:
       health = ICESHROOM_HEALTH;
       break;
+    case SQUASH:
+      health = SQUASH_HEALTH;
+      break;
+
   }
 
   return health;
@@ -83,6 +88,9 @@ float getPlantTimer(PlantType type){
       break;
     case ICESHROOM:
       timer = ICESHROOM_EXPLOSION_TIMER;
+      break;
+    case SQUASH:
+      timer = 0;
       break;
   }
 
@@ -169,6 +177,9 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case ICESHROOM:
     reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
+  case SQUASH:
+    reAnimator.playAnimation("anim_idle", LoopType::Loop);
+    break;
   }
 }
 
@@ -203,6 +214,9 @@ void Plant::update(float dt) {
       break;
     case ICESHROOM:
       updateIceShroom(*this, dt);
+      break;
+    case SQUASH:
+      updateSquash(*this, dt);
       break;
   }
 }
@@ -240,6 +254,9 @@ void Plant::draw() {
       break;
     case ICESHROOM:
       drawIceShroom(*this);
+      break;
+    case SQUASH:
+      drawSquash(*this);
       break;
   }
 }

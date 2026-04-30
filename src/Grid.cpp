@@ -93,6 +93,9 @@ void updateGrid(float dt){
                     // الانيميشن ي ابويا
                     grid[i][j].plant = Plant(ICESHROOM, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_ICESHROOM));
                     break;
+                  case SQUASH:
+                    grid[i][j].plant = Plant(SQUASH, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SQUASH));
+                    break;
                   default:
                     break;
                 }

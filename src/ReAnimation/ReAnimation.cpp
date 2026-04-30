@@ -1163,6 +1163,21 @@ void initReAnimDefs() {
     });
   definitions.push(def);
 
+  //ReAnimationParser::reportImageMap("assets/Plants/squash/squash.json", "assets/Plants/squash/aaaa.png");
+  def = new ReAnimationDefinition;
+  std::string trackNames_squash[] = { "anim_jumpdown", "anim_jumpup",
+    "anim_lookright", "anim_lookleft", "anim_idle", "anim_blink", "Squash_stem",
+    "Squash_body", "anim_face", "anim_eye" };
+
+  def->loadFiles("assets/Plants/squash/squash.json", 10, trackNames_squash, {
+      {"IMAGE_REANIM_SQUASH_STEM",     "assets/Plants/squash/Squash_stem.png"},
+      {"IMAGE_REANIM_SQUASH_BODY",     "assets/Plants/squash/Squash_body.png"},
+      {"IMAGE_REANIM_SQUASH_EYES",     "assets/Plants/squash/Squash_eyes.png"},
+      {"IMAGE_REANIM_SQUASH_EYEBROWS", "assets/Plants/squash/Squash_eyebrows.png"}
+    });
+  definitions.push(def);
+
+
 
 }
 

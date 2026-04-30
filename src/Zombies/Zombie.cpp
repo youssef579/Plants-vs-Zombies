@@ -248,7 +248,7 @@ bool Zombie::update(float dt) {
   //draw(dt);
   return health > 0;
 }
-//effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire , 3 -> mowed
+//effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire , 3 -> mowed, 4-> instant
 void Zombie::takeDamage(float damage, int effect) { // todo: change effect into enum
     health -= damage;
     if (effect == 1 && !(type == Zombie::Type::Screendoor && health >= healths[type] * 0.2f)) {
@@ -375,13 +375,17 @@ void Zombie::die(int effect) {
     corpseDissapearTimer = 2.5f;
     deathCause = 2;
   }
+  else if (effect == 4) {
+    corpseDissapearTimer = 6.0f;
+  }
   setSprite();
 }
 
 void Zombie::updateDeath(float dt) {
   if (deathCause == 0 && !reAnimator.isPlayingAnimation("anim_death")
     || deathCause == 1 && !reAnimator.isPlayingAnimation("anim_crumble")
-    || deathCause == 2 && corpseDissapearTimer >= 6) {
+    || deathCause == 2 && corpseDissapearTimer >= 6
+    || deathCause == 4) {
     remove = true;
     if (reAnimator.child)
       delete reAnimator.child;

@@ -67,6 +67,7 @@ void updateGame() {
       plantTypes.push(JALAPENO);
       plantTypes.push(POTATOMINE);
       plantTypes.push(ICESHROOM);
+      plantTypes.push(SQUASH);
       fillPackets(plantTypes);
       //initGrid();
       dayLevel.init();
