@@ -125,7 +125,8 @@ enum ReAnimationDef {
   REANIM_LAWNMOWERED_ZOMBIE = 14,
   REANIM_POTATO_MINE = 15,
   REANIM_ICESHROOM = 16,
-  REANIM_SQUASH = 17
+  REANIM_SQUASH = 17,
+  REANIM_ZOMBIE_SOCCER = 18
 };
 
 struct ReAnimator {
@@ -140,6 +141,7 @@ struct ReAnimator {
   float animSpeedMulti = 1.0f; // multiplier of animation speed
   float opacityMultiplier=1.0f;
   bool allowMotion = true;
+  float motionMultiplier = 1.0f;
   sf::Color globalColor = { 255, 255, 255, 255 };
 
 

@@ -81,12 +81,14 @@ void loadLevelsFiles() {
     file >> input; // Reward
     if      (input == "SUN_FLOWER")      newLevel->reward = SUN_FLOWER;
     else if (input == "WALLNUT")         newLevel->reward = WALLNUT;
+    else if (input == "TALLNUT")         newLevel->reward = TALLNUT;
     else if (input == "SNOWPEASHOOTER")  newLevel->reward = SNOWPEASHOOTER;
     else if (input == "REPEATERPEA")     newLevel->reward = REPEATERPEA;
-    else if (input == "TALLNUT")         newLevel->reward = TALLNUT;
     else if (input == "CHERRYBOMB")      newLevel->reward = CHERRYBOMB;
     else if (input == "JALAPENO")        newLevel->reward = JALAPENO;
     else if (input == "POTATOMINE")      newLevel->reward = POTATOMINE;
+    else if (input == "ICESHROOM")       newLevel->reward = ICESHROOM;
+    else if (input == "SQUASH")          newLevel->reward = SQUASH;
 
 
 
@@ -125,6 +127,7 @@ void loadLevelsFiles() {
         else if (input == "Buckethead") newWave->zombieTypes.push(Zombie::Type::Buckethead);
         else if (input == "Flag")       newWave->zombieTypes.push(Zombie::Type::Flag);
         else if (input == "Screendoor") newWave->zombieTypes.push(Zombie::Type::Screendoor);
+        else if (input == "Soccer")     newWave->zombieTypes.push(Zombie::Type::Soccer);
       }
 
       newLevel->waves.push(newWave);

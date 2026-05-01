@@ -119,7 +119,7 @@ void ReAnimator::update(float dt) {
   }
 
   // TODO: set dg threshold
-  if (deltaGround > 0.0f && allowMotion) x -= deltaGround;
+  if (deltaGround > 0.0f && allowMotion) x -= deltaGround * motionMultiplier;
 
   //std::cout << "DG: " << deltaGround << "\n";
 
@@ -1174,6 +1174,49 @@ void initReAnimDefs() {
       {"IMAGE_REANIM_SQUASH_BODY",     "assets/Plants/squash/Squash_body.png"},
       {"IMAGE_REANIM_SQUASH_EYES",     "assets/Plants/squash/Squash_eyes.png"},
       {"IMAGE_REANIM_SQUASH_EYEBROWS", "assets/Plants/squash/Squash_eyebrows.png"}
+    });
+  definitions.push(def);
+
+
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieSoccer[] = { "anim_death", "anim_eat", "anim_walk", "anim_idle",
+    "_ground", "zombie_football_leftarm_upper", "zombie_football_leftleg_foot",
+    "zombie_football_leftleg_lower", "zombie_football_leftleg_upper", "zombie_football_lowerbody",
+    "zombie_football_rightleg_lower", "zombie_football_rightleg_foot",
+    "zombie_football_rightleg_upper", "zombie_football_upperbody2", "zombie_football_leftarm_lower",
+    "zombie_football_upperbody", "anim_hair", "anim_head1", "zombie_football_rightarm_upper",
+    "zombie_football_rightarm_lower", "zombie_football_upperbody3", "anim_head2",
+    "zombie_football_helmet", "zombie_football_leftarm_hand", "zombie_football_rightarm_hand" };
+
+  def->loadFiles("assets/Zombies/Soccer/zombieSoccer.json", 25, trackNames_zombieSoccer, {
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_UPPER",       "assets/Zombies/Soccer/zombie_football_leftarm_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_FOOT",        "assets/Zombies/Soccer/Zombie_football_leftleg_foot.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_LOWER",       "assets/Zombies/Soccer/Zombie_football_leftleg_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_UPPER",       "assets/Zombies/Soccer/Zombie_football_leftleg_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LOWERBODY",           "assets/Zombies/Soccer/Zombie_football_lowerbody.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_LOWER",      "assets/Zombies/Soccer/Zombie_football_rightleg_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_FOOT",       "assets/Zombies/Soccer/Zombie_football_rightleg_foot.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_UPPER",      "assets/Zombies/Soccer/Zombie_football_rightleg_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY2",          "assets/Zombies/Soccer/Zombie_football_upperbody2.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_LOWER",       "assets/Zombies/Soccer/Zombie_football_leftarm_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_EATINGLOWER", "assets/Zombies/Soccer/Zombie_football_leftarm_eatinglower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY",           "assets/Zombies/Soccer/Zombie_football_upperbody.png"},
+      {"IMAGE_REANIM_ZOMBIE_HAIR",                         "assets/Zombies/Soccer/Zombie_hair.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HEAD",                "assets/Zombies/Soccer/Zombie_football_head.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_UPPER",      "assets/Zombies/Soccer/zombie_football_rightarm_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_LOWER",      "assets/Zombies/Soccer/zombie_football_rightarm_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY3",          "assets/Zombies/Soccer/Zombie_football_upperbody3.png"},
+      {"IMAGE_REANIM_ZOMBIE_JAW",                          "assets/Zombies/Soccer/Zombie_jaw.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET",              "assets/Zombies/Soccer/Zombie_football_helmet.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET2",             "assets/Zombies/Soccer/Zombie_football_helmet2.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET3",             "assets/Zombies/Soccer/Zombie_football_helmet3.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_HAND",        "assets/Zombies/Soccer/Zombie_football_leftarm_hand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_EATINGHAND",  "assets/Zombies/Soccer/Zombie_football_leftarm_eatinghand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_HAND",       "assets/Zombies/Soccer/zombie_football_rightarm_hand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_OUTERARM_EATINGHAND", "assets/Zombies/Soccer/Zombie_football_outerarm_eatinghand.png"}
     });
   definitions.push(def);
 

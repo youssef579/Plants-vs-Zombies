@@ -140,6 +140,11 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
     //zombie->reAnimator.playAnimation("anim_walk", LoopType::Loop);
     zombie->reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
+  case Zombie::Type::Soccer:
+    zombie = new Zombie({ x, y }, ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER), ROW);
+    zombie->reAnimator.playAnimation("anim_idle");
+    zombie->reAnimator.motionMultiplier = 3.0f;
+    break;
   }
   
   zombie->reAnimator.animSpeedMulti = speeds[type];
@@ -281,6 +286,9 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
       else if (type == Zombie::Type::Screendoor)
         reAnimator.trackInstances[32].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_SCREENDOOR2"];
+      else if (type == Zombie::Type::Soccer)
+        reAnimator.trackInstances[22].imageOverride
+        = ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER)->textureMap["IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET2"];
     }
     else if (health < healths[type]*0.5f && health >= healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
@@ -292,6 +300,9 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
       else if (type == Zombie::Type::Screendoor)
         reAnimator.trackInstances[32].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_SCREENDOOR3"];
+      else if (type == Zombie::Type::Soccer)
+        reAnimator.trackInstances[22].imageOverride
+        = ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER)->textureMap["IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET3"];
     }
     else if (health < healths[type]*0.2f) {
       if (type == Zombie::Type::Conehead)
@@ -311,6 +322,9 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
         reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
         reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
         reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
+      }
+      else if (type == Zombie::Type::Soccer) {
+        reAnimator.setTrackVisibility("zombie_football_helmet", false);
       }
     }
 

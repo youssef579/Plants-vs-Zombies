@@ -10,9 +10,9 @@ struct Zombie {
 
     static constexpr int numberOfTypes = 5;
 
-    static constexpr float speeds[] = { 1.5, 1.5, 1.5, 1.8, 1.5 };
-    static constexpr float healths[] = { 270, 370, 1100, 270, 1290 };
-    static constexpr float strengths[] = { 36, 36, 36, 36, 36 };
+    static constexpr float speeds[] = { 1.5, 1.5, 1.5, 1.8, 1.5, 1.5 };
+    static constexpr float healths[] = { 270, 370, 1100, 270, 1290, 1670 };
+    static constexpr float strengths[] = { 36, 36, 36, 36, 36, 50 };
 
     static constexpr float AttackTimer = 0.33f;
     static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
@@ -20,20 +20,20 @@ struct Zombie {
     static int totalZombies;
     static sf::Vector2f lastZombieDeathPosition;
 
-    enum Type {Regular, Conehead, Buckethead, Flag, Screendoor};
+    enum Type {Regular, Conehead, Buckethead, Flag, Screendoor, Soccer};
     enum State {Idle, Walking, Attacking, Dying};
 
     // For simple assets access
     static std::string types[];
     static std::string states[];
 
-    static constexpr int frameCount[5][3][2] = {    // [Type][State][Headless / Boom]
-        {{{22}, {18}}, {{21}, {11}}, {{10}, {20}}},
-        {{{21}, {11}}, {{}, {}}, {{}, {}}},
-        {{{15}, {11}}, {{}, {}}, {{}, {}}},
-        {{{12}, {11}}, {{12}, {11}}, {{}, {}}},
-        {{{}, {}}, {{}, {}}, {{}, {}}},
-    };
+    //static constexpr int frameCount[5][3][2] = {    // [Type][State][Headless / Boom]
+    //    {{{22}, {18}}, {{21}, {11}}, {{10}, {20}}},
+    //    {{{21}, {11}}, {{}, {}}, {{}, {}}},
+    //    {{{15}, {11}}, {{}, {}}, {{}, {}}},
+    //    {{{12}, {11}}, {{12}, {11}}, {{}, {}}},
+    //    {{{}, {}}, {{}, {}}, {{}, {}}},
+    //};
 
     static void createZombie(float x, float y, Type type, int ROW, float startDel);
     static void manageZombies(float dt);
