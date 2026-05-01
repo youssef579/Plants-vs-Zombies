@@ -21,7 +21,7 @@ void Music::play(std::string op) {
   std::string path;
   music.container.stop(); //Stop any pre-existing music first
 
-  if (op == "Menu") path = music.paths.mainMenu;
+  if      (op == "Menu")     path = music.paths.mainMenu;
   else if (op == "DayStage") path = music.paths.dayStage;
 
   if (!music.container.openFromFile(path)) {
@@ -33,6 +33,7 @@ void Music::play(std::string op) {
   music.container.setVolume(settings.musicVolume);
   music.container.play();
 }
+void Music::stop() { music.container.stop(); }
 
 
 
@@ -62,6 +63,8 @@ void Sounds::play(std::string op) {
   else if (op == "Jalapeno")      sound = new sf::Sound(sounds.buffers.jalapeno);
   else if (op == "Lawnmower")     sound = new sf::Sound(sounds.buffers.lawnmower);
   else if (op == "PotatoMine")    sound = new sf::Sound(sounds.buffers.potatoMine);
+  else if (op == "WinMusic")      sound = new sf::Sound(sounds.buffers.winMusic);
+  else if (op == "LoseMusic")     sound = new sf::Sound(sounds.buffers.loseMusic);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -99,6 +102,8 @@ void Sounds::init() {
   sounds.buffers.jalapeno      = getSoundBuffer(sounds.paths.jalapeno);
   sounds.buffers.lawnmower     = getSoundBuffer(sounds.paths.lawnmower);
   sounds.buffers.potatoMine    = getSoundBuffer(sounds.paths.potatoMine);
+  sounds.buffers.winMusic      = getSoundBuffer(sounds.paths.winMusic);
+  sounds.buffers.loseMusic     = getSoundBuffer(sounds.paths.loseMusic);
 
 }
 

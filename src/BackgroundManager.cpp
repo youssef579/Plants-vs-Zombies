@@ -5,6 +5,7 @@
 #include <Window.hpp>
 #include <LawnMower.hpp>
 #include <Game.hpp>
+#include <UI/TransitionManager.hpp>
  
 BackgroundManager dayLevel;
 
@@ -164,9 +165,7 @@ void BackgroundManager::update(float dt) {
     introTimer += dt;
     float gameViewOffset = 1.5f;
     if (introTimer < 1.5f) {
-      //camera.zoom(1.0f - (0.05 * dt));
-      //gameView->zoom(1.0f - (0.05 * dt));
-      float currentZoom = 1 - (introTimer / 1.5f)*0.075f;
+      float currentZoom = 1 - (std::max(introTimer, 0.0f) / 1.5f)*0.075f; // allows negative values for delays
       camera.setSize({800.0f * currentZoom, 600.0f * currentZoom});
     }
     /*else if (introTimer >= 1.5f && introTimer < 2.2f) {
@@ -428,10 +427,13 @@ void BackgroundManager::playGameOverScreen(int dr) {
     gameOverTimer = 0;
     globalTimeModifier = 0.1;
     deathRow = dr;
+    music.stop();
+    sounds.play("LoseMusic");
   }
 }
 
 void BackgroundManager::updateGameOverScreen(float dt) {
+  //std::cout << "grassPos: " << dayLevel.fullGrassSprite->getPosition().x << " " << dayLevel.fullGrassSprite->getPosition().y << "\n";
   gameOverTimer += dt / globalTimeModifier;
   zombiesWonTimer += dt / globalTimeModifier;
 
@@ -443,71 +445,88 @@ void BackgroundManager::updateGameOverScreen(float dt) {
   }
 
   float lerpF = gameOverTimer / 2.0f;
+  // wlahi ma AI ana b7eb el math zyada bs ~_~
+      //lerpF = (lerpF * lerpF) * (2 - 1 * lerpF);
+  // ax^3 + bx^2 + cx + d
+  // a = -0.408333333333333, b = -0.275, c = 1.683333, d = 0
+  // a = -49/120, b = -11/40, c = 101/60, d = 0
+  lerpF = (-49.0f/120.0f) * lerpF * lerpF * lerpF + (-11.0f/40.0f) * lerpF * lerpF + (101.0f/60.0f) * lerpF + 0.0f;
+
 
 
 
   //static sf::Vector2f targetPos = { 100.0f + 100.0f, 400.0f };
-  static sf::Vector2f targetPos = grid[deathRow][0].rectangle.getGlobalBounds().getCenter() - sf::Vector2f(20, 0);
-  static sf::Vector2f targetSize = { 600.0f, 158.086956521739f * 2 };
-
-
+  static sf::Vector2f startCenterCamera;
+  static sf::Vector2f startSizeCamera;
+  static sf::Vector2f startCenterGameView;
+  static sf::Vector2f startSizeGameView;
   static sf::Vector2f startCenterView;
   static sf::Vector2f startSizeView;
 
-  static sf::Vector2f startCenterCamera;
-  static sf::Vector2f startSizeCamera;
+  static sf::Vector2f endCenterCamera;
+  static sf::Vector2f endSizeCamera;
+  static sf::Vector2f endCenterGameView;
+  static sf::Vector2f endSizeGameView;
+  static sf::Vector2f endCenterView;
+  static sf::Vector2f endSizeView;
 
-  static sf::Vector2f startCenterGameView;
-  static sf::Vector2f startSizeGameView;
-
+  //static float duration = 5.0f;
+  //static float timer = 0.0f;
   static bool capturedStart = false;
-  if (!capturedStart) {
-    startCenterView = view->getCenter();
-    startSizeView = view->getSize();
 
+  if (!capturedStart) {
     startCenterCamera = camera.getCenter();
     startSizeCamera = camera.getSize();
 
     startCenterGameView = gameView->getCenter();
     startSizeGameView = gameView->getSize();
 
+    startCenterView = view->getCenter();
+    startSizeView = view->getSize();
+
+    sf::Vector2f targetPos = grid[deathRow][0].rectangle.getGlobalBounds().getCenter() + sf::Vector2f(20.f, 0.f);
+    if(deathRow == ROWS_NUMBER - 1) targetPos -= sf::Vector2f(0.0f, 80.f);
+
+    sf::Vector2f cameraPanDistance = targetPos - startCenterCamera;
+
+    float gameViewRatioX = startSizeGameView.x / startSizeCamera.x;
+    float gameViewRatioY = startSizeGameView.y / startSizeCamera.y;
+
+    float viewRatioX = startSizeView.x / startSizeCamera.x;
+    float viewRatioY = startSizeView.y / startSizeCamera.y;
+
+    endCenterCamera = targetPos;
+
+    endCenterGameView = {
+        startCenterGameView.x + (cameraPanDistance.x * gameViewRatioX),
+        startCenterGameView.y + (cameraPanDistance.y * gameViewRatioY)
+    };
+
+    endCenterView = {
+        startCenterView.x + (cameraPanDistance.x * viewRatioX),
+        startCenterView.y + (cameraPanDistance.y * viewRatioY)
+    };
+
+    float sizeMulti = 0.5f;
+    endSizeCamera = startSizeCamera * sizeMulti;
+    endSizeGameView = startSizeGameView * sizeMulti;
+    endSizeView = startSizeView * sizeMulti;
+
     capturedStart = true;
   }
 
 
-  float newCenterX3 = startCenterGameView.x + (targetPos.x - startCenterGameView.x) * lerpF;
-  float newCenterY3 = startCenterGameView.y + (targetPos.y - startCenterGameView.y) * lerpF;
+  /*timer += dt / globalTimeModifier;
+  timer = std::min(timer, duration);
+  float t = timer / duration;*/
 
-  float newSizeX3 = startSizeGameView.x + (targetSize.x - startSizeGameView.x) * lerpF;
-  float newSizeY3 = startSizeGameView.y + (targetSize.y - startSizeGameView.y) * lerpF;
+  camera.setSize(startSizeCamera + (endSizeCamera - startSizeCamera) * lerpF);
+  gameView->setSize(startSizeGameView + (endSizeGameView - startSizeGameView) * lerpF);
+  view->setSize(startSizeView + (endSizeView - startSizeView) * lerpF);
 
-  gameView->setCenter({ newCenterX3, newCenterY3 });
-  gameView->setSize({ newSizeX3, newSizeY3 });
-
-
-  float deltaX = newCenterX3 - startCenterGameView.x;
-  float deltaY = newCenterY3 - startCenterGameView.y;
-
-  float scaleRatioX = newSizeX3 / startSizeGameView.x;
-  float scaleRatioY = newSizeY3 / startSizeGameView.y;
-
-  float newCenterX2 = startCenterCamera.x + deltaX;
-  float newCenterY2 = startCenterCamera.y + deltaY;
-
-  float newSizeX2 = startSizeCamera.x * scaleRatioX;
-  float newSizeY2 = startSizeCamera.y * scaleRatioY;
-
-  camera.setCenter({ newCenterX2, newCenterY2 });
-  camera.setSize({ newSizeX2, newSizeY2 });
-
-
-  float newCenterX = startCenterView.x + (targetPos.x - startCenterView.x) * lerpF;
-  float newCenterY = startCenterView.y + (targetPos.y - startCenterView.y) * lerpF;
-  float newSizeX = startSizeView.x + (targetSize.x - startSizeView.x) * lerpF;
-  float newSizeY = startSizeView.y + (targetSize.y - startSizeView.y) * lerpF;
-
-  view->setCenter({ newCenterX, newCenterY });
-  view->setSize({ newSizeX, newSizeY });
+  camera.setCenter(startCenterCamera + (endCenterCamera - startCenterCamera) * lerpF);
+  gameView->setCenter(startCenterGameView + (endCenterGameView - startCenterGameView) * lerpF);
+  view->setCenter(startCenterView + (endCenterView - startCenterView) * lerpF);
 
 
 
@@ -519,21 +538,108 @@ void BackgroundManager::updateGameOverScreen(float dt) {
     sf::Color oldColor = zombiesWon->getColor();
     zombiesWon->setColor({oldColor.r, oldColor.g, oldColor.b, (uint8_t)(0 + (255)*std::min(zombiesWonTimer-2, 0.5f)/0.5f)  });
   }
-  if (zombiesWonTimer >= 5) {
-    view->setCenter(startCenterView);
-    view->setSize(startSizeView);
-    gameView->setCenter(startCenterGameView);
-    gameView->setSize(startSizeGameView);
-    camera.setCenter(startCenterCamera);
-    camera.setSize(startSizeCamera);
-
-    gameState = 0;
-    homeState = 0;
-    music.play("Menu");
+  if (zombiesWonTimer >= 6) {
+    static bool startedTransition = false;
+    if (!startedTransition) {
+      startedTransition = true;
+      TransitionManager::start([&]() {
+        view->setCenter(startCenterView);
+        view->setSize(startSizeView);
+        gameView->setCenter(startCenterGameView);
+        gameView->setSize(startSizeGameView);
+        camera.setCenter(startCenterCamera);
+        camera.setSize(startSizeCamera);
+        capturedStart = false;
+        gameState = 0;
+        homeState = 0;
+        music.play("Menu");
+        });
+    }
+    
   }
 
 }
 
+//void BackgroundManager::updateGameOverScreen(float dt) {
+//  static sf::Vector2f startCenterCamera;
+//  static sf::Vector2f startSizeCamera;
+//  static sf::Vector2f startCenterGameView;
+//  static sf::Vector2f startSizeGameView;
+//  static sf::Vector2f startCenterView;
+//  static sf::Vector2f startSizeView;
+//
+//  static sf::Vector2f endCenterCamera;
+//  static sf::Vector2f endSizeCamera;
+//  static sf::Vector2f endCenterGameView;
+//  static sf::Vector2f endSizeGameView;
+//  static sf::Vector2f endCenterView;
+//  static sf::Vector2f endSizeView;
+//
+//  static float duration = 5.0f;
+//  static float timer = 0.0f;
+//  static bool capturedStart = false;
+//
+//  if (!capturedStart) {
+//    startCenterCamera = camera.getCenter();
+//    startSizeCamera = camera.getSize();
+//
+//    startCenterGameView = gameView->getCenter();
+//    startSizeGameView = gameView->getSize();
+//
+//    startCenterView = view->getCenter();
+//    startSizeView = view->getSize();
+//
+//    sf::Vector2f targetPos = grid[deathRow][0].rectangle.getGlobalBounds().getCenter() + sf::Vector2f(20.f, 0.f);
+//
+//
+//    sf::Vector2f cameraPanDistance = targetPos - startCenterCamera;
+//
+//    float gameViewRatioX = startSizeGameView.x / startSizeCamera.x;
+//    float gameViewRatioY = startSizeGameView.y / startSizeCamera.y;
+//
+//    float viewRatioX = startSizeView.x / startSizeCamera.x;
+//    float viewRatioY = startSizeView.y / startSizeCamera.y;
+//
+//    endCenterCamera = targetPos;
+//
+//    endCenterGameView = {
+//        startCenterGameView.x + (cameraPanDistance.x * gameViewRatioX),
+//        startCenterGameView.y + (cameraPanDistance.y * gameViewRatioY)
+//    };
+//
+//    endCenterView = {
+//        startCenterView.x + (cameraPanDistance.x * viewRatioX),
+//        startCenterView.y + (cameraPanDistance.y * viewRatioY)
+//    };
+//
+//    float sizeMulti = 0.5f;
+//    endSizeCamera = startSizeCamera * sizeMulti;
+//    endSizeGameView = startSizeGameView * sizeMulti;
+//    endSizeView = startSizeView * sizeMulti;
+//
+//    capturedStart = true;
+//  }
+//
+//
+//  timer += dt / globalTimeModifier;
+//  timer = std::min(timer, duration);
+//  float t = timer / duration;
+//
+//  camera.setSize(startSizeCamera + (endSizeCamera - startSizeCamera) * t);
+//  gameView->setSize(startSizeGameView + (endSizeGameView - startSizeGameView) * t);
+//  view->setSize(startSizeView + (endSizeView - startSizeView) * t);
+//
+//  camera.setCenter(startCenterCamera + (endCenterCamera - startCenterCamera) * t);
+//  gameView->setCenter(startCenterGameView + (endCenterGameView - startCenterGameView) * t);
+//  view->setCenter(startCenterView + (endCenterView - startCenterView) * t);
+//
+//
+//  if (timer >= duration) {
+//    //capturedStart = false;
+//    //timer = 0.0f;
+//
+//  }
+//}
 
 void testKeybinds(std::string key) {
   const float x = 5;
@@ -554,18 +660,18 @@ void testKeybinds(std::string key) {
 
 
   static bool state = [](){
-    dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
+    /*dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
     dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
-    dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
+    */dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE * 0.875f);
     //dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
-    dayLevel.fullGrassSprite->setPosition({ 528, 372});
+    /*dayLevel.fullGrassSprite->setPosition({ 528, 372});
     dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
     dayLevel.backGroundSprite->setPosition({620, 300});
     dayLevel.backGroundSprite->setScale({1.575, 1.06});
 
     dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
     dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
-    dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
+    dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });*/
     //dayLevel.state = dayLevel.State::GameOver;
     return false;
   }();

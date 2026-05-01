@@ -153,14 +153,17 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case PEASHOOTER:
     reAnimator.playAnimation("anim_idle");
     reAnimator.playAnimation("anim_head_idle");
+    reAnimator.animSpeedMulti = 2.0f;
     break;
   case SNOWPEASHOOTER:
     reAnimator.playAnimation("anim_idle");
     reAnimator.playAnimation("anim_head_idle");
+    reAnimator.animSpeedMulti = 2.0f;
     break;
   case REPEATERPEA:
     reAnimator.playAnimation("anim_idle");
     reAnimator.playAnimation("anim_head_idle");
+    reAnimator.animSpeedMulti = 2.0f;
     break;
   case TALLNUT:
     reAnimator.playAnimation("anim_idle");

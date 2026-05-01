@@ -15,6 +15,7 @@ struct Music {
   static Paths paths;
 
   static void play(std::string);
+  static void stop();
 };
 
 struct Sounds {
@@ -43,11 +44,13 @@ struct Sounds {
       cherryBomb,
       jalapeno,
       lawnmower,
-      potatoMine;
+      potatoMine,
+      winMusic,
+      loseMusic;
   };
 
   struct Paths {
-    inline static const std::string
+     const std::string
       collectSun      = "assets/sounds/sfx_collectSun.mp3",
       zombiesComing   = "assets/sounds/sfx_zombiesComing.mp3",
       pauseSound      = "assets/sounds/sfx_pause.ogg",
@@ -69,17 +72,20 @@ struct Sounds {
       cherryBomb      = "assets/sounds/sfx_cherryBomb.ogg",
       jalapeno        = "assets/sounds/sfx_jalapeno.ogg",
       lawnmower       = "assets/sounds/sfx_lawnmower.ogg",
-      potatoMine      = "assets/sounds/sfx_potatoMine.ogg";
+      potatoMine      = "assets/sounds/sfx_potatoMine.ogg",
+      winMusic        = "assets/sounds/sfx_winMusic.ogg",
+      loseMusic       = "assets/sounds/sfx_loseMusic.ogg";
   };
 
 
   static Buffers buffers;
-  static Paths paths;
+  Paths paths;
 
-  static void init();
+  static void init(); // Initialize Sound Buffers from assets
   static void play(std::string);
   static void update();
-  static void updateVolume();
+  static void updateVolume(); // Update Volume settings on all
+  // active sounds (needed when volume setting changes while sound is active)
 
 };
 

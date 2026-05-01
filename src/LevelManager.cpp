@@ -27,8 +27,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   dayLevel.fullGrassCurrentX = 0;
   dayLevel.threeMiddleCurrentX = 0;
   dayLevel.zombiesWonTimer = 0;
-  dayLevel.introTimer = 0;
   dayLevel.gameOverTimer = 0;
+  dayLevel.introTimer = -1;
   if(dayLevel.backGroundSprite) dayLevel.backGroundSprite->setOrigin({ 0, 0 });
   if(dayLevel.backGroundSprite) dayLevel.backGroundSprite->setScale({ 1, 1 });
 
@@ -41,12 +41,15 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
   // Zombies
   for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
+  Zombie::totalZombies = 0;
   // Bullets
   bullets.erase([](Bullet &b) {return true; });
 
   gameView->setCenter({0, 0});
 
   spawningFinished = false;
+  Sun::isSpawning = true;
+  Sun::spawnTimer = -20;
 
   // Rewards
   RewardManager::spawnedLevelReward = false;
@@ -96,6 +99,7 @@ void LevelManager::update(float dt) {
 
 
   if (spawningFinished || currentWave >= levels[currentLevel - 1]->waves.size) { // Level Spawning finished
+    Sun::isSpawning = false; // disable sun spawning
     return;
   }
 

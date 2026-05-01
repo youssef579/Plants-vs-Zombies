@@ -8,9 +8,10 @@ Array<Sun> Sun::sunArray;
 int Sun::sunBalance = 5000; // initialized for testing
 float Sun::spawnTimer = -20; // negative values delay the first spawn
 bool Sun::hovering = false;
+bool Sun::isSpawning = true;
 
 void Sun::manageSuns(float dt, State s) {
-  spawnTimer += dt;
+  if(Sun::isSpawning) spawnTimer += dt;
   if (spawnTimer >= spawnInterval) { // spawn new sun if needed
     spawnTimer -= spawnInterval;
     Sun::spawn();

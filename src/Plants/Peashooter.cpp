@@ -33,7 +33,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
     }
     //peashooter.reAnimator.effectiveTransforms
-    if (peashooter.timer <= -10000-0.8) { // -10000 - time after animation start to actual shoot
+    if (peashooter.timer <= -10000-0.4) { // -10000 - time after animation start to actual shoot
       peashooter.timer = GENERATE_BULLET_TIMER;
       /*sf::Vector2f currPOS =
       {

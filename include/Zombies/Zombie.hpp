@@ -10,7 +10,7 @@ struct Zombie {
 
     static constexpr int numberOfTypes = 5;
 
-    static constexpr float speeds[] = { 1.0, 1.0, 1.0, 1.2, 1.0 };
+    static constexpr float speeds[] = { 1.5, 1.5, 1.5, 1.8, 1.5 };
     static constexpr float healths[] = { 270, 370, 1100, 270, 1290 };
     static constexpr float strengths[] = { 36, 36, 36, 36, 36 };
 

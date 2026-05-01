@@ -28,6 +28,7 @@
 #include <LevelManager.hpp>
 #include <Rewards.hpp>
 #include <newPauseMenu.hpp>
+#include <UI/TransitionManager.hpp>
 
 //bool isOpen = false;
 int gameState = 0;
@@ -80,6 +81,7 @@ void updateGame() {
     return;
   }
 
+  TransitionManager::update(dt);
 
   switch (gameState) {
   case 0:
@@ -92,6 +94,8 @@ void updateGame() {
       plantTypes.push(PEASHOOTER);
       plantTypes.push(SUN_FLOWER);
       plantTypes.push(WALLNUT);
+      plantTypes.push(TALLNUT);
+      plantTypes.push(REPEATERPEA);
       plantTypes.push(SNOWPEASHOOTER);
       plantTypes.push(CHERRYBOMB);
       plantTypes.push(JALAPENO);
@@ -103,18 +107,20 @@ void updateGame() {
       dayLevel.init();
       newPause.init();
       gameWeather.isRaining = true;
-      for (int i = 0; i < ROWS_NUMBER; i++){
-        for (int j = 0; j < COLUMNS_NUMBER; j++){
-              // plants just for testing
-              //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
-        }
-      }
+
       music.play("DayStage");
 
       Zombie::init();
       RewardManager::init();
 
       runOnce = false;
+
+      // REMOVE LATER
+      /*LawnMower::activateLawnMower(0);
+      LawnMower::activateLawnMower(1);
+      LawnMower::activateLawnMower(2);
+      LawnMower::activateLawnMower(3);
+      LawnMower::activateLawnMower(4);*/
 
     }
 
@@ -130,8 +136,6 @@ void updateGame() {
       pauseMenu.draw();
       break;
     }
-
-
 
     levelManager.update(dt);
     updateGrid(dt);
@@ -184,6 +188,16 @@ void updateGame() {
     dayLevel.drawOverlays(*window);
     RewardManager::draw();
 
+
     break;
   }
+  TransitionManager::draw();
+
+
+  // EE
+  /*onClick(sf::FloatRect{ {963, 484}, {5, 5} }, 0, []() {
+    static sf::Texture M3ZA_T = getTexture("assets/SelectorScreen/M3ZA.png");
+    static sf::Sprite M3ZA(M3ZA_T);
+    window->draw(M3ZA);
+    }, []() {});*/
 }

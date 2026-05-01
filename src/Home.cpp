@@ -8,6 +8,7 @@
 #include <globals.hpp>
 #include <cmath>
 #include <LevelManager.hpp>
+#include <UI/TransitionManager.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -235,10 +236,14 @@ void updateHome() {
           int currentLevel = getLevelFromIndex(i);
 
           if (currentLevel <= maxLevelUnlocked)
-            onClick(text, [&]() { // Play Level
-              levelManager.loadLevelData(currentLevel);
-              music.play("DayStage");
-              gameState = currentLevel;
+            onClick(text, [=]() { // Play Level
+              TransitionManager::start([=]() {
+                levelManager.loadLevelData(currentLevel);
+                music.play("DayStage");
+                gameState = currentLevel;
+                });
+              
+              
             });
         },
         []() {
@@ -271,7 +276,7 @@ void updateHome() {
 void updateCredits() {
   static int state = 0; // 0 => bounce in , 1 => bounce out (runOnce) , 2 => bounce out
 
-  static sf::Texture creditsNoteT = getTexture("assets/creditsNote3.png");
+  static sf::Texture creditsNoteT = getTexture("assets/creditsNote4.png");
   static sf::Sprite creditsNote(creditsNoteT);
   static sf::Clock creditsClock;
   static float creditsTime;

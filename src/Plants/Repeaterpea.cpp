@@ -23,7 +23,7 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
     repeaterpea.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
-  if (repeaterpea.timer <= 0.8f && repeaterpea.state == 0) {
+  if (repeaterpea.timer <= 0.4f && repeaterpea.state == 0) {
     repeaterpea.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
     repeaterpea.state = 1;
   }

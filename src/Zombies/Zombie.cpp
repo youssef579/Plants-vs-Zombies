@@ -156,7 +156,11 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
   zombie->health = healths[type];
   zombie->strength = strengths[type];
 
+  zombie->sound_zombieBite.setVolume(settings.soundFXVolume);
+  zombie->sound_zombieGulp.setVolume(settings.soundFXVolume);
+
   zombie->setSprite();
+
 
   zombies[ROW].push(*zombie);
 }
@@ -360,6 +364,8 @@ void Zombie::die(int effect) {
   if(effect == 0 || effect == 1)
     reAnimator.playAnimation("anim_death", LoopType::HoldLastFrame, 4.0f);
   else if (effect == 2) {
+    freezeTimer = 0.0f;
+    reAnimator.animSpeedMulti = speeds[type];
     reAnimator.switchDefinition(REANIM_ZOMBIE_CHARRED);
     reAnimator.playAnimation("anim_crumble", LoopType::HoldLastFrame, 4.0f);
     deathCause = 1;

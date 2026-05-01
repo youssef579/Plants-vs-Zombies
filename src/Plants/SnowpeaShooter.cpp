@@ -30,7 +30,7 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
 
     }
     //peashooter.reAnimator.effectiveTransforms
-    if (snowpeaShooter.timer <= -10000 - 0.8) { // -10000 - time after animation start to actual shoot
+    if (snowpeaShooter.timer <= -10000 - 0.4) { // -10000 - time after animation start to actual shoot
       snowpeaShooter.timer = GENERATE_SNOWBULLET_TIMER;
       //currTransforms["anim_face"] = currTransforms[16]
       sf::Vector2f currPOS =

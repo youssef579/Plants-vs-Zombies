@@ -41,6 +41,7 @@ struct Sun {
   static int sunBalance;                      // Amount of sun collected
   static float spawnTimer;                    // Keeps track of time between last spawn
   static bool hovering;
+  static bool isSpawning;
 
   // Personal Functions (Related to current Sun struct)
   void collect();

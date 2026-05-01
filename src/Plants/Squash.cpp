@@ -15,6 +15,7 @@ void updateSquash(Plant &squash, float dt) {
   */
   squash.reAnimator.update(dt);
 
+  // Separate start and end positions to each unique squash LATER
   static sf::Vector2f startPos;
   static sf::Vector2f endPos;
 

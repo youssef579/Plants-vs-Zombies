@@ -1,6 +1,7 @@
 #include <Rewards.hpp>
 #include <Zombies/Zombie.hpp>
 #include <LevelManager.hpp>
+#include <UI/TransitionManager.hpp>
 
 sf::Texture RewardManager::packetTextures[9] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
@@ -34,9 +35,10 @@ void RewardManager::spawnReward(sf::Vector2f pos, sf::Vector2f vInitial, PlantTy
 
 void RewardManager::update(float dt) {
 
-  //std::cout << levelManager.spawningFinished << " && " << (Zombie::totalZombies == 0) << " && " << !spawnedLevelReward << "\n";
   // check to Spawn the level reward
+  //std::cout << levelManager.spawningFinished << " " << (Zombie::totalZombies == 0) << " " << !spawnedLevelReward << "\n";
   if (levelManager.spawningFinished && Zombie::totalZombies == 0 && !spawnedLevelReward) {
+    //std::cout << "spawning level reward\n";
     spawnReward(Zombie::lastZombieDeathPosition, { 0, -400 }, levelManager.levels[levelManager.currentLevel-1]->reward);
     spawnedLevelReward = true;
   }
@@ -103,6 +105,9 @@ void RewardManager::collectPacket() {
 
   packReward->remove = true; // delete old reward
 
+  music.stop();
+  sounds.play("WinMusic");
+
 }
 
 void RewardManager::CollectedPacket::update(float dt) {
@@ -111,7 +116,9 @@ void RewardManager::CollectedPacket::update(float dt) {
     //collectedPacket.timer = collectedPacket.duration;
 
   float lerpF = (std::min(collectedPacket.timer, collectedPacket.duration) / collectedPacket.duration);
-  lerpF = lerpF * lerpF;
+  //lerpF = lerpF * lerpF;
+  lerpF = (lerpF * lerpF) * (3 - 2 * lerpF);
+  // lerpF = t^2 * (3 - 2t)   (smoother curve due to 3rd degree polynomial)
 
   collectedPacket.sprite->setPosition( // newPos = start + (end-start) * progress
     startPosition + (endPosition - startPosition) * lerpF);
@@ -124,12 +131,14 @@ void RewardManager::CollectedPacket::update(float dt) {
 
   if (collectedPacket.timer >= collectedPacket.duration + 0.3f) {
     onClick(*collectedPacket.sprite, []() {
-      gameState = 0;
-      homeState = 0;
-      music.play("Menu");
-      //std::cout << "currLevel: " << levelManager.currentLevel << "\n";
-      if(levelManager.currentLevel == maxLevelUnlocked) maxLevelUnlocked++;
-      // Add reward plant to available collection LATER
+      TransitionManager::start([](){
+          gameState = 0;
+          homeState = 0;
+          music.play("Menu");
+          if (levelManager.currentLevel == maxLevelUnlocked) maxLevelUnlocked++;
+          // Add reward plant to available collection LATER
+        });
+      
       }, []() {});
   }
 
