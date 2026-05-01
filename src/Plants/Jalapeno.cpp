@@ -19,8 +19,8 @@ void updateJalapeno(Plant& jalapeno, float dt) {
 
     if (jalapeno.state == 0)
       for (int i = 0; i < zombies[jalapeno.row].size; i++)
-        if (zombies[jalapeno.row][i].health > 0 && zombies[jalapeno.row][i].inPlayArea)
-          zombies[jalapeno.row][i].takeDamage(5000.0f, 2);
+        if (zombies[jalapeno.row][i]->health > 0 && zombies[jalapeno.row][i]->inPlayArea)
+          zombies[jalapeno.row][i]->takeDamage(5000.0f, 2);
 
     if (jalapeno.state == 0) {
       sounds.play("Jalapeno");

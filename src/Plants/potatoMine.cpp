@@ -31,14 +31,14 @@ void updatePotatoMine(Plant &potatoMine, float dt) {
 
     bool is_explosion = 0;
     for (int i = 0; i < zombies[potatoMine.row].size;i++) {
-      Zombie& zombie = zombies[potatoMine.row][i];
+      Zombie *zombie = zombies[potatoMine.row][i];
       
-      if (zombie.health <= 0) continue;
+      if (zombie->health <= 0) continue;
 
-      float dx = std::abs(zombie.reAnimator.getPosition().x - potatoMine.reAnimator.getPosition().x);
+      float dx = std::abs(zombie->reAnimator.getPosition().x - potatoMine.reAnimator.getPosition().x);
       if (dx <= 65.f /*&& dx >= -30.0f*/) { // dx = abs(posZombie - posPotMine), always positive :/
         is_explosion = 1;
-        zombie.takeDamage(5000.f, 2);
+        zombie->takeDamage(5000.f, 2);
       }
     }
 

@@ -21,13 +21,13 @@ void updateIceShroom(Plant& iceShroom, float dt) {
     for (int row = 0; row < ROWS_NUMBER; row++) {
 
       for (int i = 0; i < zombies[row].size;i++) {
-        Zombie& zombie = zombies[row][i];
+        Zombie *zombie = zombies[row][i];
 
-        if (zombie.health <= 0) continue;
+        if (zombie->health <= 0) continue;
 
-        if (zombie.inPlayArea){
-          zombie.freezeTimer = 5.0f;
-          zombie.takeDamage(20, 0);
+        if (zombie->inPlayArea){
+          zombie->freezeTimer = 5.0f;
+          zombie->takeDamage(20, 0);
         }
       }
 

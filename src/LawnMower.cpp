@@ -28,9 +28,9 @@ void LawnMower::updateAll(float dt) {
       }
 
       for (int z = 0; z < zombies[i].size; z++) {
-        if (zombies[i][z].reAnimator.getPosition().x <= lawnMowers[i].reAnimator.getPosition().x && zombies[i][z].health > 0) {
-          zombies[i][z].takeDamage(5000.0f, 3);
-          zombies[i][z].reAnimator.animSpeedMulti = 0.0f; // freeze zombie animation
+        if (zombies[i][z]->reAnimator.getPosition().x <= lawnMowers[i].reAnimator.getPosition().x && zombies[i][z]->health > 0) {
+          zombies[i][z]->takeDamage(5000.0f, 3);
+          zombies[i][z]->reAnimator.animSpeedMulti = 0.0f; // freeze zombie animation
 
         }
       }

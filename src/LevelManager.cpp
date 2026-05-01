@@ -40,7 +40,7 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
 
   // Zombies
-  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
+  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie *z) { return true; });
   Zombie::totalZombies = 0;
   // Bullets
   bullets.erase([](Bullet &b) {return true; });

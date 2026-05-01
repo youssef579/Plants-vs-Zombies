@@ -22,14 +22,14 @@ void updateCherryBomb(Plant& cherryBomb, float dt) {
       if (row < 0 || row >= ROWS_NUMBER)continue;
 
       for (int i = 0; i < zombies[row].size;i++) {
-        Zombie& zombie = zombies[row][i];
+        Zombie *zombie = zombies[row][i];
 
-        if (zombie.health <= 0)continue;
+        if (zombie->health <= 0)continue;
 
-        float dx = std::abs(zombie.reAnimator.getPosition().x - cherryBomb.reAnimator.getPosition().x);
+        float dx = std::abs(zombie->reAnimator.getPosition().x - cherryBomb.reAnimator.getPosition().x);
 
         if (dx <= 160.f) {
-          zombie.takeDamage(5000.f, 2);
+          zombie->takeDamage(5000.f, 2);
         }
       }
     }

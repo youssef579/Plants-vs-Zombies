@@ -4,7 +4,7 @@
 #include <LawnMower.hpp>
 #include <Rewards.hpp>
 
-Array<Zombie> zombies[ROWS_NUMBER];
+Array<Zombie*> zombies[ROWS_NUMBER];
 
 std::string Zombie::types[] = {"Regular", "Conehead", "Buckethead", "Flag", "Newspaper"};
 std::string Zombie::states[] = {"zombie", "attack", "die"};
@@ -162,7 +162,7 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
   zombie->setSprite();
 
 
-  zombies[ROW].push(*zombie);
+  zombies[ROW].push(zombie);
 }
 
 void Zombie::setSprite() {
@@ -393,8 +393,10 @@ void Zombie::updateDeath(float dt) {
     || deathCause == 2 && corpseDissapearTimer >= 6
     || deathCause == 4) {
     remove = true;
-    if (reAnimator.child)
+    if (reAnimator.child) {
       delete reAnimator.child;
+      reAnimator.child = nullptr;
+    }
   }
   else {
     // will be changed later into a better option
@@ -427,12 +429,12 @@ void Zombie::draw() {
 void Zombie::updateAll(float dt) {
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
-      zombies[r][i].update(dt);
+      zombies[r][i]->update(dt);
     }
   }
 
   for (int r = 0; r < ROWS_NUMBER; r++) {
-    zombies[r].erase([](Zombie &z) { return z.remove; });
+    zombies[r].erase([](Zombie *z) { return z->remove; });
   }
 
 }
@@ -441,7 +443,7 @@ void Zombie::drawAll() {
   window->setView(*gameView);
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
-      zombies[r][i].draw();
+      zombies[r][i]->draw();
     }
   }
 
@@ -456,9 +458,9 @@ void Zombie::drawAll() {
 
 bool Zombie::isZombieAliveInRow(int row, float startPosX) {
   for (int i = 0; i < zombies[row].size; i++) {
-    if (zombies[row][i].health > 0 && // alive
-      zombies[row][i].reAnimator.getPosition().x >= startPosX && // in front of plant
-      zombies[row][i].inPlayArea) // inside play area
+    if (zombies[row][i]->health > 0 && // alive
+      zombies[row][i]->reAnimator.getPosition().x >= startPosX && // in front of plant
+      zombies[row][i]->inPlayArea) // inside play area
       return true;
   }
   return false;
@@ -468,8 +470,8 @@ bool Zombie::isZombieAliveInRow(int row, float startPosX) {
 void Zombie::updateVolumes() {
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
-      zombies[r][i].sound_zombieBite.setVolume(settings.soundFXVolume);
-      zombies[r][i].sound_zombieGulp.setVolume(settings.soundFXVolume);
+      zombies[r][i]->sound_zombieBite.setVolume(settings.soundFXVolume);
+      zombies[r][i]->sound_zombieGulp.setVolume(settings.soundFXVolume);
     }
   }
 }

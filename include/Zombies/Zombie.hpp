@@ -97,4 +97,4 @@ struct Zombie {
     static void updateVolumes();
 };
 
-extern Array<Zombie> zombies[ROWS_NUMBER];
+extern Array<Zombie*> zombies[ROWS_NUMBER];

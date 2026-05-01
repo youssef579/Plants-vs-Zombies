@@ -23,10 +23,10 @@ void updateSquash(Plant &squash, float dt) {
     int row = squash.row;
 
     for (int i = 0; i < zombies[row].size; i++) {
-      Zombie &zombie = zombies[row][i];
-      if (zombie.health <= 0) continue;
+      Zombie *zombie = zombies[row][i];
+      if (zombie->health <= 0) continue;
 
-      float dx = zombie.reAnimator.getPosition().x - squash.reAnimator.getPosition().x;
+      float dx = zombie->reAnimator.getPosition().x - squash.reAnimator.getPosition().x;
 
       if (dx <= 110.f && dx >= 0) {
         squash.state = 1;
@@ -79,13 +79,13 @@ void updateSquash(Plant &squash, float dt) {
       squash.reAnimator.animSpeedMulti = 2.0f;
       int row = squash.row;
       for (int i = 0; i < zombies[row].size; i++) {
-        Zombie& zombie = zombies[row][i];
-        if (zombie.health <= 0) continue;
+        Zombie *zombie = zombies[row][i];
+        if (zombie->health <= 0) continue;
 
-        float dx = zombie.reAnimator.getPosition().x - (squash.reAnimator.getPosition().x);
+        float dx = zombie->reAnimator.getPosition().x - (squash.reAnimator.getPosition().x);
 
         if (dx <= 100.0f && dx >= -80) {
-          zombie.takeDamage(SQUASH_DAMAGE, 4); // add squish damage modifier LATER
+          zombie->takeDamage(SQUASH_DAMAGE, 4); // add squish damage modifier LATER
         }
       }
 

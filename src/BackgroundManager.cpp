@@ -416,7 +416,7 @@ void BackgroundManager::startPlanting() {
 
   // Kill Dummy Zombies
   //std::cout << "KILLED ALL ZOMBIES\n";
-  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
+  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie *z) { return true; });
 
 }
 
