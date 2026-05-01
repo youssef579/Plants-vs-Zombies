@@ -39,9 +39,9 @@ void WeatherSystem::init() {
 // --- Logic Update ---
 // Manages movement, audio state, and the timing of lightning strikes.
 void WeatherSystem::update(float dt) {
-    if (!isRaining || isPaused) {                                                                   // Not is Raining ?
+    if (!isRaining || isPaused || newPause.isOpen) {                                    // Not is Raining ?
       if (rainSound && rainSound->getStatus() == sf::SoundSource::Status::Playing) {    // & sound ON
-            rainSound->stop();                                                            // Turn it off
+            rainSound->pause();                                                          // Turn it off
         }
         return;
     }

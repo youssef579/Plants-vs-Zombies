@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <Audio.hpp>
 #include <vector>
+#include <newPauseMenu.hpp>
 
 //struct WeatherSystem;
 

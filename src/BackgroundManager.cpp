@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+  #include <SFML/Graphics.hpp>
 #include <BackgroundManager.hpp>
 #include <iostream>
 #include <SFML/Audio.hpp>
@@ -9,7 +9,9 @@
 BackgroundManager dayLevel;
 
 void BackgroundManager::init() {
-  
+
+  initSelector();
+
   if (backGroundTexture.loadFromFile("assets/BackGround/background(1).png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
     threeMiddleGrassTexture.loadFromFile("assets/BackGround/sod3row.png") &&
@@ -155,7 +157,10 @@ void BackgroundManager::update(float dt) {
   }
 
   if (isIntroRunning) {
-    introTimer += dt;
+
+    if (!isWaitingForPlay) {
+      introTimer += dt;
+    }
     float gameViewOffset = 1.5f;
     if (introTimer < 1.5f) {
       //camera.zoom(1.0f - (0.05 * dt));
@@ -174,8 +179,32 @@ void BackgroundManager::update(float dt) {
     else if (introTimer >= 1.5f && introTimer < 2.2f) {
       camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
       gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
+
+      if (introTimer >= 2.15f && !introSlidingStarted) {
+        slideIn();
+        introSlidingStarted = true;
+        isWaitingForPlay = true;
+      }
     }
-    else if (introTimer >= 5.5f && introTimer < 6.2f) {
+
+    updateSelector(dt, *window);
+
+    if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
+      sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
+      if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        slideOut();
+        playBtnClicked = true;
+
+        isWaitingForPlay = false;
+        introTimer = 5.5f;
+      }
+    }
+  /*  if (playBtnClicked && !plantSelector.isVisible && isWaitingForPlay) {
+      isWaitingForPlay = false;
+      introTimer = 5.5f; 
+    }*/
+
+    if (introTimer >= 5.5f && introTimer < 6.2f) {
       //camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
       camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
       gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
@@ -373,10 +402,13 @@ void BackgroundManager::draw(sf::RenderWindow& window) {
     }
   }
 
-  //std::cout << "timer: " << introTimer << "\n";
+  sf::View oldView = window.getView();
+  window.setView(window.getDefaultView()); 
+  drawSelector(window);
+  window.setView(oldView);
   if (introTimer > 2.5)
     LawnMower::drawAll();
-
+ 
 
   window.setView(window.getDefaultView());
 }
@@ -396,7 +428,7 @@ void BackgroundManager::startPlanting() {
 
   // Kill Dummy Zombies
   //std::cout << "KILLED ALL ZOMBIES\n";
-  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
+ // for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie &z) { return true; });
 
 }
 
@@ -420,7 +452,7 @@ void BackgroundManager::updateGameOverScreen(float dt) {
   if (gameOverTimer > 2.0f) {
     gameOverTimer = 2.0f;
   }
-
+  //a
   float lerpF = gameOverTimer / 2.0f;
   
 
