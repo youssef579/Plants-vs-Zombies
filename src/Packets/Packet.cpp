@@ -42,7 +42,7 @@ void fillPackets(Array<PlantType> &types) {
   static sf::Sprite jalapenoSprite(jalapenoTexture);
 
   static sf::Texture &potatoMineTexture =
-    getTexture("assets/Plants/potatoMine.png");
+    getTexture("assets/Plants/potatoMine2.png");
   static sf::Sprite potatoMineSprite(potatoMineTexture);
 
   static sf::Texture &iceShroomTexture =
@@ -73,9 +73,10 @@ void fillPackets(Array<PlantType> &types) {
 
     jalapenoSprite.setScale({0.8f, 0.8f});
 
-    potatoMineSprite.setScale({0.135f, 0.135f});
+    //potatoMineSprite.setScale({0.135f, 0.135f});
+    potatoMineSprite.setScale({0.21f, 0.21f});
 
-    iceShroomSprite.setScale({0.21f, 0.21f});
+    iceShroomSprite.setScale({0.8f, 0.8f});
 
     squashSprite.setScale({0.21f, 0.21f});
 
@@ -123,7 +124,7 @@ void fillPackets(Array<PlantType> &types) {
       break;
 
     case CHERRYBOMB:
-      packets.push({125, 1, "cherrybomb",
+      packets.push({150, 1, "cherrybomb",
                     {90 + 59.0f * i, 11},
                     cherryBombSprite, CHERRYBOMB});
       break;
@@ -165,13 +166,18 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
           getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview), plantShadow(preview), cost(costValue),
       plantType(plantTypeValue), selected(false), reloadTimer(0),
-      reloadDuration(reloadDurationValue) {
+      reloadDuration(reloadDurationValue),
+  packetFlash(getTexture("assets/packets/PacketFlash.png")) {
+
   float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
   enabledSprite.setScale({scaleFactor, scaleFactor});
 
   disabledSprite.setPosition(position);
-  disabledSprite.setScale({scaleFactor, scaleFactor});
+  disabledSprite.setScale({ scaleFactor, scaleFactor });
+
+  packetFlash.setPosition(position);
+  packetFlash.setScale({ scaleFactor, scaleFactor });
 
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
 
@@ -184,7 +190,17 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
 }
 
 void SeedPacket::update(float dt) {
-  reloadTimer = std::max(0.0f, reloadTimer - dt);
+  if(flashTimer > 0) flashTimer = std::max(0.0f, flashTimer - dt);
+  if (reloadTimer > 0) {
+    reloadTimer = std::max(0.0f, reloadTimer - dt);
+    if (reloadTimer == 0.0f) {
+      flashTimer = 0.5f;
+    }
+  }
+
+  packetFlash.setColor(sf::Color(255, 255, 255, (
+    (uint8_t)(0 + 255 * (flashTimer / 0.5f))
+     )));
 
   if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed &&
       enabledSprite.getGlobalBounds().contains(mousePosition))
@@ -208,6 +224,7 @@ void SeedPacket::draw() {
 
   if (Sun::sunBalance >= cost)
     window->draw(enabledSprite);
+  window->draw(packetFlash);
 }
 
 void SeedPacket::drawSelectedPlant() {

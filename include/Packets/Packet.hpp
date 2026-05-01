@@ -12,9 +12,11 @@ struct SeedPacket {
   sf::Sprite disabledSprite;
   sf::Sprite plantSprite;
   sf::Sprite plantShadow;
+  sf::Sprite packetFlash;
   PlantType plantType;
   bool selected;
 
+  float flashTimer = 0;
   SeedPacket(int costValue, float reloadDurationValue, std::string plantName, sf::Vector2f position, sf::Sprite preview, PlantType planttype);
 
   void update(float dt);

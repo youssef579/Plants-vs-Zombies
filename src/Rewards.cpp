@@ -28,7 +28,7 @@ void RewardManager::init() {
 
 void RewardManager::spawnReward(sf::Vector2f pos, sf::Vector2f vInitial, PlantType type) {
   rewards.push({RewardManager::Reward::RewardType::Packet,
-    type, pos, vInitial, {0, 600} , pos.y-30.0f, sf::Sprite(packetTextures[type])});
+    type, pos, vInitial, {0, 1500} , pos.y-30.0f, sf::Sprite(packetTextures[type])});
   rewards[rewards.size - 1].sprite.setOrigin(rewards[rewards.size - 1].sprite.getLocalBounds().size / 2.0f);
 }
 
@@ -39,7 +39,7 @@ void RewardManager::update(float dt) {
   //std::cout << levelManager.spawningFinished << " " << (Zombie::totalZombies == 0) << " " << !spawnedLevelReward << "\n";
   if (levelManager.spawningFinished && Zombie::totalZombies == 0 && !spawnedLevelReward) {
     //std::cout << "spawning level reward\n";
-    spawnReward(Zombie::lastZombieDeathPosition, { 0, -400 }, levelManager.levels[levelManager.currentLevel-1]->reward);
+    spawnReward(Zombie::lastZombieDeathPosition, { 0, -500 }, levelManager.levels[levelManager.currentLevel-1]->reward);
     spawnedLevelReward = true;
   }
 

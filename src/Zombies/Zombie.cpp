@@ -7,7 +7,7 @@
 Array<Zombie*> zombies[ROWS_NUMBER];
 
 std::string Zombie::types[] = {"Regular", "Conehead", "Buckethead", "Flag", "Newspaper"};
-std::string Zombie::states[] = {"zombie", "attack", "die"};
+//std::string Zombie::states[] = {"zombie", "attack", "die"};
 
 sf::SoundBuffer Zombie::soundBuffer_zombieBite;
 sf::SoundBuffer Zombie::soundBuffer_zombieGulp;
