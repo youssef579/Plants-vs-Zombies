@@ -1,7 +1,9 @@
 #include <ReAnimation/ReAnimation.hpp>
 #include <ReAnimation/ReAnimationParser.hpp>
+#include <Window.hpp>
 
 const float TO_RAD = 3.141592653589793f / 180.0f;
+const float TO_DEG = 180.0f / 3.141592653589793f;
 
 Array<ReAnimationDefinition*> definitions;
 Array<ReAnimator> ReAnimator::orphanAnimators;
@@ -545,6 +547,60 @@ sf::Transform ReAnimator::transformToSFML(Transform t) {
   );
 }
 
+sf::Transform ReAnimator::getWorldTransform(int trackIdx) {
+  sf::Transform localMatrix;
+  Track &trackDef = reAnimDef->tracks[trackIdx];
+
+  if (trackDef.parent) {
+    if (trackDef.fullInherit) {
+      localMatrix = getEffectiveTransform(trackIdx);
+    }
+    else {
+      int pIdx = reAnimDef->getTrackIndex(trackDef.parent->name);
+      sf::Transform parentCurEff = getEffectiveTransform(pIdx);
+      sf::Transform parentBaseEff = getEffectiveBasePose(pIdx);
+
+      sf::Transform attach;
+      attach.translate(parentCurEff.transformPoint({ 0, 0 }) - parentBaseEff.transformPoint({ 0, 0 }));
+
+      sf::Transform localTrack;
+      if (curTransformsValid[trackIdx])
+        localTrack = transformToSFML(curTransforms[trackIdx]);
+      else
+        localTrack = reAnimDef->basePoses[trackIdx];
+
+      localMatrix = attach * localTrack;
+    }
+  }
+  else {
+    localMatrix = getEffectiveTransform(trackIdx);
+  }
+
+  sf::Transform currentRoot = rootMatrix;
+  if (!hasParent) {
+    currentRoot = sf::Transform::Identity;
+    currentRoot.translate({ x, y }).scale({ sx, sy });
+  }
+
+  return currentRoot * localMatrix;
+}
+
+sf::Vector2f ReAnimator::getWorldCenterPosition(int trackIdx) {
+  if (!curTransformsValid[trackIdx] || !curTransforms[trackIdx].i) {
+    return getWorldTransform(trackIdx).transformPoint({ 0.0f, 0.0f });
+  }
+
+  sf::Sprite tempSprite(*curTransforms[trackIdx].i);
+  if (trackInstances[trackIdx].imageOverride) {
+    tempSprite.setTexture(*trackInstances[trackIdx].imageOverride, true);
+  }
+
+  sf::Vector2f localCenter = tempSprite.getLocalBounds().size / 2.0f;
+
+  return getWorldTransform(trackIdx).transformPoint(localCenter);
+}
+
+
 //void ReAnimationDefinition::createTrackMap() {
 //  for (auto &track : tracks) {
 //    trackMap[track.name] = &track;
@@ -691,6 +747,7 @@ void ReAnimator::setScale(float SX, float SY) {
 
 void ReAnimator::setOpacity(uint8_t newOpacity) {
   opacityMultiplier = newOpacity;
+  if(child) child->setOpacity(newOpacity);
 }
 
 
@@ -1335,4 +1392,98 @@ void ReAnimator::updateOrphans(float dt) {
 void ReAnimator::drawOrphans() {
   for (int i = 0; i < orphanAnimators.size; i++)
     orphanAnimators[i].draw();
+}
+
+
+
+void ReAnimator::separateTrackToPO(int trackIdx, sf::Vector2f velocity,
+  sf::Vector2f acceleration, float groundY, float rotationSpeed, float dissapearDuration) {
+
+  if (!trackInstances[trackIdx].isVisible) return; // prevent duplicates
+  // capture state of track before popping
+
+  /*sf::Transform localMatrix = getEffectiveTransform(trackIdx);
+  sf::Transform rootMatrix = sf::Transform::Identity;
+  rootMatrix.translate({ x, y }).scale({ sx, sy });
+  sf::Transform finalMatrix = rootMatrix * localMatrix;*/
+  sf::Transform finalMatrix = getWorldTransform(trackIdx);
+
+  const float *m = finalMatrix.getMatrix();
+
+  sf::Sprite newSprite(*curTransforms[trackIdx].i);
+  if(trackInstances[trackIdx].imageOverride)
+    newSprite.setTexture(*trackInstances[trackIdx].imageOverride);
+  newSprite.setOrigin(newSprite.getLocalBounds().size / 2.0f);
+  newSprite.setScale({
+    std::sqrt(m[0] * m[0] + m[1] * m[1]), // sx
+    std::sqrt(m[4] * m[4] + m[5] * m[5])  // sy
+    });
+
+  PhysicsObject po{
+    getWorldCenterPosition(trackIdx), // position
+    velocity,                               // velocity
+    acceleration,                       // acceleration
+    std::atan2(m[1], m[0]) * TO_DEG,                             // rotation magnitude (ignoring skew direction kx & ky)
+    rotationSpeed,                                          // rotation speed in degrees / second
+    groundY,                                                // ground level
+    dissapearDuration,                                      // dissapear duration
+    dissapearDuration,                                      // dissapear timer
+    newSprite,
+    
+  };
+
+  trackInstances[trackIdx].isVisible = false; // disable track
+  physicsObjects.push(po);
+
+}
+
+
+void PhysicsObject::update(float dt) {
+  velocity += acceleration * dt;
+  position += velocity * dt;
+  rotation += rotationSpeed * dt;
+  if (rotation > 360) rotation -= 360.0f;
+
+  if (position.y > groundY) {
+    position.y = groundY;
+    velocity.y = 0.0f;
+    acceleration.y = 0.0f;
+    rotationSpeed = 0.0f;
+  }
+  if (velocity.x < 0) { // prevent back slide
+    acceleration.x = 0;
+    velocity.x = 0;
+  }
+
+  if (position.y == groundY)
+    dissapearTimer -= dt;
+
+
+  sprite.setColor(sf::Color(255, 255, 255, 255 * (std::max(0.0f, dissapearTimer) / dissapearDuration)));
+  if(dissapearTimer < 0) remove = true;
+    
+
+  sprite.setPosition(position);
+  sprite.setRotation(sf::degrees(rotation));
+}
+
+
+
+void PhysicsObject::draw(sf::RenderWindow *window) {
+  window->draw(sprite);
+}
+
+
+void ReAnimator::updatePhysicsObjects(float dt) {
+  for (int i = 0; i < physicsObjects.size; i++)
+    physicsObjects[i].update(dt);
+  physicsObjects.erase([](PhysicsObject &po) { return po.remove; });
+}
+
+void ReAnimator::drawPhysicsObjects(sf::RenderWindow *window) {
+  sf::View prevView = window->getView();
+  window->setView(*gameView);
+  for (int i = 0; i < physicsObjects.size; i++)
+    physicsObjects[i].draw(window);
+  window->setView(prevView);
 }

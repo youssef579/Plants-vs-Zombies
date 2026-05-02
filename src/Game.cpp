@@ -152,6 +152,8 @@ void updateGame() {
     Zombie::updateAll(dt);
     Zombie::drawAll();
     RewardManager::update(dt);
+    ReAnimator::updatePhysicsObjects(dt);
+    ReAnimator::drawPhysicsObjects(window);
 
     drawUI();
     shovel.drawBank();

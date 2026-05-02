@@ -1,13 +1,11 @@
 Day
 SUN_FLOWER
 2
-1 20
-5 10
-2 3
+1 45
+1 5
+1 2
 
 Regular
-Soccer
 
-Flag
 Regular
-Conehead
+Regular

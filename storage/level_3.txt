@@ -1,0 +1,15 @@
+Day
+SNOWPEASHOOTER
+3
+1 30 80
+1 20 1 
+1 2 1
+
+
+Regular
+
+
+Regular
+Regular
+
+Buckethead

@@ -1,12 +1,17 @@
 Day
 WALLNUT
-1
-1
-5
-5
+3
+1 35 120
+1 12 12
+1 2 3
 
-Flag
+
+Regular
+
+
 Regular
 Conehead
+
+Flag
 Regular
 Conehead

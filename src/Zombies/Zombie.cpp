@@ -259,24 +259,46 @@ bool Zombie::update(float dt) {
 }
 //effects: 0 -> normal, 1 -> freeze, 2 -> explosion/fire , 3 -> mowed, 4-> instant
 void Zombie::takeDamage(float damage, int effect) { // todo: change effect into enum
+    static const float loseArmHealth = 135.0f;
+
+
     health -= damage;
     if (effect == 1 && !(type == Zombie::Type::Screendoor && health >= healths[type] * 0.2f)) {
       freezeTimer = FreezeTimer;
     }
     if(health <= 0) {
-      /*if (effect == 2)
-        die(2);
-      else
-        die();*/
+
+      if (effect == 0 || effect == 1) { // remove head
+        if (reAnimator.reAnimDef == ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC))
+          reAnimator.separateTrackToPO(18, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+        else if(reAnimator.reAnimDef == ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER))
+          reAnimator.separateTrackToPO(17, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+      }
+
+
       die(effect);
       return;
-    } else if(health <= 20) {
+    } /*else if(health <= 20) {
         headless = true;
-    }
-    if (health <= 40 && type == Zombie::Type::Flag)
+    }*/
+    if (health <= 80 && type == Zombie::Type::Flag)
       reAnimator.child->trackInstances[1].imageOverride
         = ReAnimator::getDefinition(REANIM_FLAGPOLE)->textureMap["IMAGE_REANIM_ZOMBIE_FLAG3"];
-    if (health <= healths[type]*0.75f && health > healths[type]*0.5f) {
+
+    if (health <= loseArmHealth && reAnimator.reAnimDef == ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)) {
+      reAnimator.separateTrackToPO(reAnimator.reAnimDef->getTrackIndex("Zombie_outerarm_hand"),  { 100, -150 }, { -500, 800 }, reAnimator.getPosition().y + 42.0f, 0, 0.5f);
+      reAnimator.separateTrackToPO(reAnimator.reAnimDef->getTrackIndex("Zombie_outerarm_lower"), { 100, -150 }, { -500, 800 }, reAnimator.getPosition().y + 42.0f - 20, 0, 0.5f);
+      reAnimator.trackInstances[reAnimator.reAnimDef->getTrackIndex("Zombie_outerarm_upper")].imageOverride = reAnimator.reAnimDef->textureMap["IMAGE_REANIM_ZOMBIE_OUTERARM_UPPER2"];
+      //reAnimator.separateTrackToPO(reAnimator.reAnimDef->getTrackIndex("Zombie_outerarm_upper"), { 100, -150 }, { -500, 800 }, reAnimator.getPosition().y + 42.0f - 27 - 15, 0, 0.5f);
+    }
+
+    float armorPercent; // health percent without the 270 base health
+    if(healths[type] > 270) armorPercent = (health - 270) / (healths[type] - 270); 
+    else armorPercent = 0.0f;
+
+
+    //if (health <= healths[type]*0.75f && health > healths[type]*0.5f) {
+    if(armorPercent <= 0.75f && armorPercent > 0.5f) {
       if (type == Zombie::Type::Conehead)
         reAnimator.trackInstances[40].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_CONE2"];
@@ -290,7 +312,8 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
         reAnimator.trackInstances[22].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER)->textureMap["IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET2"];
     }
-    else if (health < healths[type]*0.5f && health >= healths[type]*0.2f) {
+    //else if (health < healths[type]*0.5f && health >= healths[type]*0.2f) {
+    else if (armorPercent < 0.5f && armorPercent >= 0.2f) {
       if (type == Zombie::Type::Conehead)
         reAnimator.trackInstances[40].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_BASIC)->textureMap["IMAGE_REANIM_ZOMBIE_CONE3"];
@@ -304,27 +327,37 @@ void Zombie::takeDamage(float damage, int effect) { // todo: change effect into 
         reAnimator.trackInstances[22].imageOverride
         = ReAnimator::getDefinition(REANIM_ZOMBIE_SOCCER)->textureMap["IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET3"];
     }
-    else if (health < healths[type]*0.2f) {
+    //else if (health < healths[type]*0.2f) {
+    else if (armorPercent < 0.2f) {
       if (type == Zombie::Type::Conehead)
-        reAnimator.setTrackVisibility("anim_cone", false);
+        reAnimator.separateTrackToPO(40, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+        //reAnimator.setTrackVisibility("anim_cone", false);
       else if (type == Zombie::Type::Buckethead)
-        reAnimator.setTrackVisibility("anim_bucket", false);
-      else if (type == Zombie::Type::Flag)
-        reAnimator.child->stopAnimation("main"); // temporary
+        reAnimator.separateTrackToPO(41, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+        //reAnimator.setTrackVisibility("anim_bucket", false);
+      else if (type == Zombie::Type::Flag) {
+        reAnimator.child->separateTrackToPO(0, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+        reAnimator.child->separateTrackToPO(1, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+      }
+        //reAnimator.child->stopAnimation("main"); // temporary
       else if (type == Zombie::Type::Screendoor) {
-        reAnimator.setTrackVisibility("Zombie_outerarm_upper", true);
-        reAnimator.setTrackVisibility("Zombie_outerarm_lower", true);
-        reAnimator.setTrackVisibility("Zombie_outerarm_hand", true);
+        if (health > loseArmHealth) {
+          reAnimator.setTrackVisibility("Zombie_outerarm_upper", true);
+          reAnimator.setTrackVisibility("Zombie_outerarm_lower", true);
+          reAnimator.setTrackVisibility("Zombie_outerarm_hand", true);
+        }
         reAnimator.setTrackVisibility("anim_innerarm3", true);
         reAnimator.setTrackVisibility("anim_innerarm2", true);
         reAnimator.setTrackVisibility("anim_innerarm1", true);
-        reAnimator.setTrackVisibility("anim_screendoor", false);
         reAnimator.setTrackVisibility("Zombie_innerarm_screendoor_hand", false);
         reAnimator.setTrackVisibility("Zombie_innerarm_screendoor", false);
         reAnimator.setTrackVisibility("Zombie_outerarm_screendoor", false);
+        reAnimator.separateTrackToPO(32, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
+        //reAnimator.setTrackVisibility("anim_screendoor", false);
       }
       else if (type == Zombie::Type::Soccer) {
-        reAnimator.setTrackVisibility("zombie_football_helmet", false);
+        //reAnimator.setTrackVisibility("zombie_football_helmet", false);
+        reAnimator.separateTrackToPO(22, { 300, -200 }, { -200, 1000 }, reAnimator.getPosition().y, 60, 1.0f);
       }
     }
 

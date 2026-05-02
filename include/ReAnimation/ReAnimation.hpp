@@ -73,6 +73,24 @@ struct ActiveLabel {
   bool remove = false;
 };
 
+struct PhysicsObject {
+  sf::Vector2f position;
+  sf::Vector2f velocity;
+  sf::Vector2f acceleration;
+  float rotation;
+  float rotationSpeed;
+  float groundY;
+  float dissapearDuration = 0.0001f;
+  float dissapearTimer = 0.0001f;
+  sf::Sprite sprite;
+  bool remove = false;
+
+  void update(float dt);
+  void draw(sf::RenderWindow *window);
+};
+
+static Array<PhysicsObject> physicsObjects;
+
 struct ReAnimationDefinition {
   float fps;
   int frameCount=0;
@@ -181,6 +199,8 @@ struct ReAnimator {
   sf::Transform getEffectiveTransform(int trackIndex);
   static sf::Transform transformToSFML(Transform t);
   static int getFirstValidIdx(Track &track);
+  sf::Transform getWorldTransform(int trackIdx);
+  sf::Vector2f getWorldCenterPosition(int trackIdx);
 
 
   void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
@@ -211,10 +231,16 @@ struct ReAnimator {
 
   void setOverlayAlpha(float newAlpha);
 
+  void separateTrackToPO(int trackIdx, sf::Vector2f velocity,
+    sf::Vector2f acceleration, float groundY,
+    float rotationSpeed, float dissapearDuration); // pop track into separate Physics Object
+
 
   static ReAnimationDefinition* getDefinition(ReAnimationDef defId);
   static void updateOrphans(float dt);
   static void drawOrphans();
+  static void updatePhysicsObjects(float dt);
+  static void drawPhysicsObjects(sf::RenderWindow *window);
   ReAnimator(ReAnimationDefinition *def, float x, float y, sf::RenderWindow *w);
 
   static Array<ReAnimator> orphanAnimators;
