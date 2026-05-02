@@ -4,6 +4,7 @@ WALLNUT
 1 35 120
 1 12 12
 1 2 3
+0 1 1
 
 
 Regular

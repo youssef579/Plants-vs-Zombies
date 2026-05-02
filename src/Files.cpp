@@ -72,6 +72,8 @@ void loadLevelsFiles() {
     LevelManager::Level *newLevel = new LevelManager::Level;
     std::string input;
     int inputI;
+    bool inputB;
+
     file >> input; // Location
     if      (input == "Day")   newLevel->location = LevelManager::Level::Day;
     else if (input == "Night") newLevel->location = LevelManager::Level::Night;
@@ -115,10 +117,17 @@ void loadLevelsFiles() {
       numberOfZombies.push(inputI);
     }
 
+    Array<bool> bigWaves;
+    for (int i = 0; i < newLevel->numberOfWaves; i++) { // Big Waves
+      file >> inputB;
+      bigWaves.push(inputB);
+    }
+
     for (int i = 0; i < newLevel->numberOfWaves; i++) {
       LevelManager::Level::Wave *newWave = new LevelManager::Level::Wave;
       newWave->delay = delays[i];
       newWave->duration = durations[i];
+      newWave->isBigWave = bigWaves[i];
       for (int z = 0; z < numberOfZombies[i]; z++) {
         file >> input; // zombie type
 

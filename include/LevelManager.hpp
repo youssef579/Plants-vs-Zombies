@@ -18,6 +18,7 @@ struct LevelManager {
       float delay;
       float duration;
       Array<Zombie::Type> zombieTypes;
+      bool isBigWave;
     };
 
 

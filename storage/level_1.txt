@@ -4,6 +4,7 @@ SUN_FLOWER
 1 45
 1 5
 1 2
+0 1
 
 Regular
 
