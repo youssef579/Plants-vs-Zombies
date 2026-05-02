@@ -7,7 +7,9 @@
 
 LevelManager dayLevel;
 
-void LevelManager::init() {
+void LevelManager::init(levelType Type) {
+
+  type = Type;
   
   if (backGroundTexture.loadFromFile("assets/BackGround/background.png") &&
     grassTexture.loadFromFile("assets/BackGround/sod1row.png") &&
@@ -16,9 +18,17 @@ void LevelManager::init() {
     rollTexture.loadFromFile("assets/BackGround/SodRoll.png") &&
     capTexture.loadFromFile("assets/BackGround/SodRollCap.png"))
   {
+    if(type == Night) backGroundTexture = getTexture("assets/Background/background_night.png");
+
     if (!backGroundSprite) backGroundSprite = new sf::Sprite(backGroundTexture);
     else backGroundSprite->setTexture(backGroundTexture);
     backGroundSprite->setPosition(sf::Vector2f(0, 0));
+
+    camera.setSize(sf::Vector2f(800.f, 600.f));
+    camera.setCenter(sf::Vector2f(490.f, 312.f));
+    gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+
+    if(type == Night) return; // That's it for the night xD
 
     if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
       dirtPool.clear();
@@ -90,9 +100,10 @@ void LevelManager::init() {
     fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)fullGrassTexture.getSize().y }));
   }
 
-  camera.setSize(sf::Vector2f(800.f, 600.f));
-  camera.setCenter(sf::Vector2f(490.f, 312.f));
-  gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+  // Sent Above
+  // camera.setSize(sf::Vector2f(800.f, 600.f));
+  // camera.setCenter(sf::Vector2f(490.f, 312.f));
+  // gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
   //gameView->zoom(0.925f);
   //gameView->setCenter(sf::Vector2f(490.f, 312.f));
   //gameView->setCenter(view->getCenter());
@@ -144,26 +155,56 @@ void LevelManager::updateDirt(float dt) {
 
 void LevelManager::update(float dt) {
 
+  // if (isIntroRunning) {
+  //   introTimer += dt;
+  //   float gameViewOffset = 1.5f;
+  //   if (introTimer < 1.5f) {
+  //     camera.zoom(1.0f - (0.05 * dt));
+  //     //gameView->zoom(1.0f - (0.05 * dt));
+  //   }
+  //   else if (introTimer >= 1.5f && introTimer < 2.2f) {
+  //     camera.move(sf::Vector2f(400.f * dt, 0.f));
+  //     gameView->move(sf::Vector2f(400.f * dt * gameViewOffset, 0.f));
+  //   }
+  //   else if (introTimer >= 5.5f && introTimer < 6.2f) {
+  //     camera.move(sf::Vector2f(-400.f * dt, 0.f));
+  //     gameView->move(sf::Vector2f(-400.f * dt * gameViewOffset, 0.f));
+  //   }
+  //   else if (introTimer >= 8.5f) {
+  //     isIntroRunning = false;
+  //     if(type == Night) return;
+  //     startPlanting();
+  //   }
+  // }
+
   if (isIntroRunning) {
     introTimer += dt;
     float gameViewOffset = 1.5f;
     if (introTimer < 1.5f) {
-      camera.zoom(1.0f - (0.05 * dt));
-      //gameView->zoom(1.0f - (0.05 * dt));
+      float currentZoom = 1 - (introTimer / 1.5f)*0.075f;
+      camera.setSize({800.0f * currentZoom, 600.0f * currentZoom});
     }
     else if (introTimer >= 1.5f && introTimer < 2.2f) {
-      camera.move(sf::Vector2f(400.f * dt, 0.f));
-      gameView->move(sf::Vector2f(400.f * dt * gameViewOffset, 0.f));
+      camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
+      gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 5.5f && introTimer < 6.2f) {
-      camera.move(sf::Vector2f(-400.f * dt, 0.f));
-      gameView->move(sf::Vector2f(-400.f * dt * gameViewOffset, 0.f));
+      //camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      //gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 8.5f) {
+     // camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
+      //gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
+      if(type == Night) return; // Same joke as before
       startPlanting();
     }
   }
+
   if (!isIntroRunning) {
     float grassSizeX = 0.82f;
 

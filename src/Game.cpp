@@ -54,7 +54,7 @@ void updateGame() {
       shovel.init();
       initPackets();
       initGrid();
-      dayLevel.init();
+      dayLevel.init(LevelManager::Night);
       gameWeather.isRaining = true;
       for (int i = 0; i < ROWS_NUMBER; i++){
         for (int j = 0; j < COLUMNS_NUMBER; j++){

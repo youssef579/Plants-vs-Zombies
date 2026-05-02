@@ -17,6 +17,7 @@ struct DirtParticle {
 
 struct LevelManager {
 
+  enum levelType {Day, Night};
 
   sf::Texture backGroundTexture;
   sf::Texture grassTexture;
@@ -59,7 +60,9 @@ struct LevelManager {
   float startX = 200.0f;
   float groundY[5] = { 160.0f , 233.0f , 310.0f , 385.0f , 460.0f };
 
-  void init();
+  levelType type;
+
+  void init(levelType);
   void startPlanting();
   void update(float dt);
   void draw(sf::RenderWindow& window);
