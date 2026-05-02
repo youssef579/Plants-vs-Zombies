@@ -1,4 +1,5 @@
 #include <newPauseMenu.hpp>
+#include <cmath>
 
 
 newPauseMenu newPause;
@@ -17,8 +18,8 @@ void newPauseMenu::init() {
     if (!clickSound) clickSound = new sf::Sound(*clickBuffer);
   }
 
-  overlay.setSize({ 2000.f, 2000.f }); 
-  overlay.setFillColor(sf::Color(0, 0, 0, 150)); 
+  overlay.setSize({ 2000.f, 2000.f });
+  overlay.setFillColor(sf::Color(0, 0, 0, 150));
 
   float offsetX = 50.0f;
   float offsetY = 20.0f;
@@ -37,7 +38,7 @@ void newPauseMenu::init() {
   restartBtn->setScale({ 0.9,0.9 });
   restartBtn->setOrigin({ restartBtn->getLocalBounds().size.x / 2.f, restartBtn->getLocalBounds().size.y / 2.f });
   restartBtn->setPosition({ 529.f + offsetX, 358.f + offsetY });
-  
+
   if (!settingsBtn) settingsBtn = new sf::Sprite(getTexture(folder + "settingsButton(5).png"));
   settingsBtn->setScale({ 0.8,0.8 });
   settingsBtn->setOrigin({ settingsBtn->getLocalBounds().size.x / 2.f, settingsBtn->getLocalBounds().size.y / 2.f });
@@ -51,7 +52,7 @@ void newPauseMenu::init() {
   if (!menuPea) menuPea = new sf::Sprite(getTexture(folder + "peaShooter.png"));
   menuPea->setScale({ 0.4,0.4 });
   menuPea->setOrigin({ menuPea->getLocalBounds().size.x / 2.f, menuPea->getLocalBounds().size.y / 2.f });
-  menuPea->setPosition({ 450.f + offsetX, 120.f + offsetY }); 
+  menuPea->setPosition({ 450.f + offsetX, 120.f + offsetY });
 
   if (!menuSunflower) menuSunflower = new sf::Sprite(getTexture(folder + "sunFlower.png"));
   menuSunflower->setScale({ 0.8,0.8 });
@@ -63,7 +64,7 @@ void newPauseMenu::init() {
   if (!menuShieldSun) menuShieldSun = new sf::Sprite(getTexture(folder + "shieldSun.png"));
   menuShieldSun->setScale({ 0.3,0.3 });
   menuShieldSun->setOrigin({ menuShieldSun->getLocalBounds().size.x / 2.f, menuShieldSun->getLocalBounds().size.y / 2.f });
-  menuShieldSun->setPosition({ 537.f + offsetX, 105.f + offsetY }); 
+  menuShieldSun->setPosition({ 537.f + offsetX, 105.f + offsetY });
 
   if (!menuWallnut) menuWallnut = new sf::Sprite(getTexture(folder + "wallNut.png"));
   menuWallnut->setScale({ 0.63,0.63 });
@@ -76,7 +77,7 @@ void newPauseMenu::init() {
 void newPauseMenu::handleButtonLogic(sf::Sprite* btn, sf::Vector2f mousePos, bool& actionTriggered , bool& isHovered) {
   if (!btn) return;
 
-  
+
 
   if (btn->getGlobalBounds().contains(mousePos)) {
     if (!isHovered) {
@@ -102,7 +103,7 @@ void newPauseMenu::handleButtonLogic(sf::Sprite* btn, sf::Vector2f mousePos, boo
     btn->setColor(sf::Color::White);
     btn->setScale({ 0.98f,  0.98f });
     actionTriggered = false;
-    isHovered = false; 
+    isHovered = false;
   }
 }
 
@@ -125,7 +126,7 @@ void newPauseMenu::draw(sf::RenderWindow& window) {
   if (!isOpen) return;
 
   window.draw(overlay);
-  
+
   if (pauseMenu) window.draw(*pauseMenu);
   if (resumeBtn) window.draw(*resumeBtn);
   if (restartBtn) window.draw(*restartBtn);

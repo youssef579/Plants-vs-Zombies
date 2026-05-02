@@ -1,8 +1,9 @@
 #include <Packets/Packet.hpp>
 #include <UI/Draw.hpp>
 #include <Packets/Shovel.hpp>
+#include <LevelProgress.hpp>
 
-void drawUI() {
+void drawUI(float dt) {
   static bool runOnce = true;
   static sf::Text SunBalanceText(assets->font, std::to_string(Sun::sunBalance), 40);
   static sf::Texture& sunBankTexture = getTexture("assets/packets/seed_bank.png");
@@ -29,4 +30,5 @@ void drawUI() {
   window->draw(SunBalanceText);
   for (int i = 0; i < packets.size; i++)
     packets[i].draw();
+  drawLevelProgress(dt);
 }

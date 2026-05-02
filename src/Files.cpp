@@ -5,6 +5,7 @@
 #include <Weather.hpp>
 #include <LevelManager.hpp>
 #include <BackgroundManager.hpp>
+#include <iostream>
 
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
@@ -68,7 +69,7 @@ void loadLevelsFiles() {
     std::string path = "storage/level_" + std::to_string(levelIdx) + ".txt";
     std::ifstream file(path);
 
-    
+
     LevelManager::Level *newLevel = new LevelManager::Level;
     std::string input;
     int inputI;
@@ -128,6 +129,7 @@ void loadLevelsFiles() {
       newWave->delay = delays[i];
       newWave->duration = durations[i];
       newWave->isBigWave = bigWaves[i];
+      newWave->waveSprite.setPosition({1100 - 145 * (delays[i] - delays[0]) / (delays[newLevel->numberOfWaves - 1] - delays[0]), 568});
       for (int z = 0; z < numberOfZombies[i]; z++) {
         file >> input; // zombie type
 
