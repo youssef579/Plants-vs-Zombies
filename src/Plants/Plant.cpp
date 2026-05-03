@@ -11,6 +11,7 @@
 #include <Plants/Repeaterpea.hpp>
 #include <Plants/potatoMine.hpp>
 #include <Plants/iceShroom.hpp>
+#include <Plants/puffShroom.hpp>
 #include <iostream>
 
 
@@ -50,7 +51,9 @@ float getPlantHealth(PlantType type){
     case SQUASH:
       health = SQUASH_HEALTH;
       break;
-
+    case PUFFSHROOM:
+      health = PUFFSHROOM_HEALTH;
+      break;
   }
 
   return health;
@@ -91,6 +94,9 @@ float getPlantTimer(PlantType type){
       break;
     case SQUASH:
       timer = 0;
+      break;
+    case PUFFSHROOM:
+      timer = GENERATE_PUFFSHROOM_BULLET_TIMER;
       break;
   }
 
@@ -183,6 +189,11 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   case SQUASH:
     reAnimator.playAnimation("anim_idle", LoopType::Loop);
     break;
+  case PUFFSHROOM:
+    reAnimator.playAnimation("anim_idle");
+    reAnimator.playAnimation("anim_head_idle");
+    reAnimator.animSpeedMulti = 2.0f;
+    break;
   }
 }
 
@@ -220,6 +231,9 @@ void Plant::update(float dt) {
       break;
     case SQUASH:
       updateSquash(*this, dt);
+      break;
+    case PUFFSHROOM:
+      updatePuffShroom(*this, dt);
       break;
   }
 }
@@ -260,6 +274,9 @@ void Plant::draw() {
       break;
     case SQUASH:
       drawSquash(*this);
+      break;
+    case PUFFSHROOM:
+      drawPuffShroom(*this);
       break;
   }
 }
