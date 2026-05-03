@@ -38,6 +38,7 @@ target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE
 SFML::Graphics
 SFML::Audio
+SFML::Network
 nlohmann_json::nlohmann_json)
 target_include_directories(main PRIVATE include)
 
