@@ -95,7 +95,7 @@ void newPauseMenu::init() {
     sliderMusicS->setScale({ 0.3f,0.3f });
     sliderMusicS->setOrigin(sliderMusicS->getLocalBounds().getCenter());
   }
-  if (!sliderMusic) sliderMusic = new Slider({ *sliderMusicS,317.0f,550.0f,720.0f,170.0f,false });
+  if (!sliderMusic) sliderMusic = new Slider({ *sliderMusicS,315.0f,550.0f,720.0f,170.0f,false });
   sliderMusic->sprite.setPosition({ sliderMusic->lowerBound + settings.musicVolume * sliderMusic->length / 100.0f,sliderMusic->y });
 
   if (!sliderSFXS) {
@@ -103,7 +103,7 @@ void newPauseMenu::init() {
     sliderSFXS->setScale({ 0.3f,0.3f });
     sliderSFXS->setOrigin(sliderSFXS->getLocalBounds().getCenter());
   }
-  if (!sliderSFX) sliderSFX = new Slider({ *sliderSFXS,350.0f,550.0f,720.0f,170.0f,false });
+  if (!sliderSFX) sliderSFX = new Slider({ *sliderSFXS,372.0f,550.0f,720.0f,170.0f,false });
   sliderSFX->sprite.setPosition({ sliderSFX->lowerBound + settings.soundFXVolume * sliderSFX->length / 100.0f,sliderSFX->y });
 
   /*if (!sliderWeatherFXS) sliderWeatherFXS = new sf::Sprite(sliderKnobT);
@@ -151,7 +151,7 @@ bool newPauseMenu::handleButtonLogic(sf::Sprite* btn, sf::Vector2f mousePos, boo
       isHovered = true;
 
     }
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    if (isMousePressed) {
       if (!actionTriggered) {
         if (clickSound) clickSound->play();
         actionTriggered = true;

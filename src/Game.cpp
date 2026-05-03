@@ -56,7 +56,7 @@ void updateGame() {
 
 
   static bool pPressed = false;
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
     if (!pPressed) {
       newPause.isOpen = !newPause.isOpen;
       pPressed = true;
@@ -133,7 +133,7 @@ void updateGame() {
       window->setView(*view);
       gameWeather.draw(*window);
       pauseMenu.update();
-      pauseMenu.draw();
+      //pauseMenu.draw();
       break;
     }
 
