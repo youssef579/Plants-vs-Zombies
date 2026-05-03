@@ -16,6 +16,7 @@ void updateIceShroom(Plant& iceShroom, float dt) {
 
   if (iceShroom.timer <= 0 && iceShroom.health > 0) {
     // صوت انفجار متلج
+    sounds.play("IceShroom");
     ParticleSystem::spawnParticleEffect(PEFF_ICEEXPLOSION, iceShroom.reAnimator.getPosition());
     dayLevel.iceFlashTimer = dayLevel.iceFlashDuration;
     for (int row = 0; row < ROWS_NUMBER; row++) {
@@ -26,7 +27,7 @@ void updateIceShroom(Plant& iceShroom, float dt) {
         if (zombie->health <= 0) continue;
 
         if (zombie->inPlayArea){
-          zombie->freezeTimer = 5.0f;
+          zombie->freezeTimer = 10.0f;
           zombie->takeDamage(20, 0);
         }
       }

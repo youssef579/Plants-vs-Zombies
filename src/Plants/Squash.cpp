@@ -55,6 +55,9 @@ void updateSquash(Plant &squash, float dt) {
     if (!squash.reAnimator.isPlayingAnimation("anim_lookright")) {
       squash.reAnimator.stopAnimation("anim_idle");
       squash.reAnimator.playAnimation("anim_lookright", LoopType::HoldLastFrame, 0.6f);
+
+      if (randomRange(0, 1)) sounds.play("SquashHmm");
+      else sounds.play("SquashHmm2");
     }
 
     if (squash.timer > 0) {

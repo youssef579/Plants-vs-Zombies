@@ -30,7 +30,7 @@ struct Sun {
   static constexpr float collectionSpeed = 300.0f;     // Changes speed of sun while being collected
   static constexpr float collectionErrorMargin = 35.0f;
   static constexpr int assetWidth = 116;              // SunAsset width (Used for spawn bounds)
-  static constexpr float spawnInterval = 1.0f;         // Amount of seconds between each sun spawn
+  static constexpr float spawnInterval = 8.0f;         // Amount of seconds between each sun spawn
   static constexpr float acceleration = 400.0f;
   static constexpr float distanceSunFlower = 50.0f;     // the distance the sun will fly above the sunflower
 

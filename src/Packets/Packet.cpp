@@ -83,76 +83,74 @@ void fillPackets(Array<PlantType> &types) {
     runOnce = false;
   }
 
+  packets.erase([](SeedPacket &s) {return true; }); // clear first
   for (int i = 0; i < types.size; i++) {
     switch (types[i]) {
     case PEASHOOTER:
-      packets.push({100, 5, "peashooter",
+      packets.push({100, 7.5f, "peashooter",
                     {90 + 59.0f * i, 11},
                     peashooterSprite, PEASHOOTER});
       break;
 
     case SUN_FLOWER:
-      packets.push({50, 5, "sunflower",
+      packets.push({50, 7.5f, "sunflower",
                     {90 + 59.0f * i, 11},
                     sunFlowerSprite, SUN_FLOWER});
       break;
 
     case WALLNUT:
       packets.push(
-          {50, 5, "wallnut",
+          {50, 30, "wallnut",
         {90 + 59.0f * i, 11},
         wallNutSprite, WALLNUT});
       break;
 
     case SNOWPEASHOOTER:
-      packets.push({175, 5, "peaice",
+      packets.push({175, 7.5f, "peaice",
                     {90 + 59.0f * i, 11},
                     icepeaSprite, SNOWPEASHOOTER});
       break;
 
     case REPEATERPEA:
-      packets.push({200, 5, "repeated",
+      packets.push({200, 7.5f, "repeated",
                     {90 + 59.0f * i, 11},
                     repeaterpeaSprite, REPEATERPEA});
       break;
 
     case TALLNUT:
       packets.push(
-          {125, 5, "tallnut",
+          {125, 30.0f, "tallnut",
         {90 + 59.0f * i, 11},
         tallNutSprite, TALLNUT});
       break;
 
     case CHERRYBOMB:
-      packets.push({150, 1, "cherrybomb",
+      packets.push({150, 50.0f, "cherrybomb",
                     {90 + 59.0f * i, 11},
                     cherryBombSprite, CHERRYBOMB});
       break;
 
     case JALAPENO:
       packets.push(
-          {125, 1, "jalapeno",
+          {125, 50.0f, "jalapeno",
         {90 + 59.0f * i, 11},
         jalapenoSprite, JALAPENO});
       break;
 
     case POTATOMINE:
-      packets.push({ 25, 1, "potatomine",
+      packets.push({ 25, 30, "potatomine",
                     {90 + 59.0f * i, 11},
                     potatoMineSprite, POTATOMINE });
       break;
     case ICESHROOM:
-      packets.push({ 75, 1, "iceshroom",
+      packets.push({ 75, 50.0f, "iceshroom",
                     {90 + 59.0f * i, 11},
                     iceShroomSprite, ICESHROOM });
       break;
     case SQUASH:
-      packets.push({ 50,
-                    1,
-                    "squash",
+      packets.push({ 50, 30.0f, "squash",
                     {90 + 59.0f * i, 11},
-                    squashSprite,
-                    SQUASH });
+                    squashSprite, SQUASH });
       break;
     }
   }
@@ -194,12 +192,12 @@ void SeedPacket::update(float dt) {
   if (reloadTimer > 0) {
     reloadTimer = std::max(0.0f, reloadTimer - dt);
     if (reloadTimer == 0.0f) {
-      flashTimer = 0.5f;
+      flashTimer = 0.8f;
     }
   }
 
   packetFlash.setColor(sf::Color(255, 255, 255, (
-    (uint8_t)(0 + 255 * (flashTimer / 0.5f))
+    (uint8_t)(0 + 255 * (flashTimer / 0.8f))
      )));
 
   if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed &&

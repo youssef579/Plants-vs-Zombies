@@ -2,6 +2,9 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <BackgroundManager.hpp>
+#include <packets/Packet.hpp> // USED FOR DEV MODE
+#include <SunManager.hpp>     // USED FOR DEV MODE
+
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -133,33 +136,44 @@ void handleEvents() {
         if(gameState != 0 && !isPaused)
           settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
-      case sf::Keyboard::Key::J: // REMOVE LATER
-        testKeybinds("j");
+      case sf::Keyboard::Key::Grave: { // DEV MODE
+        Array<PlantType> types;
+        for (auto t : { PEASHOOTER, SUN_FLOWER, WALLNUT, SNOWPEASHOOTER,
+          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH })
+          types.push(t);
+        fillPackets(types);
+        Sun::sunBalance = 5000;
+        for (int i = 0; i < packets.size; i++)
+          packets[i].reloadDuration = 1.0f;
         break;
-      case sf::Keyboard::Key::K: // REMOVE LATER
-        testKeybinds("k");
-        break;
-      case sf::Keyboard::Key::I: // REMOVE LATER
-        testKeybinds("i");
-        break;
-      case sf::Keyboard::Key::M: // REMOVE LATER
-        testKeybinds("m");
-        break;
-      case sf::Keyboard::Key::Up:
-        testKeybinds("up");
-        break;
-      case sf::Keyboard::Key::Down:
-        testKeybinds("down");
-        break;
-      case sf::Keyboard::Key::Left:
-        testKeybinds("left");
-        break;
-      case sf::Keyboard::Key::Right:
-        testKeybinds("right");
-        break;
-      case sf::Keyboard::Key::RShift:
-        testKeybinds("sw");
-        break;
+      }
+      //case sf::Keyboard::Key::J: // REMOVE LATER
+      //  testKeybinds("j");
+      //  break;
+      //case sf::Keyboard::Key::K: // REMOVE LATER
+      //  testKeybinds("k");
+      //  break;
+      //case sf::Keyboard::Key::I: // REMOVE LATER
+      //  testKeybinds("i");
+      //  break;
+      //case sf::Keyboard::Key::M: // REMOVE LATER
+      //  testKeybinds("m");
+      //  break;
+      //case sf::Keyboard::Key::Up:
+      //  testKeybinds("up");
+      //  break;
+      //case sf::Keyboard::Key::Down:
+      //  testKeybinds("down");
+      //  break;
+      //case sf::Keyboard::Key::Left:
+      //  testKeybinds("left");
+      //  break;
+      //case sf::Keyboard::Key::Right:
+      //  testKeybinds("right");
+      //  break;
+      //case sf::Keyboard::Key::RShift:
+      //  testKeybinds("sw");
+      //  break;
       }
     }
   }

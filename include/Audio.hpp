@@ -46,7 +46,10 @@ struct Sounds {
       lawnmower,
       potatoMine,
       winMusic,
-      loseMusic;
+      loseMusic,
+      iceShroom,
+      squashHmm,
+      squashHmm2;
   };
 
   struct Paths {
@@ -74,7 +77,10 @@ struct Sounds {
       lawnmower       = "assets/sounds/sfx_lawnmower.ogg",
       potatoMine      = "assets/sounds/sfx_potatoMine.ogg",
       winMusic        = "assets/sounds/sfx_winMusic.ogg",
-      loseMusic       = "assets/sounds/sfx_loseMusic.ogg";
+      loseMusic       = "assets/sounds/sfx_loseMusic.ogg",
+      iceShroom       = "assets/sounds/sfx_iceshroom.mp3",
+      squashHmm       = "assets/sounds/sfx_squashHmm.ogg",
+      squashHmm2      = "assets/sounds/sfx_squashHmm2.ogg";
   };
 
 

@@ -12,7 +12,7 @@ void updateSunFlower(Plant &sunFlower, float dt){
   sunFlower.blinkTimer -= dt;
   if (sunFlower.timer <= 0){
     Sounds::play("sunFlowerPop");
-    Sun::generate({sunFlower.reAnimator.getPosition()}, 50, 1);
+    Sun::generate({sunFlower.reAnimator.getPosition()}, 25, 1);
     sunFlower.timer = GENERATE_SUN_FLOWER_INTERVAL;
     //sunFlower.reAnimator.setOverlayAlpha(0);
   }

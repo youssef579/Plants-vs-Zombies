@@ -65,6 +65,9 @@ void Sounds::play(std::string op) {
   else if (op == "PotatoMine")    sound = new sf::Sound(sounds.buffers.potatoMine);
   else if (op == "WinMusic")      sound = new sf::Sound(sounds.buffers.winMusic);
   else if (op == "LoseMusic")     sound = new sf::Sound(sounds.buffers.loseMusic);
+  else if (op == "IceShroom")     sound = new sf::Sound(sounds.buffers.iceShroom);
+  else if (op == "SquashHmm")     sound = new sf::Sound(sounds.buffers.squashHmm);
+  else if (op == "SquashHmm2")    sound = new sf::Sound(sounds.buffers.squashHmm2);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -104,6 +107,9 @@ void Sounds::init() {
   sounds.buffers.potatoMine    = getSoundBuffer(sounds.paths.potatoMine);
   sounds.buffers.winMusic      = getSoundBuffer(sounds.paths.winMusic);
   sounds.buffers.loseMusic     = getSoundBuffer(sounds.paths.loseMusic);
+  sounds.buffers.iceShroom     = getSoundBuffer(sounds.paths.iceShroom);
+  sounds.buffers.squashHmm     = getSoundBuffer(sounds.paths.squashHmm);
+  sounds.buffers.squashHmm2    = getSoundBuffer(sounds.paths.squashHmm2);
 
 }
 

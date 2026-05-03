@@ -161,7 +161,7 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
   zombie->health = healths[type];
   zombie->strength = strengths[type];
 
-  zombie->sound_zombieBite.setVolume(settings.soundFXVolume);
+  zombie->sound_zombieBite.setVolume(settings.soundFXVolume * 0.25f);
   zombie->sound_zombieGulp.setVolume(settings.soundFXVolume);
 
   zombie->setSprite();
@@ -517,7 +517,7 @@ bool Zombie::isZombieAliveInRow(int row, float startPosX) {
 void Zombie::updateVolumes() {
   for (int r = 0; r < ROWS_NUMBER; r++) {
     for (int i = 0; i < zombies[r].size; i++) {
-      zombies[r][i]->sound_zombieBite.setVolume(settings.soundFXVolume);
+      zombies[r][i]->sound_zombieBite.setVolume(settings.soundFXVolume * 0.25f);
       zombies[r][i]->sound_zombieGulp.setVolume(settings.soundFXVolume);
     }
   }
