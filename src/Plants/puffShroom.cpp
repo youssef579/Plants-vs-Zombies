@@ -48,6 +48,6 @@ void updatePuffShroom(Plant& puffShroom, float dt) {
   }
 }
 
-void drawPuffShroom(Plant& peashooter) {
+void drawPuffShroom(Plant& puffShroom) {
   
 }
