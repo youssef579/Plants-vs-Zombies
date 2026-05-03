@@ -147,6 +147,124 @@ void BackgroundManager::updateDirt(float dt) {
     }
   }
 }
+//----------------------------------------------------------------------------------
+
+void BackgroundManager::rollOneGrass(float dt) {
+  float grassSizeX = 0.82f;
+
+  if (isRolling[2] && currentX[2] < targetX) {
+    currentX[2] += rollSpeed * dt;
+    spawnDirt(rollSprites[2]->getPosition());
+
+    int maxTextureW = (int)grassTexture.getSize().x;
+    int currentRectW = std::min((int)currentX[2], maxTextureW);
+    grassSprites[2]->setTextureRect(sf::IntRect({ 0, 0 }, { currentRectW , (int)grassTexture.getSize().y }));
+
+    float rollSize = 0.7f;
+    float finalX = 200.0f + (currentX[2] * grassSizeX);
+    float centerY = groundY[2] + (grassTexture.getSize().y * 0.82f) / 2.0f;
+    float scaleM = std::max(0.35f, 1.0f - (currentX[2] / targetX));
+    float rollW = rollTexture.getSize().x * (scaleM * rollSize);
+
+    rollSprites[2]->setPosition({ finalX - (rollW * 0.1f), centerY - rollSize });
+    rollSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, rollSize));
+
+    sf::Vector2f rPos = rollSprites[2]->getPosition();
+    capSprites[2]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (rollSize / 2.0f))));
+    capSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, scaleM * rollSize));
+    capSprites[2]->rotate(sf::degrees(400.f * dt * 0.5f));
+
+    if (currentX[2] >= targetX) {
+      currentX[2] = targetX;
+      isRolling[2] = false;
+      isThreeMiddleRunning = true;
+    }
+  }
+}
+
+void BackgroundManager::rollThreeGrass(float dt) {
+  float grassSizeX = 0.82f;
+  float bigTargetX = static_cast<float>(threeMiddleGrassTexture.getSize().x);
+
+  if (isThreeMiddleRunning && threeMiddleCurrentX < bigTargetX) {
+    threeMiddleCurrentX += rollSpeed * dt;
+    int currentBigRectW = std::min((int)threeMiddleCurrentX, (int)bigTargetX);
+    threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentBigRectW , (int)threeMiddleGrassTexture.getSize().y }));
+
+    for (int j : {1, 3}) {
+      spawnDirt(rollSprites[j]->getPosition());
+      float finalX = (200.0f - 8.0f) + (threeMiddleCurrentX * grassSizeX);
+      float centerY = groundY[j] + (grassTexture.getSize().y * 0.82f) / 2.0f;
+      if (j == 3) {
+        centerY += 8.0f;
+      }
+      float scaleM = std::max(0.35f, 1.0f - (threeMiddleCurrentX / bigTargetX));
+
+      float customRollSize = 0.75f;
+      float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
+
+      rollSprites[j]->setPosition({ finalX - (rollW * 0.1f), centerY - 6.0f });
+      rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
+
+      sf::Vector2f rPos = rollSprites[j]->getPosition();
+
+      capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (customRollSize / 2.0f))));
+      capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
+      capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
+    }
+
+    if (threeMiddleCurrentX >= bigTargetX) {
+      threeMiddleCurrentX = bigTargetX;
+      isThreeMiddleRunning = false;
+      isThreeMiddleFinished = true;
+      isFullGrassRunning = true;
+    }
+  }
+}
+
+void BackgroundManager::rollFiveGrass(float dt) {
+  float grassSizeX = 0.82f;
+  float fullTargetX = static_cast<float>(fullGrassTexture.getSize().x);
+
+  if (isFullGrassRunning && fullGrassCurrentX < fullTargetX) {
+    fullGrassCurrentX += rollSpeed * dt;
+    int currentFullRectW = std::min((int)fullGrassCurrentX, (int)fullTargetX);
+    fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentFullRectW , (int)fullGrassTexture.getSize().y }));
+
+    for (int j : {0, 4}) {
+      spawnDirt(rollSprites[j]->getPosition());
+      float finalX = (200.0f - 12.0f) + (fullGrassCurrentX * (grassSizeX + 0.01));
+      float centerY = groundY[j] + (grassTexture.getSize().y * (0.82f + 0.04f)) / 2.0f;
+      if (j == 0) centerY -= 25.0f;
+      if (j == 4) centerY += 20.0f;
+
+      float scaleM = std::max(0.35f, 1.0f - (fullGrassCurrentX / fullTargetX));
+      float customRollSize = 0.85f;
+      float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
+
+      rollSprites[j]->setPosition({ finalX - (rollW * 0.05f), centerY });
+      rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
+      sf::Vector2f rPos = rollSprites[j]->getPosition();
+
+      float capOffsetY = (rollTexture.getSize().y * customRollSize) * 0.15f;
+
+      if (j == 0) capOffsetY += 40.0f;
+      if (j == 4) capOffsetY += 40.0f;
+      capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + capOffsetY));
+      capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
+      capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
+    }
+    if (fullGrassCurrentX >= fullTargetX) {
+      fullGrassCurrentX = fullTargetX;
+      isFullGrassRunning = false;
+      isFullGrassFinished = true;
+    }
+  }
+}
+
+
+
+
 
 void BackgroundManager::update(float dt) {
 
@@ -161,7 +279,7 @@ void BackgroundManager::update(float dt) {
   }
 
   if (!isWaitingForPlay) introTimer += dt;
-    //float gameViewOffset = 1.5f;
+  //  //float gameViewOffset = 1.5f;
 
   if (isIntroRunning) {
    // introTimer += dt;
@@ -229,118 +347,130 @@ void BackgroundManager::update(float dt) {
       startPlanting();
     }
   }
-  if (!isIntroRunning) {
-    float grassSizeX = 0.82f;
 
-    if (isRolling[2] && currentX[2] < targetX) {
-      currentX[2] += rollSpeed * dt;
 
-      spawnDirt(rollSprites[2]->getPosition());
 
-      int maxTextureW = (int)grassTexture.getSize().x;
-      int currentRectW = std::min((int)currentX[2], maxTextureW);
 
-      grassSprites[2]->setTextureRect(sf::IntRect({ 0, 0 }, { currentRectW , (int)grassTexture.getSize().y }));
 
-      float rollSize = 0.7f;
-      float finalX = 200.0f + (currentX[2] * grassSizeX);
-      float centerY = groundY[2] + (grassTexture.getSize().y * 0.82f) / 2.0f;
-      float scaleM = std::max(0.35f, 1.0f - (currentX[2] / targetX));
-      float rollW = rollTexture.getSize().x * (scaleM * rollSize);
+  //if (!isIntroRunning) {
+  //  float grassSizeX = 0.82f;
 
-      rollSprites[2]->setPosition({ finalX - (rollW * 0.1f), centerY - rollSize });
-      rollSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, rollSize));
+  //  if (isRolling[2] && currentX[2] < targetX) {
+  //    currentX[2] += rollSpeed * dt;
 
-      sf::Vector2f rPos = rollSprites[2]->getPosition();
-      capSprites[2]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (rollSize / 2.0f))));
-      capSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, scaleM * rollSize));
-      capSprites[2]->rotate(sf::degrees(400.f * dt * 0.5f));
+  //    spawnDirt(rollSprites[2]->getPosition());
 
-      if (currentX[2] >= targetX) {
-        currentX[2] = targetX;
-        isRolling[2] = false;
-        isThreeMiddleRunning = true;
-      }
-    }
+  //    int maxTextureW = (int)grassTexture.getSize().x;
+  //    int currentRectW = std::min((int)currentX[2], maxTextureW);
 
-    float bigTargetX = static_cast<float>(threeMiddleGrassTexture.getSize().x);
+  //    grassSprites[2]->setTextureRect(sf::IntRect({ 0, 0 }, { currentRectW , (int)grassTexture.getSize().y }));
 
-    if (isThreeMiddleRunning && threeMiddleCurrentX < bigTargetX) {
-      threeMiddleCurrentX += rollSpeed * dt;
+  //    float rollSize = 0.7f;
+  //    float finalX = 200.0f + (currentX[2] * grassSizeX);
+  //    float centerY = groundY[2] + (grassTexture.getSize().y * 0.82f) / 2.0f;
+  //    float scaleM = std::max(0.35f, 1.0f - (currentX[2] / targetX));
+  //    float rollW = rollTexture.getSize().x * (scaleM * rollSize);
 
-      int currentBigRectW = std::min((int)threeMiddleCurrentX, (int)bigTargetX);
-      threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentBigRectW , (int)threeMiddleGrassTexture.getSize().y }));
+  //    rollSprites[2]->setPosition({ finalX - (rollW * 0.1f), centerY - rollSize });
+  //    rollSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, rollSize));
 
-      for (int j : {1, 3}) {
-        spawnDirt(rollSprites[j]->getPosition());
-        float finalX = (200.0f - 8.0f) + (threeMiddleCurrentX * grassSizeX);
-        float centerY = groundY[j] + (grassTexture.getSize().y * 0.82f) / 2.0f;
-        if (j == 3) {
-          centerY += 8.0f;
-        }
-        float scaleM = std::max(0.35f, 1.0f - (threeMiddleCurrentX / bigTargetX));
+  //    sf::Vector2f rPos = rollSprites[2]->getPosition();
+  //    capSprites[2]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (rollSize / 2.0f))));
+  //    capSprites[2]->setScale(sf::Vector2f(scaleM * rollSize, scaleM * rollSize));
+  //    capSprites[2]->rotate(sf::degrees(400.f * dt * 0.5f));
 
-        float customRollSize = 0.75f;
-        float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
+  //    if (currentX[2] >= targetX) {
+  //      currentX[2] = targetX;
+  //      isRolling[2] = false;
+  //      isThreeMiddleRunning = true;
+  //    }
+  //  }
 
-        rollSprites[j]->setPosition({ finalX - (rollW * 0.1f), centerY - 6.0f });
-        rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
+  //  float bigTargetX = static_cast<float>(threeMiddleGrassTexture.getSize().x);
 
-        sf::Vector2f rPos = rollSprites[j]->getPosition();
+  //  if (isThreeMiddleRunning && threeMiddleCurrentX < bigTargetX) {
+  //    threeMiddleCurrentX += rollSpeed * dt;
 
-        capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (customRollSize / 2.0f))));
-        capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
-        capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
-      }
+  //    int currentBigRectW = std::min((int)threeMiddleCurrentX, (int)bigTargetX);
+  //    threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentBigRectW , (int)threeMiddleGrassTexture.getSize().y }));
 
-      if (threeMiddleCurrentX >= bigTargetX) {
-        threeMiddleCurrentX = bigTargetX;
-        isThreeMiddleRunning = false;
-        isThreeMiddleFinished = true;
-        isFullGrassRunning = true;
-      }
-    }
+  //    for (int j : {1, 3}) {
+  //      spawnDirt(rollSprites[j]->getPosition());
+  //      float finalX = (200.0f - 8.0f) + (threeMiddleCurrentX * grassSizeX);
+  //      float centerY = groundY[j] + (grassTexture.getSize().y * 0.82f) / 2.0f;
+  //      if (j == 3) {
+  //        centerY += 8.0f;
+  //      }
+  //      float scaleM = std::max(0.35f, 1.0f - (threeMiddleCurrentX / bigTargetX));
 
-    float fullTargetX = static_cast<float>(fullGrassTexture.getSize().x);
-    if (isFullGrassRunning && fullGrassCurrentX < fullTargetX) {
-      fullGrassCurrentX += rollSpeed * dt;
-      int currentFullRectW = std::min((int)fullGrassCurrentX, (int)fullTargetX);
-      fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentFullRectW , (int)fullGrassTexture.getSize().y }));
+  //      float customRollSize = 0.75f;
+  //      float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
 
-      for (int j : {0, 4}) {
-        spawnDirt(rollSprites[j]->getPosition());
-        float finalX = (200.0f - 12.0f) + (fullGrassCurrentX * (grassSizeX + 0.01));
-        float centerY = groundY[j] + (grassTexture.getSize().y * (0.82f + 0.04f)) / 2.0f;
-        if (j == 0) centerY -= 25.0f;
-        if (j == 4) centerY += 20.0f;
+  //      rollSprites[j]->setPosition({ finalX - (rollW * 0.1f), centerY - 6.0f });
+  //      rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
 
-        float scaleM = std::max(0.35f, 1.0f - (fullGrassCurrentX / fullTargetX));
-        float customRollSize = 0.85f;
-        float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
+  //      sf::Vector2f rPos = rollSprites[j]->getPosition();
 
-        rollSprites[j]->setPosition({ finalX - (rollW * 0.05f), centerY });
-        rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
-        sf::Vector2f rPos = rollSprites[j]->getPosition();
+  //      capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + (rollTexture.getSize().y * (customRollSize / 2.0f))));
+  //      capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
+  //      capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
+  //    }
 
-        float capOffsetY = (rollTexture.getSize().y * customRollSize) * 0.15f;
+  //    if (threeMiddleCurrentX >= bigTargetX) {
+  //      threeMiddleCurrentX = bigTargetX;
+  //      isThreeMiddleRunning = false;
+  //      isThreeMiddleFinished = true;
+  //      isFullGrassRunning = true;
+  //    }
+  //  }
 
-        if (j == 0) capOffsetY += 40.0f;
-        if (j == 4) capOffsetY += 40.0f;
-        capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + capOffsetY));
-        capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
-        capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
-      }
-      if (fullGrassCurrentX >= fullTargetX) {
-        fullGrassCurrentX = fullTargetX;
-        isFullGrassRunning = false;
-        isFullGrassFinished = true;
-      }
-    }
-  }
+  //  float fullTargetX = static_cast<float>(fullGrassTexture.getSize().x);
+  //  if (isFullGrassRunning && fullGrassCurrentX < fullTargetX) {
+  //    fullGrassCurrentX += rollSpeed * dt;
+  //    int currentFullRectW = std::min((int)fullGrassCurrentX, (int)fullTargetX);
+  //    fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { currentFullRectW , (int)fullGrassTexture.getSize().y }));
+
+  //    for (int j : {0, 4}) {
+  //      spawnDirt(rollSprites[j]->getPosition());
+  //      float finalX = (200.0f - 12.0f) + (fullGrassCurrentX * (grassSizeX + 0.01));
+  //      float centerY = groundY[j] + (grassTexture.getSize().y * (0.82f + 0.04f)) / 2.0f;
+  //      if (j == 0) centerY -= 25.0f;
+  //      if (j == 4) centerY += 20.0f;
+
+  //      float scaleM = std::max(0.35f, 1.0f - (fullGrassCurrentX / fullTargetX));
+  //      float customRollSize = 0.85f;
+  //      float rollW = rollTexture.getSize().x * (scaleM * customRollSize);
+
+  //      rollSprites[j]->setPosition({ finalX - (rollW * 0.05f), centerY });
+  //      rollSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, customRollSize));
+  //      sf::Vector2f rPos = rollSprites[j]->getPosition();
+
+  //      float capOffsetY = (rollTexture.getSize().y * customRollSize) * 0.15f;
+
+  //      if (j == 0) capOffsetY += 40.0f;
+  //      if (j == 4) capOffsetY += 40.0f;
+  //      capSprites[j]->setPosition(sf::Vector2f(rPos.x + (rollW * 0.5f), rPos.y + capOffsetY));
+  //      capSprites[j]->setScale(sf::Vector2f(scaleM * customRollSize, scaleM * customRollSize));
+  //      capSprites[j]->rotate(sf::degrees(400.f * dt * 0.5f));
+  //    }
+  //    if (fullGrassCurrentX >= fullTargetX) {
+  //      fullGrassCurrentX = fullTargetX;
+  //      isFullGrassRunning = false;
+  //      isFullGrassFinished = true;
+  //    }
+  //  }
+  //}
+
+rollOneGrass(dt);            
+rollThreeGrass(dt);
+rollFiveGrass(dt);
+
+
+
   bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
   if (dirtSound) {
     if (anyRolling) {
-      dirtSound->setVolume(settings.soundFXVolume * 0.25f); // update volume
+      dirtSound->setVolume(settings.soundFXVolume * 0.25f); 
       if (!dirtSoundStarted) {
         dirtSound->play();
         dirtSoundStarted = true;
@@ -350,22 +480,6 @@ void BackgroundManager::update(float dt) {
       if (dirtSoundStarted) {
         dirtSound->stop();
         dirtSoundStarted = false;
-        //dayLevel.backGroundSprite->setOrigin(dayLevel.backGroundSprite->getLocalBounds().size / 2.0f);
-        //dayLevel.fullGrassSprite->setOrigin(dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f);
-        //dayLevel.camera.setSize((sf::Vector2f)WINDOW_SIZE);
-        ////dayLevel.fullGrassSprite->setOrigin({ dayLevel.fullGrassSprite->getLocalBounds().size / 2.0f });
-
-        //dayLevel.fullGrassSprite->setPosition({ 528, 372 });
-        //dayLevel.fullGrassSprite->setScale({ 1.295, 0.96 });
-
-        //dayLevel.backGroundSprite->setPosition({ 620, 300 });
-        //dayLevel.backGroundSprite->setScale({ 1.555, 1.06 });
-
-        //dayLevel.threeMiddleGrassSprite->setOrigin(dayLevel.threeMiddleGrassSprite->getLocalBounds().size / 2.0f);
-        //dayLevel.threeMiddleGrassSprite->setPosition({ 527, 363 });
-        //dayLevel.threeMiddleGrassSprite->setScale({ 1.255, 0.92 });
-
-       
       }
     }
   }

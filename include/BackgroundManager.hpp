@@ -80,7 +80,9 @@ struct BackgroundManager {
   void updateDirt(float dt);
   void playGameOverScreen(int deathRow);
   void updateGameOverScreen(float dt);
- 
+  void rollOneGrass(float dt);
+  void rollThreeGrass(float dt);
+  void rollFiveGrass(float dt);
 };
 
 
