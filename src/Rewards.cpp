@@ -3,7 +3,7 @@
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
 
-sf::Texture RewardManager::packetTextures[9] = {}; // change value according to number of plants LATER
+sf::Texture RewardManager::packetTextures[11] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
 RewardManager::CollectedPacket RewardManager::collectedPacket;
 bool RewardManager::isPacketCollected = false;
@@ -138,7 +138,7 @@ void RewardManager::CollectedPacket::update(float dt) {
           if (levelManager.currentLevel == maxLevelUnlocked) maxLevelUnlocked++;
           // Add reward plant to available collection LATER
         });
-      
+
       }, []() {});
   }
 

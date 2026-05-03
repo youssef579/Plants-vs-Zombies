@@ -36,7 +36,7 @@
 int gameState = 0;
 /*
   0 -> Home menu
-*/    
+*/
 float globalTimeModifier = 1.0f;
 
 Array<Bullet>bullets;
@@ -57,31 +57,6 @@ void updateGame() {
   dt *= settings.timeModifier * globalTimeModifier;
 
 
-  static bool pPressed = false;
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
-    if (!pPressed) {
-      newPause.isOpen = !newPause.isOpen;
-      pPressed = true;
-    }
-  }
-  else {
-    pPressed = false;
-  }
-  if (newPause.isOpen) {
-    newPause.update(*window);
-
-
-    dayLevel.draw(*window);
-    window->setView(*view);
-    gameWeather.draw(*window);
-    drawUI(dt);
-    drawSeedPackets();
-
-
-    newPause.draw(*window);
-
-    return;
-  }
 
   TransitionManager::update(dt);
 
@@ -126,6 +101,16 @@ void updateGame() {
       LawnMower::activateLawnMower(4);*/
 
     }
+    static bool pPressed = false;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
+      if (!pPressed) {
+        newPause.isOpen = !newPause.isOpen;
+        pPressed = true;
+      }
+    }
+    else {
+      pPressed = false;
+    }
     if (newPause.isOpen) {
       newPause.update(*window);
 
@@ -151,7 +136,7 @@ void updateGame() {
 
 
       sf::View uiView = window->getView();
-      
+
       newPause.draw(*window);
 
       window->setView(uiView);
