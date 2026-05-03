@@ -7,3 +7,4 @@ out
 run.sh
 storage/levels.txt
 storage/settings.txt
+storage/playerDate.txt
