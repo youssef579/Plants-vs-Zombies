@@ -2,7 +2,7 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <BackgroundManager.hpp>
-#include <packets/Packet.hpp> // USED FOR DEV MODE
+#include <Packets/Packet.hpp> // USED FOR DEV MODE
 #include <SunManager.hpp>     // USED FOR DEV MODE
 
 

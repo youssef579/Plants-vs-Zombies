@@ -5,7 +5,7 @@
 #include <PlantSelector.hpp>
 
 
-sf::Texture RewardManager::packetTextures[9] = {}; // change value according to number of plants LATER
+sf::Texture RewardManager::packetTextures[11] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
 RewardManager::CollectedPacket RewardManager::collectedPacket;
 bool RewardManager::isPacketCollected = false;
@@ -147,7 +147,7 @@ void RewardManager::CollectedPacket::update(float dt) {
           plantSelector.initSelector();
           // Add reward plant to available collection LATER
         });
-      
+
       }, []() {});
   }
 
