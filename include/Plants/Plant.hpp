@@ -9,17 +9,17 @@
 const float PLANT_BLINK_INTERVAL = 3.0f;
 
 enum PlantType {
-  SUN_FLOWER,
   PEASHOOTER,
   WALLNUT,
-  SNOWPEASHOOTER,
-  REPEATERPEA,
-  TALLNUT,
+  SUN_FLOWER,
   CHERRYBOMB,
   JALAPENO,
   POTATOMINE,
+  SNOWPEASHOOTER,
+  REPEATERPEA,
   ICESHROOM,
-  SQUASH
+  SQUASH,
+  TALLNUT
 }; // will add the other sorts of plants
 
 float getPlantHealth(PlantType type);

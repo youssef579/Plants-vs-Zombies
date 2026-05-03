@@ -29,12 +29,13 @@
 #include <Rewards.hpp>
 #include <newPauseMenu.hpp>
 #include <UI/TransitionManager.hpp>
+#include <PlantSelector.hpp>
 
 //bool isOpen = false;
 int gameState = 0;
 /*
   0 -> Home menu
-*/
+*/    
 float globalTimeModifier = 1.0f;
 
 Array<Bullet>bullets;
@@ -91,19 +92,20 @@ void updateGame() {
     if (runOnce) {
       shovel.init();
       Array<PlantType> plantTypes;
-      plantTypes.push(PEASHOOTER);
-      plantTypes.push(SUN_FLOWER);
-      plantTypes.push(WALLNUT);
-      plantTypes.push(TALLNUT);
-      plantTypes.push(REPEATERPEA);
-      plantTypes.push(SNOWPEASHOOTER);
-      plantTypes.push(CHERRYBOMB);
-      plantTypes.push(JALAPENO);
-      plantTypes.push(POTATOMINE);
-      plantTypes.push(ICESHROOM);
-      plantTypes.push(SQUASH);
+      //plantTypes.push(PEASHOOTER);
+      //plantTypes.push(SUN_FLOWER);
+      //plantTypes.push(WALLNUT);
+      //plantTypes.push(TALLNUT);
+      //plantTypes.push(REPEATERPEA);
+      //plantTypes.push(SNOWPEASHOOTER);
+      //plantTypes.push(CHERRYBOMB);
+      //plantTypes.push(JALAPENO);
+      //plantTypes.push(POTATOMINE);
+      //plantTypes.push(ICESHROOM);
+      //plantTypes.push(SQUASH);
       fillPackets(plantTypes);
       //initGrid();
+      plantSelector.initSelector();
       dayLevel.init();
       newPause.init();
       gameWeather.isRaining = true;
@@ -123,8 +125,39 @@ void updateGame() {
       LawnMower::activateLawnMower(4);*/
 
     }
+    if (newPause.isOpen) {
+      newPause.update(*window);
 
-    if (isPaused || newPause.isOpen) {
+
+      gameWeather.update(dt);
+
+      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+        dayLevel.dirtSound->pause();
+        dayLevel.dirtSoundStarted = false;
+      }
+
+      dayLevel.draw(*window);
+
+      window->setView(*view);
+      drawGrid();
+      Bullet::drawAll();
+      Zombie::drawAll();
+      gameWeather.draw(*window);
+      drawUI();
+      drawSeedPackets();
+      shovel.drawBank();
+      Sun::drawAll();
+
+
+      sf::View uiView = window->getView();
+      
+      newPause.draw(*window);
+
+      window->setView(uiView);
+
+      return;
+    }
+    if (isPaused) {
       if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
         dayLevel.dirtSoundStarted = false;
@@ -141,6 +174,8 @@ void updateGame() {
     updateGrid(dt);
 
     dayLevel.update(dt);
+    plantSelector.updateSelector(dt, *window);
+
     dayLevel.draw(*window);
     window->setView(*view);
     drawGrid();
@@ -190,7 +225,7 @@ void updateGame() {
     dayLevel.drawOverlays(*window);
     RewardManager::draw();
 
-
+    plantSelector.drawSelector(*window);
     break;
   }
   TransitionManager::draw();

@@ -75,7 +75,7 @@ void LevelManager::loadLevelData(int levelNum) {
   for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
-    Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 10.0f);
+    Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
   }
 
    LawnMower::init();
@@ -94,7 +94,8 @@ void LevelManager::restartLevel() {
 }
 
 void LevelManager::update(float dt) {
-  timer += dt;
+  if(dayLevel.introTimer>5.5f)
+    timer += dt;
   static int lastRow = 0;
 
 

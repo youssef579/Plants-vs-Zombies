@@ -3,7 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <string>
 #include <vector>
-
+#include <PlantSelector.hpp>
 
 
 struct DirtParticle {
@@ -60,6 +60,9 @@ struct BackgroundManager {
   bool isFullGrassFinished = false;
   bool dirtSoundStarted = false;
   float fullGrassCurrentX = 0.0f;
+  bool introSlidingStarted = false;
+  bool isWaitingForPlay = false;
+  bool playBtnClicked = false;
   std::vector <DirtParticle> dirtPool;
 
   float targetX = 0.0f;

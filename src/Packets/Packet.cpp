@@ -10,6 +10,7 @@
 Array<SeedPacket> packets;
 
 void fillPackets(Array<PlantType> &types) {
+
   static bool runOnce = true;
   static sf::Texture &peashooterTexture =
       getTexture("assets/Plants/peashooter.png");
@@ -83,74 +84,77 @@ void fillPackets(Array<PlantType> &types) {
     runOnce = false;
   }
 
+  //packets.size = 0; 
+  packets.erase([](SeedPacket& s) {return true; });
   for (int i = 0; i < types.size; i++) {
+    float posX = 90.0f + (59.0f * i);
     switch (types[i]) {
     case PEASHOOTER:
       packets.push({100, 5, "peashooter",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     peashooterSprite, PEASHOOTER});
       break;
 
     case SUN_FLOWER:
       packets.push({50, 5, "sunflower",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     sunFlowerSprite, SUN_FLOWER});
       break;
 
     case WALLNUT:
       packets.push(
           {50, 5, "wallnut",
-        {90 + 59.0f * i, 11},
+        {posX, 11},
         wallNutSprite, WALLNUT});
       break;
 
     case SNOWPEASHOOTER:
       packets.push({175, 5, "peaice",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     icepeaSprite, SNOWPEASHOOTER});
       break;
 
     case REPEATERPEA:
       packets.push({200, 5, "repeated",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     repeaterpeaSprite, REPEATERPEA});
       break;
 
     case TALLNUT:
       packets.push(
           {125, 5, "tallnut",
-        {90 + 59.0f * i, 11},
+        {posX, 11},
         tallNutSprite, TALLNUT});
       break;
 
     case CHERRYBOMB:
       packets.push({150, 1, "cherrybomb",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     cherryBombSprite, CHERRYBOMB});
       break;
 
     case JALAPENO:
       packets.push(
           {125, 1, "jalapeno",
-        {90 + 59.0f * i, 11},
+        {posX, 11},
         jalapenoSprite, JALAPENO});
       break;
 
     case POTATOMINE:
       packets.push({ 25, 1, "potatomine",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     potatoMineSprite, POTATOMINE });
       break;
     case ICESHROOM:
       packets.push({ 75, 1, "iceshroom",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     iceShroomSprite, ICESHROOM });
       break;
     case SQUASH:
       packets.push({ 50,
                     1,
                     "squash",
-                    {90 + 59.0f * i, 11},
+                    {posX, 11},
                     squashSprite,
                     SQUASH });
       break;
