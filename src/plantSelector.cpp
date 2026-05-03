@@ -74,6 +74,8 @@ void PlantsSelector::initSelector() {
     if(!plantSelector.packets[i].sprite) plantSelector.packets[i].sprite = new sf::Sprite(tex);
     plantSelector.packets[i].sprite->setScale({ 1.2f , 1.2f });
 
+   // std::cout << "Plant ID: " << i << " | Is Unlocked? " << isPlantUnlocked[i] << "\n";
+
     if (isPlantUnlocked[i]) {
       plantSelector.packets[i].sprite->setColor(sf::Color::White); 
     }
@@ -121,7 +123,13 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
           plantSelector.currentSelectedCnt = 0;
           for (int j = 0; j < packetsNum; j++) {
             plantSelector.packets[j].isSelected = false;
-            plantSelector.packets[j].sprite->setColor(sf::Color::White);
+
+            if (isPlantUnlocked[j]) {
+              plantSelector.packets[j].sprite->setColor(sf::Color::White);
+            }
+            else {
+              plantSelector.packets[j].sprite->setColor(sf::Color(50, 50, 50));
+            }
           }
           for (int s = 0; s < 7; s++) {
             plantSelector.selectedSlot[s].active = false;
@@ -147,9 +155,19 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
   for (int i = 0; i < packetsNum ; i++) {
    
     plantSelector.packets[i].sprite->setPosition(getPacketPosition(i) );
-    
+
+    if (!isPlantUnlocked[i]) {
+      plantSelector.packets[i].sprite->setColor(sf::Color(50, 50, 50));
+    }
+    else if (plantSelector.packets[i].isSelected) {
+      plantSelector.packets[i].sprite->setColor(sf::Color(100, 100, 100));
+    }
+    else {
+      plantSelector.packets[i].sprite->setColor(sf::Color::White);
+    }
+
     if (plantSelector.isVisible && !plantSelector.packets[i].isSelected &&
-      (plantSelector.currentSelectedCnt < 7 && isPlantUnlocked[i])) {
+      (plantSelector.currentSelectedCnt < 7) && isPlantUnlocked[i]) {
       if (plantSelector.packets[i].sprite->getGlobalBounds().contains(worldPos)) {
         if (isLeftPressed && !mousePressedLastFrame){
           int emptySlot = -1;
