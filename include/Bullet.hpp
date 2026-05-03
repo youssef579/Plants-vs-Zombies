@@ -6,7 +6,7 @@
 const float BULLET_VELOCITY = 300;
 const float PARTICLE_DEFAULT_TIMER = 0.3f;
 
-enum BulletType { PEA, SNOWPEA };
+enum BulletType { PEA, SNOWPEA, SHROOM };
 
 struct Bullet {
   sf::Sprite sprite;
