@@ -62,6 +62,7 @@ struct Zombie {
     float startDelay  = 0; // time the zombie waits in idle before it starts walking
 
     float corpseDissapearTimer = 0.0f;
+    float groanTimer = 0.0f;
 
 
     bool headless = false;

@@ -68,6 +68,13 @@ void Sounds::play(std::string op) {
   else if (op == "IceShroom")     sound = new sf::Sound(sounds.buffers.iceShroom);
   else if (op == "SquashHmm")     sound = new sf::Sound(sounds.buffers.squashHmm);
   else if (op == "SquashHmm2")    sound = new sf::Sound(sounds.buffers.squashHmm2);
+  else if (op == "Awooga")        sound = new sf::Sound(sounds.buffers.awooga);
+  else if (op == "Groan1")        sound = new sf::Sound(sounds.buffers.groan1);
+  else if (op == "Groan2")        sound = new sf::Sound(sounds.buffers.groan2);
+  else if (op == "Groan3")        sound = new sf::Sound(sounds.buffers.groan3);
+  else if (op == "Groan4")        sound = new sf::Sound(sounds.buffers.groan4);
+  else if (op == "Groan5")        sound = new sf::Sound(sounds.buffers.groan5);
+  else if (op == "Groan6")        sound = new sf::Sound(sounds.buffers.groan6);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -110,6 +117,13 @@ void Sounds::init() {
   sounds.buffers.iceShroom     = getSoundBuffer(sounds.paths.iceShroom);
   sounds.buffers.squashHmm     = getSoundBuffer(sounds.paths.squashHmm);
   sounds.buffers.squashHmm2    = getSoundBuffer(sounds.paths.squashHmm2);
+  sounds.buffers.awooga        = getSoundBuffer(sounds.paths.awooga);
+  sounds.buffers.groan1        = getSoundBuffer(sounds.paths.groan1);
+  sounds.buffers.groan2        = getSoundBuffer(sounds.paths.groan2);
+  sounds.buffers.groan3        = getSoundBuffer(sounds.paths.groan3);
+  sounds.buffers.groan4        = getSoundBuffer(sounds.paths.groan4);
+  sounds.buffers.groan5        = getSoundBuffer(sounds.paths.groan5);
+  sounds.buffers.groan6        = getSoundBuffer(sounds.paths.groan6);
 
 }
 

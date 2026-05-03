@@ -316,7 +316,7 @@ void BackgroundManager::update(float dt) {
   bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
   if (dirtSound) {
     if (anyRolling) {
-      dirtSound->setVolume(settings.soundFXVolume); // update volume
+      dirtSound->setVolume(settings.soundFXVolume * 0.25f); // update volume
       if (!dirtSoundStarted) {
         dirtSound->play();
         dirtSoundStarted = true;

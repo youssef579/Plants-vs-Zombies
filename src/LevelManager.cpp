@@ -4,6 +4,7 @@
 #include <Bullet.hpp>
 #include <Rewards.hpp>
 #include <LawnMower.hpp>
+#include <LevelProgress.hpp>
 
 LevelManager levelManager;
 
@@ -55,6 +56,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   RewardManager::spawnedLevelReward = false;
   RewardManager::isPacketCollected = false;
   RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
+
+  resetLevelProgress();
 
 }
 
@@ -117,7 +120,7 @@ void LevelManager::update(float dt) {
   zombieSpawnDelay = currWave->duration / currWave->zombieTypes.size; // delay between each zombie in wave
 
   zombieSpawnTimer += dt;
-
+  //std::cout << zombieSpawnTimer << "\n";
   if (zombieSpawnTimer >= zombieSpawnDelay) {
     int newRow = randomRange(0, ROWS_NUMBER-1);
     if (newRow == lastRow) newRow = randomRange(0, ROWS_NUMBER - 1);
@@ -143,21 +146,26 @@ void LevelManager::update(float dt) {
       break;
     }*/
 
-
+    //std::cout << "Spawned zombie------------------------------------------\n";
     Zombie::createZombie(1250, grid[newRow][COLUMNS_NUMBER-1].rectangle.getGlobalBounds().getCenter().y, currWave->zombieTypes[zombiesSpawned], newRow, 0);
-    zombieSpawnTimer -= zombieSpawnDelay;
+    //zombieSpawnTimer -= zombieSpawnDelay;
+    zombieSpawnTimer = 0;
     zombiesSpawned++;
     Zombie::totalZombies++;
   }
 
   if (zombiesSpawned == currWave->zombieTypes.size) {
     currentWave++;
-    zombieSpawnTimer = 0;
+    //zombieSpawnTimer = 0;
     zombiesSpawned = 0;
+    sounds.play("Awooga");
+    //std::cout << zombieSpawnTimer << "\n";
   }
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
+  else
+    zombieSpawnTimer = 999999.0f; // spawn first zombie instantly except for first wave
 
 
 

@@ -1,15 +1,13 @@
 Day
 REPEATERPEA
 3
-1 30 80
-1 20 1 
-1 2 1
-0 0 1
+10 35 60
+1 30 1 
+1 1 1
+0 1 1
 
 Regular
 
-
-Screendoor
 Flag
 
 Soccer

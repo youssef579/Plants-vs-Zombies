@@ -49,7 +49,14 @@ struct Sounds {
       loseMusic,
       iceShroom,
       squashHmm,
-      squashHmm2;
+      squashHmm2,
+      awooga,
+      groan1,
+      groan2,
+      groan3,
+      groan4,
+      groan5,
+      groan6;
   };
 
   struct Paths {
@@ -80,7 +87,14 @@ struct Sounds {
       loseMusic       = "assets/sounds/sfx_loseMusic.ogg",
       iceShroom       = "assets/sounds/sfx_iceshroom.mp3",
       squashHmm       = "assets/sounds/sfx_squashHmm.ogg",
-      squashHmm2      = "assets/sounds/sfx_squashHmm2.ogg";
+      squashHmm2      = "assets/sounds/sfx_squashHmm2.ogg",
+      awooga          = "assets/sounds/sfx_awooga.ogg",
+      groan1          = "assets/sounds/sfx_groan1.ogg",
+      groan2          = "assets/sounds/sfx_groan2.ogg",
+      groan3          = "assets/sounds/sfx_groan3.ogg",
+      groan4          = "assets/sounds/sfx_groan4.ogg",
+      groan5          = "assets/sounds/sfx_groan5.ogg",
+      groan6          = "assets/sounds/sfx_groan6.ogg";
   };
 
 

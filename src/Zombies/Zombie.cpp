@@ -157,6 +157,7 @@ void Zombie::createZombie(float x, float y, Type type, int ROW, float startDel) 
   zombie->position = {x, y};
   //zombie->gridPosition = positionToGrid({ x, y });
   //zombie->velocity = {-speeds[type], 0};
+  zombie->groanTimer = randomRange(8.0f, 20.0f);
 
   zombie->health = healths[type];
   zombie->strength = strengths[type];
@@ -243,6 +244,14 @@ bool Zombie::update(float dt) {
       freezeTimer = 0;
       reAnimator.animSpeedMulti = speeds[type];
     }
+  }
+
+  //std::cout << groanTimer << "\n";
+  groanTimer -= dt;
+  if (groanTimer <= 0) {
+    //std::cout << "Playing Groan\n";
+    sounds.play("Groan" + std::to_string(randomRange(1, 6)));
+    groanTimer = randomRange(8.0f, 35.0f);
   }
 
   if (startDelay > 0)
