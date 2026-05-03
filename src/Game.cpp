@@ -1,4 +1,5 @@
-#include "Plants/Plant.hpp"
+#include <LevelProgress.hpp>
+#include <Plants/Plant.hpp>
 #include <Packets/Shovel.hpp>
 #include <Packets/Packet.hpp>
 #include <AssetsManager.hpp>
@@ -72,7 +73,7 @@ void updateGame() {
     dayLevel.draw(*window);
     window->setView(*view);
     gameWeather.draw(*window);
-    drawUI();
+    drawUI(dt);
     drawSeedPackets();
 
 
@@ -155,7 +156,7 @@ void updateGame() {
     ReAnimator::updatePhysicsObjects(dt);
     ReAnimator::drawPhysicsObjects(window);
 
-    drawUI();
+    drawUI(dt);
     shovel.drawBank();
     Sun::manageSuns(dt);
 

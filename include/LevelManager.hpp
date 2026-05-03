@@ -1,5 +1,7 @@
 #pragma once
+#include <AssetsManager.hpp>
 #include <Array.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <Zombies/Zombie.hpp>
 
 
@@ -18,9 +20,9 @@ struct LevelManager {
       float delay;
       float duration;
       Array<Zombie::Type> zombieTypes;
+      sf::Sprite waveSprite = sf::Sprite(getTexture("assets/levelProgress/wave.png")); // Used in Level Progress
       bool isBigWave;
     };
-
 
     Location location = Day;
     int numberOfWaves = 0;

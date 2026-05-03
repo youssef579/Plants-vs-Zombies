@@ -136,10 +136,10 @@ void updateHome() {
 
     selectorScreenButton3.setScale({ 0.8f, 0.8f });
     selectorScreenButton3.setPosition({ (float)WINDOW_SIZE.x - 312.0f, (float)WINDOW_SIZE.y - 280.0f });
-    
+
     selectorScreenButton4.setScale({ 0.8f, 0.8f });
     selectorScreenButton4.setPosition({ (float)WINDOW_SIZE.x - 315.0f, (float)WINDOW_SIZE.y - 222.0f });
-    
+
     selectorScreenButtonOptions.setScale({0.82f, 0.82f});
     selectorScreenButtonOptions.setPosition({ (float)WINDOW_SIZE.x - 192.0f, (float)WINDOW_SIZE.y - 95.0f });
 
@@ -242,8 +242,8 @@ void updateHome() {
                 music.play("DayStage");
                 gameState = currentLevel;
                 });
-              
-              
+
+
             });
         },
         []() {
@@ -266,7 +266,7 @@ void updateHome() {
     //pauseMenu.drawOptionsMenu();
   }
 
-  
+
 
   if (homeState != 0 && homeState != 1 && homeState != 3)
     drawOverlay();
@@ -329,7 +329,7 @@ void updateCredits() {
     }
   }
   creditsExitButton.setPosition(creditsNote.getPosition() + sf::Vector2f(0, creditsNote.getLocalBounds().size.y - 25.0f));
-  
+
 
   window->draw(creditsNote);
   window->draw(creditsExitButton);
