@@ -8,9 +8,14 @@
 #include <globals.hpp>
 #include <ReAnimation/ReAnimation.hpp>
 
+#include <PvP/Peer.hpp>
+
 sf::Vector2f mousePosition;
 
+Peer peer;
 
+bool plants = 0;
+unsigned short ports[2] = {53000, 53001};
 
 int main() {
   initWindow();
@@ -21,6 +26,13 @@ int main() {
   initWeather();
   initReAnimDefs();
   pauseMenu.init();
+
+  std::cin >> plants;
+
+  if(plants == 0) peer.player = Peer::Plants;
+  else peer.player = Peer::Zombies;
+
+  peer.init(ports[plants]);
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));

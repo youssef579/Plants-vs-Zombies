@@ -3,6 +3,8 @@
 #include <Packets/Shovel.hpp>
 #include <SunManager.hpp>
 
+#include <Pvp/Peer.hpp>
+
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
 void initGrid(){
@@ -61,6 +63,10 @@ void updateGrid(float dt){
 
 
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
+                command = Peer::Spawn;
+                row = i;
+                column = j;
+                type = packets[k].plantType;
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
                     grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SUNFLOWER));

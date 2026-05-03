@@ -17,3 +17,6 @@ void onClick(sf::FloatRect rect, float rot, std::function<void()> actionClick,
 
 int randomRange(int x, int y);       // Return random int from x to y
 float randomRange(float x, float y); // Return random float from x to y
+
+extern bool plants;
+extern unsigned short ports[2];
