@@ -9,6 +9,7 @@
 #include <ReAnimation/ReAnimation.hpp>
 #include <ParticleSystem.hpp>
 #include <Grid.hpp>
+#include <PlantSelector.hpp>
 
 sf::Vector2f mousePosition;
 
@@ -25,6 +26,7 @@ int main() {
   ParticleSystem::init();
   pauseMenu.init();
   initGrid();
+  plantSelector.initSelector();
   setWindowMetaData();
 
   while (window->isOpen()) {

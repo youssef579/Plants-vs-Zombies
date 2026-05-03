@@ -160,10 +160,12 @@ void BackgroundManager::update(float dt) {
     iceFlashTimer = std::max(0.0f, iceFlashTimer);
   }
 
+  if (!isWaitingForPlay) introTimer += dt;
+    //float gameViewOffset = 1.5f;
 
   if (isIntroRunning) {
-    introTimer += dt;
-    float gameViewOffset = 1.5f;
+   // introTimer += dt;
+    //float gameViewOffset = 1.5f;
     if (introTimer < 1.5f) {
       float currentZoom = 1 - (std::max(introTimer, 0.0f) / 1.5f)*0.075f; // allows negative values for delays
       camera.setSize({800.0f * currentZoom, 600.0f * currentZoom});
@@ -180,17 +182,39 @@ void BackgroundManager::update(float dt) {
       camera.setSize({800.0f * 0.925f, 600.0f * 0.925f});
       camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
       gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
+
+      //ather (add)---------------------------------------
+      if (introTimer >= 2.15f && !introSlidingStarted) {
+        plantSelector.slideIn();
+        introSlidingStarted = true;
+        isWaitingForPlay = true;
+      }
+      //---------------------------------------------------
     }
-    else if (introTimer >= 5.5f && introTimer < 8.5f) {
+    // ather(add)------------------------------------------
+    plantSelector.updateSelector(dt, *window); 
+    if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
+      sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
+      if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        plantSelector.slideOut();
+        playBtnClicked = true;
+        isWaitingForPlay = false;
+        introTimer = 5.5f;
+      }
+    }
+    //----------------------------------------------------------
+
+
+    if (introTimer >= 5.5f && introTimer < 6.2f) { // changed from (8.5f -to-> 6.2f) by ather 
       //camera.setCenter({ 770.f - ((introTimer - 5.5f) * 400.f), 312.f });
-      camera.setCenter({ 770.f - ((std::min(introTimer,6.2f) - 5.5f) * 400.f), 312.f});
-      gameView->setCenter({ 995.f - ((std::min(introTimer,6.2f) - 5.5f) * 600.f), 303.f });
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
       //gameView->setCenter({ 995.f - ((introTimer - 5.5f) * 600.f), 303.f });
     }
     else if (introTimer >= 8.5f) {
       // camera.setCenter({ 770.f - ((6.2f - 5.5f) * 400.f), 312.f }); // ensure correct last position
-      camera.setCenter({ 770.f - ((std::min(introTimer,6.2f) - 5.5f) * 400.f), 312.f});
-      gameView->setCenter({ 995.f - ((std::min(introTimer,6.2f) - 5.5f) * 600.f), 303.f });
+      camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
+      gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
       //gameView->setCenter({ 995.f - ((6.2f- 5.5f) * 600.f), 303.f });
       isIntroRunning = false;
 

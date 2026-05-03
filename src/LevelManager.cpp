@@ -59,6 +59,36 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
   resetLevelProgress();
 
+  // Packets
+  fillPackets(Array<PlantType>());
+  //plantSelector.initSelector();
+  dayLevel.playBtnClicked = false;
+  dayLevel.introSlidingStarted = false;
+  dayLevel.isWaitingForPlay = false;
+  plantSelector.isVisible = false;
+  plantSelector.tarX = -600.0f;
+  plantSelector.currentSelectedCnt = 0;
+  chosenPlants.erase([](PlantType &p) {return true; });
+
+
+  for (int j = 0; j < packetsNum; j++) {
+    plantSelector.packets[j].isSelected = false;
+    plantSelector.packets[j].sprite->setColor(sf::Color::White);
+  }
+
+  for (int i = 0; i < 7; i++) {
+    plantSelector.selectedSlot[i].active = false;
+    if (plantSelector.selectedSlot[i].sprite) {
+      delete plantSelector.selectedSlot[i].sprite;
+      plantSelector.selectedSlot[i].sprite = nullptr;
+    }
+  }
+  
+  
+
+
+  
+
 }
 
 
@@ -78,7 +108,7 @@ void LevelManager::loadLevelData(int levelNum) {
   for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
-    Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 10.0f);
+    Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
   }
 
    LawnMower::init();
@@ -97,7 +127,8 @@ void LevelManager::restartLevel() {
 }
 
 void LevelManager::update(float dt) {
-  timer += dt;
+  if(dayLevel.introTimer>5.5f)
+    timer += dt;
   static int lastRow = 0;
 
 

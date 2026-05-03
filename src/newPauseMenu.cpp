@@ -28,7 +28,7 @@ void newPauseMenu::init() {
   pauseMenu->setOrigin({ pauseMenu->getLocalBounds().size.x / 2.f, pauseMenu->getLocalBounds().size.y / 2.f });
   pauseMenu->setPosition({533.f + offsetX, 300.f + offsetY});
 
-
+  
   if (!resumeBtn) resumeBtn = new sf::Sprite(getTexture(folder + "resumeButton(4).png"));
   resumeBtn->setScale({ 0.9,0.9 });
   resumeBtn->setOrigin({ resumeBtn->getLocalBounds().size.x / 2.f, resumeBtn->getLocalBounds().size.y / 2.f });

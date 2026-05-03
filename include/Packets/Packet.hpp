@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <Plants/Plant.hpp>
 
+
 struct SeedPacket {
   int cost;
   float reloadDuration;
@@ -32,3 +33,4 @@ void drawSeedPackets();
 
 
 extern Array<SeedPacket> packets;
+extern Array<PlantType> chosenPlants;
