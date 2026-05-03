@@ -2,6 +2,8 @@
 #include <Zombies/Zombie.hpp>
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
+#include <PlantSelector.hpp>
+
 
 sf::Texture RewardManager::packetTextures[9] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
@@ -135,7 +137,14 @@ void RewardManager::CollectedPacket::update(float dt) {
           gameState = 0;
           homeState = 0;
           music.play("Menu");
+
+          int wonPlantId = levelManager.levels[levelManager.currentLevel - 1]->reward;
+
+          isPlantUnlocked[wonPlantId] = true; 
+
           if (levelManager.currentLevel == maxLevelUnlocked) maxLevelUnlocked++;
+
+          plantSelector.initSelector();
           // Add reward plant to available collection LATER
         });
       

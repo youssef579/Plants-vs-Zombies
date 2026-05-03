@@ -5,6 +5,12 @@
 #include <iostream>
 #include <Packets/Packet.hpp>
 
+bool isPlantUnlocked[packetsNum] = { false };
+
+void initGameProgress() {
+  isPlantUnlocked[PEASHOOTER] = true; 
+}
+
 Array<PlantType> chosenPlants;
 
 PlantsSelector plantSelector;
@@ -66,7 +72,14 @@ void PlantsSelector::initSelector() {
     sf::Texture& tex = getTexture("assets/packets/" + std::to_string(i) + ".png");
    // std::cout << i << '\n';
     if(!plantSelector.packets[i].sprite) plantSelector.packets[i].sprite = new sf::Sprite(tex);
-    plantSelector.packets[i].sprite->setScale({ 1.2f , 1.2f });       
+    plantSelector.packets[i].sprite->setScale({ 1.2f , 1.2f });
+
+    if (isPlantUnlocked[i]) {
+      plantSelector.packets[i].sprite->setColor(sf::Color::White); 
+    }
+    else {
+      plantSelector.packets[i].sprite->setColor(sf::Color(50, 50, 50)); 
+    }
   }
 }
 
@@ -133,10 +146,10 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
 
   for (int i = 0; i < packetsNum ; i++) {
    
-    plantSelector.packets[i].sprite->setPosition(getPacketPosition(i));
+    plantSelector.packets[i].sprite->setPosition(getPacketPosition(i) );
     
     if (plantSelector.isVisible && !plantSelector.packets[i].isSelected &&
-      (plantSelector.currentSelectedCnt < 7)) {
+      (plantSelector.currentSelectedCnt < 7 && isPlantUnlocked[i])) {
       if (plantSelector.packets[i].sprite->getGlobalBounds().contains(worldPos)) {
         if (isLeftPressed && !mousePressedLastFrame){
           int emptySlot = -1;
@@ -251,7 +264,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
         float packetScale = 1.15f;
 
         plantSelector.selectedSlot[i].sprite->setScale({ packetScale,packetScale });
-        plantSelector.selectedSlot[i].sprite->setPosition({ baseStartX + (i * gapX), 11.0f });
+        plantSelector.selectedSlot[i].sprite->setPosition({ baseStartX + (i * gapX), 11.f });
 
         window.draw(*plantSelector.selectedSlot[i].sprite);
       }
