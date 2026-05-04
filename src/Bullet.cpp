@@ -1,14 +1,18 @@
-#include <cmath>
-#include <globals.hpp>
 #include <AssetsManager.hpp>
 #include <Bullet.hpp>
 #include <Window.hpp>
 #include <Zombies/Zombie.hpp>
+#include <cmath>
+#include <globals.hpp>
 
 Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
-    : sprite(typeValue == PEA ? getTexture("assets/bullets/pea.png") : getTexture("assets/bullets/peaice.png")) {
+    : sprite(typeValue == PEA
+                 ? getTexture("assets/bullets/pea.png")
+                 : (typeValue == SNOWPEA
+                        ? getTexture("assets/bullets/peaice.png")
+                        : getTexture("assets/bullets/shroom.png"))) {
   shadow.setRadius(8);
-  shadow.setFillColor(sf::Color(255, 255, 255, 255));
+  shadow.setFillColor(sf::Color(0, 0, 0, 100));
   shadow.setScale({1.5f, 0.5f});
   shadow.setOrigin(shadow.getLocalBounds().getCenter());
   shadow.setPosition({position.x, position.y + 50});
@@ -23,9 +27,10 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   damage = 20;
   remove = false;
 
-  if(type == BulletType::PEA) effect = 0;
-  else if (type == BulletType::SNOWPEA) effect = 1;
-
+  if (type == BulletType::PEA || type == BulletType::SHROOM)
+    effect = 0;
+  else if (type == BulletType::SNOWPEA)
+    effect = 1;
 }
 
 void Bullet::draw() {
@@ -43,35 +48,30 @@ void Bullet::update(float deltaTime) {
     // Check zombie
 
     for (int i = 0; i < zombies[row].size; i++) {
-      if (zombies[row][i]->reAnimator.getGlobalBounds().contains(sprite.getPosition())) {
-        if (!(zombies[row][i]->health > 0)) continue; // skip dead zombies
+      if (zombies[row][i]->reAnimator.getGlobalBounds().contains(
+              sprite.getPosition())) {
+        if (!(zombies[row][i]->health > 0))
+          continue; // skip dead zombies
         // Bullet hit zombie
         sounds.play("Splat" + std::to_string(randomRange(1, 3)));
         zombies[row][i]->takeDamage(damage, effect);
         particleTimer = PARTICLE_DEFAULT_TIMER;
 
-        if (type == PEA)
+        if (type == PEA) {
           sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
-        else if (type == SNOWPEA)
+          sprite.setTextureRect(
+              sf::IntRect({24 * randomRange(0, 3), 0}, {24, 24}));
+        } else if (type == SNOWPEA) {
           sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
-
-        sprite.setTextureRect(sf::IntRect({ 24 * randomRange(0, 3), 0 }, { 24, 24 }));
+          sprite.setTextureRect(
+              sf::IntRect({24 * randomRange(0, 3), 0}, {24, 24}));
+        } else if (type == SHROOM)
+          sprite.setTexture(getTexture("assets/bullets/shroom_particles.png"));
       }
-
     }
 
     if (sprite.getPosition().x > WINDOW_SIZE.x) { // Bullet out of bounds
       remove = true;
-    }
-    else if (sprite.getPosition().x > 1600) { // This is only made to show the particles effect, will be removed later
-      particleTimer = PARTICLE_DEFAULT_TIMER;
-
-      if (type == PEA)
-        sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
-      else if (type == SNOWPEA)
-        sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
-
-      sprite.setTextureRect(sf::IntRect({24 * randomRange(0, 3), 0}, {24, 24})); // Select random particle
     }
   } else { // Bullet particles
     particleTimer -= deltaTime;
@@ -85,12 +85,11 @@ void Bullet::update(float deltaTime) {
   }
 }
 
-
 void Bullet::updateAll(float dt) {
   for (int i = 0; i < bullets.size; i++)
     bullets[i].update(dt);
 
-  bullets.erase([](const Bullet &b) {return b.remove; });
+  bullets.erase([](const Bullet &b) { return b.remove; });
 }
 
 void Bullet::drawAll() {
