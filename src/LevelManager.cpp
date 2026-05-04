@@ -120,6 +120,13 @@ void LevelManager::loadLevelData(int levelNum) {
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
   }
+  if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night) {
+    gameWeather.isRaining = true;
+  }
+  else {
+    gameWeather.isRaining = false;
+  }
+  gameWeather.init();
 
   dayLevel.init(levelManager.levels[currentLevel - 1]->location);
    LawnMower::init();

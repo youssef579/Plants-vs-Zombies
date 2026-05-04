@@ -14,7 +14,7 @@ struct WeatherSystem {
     //  Lightning Volume = settings.weatherFXVolume
     //  Rain Volume = Lightning Volume * RAIN_VOLUME_MULTIPLIER
 
-    bool isRaining = false;                              // If the current level contains rain
+    bool isRaining ;                              // If the current level contains rain
     bool isPaused = false;                               // If rain is paused (in pause menu)
     static constexpr float RAIN_VOLUME_MULTIPLIER = 0.2f;
     static constexpr float RAIN_ANGLE = 15.0f;           // Angle of Rain (deg) from y-axis
