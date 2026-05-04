@@ -33,6 +33,8 @@ struct PlantsSelector {
   sf::Texture playBtnNormal;
   sf::Texture playBtnHover;
 
+  sf::Text* playText = nullptr;
+
   float currX;
   float tarX;
   float speed;

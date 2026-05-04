@@ -2,6 +2,7 @@
 #include <UI/Draw.hpp>
 #include <Packets/Shovel.hpp>
 #include <LevelProgress.hpp>
+#include <PlantSelector.hpp>
 
 void drawUI(float dt) {
   static bool runOnce = true;
@@ -31,4 +32,5 @@ void drawUI(float dt) {
   for (int i = 0; i < packets.size; i++)
     packets[i].draw();
   drawLevelProgress(dt);
+  plantSelector.drawSelector(*window);
 }

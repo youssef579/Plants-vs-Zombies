@@ -311,15 +311,15 @@ void BackgroundManager::update(float dt) {
     }
     // ather(add)------------------------------------------
     plantSelector.updateSelector(dt, *window); 
-    if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
-      sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
-      if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        plantSelector.slideOut();
-        playBtnClicked = true;
-        isWaitingForPlay = false;
-        introTimer = 5.5f;
-      }
-    }
+    //if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
+    //  sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
+    //  if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    //    plantSelector.slideOut();
+    //    playBtnClicked = true;
+    //    isWaitingForPlay = false;
+    //    introTimer = 5.5f;
+    //  }
+    //}
     //----------------------------------------------------------
 
 
@@ -470,7 +470,10 @@ rollFiveGrass(dt);
   bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
   if (dirtSound) {
     if (anyRolling) {
-      dirtSound->setVolume(settings.soundFXVolume * 0.25f); 
+
+      dirtSound->setVolume(settings.soundFXVolume * 0.45f);
+      //dirtSound->setVolume(100.f);
+
       if (!dirtSoundStarted) {
         dirtSound->play();
         dirtSoundStarted = true;
@@ -551,6 +554,8 @@ void BackgroundManager::drawOverlays(sf::RenderWindow &window) {
 void BackgroundManager::startPlanting() {
   isRolling[2] = true;
   shouldStartRolling[2] = true;
+
+  dirtSoundStarted = false; 
 
   // Kill Dummy Zombies
   //std::cout << "KILLED ALL ZOMBIES\n";

@@ -4,6 +4,7 @@
 #include <BackgroundManager.hpp>
 #include <Packets/Packet.hpp> // USED FOR DEV MODE
 #include <SunManager.hpp>     // USED FOR DEV MODE
+#include <newPauseMenu.hpp>
 
 
 sf::RenderWindow *window;
@@ -104,7 +105,6 @@ void handleEvents() {
     if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
       switch (keyPress->code) {
       case sf::Keyboard::Key::F11:
-        //isFullscreen = !isFullscreen;
         settings.fullscreen = !settings.fullscreen;
 
         if (settings.fullscreen) {
@@ -123,12 +123,12 @@ void handleEvents() {
 
       case sf::Keyboard::Key::Escape:
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
+          newPause.isOpen = !newPause.isOpen;
+          gameWeather.isPaused = !isPaused;
           if (!isPaused) {
             sounds.play("Pause");
-            gameWeather.isPaused = true;
             setCursorMain();
           }
-          else gameWeather.isPaused = false;
           gameWeather.update(0);
 
           isPaused = !isPaused;
