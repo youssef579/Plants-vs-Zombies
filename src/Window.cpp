@@ -140,6 +140,7 @@ void handleEvents() {
           newPause.isOpen = !newPause.isOpen;
           gameWeather.isPaused = !isPaused;
           if (!isPaused) {
+            newPause.isSettingsOpen = false;
             sounds.play("Pause");
             setCursorMain();
           }
