@@ -13,7 +13,7 @@
 
 sf::Vector2f mousePosition;
 
-
+//std::vector<sf::FloatRect> GLOB_RECTS = {};
 
 int main() {
   initWindow();
@@ -38,6 +38,15 @@ int main() {
     window->clear();
     window->setView(*view);
     updateGame();
+
+    /*for (auto GLOB_RECT : GLOB_RECTS) {
+      sf::RectangleShape rect(GLOB_RECT.size);
+      rect.setPosition(GLOB_RECT.position);
+      rect.setFillColor(sf::Color(255, 0, 0, 100));
+      window->draw(rect);
+    }
+    GLOB_RECTS.clear();*/
+
     window->display();
 
 

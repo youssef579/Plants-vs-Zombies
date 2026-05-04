@@ -128,19 +128,19 @@ void updateGame() {
 
       return;
     }
-    // if (isPaused) {
-    //   if (dayLevel.dirtSound &&
-    //       static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
-    //     dayLevel.dirtSound->pause();
-    //     dayLevel.dirtSoundStarted = false;
-    //   }
-    //   dayLevel.draw(*window);
-    //   window->setView(*view);
-    //   gameWeather.draw(*window);
-    //   pauseMenu.update();
-    //   // pauseMenu.draw();
-    //   break;
-    // }
+     if (isPaused) {
+       if (dayLevel.dirtSound &&
+           (int)(dayLevel.dirtSound->getStatus()) == 2) {
+         dayLevel.dirtSound->pause();
+         dayLevel.dirtSoundStarted = false;
+       }
+       dayLevel.draw(*window);
+       window->setView(*view);
+       gameWeather.draw(*window);
+       pauseMenu.update();
+       pauseMenu.draw();
+       break;
+     }
 
     levelManager.update(dt);
     updateGrid(dt);

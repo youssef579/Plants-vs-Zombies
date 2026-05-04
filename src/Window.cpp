@@ -123,6 +123,20 @@ void handleEvents() {
 
       case sf::Keyboard::Key::Escape:
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
+          //newPause.isOpen = !newPause.isOpen;
+          isPaused = !isPaused;
+          gameWeather.isPaused = !isPaused;
+          if (!isPaused) {
+            sounds.play("Pause");
+            setCursorMain();
+          }
+          gameWeather.update(0);
+
+          //isPaused = !isPaused;
+        }
+        break;
+      case sf::Keyboard::Key::P:
+        if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
           newPause.isOpen = !newPause.isOpen;
           gameWeather.isPaused = !isPaused;
           if (!isPaused) {
@@ -133,6 +147,7 @@ void handleEvents() {
 
           isPaused = !isPaused;
         }
+
         break;
       case sf::Keyboard::Key::Tab:
         if(gameState != 0 && !isPaused)

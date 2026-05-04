@@ -3,12 +3,21 @@
 
 
 // Returns slider value ranged (0->100)
-float updateSlider(Slider &slider) {
+float updateSlider(Slider &slider) { // offset = 0 (old pause), 1 (new pause)
+
+  //static const sf::FloatRect offsetBound0 = { {0, 0}, {30.0f, 30.0f} };
+  //static const sf::FloatRect offsetBound1 = { {-25.0f, -25.0f}, {30.0f, 30.0f} };
+
+
+
   static bool wasButtonClicked = false;
   static bool startedClickedInside = false;
 
   sf::Vector2f  pos = slider.sprite.getPosition();
-  sf::FloatRect  bounds({ pos.x - 25.0f,pos.y - 25.0f }, { 30.0f,30.0f });
+  //sf::FloatRect  bounds({ pos.x - 25.0f,pos.y - 25.0f }, { 30.0f,30.0f });
+  sf::FloatRect bounds = slider.sprite.getGlobalBounds();
+
+  //GLOB_RECTS.push_back(bounds);
 
   if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) startedClickedInside = false;
 

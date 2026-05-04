@@ -108,14 +108,14 @@ void newPauseMenu::init() {
     backBtn->setPosition({737.0f, 449.0f});
   }
 
-  sliderKnobT = getTexture("assets/newPauseMenu/musicSlider.png");
+  sliderKnobT = getTexture("assets/newPauseMenu/musicSlider2.png");
   if (!sliderMusicS) {
     sliderMusicS = new sf::Sprite(sliderKnobT);
     sliderMusicS->setScale({0.3f, 0.3f});
     sliderMusicS->setOrigin(sliderMusicS->getLocalBounds().getCenter());
   }
   if (!sliderMusic)
-    sliderMusic = new Slider({*sliderMusicS, 315.0f, 550.0f, 720.0f, 170.0f, false});
+    sliderMusic = new Slider({*sliderMusicS, 307.0f, 550.0f, 720.0f, 170.0f, false});
   sliderMusic->sprite.setPosition(
       {sliderMusic->lowerBound + settings.musicVolume * sliderMusic->length / 100.0f, sliderMusic->y});
 

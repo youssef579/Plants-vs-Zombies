@@ -4,6 +4,8 @@
 #include <functional>
 #include <Array.hpp>
 
+//extern std::vector<sf::FloatRect> GLOB_RECTS;
+
 extern bool isPaused;
 extern bool isMousePressed, isMouseReleased;
 extern sf::Vector2f mousePosition;
