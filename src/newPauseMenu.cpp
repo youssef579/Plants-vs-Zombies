@@ -3,6 +3,7 @@
 #include <UI/Pause.hpp>
 #include <cmath>
 #include <newPauseMenu.hpp>
+#include <UI/TransitionManager.hpp>
 
 newPauseMenu newPause;
 
@@ -100,6 +101,7 @@ void newPauseMenu::init() {
     backgroundOptionsS->setPosition({325, 54.5});
   }
 
+  //initialize Back Button
   if (!backBtn) {
     backBtn =
         new sf::Sprite(getTexture("assets/newPauseMenu/settingsBackBtn.png"));
@@ -108,62 +110,49 @@ void newPauseMenu::init() {
     backBtn->setPosition({737.0f, 449.0f});
   }
 
+  //intialize Slider
   sliderKnobT = getTexture("assets/newPauseMenu/musicSlider2.png");
+
+  //initialize Music Slider
   if (!sliderMusicS) {
     sliderMusicS = new sf::Sprite(sliderKnobT);
     sliderMusicS->setScale({0.3f, 0.3f});
     sliderMusicS->setOrigin(sliderMusicS->getLocalBounds().getCenter());
   }
   if (!sliderMusic)
-    sliderMusic = new Slider({*sliderMusicS, 307.0f, 550.0f, 720.0f, 170.0f, false});
+    sliderMusic = new Slider({*sliderMusicS, 307.0f, 550.0f, 720.0f, 170.0f, false}); //Settings Slider
   sliderMusic->sprite.setPosition(
-      {sliderMusic->lowerBound + settings.musicVolume * sliderMusic->length / 100.0f, sliderMusic->y});
+      {sliderMusic->lowerBound + settings.musicVolume * sliderMusic->length / 100.0f, sliderMusic->y}); //slider Location
 
+  //initialize Sound Slider
   if (!sliderSFXS) {
     sliderSFXS = new sf::Sprite(sliderKnobT);
     sliderSFXS->setScale({0.3f, 0.3f});
     sliderSFXS->setOrigin(sliderSFXS->getLocalBounds().getCenter());
   }
   if (!sliderSFX)
-    sliderSFX = new Slider({*sliderSFXS, 372.0f, 550.0f, 720.0f, 170.0f, false});
-  sliderSFX->sprite.setPosition( {sliderSFX->lowerBound + settings.soundFXVolume * sliderSFX->length / 100.0f, sliderSFX->y});
+    sliderSFX = new Slider({*sliderSFXS, 372.0f, 550.0f, 720.0f, 170.0f, false}); //Settings Slider
+  sliderSFX->sprite.setPosition(
+    {sliderSFX->lowerBound + settings.soundFXVolume * sliderSFX->length / 100.0f, sliderSFX->y}); //slider Location
 
-  /*if (!sliderWeatherFXS) sliderWeatherFXS = new sf::Sprite(sliderKnobT);
-  if (!sliderWeatherFX) sliderWeatherFX = new Slider({
-  *sliderWeatherFXS,232.0f,562.0f,676.0f,114.0f,false });
-  sliderWeatherFX->sprite.setPosition({ sliderWeatherFX->lowerBound +
-  settings.weatherFXVolume * sliderWeatherFX->length / 100.0f,sliderWeatherFX->y
-  });*/
-
+  //initialize Checker Box
   checkboxBoxT = getTexture("assets/newPauseMenu/checkerBox.png");
+  //initialize Checker Box Marker
   checkboxMarkT = getTexture("assets/checkmark.png");
 
-  /*if (!checkboxWeatherActiveS) {
-    checkboxWeatherActiveS = new sf::Sprite(checkboxBoxT);
-    checkboxWeatherActiveS->setScale({ 0.5f,0.5f });
-  }
-  if (!checkboxWeatherActiveM) {
-    checkboxWeatherActiveM = new sf::Sprite(checkboxMarkT);
-    checkboxWeatherActiveM->setScale({0.8f,0.8f});
-  }
-  if (!checkboxWeatherActive) checkboxWeatherActive = new Checkbox({
-  *checkboxWeatherActiveS,*checkboxWeatherActiveM,639.0f,258.0f,settings.weatherActive
-  }); checkboxWeatherActive->box.setPosition({
-  checkboxWeatherActive->x,checkboxWeatherActive->y });
-  checkboxWeatherActive->mark.setPosition({ checkboxWeatherActive->x
-  + 10.0f,checkboxWeatherActive->y + 10.0f });*/
-
+  //initialize Full Screen Box
   if (!checkboxFullscreenS) {
     checkboxFullscreenS = new sf::Sprite(checkboxBoxT);
     checkboxFullscreenS->setScale({0.5f, 0.5f});
   }
+  //initialize Full Screen Marker
   if (!checkboxFullscreenM) {
     checkboxFullscreenM = new sf::Sprite(checkboxMarkT);
     checkboxFullscreenM->setScale({0.8f, 0.8f});
   }
   if (!checkboxFullscreen)
     checkboxFullscreen =
-        new Checkbox({*checkboxFullscreenS, *checkboxFullscreenM, 635.0f, 400.0f, settings.fullscreen});
+        new Checkbox({*checkboxFullscreenS, *checkboxFullscreenM, 635.0f, 400.0f, settings.fullscreen}); //Check Box Settings
   checkboxFullscreen->box.setPosition( {checkboxFullscreen->x, checkboxFullscreen->y});
   checkboxFullscreen->mark.setPosition( {checkboxFullscreen->x + 10.0f, checkboxFullscreen->y + 10.0f});
 }
@@ -215,11 +204,11 @@ void newPauseMenu::update(sf::RenderWindow &window) {
       window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
   if (isSettingsOpen) {
+    //Update Sliders
     settings.musicVolume = updateSlider(*sliderMusic);
     settings.soundFXVolume = updateSlider(*sliderSFX);
-    // settings.weatherFXVolume = updateSlider(*sliderWeatherFX);
 
-    // updateCheckbox(*checkboxWeatherActive, settings.weatherActive);
+    //Update CheckerBoxes
     if (updateCheckbox(*checkboxFullscreen, settings.fullscreen)) {
       if (settings.fullscreen) {
         window.create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
@@ -236,6 +225,7 @@ void newPauseMenu::update(sf::RenderWindow &window) {
 
     sounds.updateVolume();
 
+    // Update Back Button
     bool bClicked = false;
     handleButtonLogic(backBtn, mousePos, bClicked, backHovered, 0.35f);
 
@@ -244,31 +234,37 @@ void newPauseMenu::update(sf::RenderWindow &window) {
   } else {
     static bool rClicked = false, resClicked = false, sClicked = false, mClicked = false;
 
+    //Update Resume 
     if (handleButtonLogic(resumeBtn, mousePos, rClicked, resHovered)) {
       isOpen = isPaused = gameWeather.isPaused = false;
     }
+    //Update Return Menu
     if (handleButtonLogic(menuBtn, mousePos, mClicked, menuHovered)) {
+      setCursorMain();
+      TransitionManager::start([&]() {
       isOpen = false;
-      gameState = 0;
-      homeState = 0;
-      isPaused = false;
-
-      levelManager.resetLevelData();
+        gameState = 0, homeState = 0; //go to home menu not level selector
+        isPaused = false;
+        gameWeather.isPaused = false;
+        levelManager.resetLevelData();
+        sounds.play("ButtonClick"); music.play("Menu");
+        });
 
       if (clickSound)
         clickSound->play();
-      music.play("Menu");
     }
+    //Update Restart Level
     if (handleButtonLogic(restartBtn, mousePos, resClicked, restartHovered)) {
-      levelManager.resetLevelData();
-
-      isPaused = false;
-      gameWeather.isPaused = false;
-      isOpen = false;
+      setCursorMain();
+      TransitionManager::start([&]() {
+        isOpen = false;
+        levelManager.restartLevel();
+        });
 
       if (clickSound)
         clickSound->play();
     }
+    //Update Settings
     if (handleButtonLogic(settingsBtn, mousePos, sClicked, settingsHovered)) {
       if (clickSound)
         clickSound->play();
@@ -303,13 +299,6 @@ void newPauseMenu::draw(sf::RenderWindow &window) {
       window.draw(sliderMusic->sprite);
     if (sliderSFX)
       window.draw(sliderSFX->sprite);
-    // if (sliderWeatherFX) window.draw(sliderWeatherFX->sprite);
-
-    /*if (checkboxWeatherActive) {
-      window.draw(checkboxWeatherActive->box);
-      if (checkboxWeatherActive->checked)
-    window.draw(checkboxWeatherActive->mark);
-    }*/
 
     if (checkboxFullscreen) {
       window.draw(checkboxFullscreen->box);

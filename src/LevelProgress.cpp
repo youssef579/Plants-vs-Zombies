@@ -17,6 +17,14 @@ void drawLevelProgress(float dt) {
   static sf::Texture &zombieHeadTexture = getTexture("assets/levelProgress/ZombieHead.png");
   static sf::Sprite zombieHeadSprite(zombieHeadTexture);
 
+  static int progressLevel = levelManager.currentLevel;
+  static sf::Text levelText(assets->font, "Level " + std::to_string(progressLevel));
+
+  if (progressLevel != levelManager.currentLevel) {
+    progressLevel = levelManager.currentLevel;
+    levelText.setString("Level " + std::to_string(progressLevel));
+  }
+
   //static float timer = 0;
   if(!(levelManager.spawningFinished && Zombie::totalZombies == 0))
     timer = levelManager.timer - levelManager.levels[levelManager.currentLevel - 1]->waves[0]->delay;
@@ -26,6 +34,8 @@ void drawLevelProgress(float dt) {
   if (runOnce) {
     emptyProgressSprite.setPosition({950, 570});
     levelProgressSprite.setPosition({990, 585});
+    levelText.setPosition({875, 565});
+    levelText.setCharacterSize(20);
     runOnce = false;
   }
 
@@ -53,6 +63,7 @@ void drawLevelProgress(float dt) {
   }
   window->draw(levelProgressSprite);
   window->draw(zombieHeadSprite);
+  window->draw(levelText);
 }
 
 void resetLevelProgress() {

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <PlantSelector.hpp>
-
+#include <LevelManager.hpp>
 
 struct DirtParticle {
   sf::Sprite* sprite;
@@ -24,6 +24,7 @@ struct BackgroundManager {
   int deathRow = 2;
   float iceFlashTimer = 0.0f;
   const float iceFlashDuration = 0.75f;
+  //enum Location {Day, Night};
 
   sf::Texture backGroundTexture;
   sf::Texture grassTexture;
@@ -71,7 +72,9 @@ struct BackgroundManager {
   float startX = 200.0f;
   float groundY[5] = { 160.0f , 233.0f , 310.0f , 385.0f , 460.0f };
 
-  void init();
+  LevelManager::Level::Location type;
+
+  void init(LevelManager::Level::Location Type);
   void startPlanting();
   void update(float dt);
   void draw(sf::RenderWindow& window);

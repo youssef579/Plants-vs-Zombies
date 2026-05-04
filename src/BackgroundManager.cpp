@@ -6,11 +6,19 @@
 #include <LawnMower.hpp>
 #include <Game.hpp>
 #include <UI/TransitionManager.hpp>
- 
+#include <LevelManager.hpp>
+
+
 BackgroundManager dayLevel;
 
-void BackgroundManager::init() {
-
+void BackgroundManager::init(LevelManager::Level::Location Type) {
+  type = Type;
+  //if (backGroundTexture.loadFromFile("assets/Background/background.png") &&
+  //  grassTexture.loadFromFile("assets/Background/sod1row.png") &&
+  //  threeMiddleGrassTexture.loadFromFile("assets/Background/sod3row.png") &&
+  //  fullGrassTexture.loadFromFile("assets/Background/fullGrass1.png") &&
+  //  rollTexture.loadFromFile("assets/Background/SodRoll.png") &&
+  //  capTexture.loadFromFile("assets/Background/SodRollCap.png"))
   if (backGroundTexture.loadFromFile("assets/Background/background.png") &&
     grassTexture.loadFromFile("assets/Background/sod1row.png") &&
     threeMiddleGrassTexture.loadFromFile("assets/Background/sod3row.png") &&
@@ -19,90 +27,102 @@ void BackgroundManager::init() {
     capTexture.loadFromFile("assets/Background/SodRollCap.png") &&
     zombiesWonTexture.loadFromFile("assets/Background/zombiesWon.png"))
   {
+    if (type == LevelManager::Level::Night) backGroundTexture = getTexture("assets/Background/background_night.png");
+
     if (!backGroundSprite) backGroundSprite = new sf::Sprite(backGroundTexture);
     else backGroundSprite->setTexture(backGroundTexture);
     backGroundSprite->setPosition(sf::Vector2f(0, 0));
 
-    if(!zombiesWon) zombiesWon = new sf::Sprite(zombiesWonTexture);
-    zombiesWon->setScale({0.5, 0.5});
+    if (!zombiesWon) zombiesWon = new sf::Sprite(zombiesWonTexture);
+    zombiesWon->setScale({ 0.5, 0.5 });
 
     if (dirtTexture.loadFromFile("assets/Background/dirtsmall.png")) {
-      dirtPool.clear();
-      for (int i = 0; i < 250; i++) {
-        DirtParticle p;
-        p.sprite = new sf::Sprite(dirtTexture);
-        int col = rand() % 8;
-        int row = rand() % 2;
-        p.sprite->setTextureRect(sf::IntRect({ col * 30, row * 30 }, { 30, 30 }));
-        p.sprite->setOrigin({ 15.f, 15.f });
+      camera.setSize(sf::Vector2f(800.f, 600.f));
+      camera.setCenter(sf::Vector2f(490.f, 312.f));
+      gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
 
-        p.active = false;
-        p.lifetime = 0.0f;
-        p.velocity = { 0.f, 0.f };
-        p.rotationSpeed = 0.f;
+      if (type == LevelManager::Level::Night) return; // That's it for the night xD
 
-        dirtPool.push_back(p);
-      }
-    }
+      if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
+        dirtPool.clear();
+        for (int i = 0; i < 250; i++) {
+          DirtParticle p;
+          p.sprite = new sf::Sprite(dirtTexture);
+          int col = rand() % 8;
+          int row = rand() % 2;
+          p.sprite->setTextureRect(sf::IntRect({ col * 30, row * 30 }, { 30, 30 }));
+          p.sprite->setOrigin({ 15.f, 15.f });
 
-    if (!dirtBuffer) dirtBuffer = new sf::SoundBuffer();
-    if (dirtBuffer->loadFromFile("assets/sounds/dirtRoll.wav")) {
-      if (!dirtSound) dirtSound = new sf::Sound(*dirtBuffer);
+          p.active = false;
+          p.lifetime = 0.0f;
+          p.velocity = { 0.f, 0.f };
+          p.rotationSpeed = 0.f;
 
-      dirtSound->setBuffer(*dirtBuffer);
-      dirtSound->setLooping(true);
-      //dirtSound->setVolume(70.f);
-      dirtSound->setVolume(settings.soundFXVolume);
-    }
-
-    float startX = 200.0f;
-    float rollSize = 0.75f;
-    float grassSizeX = 0.82f;
-    float grassSizeY = 0.82f;
-    targetX = static_cast<float>(grassTexture.getSize().x);
-    float bigTargetX = static_cast<float>(threeMiddleGrassTexture.getSize().x);
-    for (int i = 0; i < 5; i++) {
-      currentX[i] = 0.0f;
-      isRolling[i] = false;
-      shouldStartRolling[i] = false;
-
-      if (i == 0 || i == 2 || i == 4) {
-        if (!grassSprites[i]) grassSprites[i] = new sf::Sprite(grassTexture);
-        grassSprites[i]->setScale(sf::Vector2f(grassSizeX, grassSizeY));
-        grassSprites[i]->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)grassTexture.getSize().y }));
-        grassSprites[i]->setPosition(sf::Vector2f(startX, groundY[i]));
+          dirtPool.push_back(p);
+        }
       }
 
-      if (!rollSprites[i]) rollSprites[i] = new sf::Sprite(rollTexture);
-      rollSprites[i]->setOrigin(sf::Vector2f(0.0f, (float)rollTexture.getSize().y / 2.0f));
-      rollSprites[i]->setScale(sf::Vector2f(rollSize, rollSize));
+      if (!dirtBuffer) dirtBuffer = new sf::SoundBuffer();
+      if (dirtBuffer->loadFromFile("assets/sounds/dirtRoll.wav")) {
+        if (!dirtSound) dirtSound = new sf::Sound(*dirtBuffer);
 
-      if (!capSprites[i]) capSprites[i] = new sf::Sprite(capTexture);
-      capSprites[i]->setOrigin(sf::Vector2f((float)capTexture.getSize().x / 2.0f, (float)capTexture.getSize().y / 2.0f));
-      capSprites[i]->setScale(sf::Vector2f(rollSize, rollSize));
+        dirtSound->setBuffer(*dirtBuffer);
+        dirtSound->setLooping(true);
+        //dirtSound->setVolume(70.f);
+        dirtSound->setVolume(settings.soundFXVolume);
+      }
+
+      float startX = 200.0f;
+      float rollSize = 0.75f;
+      float grassSizeX = 0.82f;
+      float grassSizeY = 0.82f;
+      targetX = static_cast<float>(grassTexture.getSize().x);
+      float bigTargetX = static_cast<float>(threeMiddleGrassTexture.getSize().x);
+      for (int i = 0; i < 5; i++) {
+        currentX[i] = 0.0f;
+        isRolling[i] = false;
+        shouldStartRolling[i] = false;
+
+        if (i == 0 || i == 2 || i == 4) {
+          if (!grassSprites[i]) grassSprites[i] = new sf::Sprite(grassTexture);
+          grassSprites[i]->setScale(sf::Vector2f(grassSizeX, grassSizeY));
+          grassSprites[i]->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)grassTexture.getSize().y }));
+          grassSprites[i]->setPosition(sf::Vector2f(startX, groundY[i]));
+        }
+
+        if (!rollSprites[i]) rollSprites[i] = new sf::Sprite(rollTexture);
+        rollSprites[i]->setOrigin(sf::Vector2f(0.0f, (float)rollTexture.getSize().y / 2.0f));
+        rollSprites[i]->setScale(sf::Vector2f(rollSize, rollSize));
+
+        if (!capSprites[i]) capSprites[i] = new sf::Sprite(capTexture);
+        capSprites[i]->setOrigin(sf::Vector2f((float)capTexture.getSize().x / 2.0f, (float)capTexture.getSize().y / 2.0f));
+        capSprites[i]->setScale(sf::Vector2f(rollSize, rollSize));
+      }
+
+
+      if (!threeMiddleGrassSprite) threeMiddleGrassSprite = new sf::Sprite(threeMiddleGrassTexture);
+      threeMiddleGrassSprite->setScale(sf::Vector2f(grassSizeX, grassSizeY));
+      float offsetY = -20.0f;
+      float offsetX = -8.0f;
+      threeMiddleGrassSprite->setPosition(sf::Vector2f(startX + offsetX, groundY[1] + offsetY));
+      threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)threeMiddleGrassTexture.getSize().y }));
+
+      if (!fullGrassSprite) fullGrassSprite = new sf::Sprite(fullGrassTexture);
+      fullGrassSprite->setScale(sf::Vector2f(grassSizeX + 0.01f, grassSizeY + 0.05f));
+      fullGrassSprite->setPosition(sf::Vector2f(startX - 12.0f, groundY[0] - 48.0f));
+      fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)fullGrassTexture.getSize().y }));
     }
 
-
-    if (!threeMiddleGrassSprite) threeMiddleGrassSprite = new sf::Sprite(threeMiddleGrassTexture);
-    threeMiddleGrassSprite->setScale(sf::Vector2f(grassSizeX, grassSizeY));
-    float offsetY = -20.0f;
-    float offsetX = -8.0f;
-    threeMiddleGrassSprite->setPosition(sf::Vector2f(startX + offsetX, groundY[1] + offsetY));
-    threeMiddleGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)threeMiddleGrassTexture.getSize().y }));
-
-    if (!fullGrassSprite) fullGrassSprite = new sf::Sprite(fullGrassTexture);
-    fullGrassSprite->setScale(sf::Vector2f(grassSizeX + 0.01f, grassSizeY + 0.05f));
-    fullGrassSprite->setPosition(sf::Vector2f(startX - 12.0f, groundY[0] - 48.0f));
-    fullGrassSprite->setTextureRect(sf::IntRect({ 0, 0 }, { 0, (int)fullGrassTexture.getSize().y }));
+    // Sent Above
+    // camera.setSize(sf::Vector2f(800.f, 600.f));
+    // camera.setCenter(sf::Vector2f(490.f, 312.f));
+    // gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+    //gameView->zoom(0.925f);
+    //gameView->setCenter(sf::Vector2f(490.f, 312.f));
+    //gameView->setCenter(view->getCenter());
   }
-
-  camera.setSize(sf::Vector2f(800.f, 600.f));
-  camera.setCenter(sf::Vector2f(490.f, 312.f));
-  gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
-  //gameView->zoom(0.925f);
-  //gameView->setCenter(sf::Vector2f(490.f, 312.f));
-  //gameView->setCenter(view->getCenter());
 }
+  
 
 void BackgroundManager::spawnDirt(sf::Vector2f position) {
   int count = 0;
@@ -343,7 +363,11 @@ void BackgroundManager::update(float dt) {
       //gameView->setCenter({ 490, 317 });
       //gameView->setSize({735, 551});
 
-
+      if (type == LevelManager::Level::Night) {
+        if(introTimer <=20.f)
+          introTimer = 20.0f; 
+        return;
+      }
       startPlanting();
     }
   }
@@ -497,6 +521,7 @@ void BackgroundManager::draw(sf::RenderWindow& window) {
 
   if (backGroundSprite) window.draw(*backGroundSprite);
 
+  if(levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Day) {
 
   for (int i : {0, 2, 4}) {
     if (grassSprites[i] && (i != 2 || !isThreeMiddleFinished)) window.draw(*grassSprites[i]);
@@ -518,6 +543,7 @@ void BackgroundManager::draw(sf::RenderWindow& window) {
       window.draw(*rollSprites[i]);
       window.draw(*capSprites[i]);
     }
+  }
   }
 
   //std::cout << "timer: " << introTimer << "\n";

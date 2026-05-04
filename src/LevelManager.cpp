@@ -38,7 +38,7 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   if(dayLevel.threeMiddleGrassSprite) dayLevel.threeMiddleGrassSprite->setOrigin({ 0.0f, 0.0f });
   if(dayLevel.fullGrassSprite) dayLevel.fullGrassSprite->setOrigin({ 0.0f, 0.0f });
   globalTimeModifier = 1.0f;
-  dayLevel.init();
+  //std::cout << currentLevel << '\n';
 
 
   // Zombies
@@ -51,7 +51,6 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
   spawningFinished = false;
   Sun::isSpawning = false;
-  Sun::spawnTimer = -15;
 
   // Rewards
   RewardManager::spawnedLevelReward = false;
@@ -102,17 +101,27 @@ void LevelManager::loadLevelData(int levelNum) {
   resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
-  timer = -20;
-
-  clearGrid();
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = -5;
+    timer = 0;
+  }
+  else {
+    Sun::spawnTimer = -15;
+    timer = -25;
+  }
   Sun::clear();
 
-  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro
+ 
+
+  clearGrid();
+  initGrid();
+  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro a
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
   }
 
+  dayLevel.init(levelManager.levels[currentLevel - 1]->location);
    LawnMower::init();
   //static bool runOnce = [](){
       //return true;
@@ -152,7 +161,7 @@ void LevelManager::update(float dt) {
   }
 
   zombieSpawnDelay = currWave->duration / currWave->zombieTypes.size; // delay between each zombie in wave
-
+  //std::cout << zombieSpawnTimer << " " << zombieSpawnDelay << "\n";
   zombieSpawnTimer += dt;
   //std::cout << zombieSpawnTimer << "\n";
   if (zombieSpawnTimer >= zombieSpawnDelay) {
@@ -190,7 +199,7 @@ void LevelManager::update(float dt) {
 
   if (zombiesSpawned == currWave->zombieTypes.size) {
     currentWave++;
-    //zombieSpawnTimer = 0;
+    zombieSpawnTimer = 999999.0f;
     zombiesSpawned = 0;
     if(currWave->isBigWave) sounds.play("Awooga");
     //std::cout << zombieSpawnTimer << "\n";
@@ -198,8 +207,7 @@ void LevelManager::update(float dt) {
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
-  else
-    zombieSpawnTimer = 999999.0f; // spawn first zombie instantly except for first wave
+  
 
 
 
@@ -208,7 +216,12 @@ void LevelManager::update(float dt) {
 
 void LevelManager::startLevel() {
   Sun::isSpawning = true;
-  Sun::spawnTimer = -8.0f;
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = 0;
+  }
+  else {
+    Sun::spawnTimer = -8;
+  }
 }
 
 

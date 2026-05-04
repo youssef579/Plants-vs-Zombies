@@ -11,7 +11,10 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
                  : (typeValue == SNOWPEA
                         ? getTexture("assets/bullets/peaice.png")
                         : getTexture("assets/bullets/shroom.png"))) {
-  shadow.setRadius(8);
+  if (typeValue == SHROOM)
+    shadow.setRadius(4);
+  else
+    shadow.setRadius(8);
   shadow.setFillColor(sf::Color(0, 0, 0, 100));
   shadow.setScale({1.5f, 0.5f});
   shadow.setOrigin(shadow.getLocalBounds().getCenter());

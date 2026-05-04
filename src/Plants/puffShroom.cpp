@@ -8,7 +8,7 @@ void updatePuffShroom(Plant& puffShroom, float dt) {
   puffShroom.reAnimator.update(dt);
 
 
-  if (Zombie::isZombieAliveInRow(puffShroom.row, puffShroom.reAnimator.getPosition().x + 70.0f)) // only shoot when there is a zombie in the row
+  if (Zombie::isZombieAliveInRow(puffShroom.row, puffShroom.reAnimator.getPosition().x + 70.0f, 320.0f)) 
     puffShroom.timer -= dt;
   else {
     puffShroom.reAnimator.stopAnimation("anim_shooting");

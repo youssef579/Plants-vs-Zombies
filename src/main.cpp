@@ -25,7 +25,7 @@ int main() {
   initReAnimDefs();
   ParticleSystem::init();
   pauseMenu.init();
-  initGrid();
+  //initGrid();
   initGameProgress();
   plantSelector.initSelector();
   setWindowMetaData();

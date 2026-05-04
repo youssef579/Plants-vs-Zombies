@@ -94,7 +94,7 @@ struct Zombie {
     static void init();
     static void updateAll(float dt);
     static void drawAll();
-    static bool isZombieAliveInRow(int row, float startPosX = 0.0f);
+    static bool isZombieAliveInRow(int row, float startPosX = 0.0f, float range = 9000.0f);
     static void updateVolumes();
 };
 
