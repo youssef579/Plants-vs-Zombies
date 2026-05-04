@@ -125,7 +125,7 @@ void handleEvents() {
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
           //newPause.isOpen = !newPause.isOpen;
           isPaused = !isPaused;
-          gameWeather.isPaused = !isPaused;
+          gameWeather.isPaused = isPaused;
           if (!isPaused) {
             sounds.play("Pause");
             setCursorMain();

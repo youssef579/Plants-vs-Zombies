@@ -129,7 +129,7 @@ void loadLevelsFiles() {
       newWave->delay = delays[i];
       newWave->duration = durations[i];
       newWave->isBigWave = bigWaves[i];
-      newWave->waveSprite.setPosition({1100 - 145 * (delays[i] - delays[0]) / (delays[newLevel->numberOfWaves - 1] - delays[0]), 568});
+      newWave->waveSprite.setPosition({1100 - 145 * (delays[i]) / (delays[newLevel->numberOfWaves - 1] + durations[newLevel->numberOfWaves - 1]), 568});
       for (int z = 0; z < numberOfZombies[i]; z++) {
         file >> input; // zombie type
 

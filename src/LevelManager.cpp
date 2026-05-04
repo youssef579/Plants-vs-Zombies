@@ -1,4 +1,4 @@
-#include "Array.hpp"
+#include <Array.hpp>
 #include <LevelManager.hpp>
 #include <BackgroundManager.hpp>
 #include <Game.hpp>
@@ -57,8 +57,6 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   RewardManager::isPacketCollected = false;
   RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
 
-  resetLevelProgress();
-
   // Packets
   Array<PlantType> emptyPackets;
   fillPackets(emptyPackets);
@@ -111,7 +109,7 @@ void LevelManager::loadLevelData(int levelNum) {
   }
   Sun::clear();
 
- 
+
 
   clearGrid();
   initGrid();
@@ -214,7 +212,7 @@ void LevelManager::update(float dt) {
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
-  
+
 
 
 
