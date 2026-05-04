@@ -48,6 +48,15 @@ void PlantsSelector::initSelector() {
   plantSelector.isVisible = false;
   plantSelector.isSlidingOut = false;
 
+  if (playFont.openFromFile("assets/font.ttf")) {
+    playText.setFont(playFont);
+    playText.setString("PLAY");
+    playText.setCharacterSize(26);
+    playText.setFillColor(sf::Color(0, 150, 0));
+    sf::FloatRect textRect = playText.getLocalBounds();
+    playText.setOrigin({ textRect.size.x / 2.0f, textRect.size.y / 2.0f });
+  }
+
   if (!plantSelector.backSprite) {
 
     plantSelector.backSprite = new sf::Sprite(getTexture("assets/plantsSelector/selectorBackground.png"));

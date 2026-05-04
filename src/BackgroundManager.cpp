@@ -470,7 +470,10 @@ rollFiveGrass(dt);
   bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
   if (dirtSound) {
     if (anyRolling) {
-      dirtSound->setVolume(settings.soundFXVolume * 0.25f); 
+
+      dirtSound->setVolume(settings.soundFXVolume * 0.5f);
+      //dirtSound->setVolume(100.f);
+
       if (!dirtSoundStarted) {
         dirtSound->play();
         dirtSoundStarted = true;
@@ -551,6 +554,8 @@ void BackgroundManager::drawOverlays(sf::RenderWindow &window) {
 void BackgroundManager::startPlanting() {
   isRolling[2] = true;
   shouldStartRolling[2] = true;
+
+  dirtSoundStarted = false; 
 
   // Kill Dummy Zombies
   //std::cout << "KILLED ALL ZOMBIES\n";
