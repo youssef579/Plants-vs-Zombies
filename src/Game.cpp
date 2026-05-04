@@ -79,10 +79,10 @@ void updateGame() {
       plantSelector.initSelector();
       dayLevel.init(levelManager.levels[levelManager.currentLevel-1]->location);
       newPause.init();
-      gameWeather.isRaining = true;
-
+     
       music.play("DayStage");
-
+      //a
+      //gameWeather.init();
       Zombie::init();
       RewardManager::init();
 
