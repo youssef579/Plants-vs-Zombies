@@ -1,3 +1,4 @@
+#include "globals.hpp"
 #include <LevelManager.hpp>
 #include <UI/Pause.hpp>
 #include <cmath>
@@ -243,8 +244,9 @@ void newPauseMenu::update(sf::RenderWindow &window) {
   } else {
     static bool rClicked = false, resClicked = false, sClicked = false, mClicked = false;
 
-    if (handleButtonLogic(resumeBtn, mousePos, rClicked, resHovered))
-      isOpen = false;
+    if (handleButtonLogic(resumeBtn, mousePos, rClicked, resHovered)) {
+      isOpen = isPaused = gameWeather.isPaused = false;
+    }
     if (handleButtonLogic(menuBtn, mousePos, mClicked, menuHovered)) {
       isOpen = false;
       gameState = 0;

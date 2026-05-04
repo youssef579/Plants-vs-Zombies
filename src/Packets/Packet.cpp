@@ -1,3 +1,4 @@
+#include <BackgroundManager.hpp>
 #include <Array.hpp>
 #include <AssetsManager.hpp>
 #include <Packets/Packet.hpp>
@@ -12,12 +13,10 @@ Array<SeedPacket> packets;
 void fillPackets(Array<PlantType> &types) {
 
   static bool runOnce = true;
-  static sf::Texture &peashooterTexture =
-      getTexture("assets/Plants/peashooter.png");
+  static sf::Texture &peashooterTexture = getTexture("assets/Plants/peashooter.png");
   static sf::Sprite peashooterSprite(peashooterTexture);
 
-  static sf::Texture &sunFlowerTexture =
-      getTexture("assets/Plants/sunflower.png");
+  static sf::Texture &sunFlowerTexture = getTexture("assets/Plants/sunflower.png");
   static sf::Sprite sunFlowerSprite(sunFlowerTexture);
 
   static sf::Texture &wallNutTexture = getTexture("assets/Plants/wallnut.png");
@@ -26,36 +25,28 @@ void fillPackets(Array<PlantType> &types) {
   static sf::Texture &icepeaTexture = getTexture("assets/Plants/Icepea.png");
   static sf::Sprite icepeaSprite(icepeaTexture);
 
-  static sf::Texture &repeaterpeaTexture =
-      getTexture("assets/Plants/Repeaterpea.png");
+  static sf::Texture &repeaterpeaTexture = getTexture("assets/Plants/Repeaterpea.png");
   static sf::Sprite repeaterpeaSprite(repeaterpeaTexture);
 
-  static sf::Texture &tallNutTexture =
-      getTexture("assets/Plants/tallnut/Tallnut_body.png");
+  static sf::Texture &tallNutTexture = getTexture("assets/Plants/tallnut/Tallnut_body.png");
   static sf::Sprite tallNutSprite(tallNutTexture);
 
-  static sf::Texture &cherryBombTexture =
-      getTexture("assets/Plants/cherrybomb.png");
+  static sf::Texture &cherryBombTexture = getTexture("assets/Plants/cherrybomb.png");
   static sf::Sprite cherryBombSprite(cherryBombTexture);
 
-  static sf::Texture &jalapenoTexture =
-      getTexture("assets/Plants/jalapeno.png");
+  static sf::Texture &jalapenoTexture = getTexture("assets/Plants/jalapeno.png");
   static sf::Sprite jalapenoSprite(jalapenoTexture);
 
-  static sf::Texture &potatoMineTexture =
-    getTexture("assets/Plants/potatoMine2.png");
+  static sf::Texture &potatoMineTexture = getTexture("assets/Plants/potatoMine2.png");
   static sf::Sprite potatoMineSprite(potatoMineTexture);
 
-  static sf::Texture &iceShroomTexture =
-    getTexture("assets/Plants/iceshroom.png");
+  static sf::Texture &iceShroomTexture = getTexture("assets/Plants/iceshroom.png");
   static sf::Sprite iceShroomSprite(iceShroomTexture);
 
-  static sf::Texture &squashTexture =
-    getTexture("assets/Plants/squash.png");
+  static sf::Texture &squashTexture = getTexture("assets/Plants/squash.png");
   static sf::Sprite squashSprite(squashTexture);
 
-  static sf::Texture &puffShroomTexture =
-    getTexture("assets/Plants/puff_shroom.png");
+  static sf::Texture &puffShroomTexture = getTexture("assets/Plants/puff_shroom.png");
   static sf::Sprite puffShroomSprite(puffShroomTexture);
 
   if (runOnce) {
@@ -95,75 +86,48 @@ void fillPackets(Array<PlantType> &types) {
     float posX = 90.0f + (59.0f * i);
     switch (types[i]) {
     case PEASHOOTER:
-      packets.push({100, 7.5f, "peashooter",
-                    {posX, 11},
-                    peashooterSprite, PEASHOOTER});
+      packets.push({100, 7.5f, "peashooter", {posX, 11}, peashooterSprite, PEASHOOTER});
       break;
 
     case SUN_FLOWER:
-      packets.push({50, 7.5f, "sunflower",
-                    {posX, 11},
-                    sunFlowerSprite, SUN_FLOWER});
+      packets.push({50, 7.5f, "sunflower", {posX, 11}, sunFlowerSprite, SUN_FLOWER});
       break;
 
     case WALLNUT:
-      packets.push(
-          {50, 30.0f, "wallnut",
-        {posX, 11},
-        wallNutSprite, WALLNUT});
+      packets.push( {50, 30.0f, "wallnut", {posX, 11}, wallNutSprite, WALLNUT});
       break;
 
     case SNOWPEASHOOTER:
-      packets.push({175, 7.5f, "peaice",
-                    {posX, 11},
-                    icepeaSprite, SNOWPEASHOOTER});
+      packets.push({175, 7.5f, "peaice", {posX, 11}, icepeaSprite, SNOWPEASHOOTER});
       break;
 
     case REPEATERPEA:
-      packets.push({200, 7.5f, "repeated",
-                    {posX, 11},
-                    repeaterpeaSprite, REPEATERPEA});
+      packets.push({200, 7.5f, "repeated", {posX, 11}, repeaterpeaSprite, REPEATERPEA});
       break;
 
     case TALLNUT:
-      packets.push(
-          {125, 30.0f, "tallnut",
-        {posX, 11},
-        tallNutSprite, TALLNUT});
+      packets.push( {125, 30.0f, "tallnut", {posX, 11}, tallNutSprite, TALLNUT});
       break;
 
     case CHERRYBOMB:
-      packets.push({150, 50.0f, "cherrybomb",
-                    {posX, 11},
-                    cherryBombSprite, CHERRYBOMB});
+      packets.push({150, 50.0f, "cherrybomb", {posX, 11}, cherryBombSprite, CHERRYBOMB});
       break;
 
     case JALAPENO:
-      packets.push(
-          {125, 50.0f, "jalapeno",
-        {posX, 11},
-        jalapenoSprite, JALAPENO});
+      packets.push( {125, 50.0f, "jalapeno", {posX, 11}, jalapenoSprite, JALAPENO});
       break;
 
     case POTATOMINE:
-      packets.push({ 25, 30.0f, "potatomine",
-                    {posX, 11},
-                    potatoMineSprite, POTATOMINE });
+      packets.push({ 25, 30.0f, "potatomine", {posX, 11}, potatoMineSprite, POTATOMINE });
       break;
     case ICESHROOM:
-      packets.push({ 75, 50.0f, "iceshroom",
-                    {posX, 11},
-                    iceShroomSprite, ICESHROOM });
+      packets.push({ 75, 50.0f, "iceshroom", {posX, 11}, iceShroomSprite, ICESHROOM });
       break;
     case SQUASH:
-      packets.push({ 50, 30.0f, "squash",
-                    {posX, 11},
-                    squashSprite, SQUASH });
+      packets.push({ 50, 30.0f, "squash", {posX, 11}, squashSprite, SQUASH });
       break;
     case PUFFSHROOM:
-      packets.push({ 0, 7.5f, "puffshroom",
-                    {posX, 11},
-                    puffShroomSprite, PUFFSHROOM });
+      packets.push({ 0, 7.5f, "puffshroom", {posX, 11}, puffShroomSprite, PUFFSHROOM });
       break;
     }
   }
@@ -213,7 +177,7 @@ void SeedPacket::update(float dt) {
     (uint8_t)(0 + 255 * (flashTimer / 0.8f))
      )));
 
-  if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed &&
+  if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed && !dayLevel.isIntroRunning &&
       enabledSprite.getGlobalBounds().contains(mousePosition))
     selected = true;
 
