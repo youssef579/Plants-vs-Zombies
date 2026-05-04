@@ -152,7 +152,7 @@ void LevelManager::update(float dt) {
   }
 
   zombieSpawnDelay = currWave->duration / currWave->zombieTypes.size; // delay between each zombie in wave
-
+  //std::cout << zombieSpawnTimer << " " << zombieSpawnDelay << "\n";
   zombieSpawnTimer += dt;
   //std::cout << zombieSpawnTimer << "\n";
   if (zombieSpawnTimer >= zombieSpawnDelay) {
@@ -190,7 +190,7 @@ void LevelManager::update(float dt) {
 
   if (zombiesSpawned == currWave->zombieTypes.size) {
     currentWave++;
-    //zombieSpawnTimer = 0;
+    zombieSpawnTimer = 999999.0f;
     zombiesSpawned = 0;
     if(currWave->isBigWave) sounds.play("Awooga");
     //std::cout << zombieSpawnTimer << "\n";
@@ -198,8 +198,7 @@ void LevelManager::update(float dt) {
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
-  else
-    zombieSpawnTimer = 999999.0f; // spawn first zombie instantly except for first wave
+  
 
 
 
