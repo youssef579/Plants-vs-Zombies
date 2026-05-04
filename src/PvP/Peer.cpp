@@ -3,6 +3,7 @@
 #include <Files.hpp>
 
 #include <Plants/Plant.hpp>
+#include <Zombies/Zombie.hpp>
 #include <Grid.hpp>
 
 void Peer::init(unsigned short port) {
@@ -98,10 +99,11 @@ void Peer::update(Command COMMAND, int ROW, int COLUMN, int TYPE) {
     }
 
     grid[i][j].therePlantInBounders = 0;
-
-    command = Peer::Heartbeat;
     
   } else {
-    
+    Zombie::createZombie(
+      grid[i][8].rectangle.getGlobalBounds().getCenter().x,
+      grid[i][8].rectangle.getGlobalBounds().getCenter().y,
+      static_cast<Zombie::Type>(TYPE), i);
   }
 }

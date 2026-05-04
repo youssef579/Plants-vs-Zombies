@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 
+#include <PvP/Peer.hpp>
+
 extern bool isPaused;
 extern bool isMousePressed, isMouseReleased;
 extern sf::Vector2f mousePosition;

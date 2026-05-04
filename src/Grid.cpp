@@ -3,6 +3,7 @@
 #include <Packets/Shovel.hpp>
 #include <SunManager.hpp>
 
+#include <Zombies/Zombie.hpp>
 #include <Pvp/Peer.hpp>
 
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
@@ -96,6 +97,20 @@ void updateGrid(float dt){
               
               } 
 
+            }
+            if(peer.player == Peer::Zombies) {
+              for(int k = 0; k < zombiePackets.size; k++) {
+                if (zombiePackets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased) {
+                  command = Peer::Spawn;
+                  row = i;
+                  column = 8;
+                  type = zombiePackets[k].plantType;
+                  Zombie::createZombie(
+                    grid[i][8].rectangle.getGlobalBounds().getCenter().x,
+                    grid[i][8].rectangle.getGlobalBounds().getCenter().y,
+                    static_cast<Zombie::Type>(type), i);
+                }
+              }
             }
           }
       }

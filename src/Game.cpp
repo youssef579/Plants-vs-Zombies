@@ -49,7 +49,7 @@ void updateGame() {
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
 
-  dt = 1.f / 30;
+  dt = 1.f / 60;
 
   dt *= settings.timeModifier;
 
@@ -117,6 +117,8 @@ void updateGame() {
 
     auto packet = Peer::createPacket(peer.nextTick, command, row, column, type);
     peer.send(packet);
+
+    command = Peer::Heartbeat;
     // std::cout << "Sending " << peer.nextTick << '\n';
 
     //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
@@ -163,16 +165,15 @@ void updateGame() {
       return b.remove;
     });
 
-    if(dt) Zombie::updateAll(dt);
+    Zombie::updateAll(dt);
     Zombie::drawAll(dt);
 
     drawUI();
-    shovel.drawBank();
+    if(peer.player == Peer::Plants) shovel.drawBank();
     Sun::manageSuns(dt);
 
     updateSeedPackets(dt);
     drawSeedPackets();
-    
 
     shovel.update();
 
@@ -189,6 +190,10 @@ void updateGame() {
 
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
+    
+    for(int i = 0; i < zombiePackets.size; i++)
+      zombiePackets[i].drawSelectedPlant();
+
     if(dt) gameWeather.update(dt);
 
     if(peer.state == Peer::InGame) settings.timeModifier = 0;
