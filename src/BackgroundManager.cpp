@@ -311,15 +311,15 @@ void BackgroundManager::update(float dt) {
     }
     // ather(add)------------------------------------------
     plantSelector.updateSelector(dt, *window); 
-    if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
-      sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
-      if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        plantSelector.slideOut();
-        playBtnClicked = true;
-        isWaitingForPlay = false;
-        introTimer = 5.5f;
-      }
-    }
+    //if (plantSelector.isVisible && !plantSelector.isSlidingOut) {
+    //  sf::Vector2f mPos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), window->getDefaultView());
+    //  if (plantSelector.playBtn->getGlobalBounds().contains(mPos) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    //    plantSelector.slideOut();
+    //    playBtnClicked = true;
+    //    isWaitingForPlay = false;
+    //    introTimer = 5.5f;
+    //  }
+    //}
     //----------------------------------------------------------
 
 
