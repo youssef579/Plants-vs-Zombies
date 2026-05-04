@@ -212,7 +212,13 @@ void newPauseMenu::update(sf::RenderWindow& window) {
     static bool rClicked = false, resClicked = false, sClicked = false, mClicked = false;
 
 
-    if (handleButtonLogic(resumeBtn, mousePos, rClicked, resHovered)) isOpen = false;
+    if (handleButtonLogic(resumeBtn, mousePos, rClicked, resHovered)) {
+      isOpen = false;
+      isPaused = false;
+      gameWeather.isPaused = false;
+      setCursorMain();
+      if (clickSound) clickSound->play();
+    }
     if (handleButtonLogic(menuBtn, mousePos, mClicked, menuHovered)) {
       isOpen = false;
       gameState = 0;
