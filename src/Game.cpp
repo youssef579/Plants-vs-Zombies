@@ -57,6 +57,34 @@ void updateGame() {
   dt *= settings.timeModifier * globalTimeModifier;
 
 
+<<<<<<< HEAD
+=======
+  static bool pPressed = false;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+    if (!pPressed) {
+      newPause.isOpen = !newPause.isOpen;
+      pPressed = true;
+    }
+  }
+  else {
+    pPressed = false;
+  }
+  if (newPause.isOpen) {
+    newPause.update(*window);
+
+
+    dayLevel.draw(*window);
+    window->setView(*view);
+    gameWeather.draw(*window);
+    drawUI();
+    drawSeedPackets();
+
+
+    newPause.draw(*window);
+
+    return;
+  }
+>>>>>>> temp
 
   TransitionManager::update(dt);
 
@@ -152,7 +180,7 @@ void updateGame() {
       window->setView(*view);
       gameWeather.draw(*window);
       pauseMenu.update();
-      pauseMenu.draw();
+      //pauseMenu.draw();
       break;
     }
 
