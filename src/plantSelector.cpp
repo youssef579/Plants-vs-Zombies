@@ -9,7 +9,8 @@
 bool isPlantUnlocked[packetsNum] = { false };
 
 void initGameProgress() {
-  isPlantUnlocked[PEASHOOTER] = true; 
+  isPlantUnlocked[PEASHOOTER] = true;
+  isPlantUnlocked[SUN_FLOWER] = true;
 }
 
 Array<PlantType> chosenPlants;

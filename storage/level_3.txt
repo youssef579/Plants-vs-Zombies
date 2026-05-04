@@ -1,15 +1,43 @@
 Day
 SNOWPEASHOOTER
-3
-1 30 80
-1 20 1 
-1 2 1
-0 1 1
-
-Regular
+10
+21 62 79 103 120 133 146 161 189 191
+48 1 4 1 6 6 10 10 1 10
+2 1 2 1 2 2 3 3 1 8
+1 0 0 0 0 0 1 0 1 0
 
 
 Regular
 Regular
 
-Buckethead
+Regular
+
+Regular
+Regular
+
+Conehead
+
+Regular
+Regular
+
+Conehead
+Regular
+
+Regular
+Regular
+Regular
+
+Regular
+Regular
+Regular
+
+Flag
+
+Regular
+Regular
+Conehead
+Regular
+Regular
+Conehead
+Regular
+Regular
