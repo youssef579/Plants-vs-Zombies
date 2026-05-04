@@ -20,7 +20,6 @@
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
 #include <Rewards.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 #include <SunManager.hpp>
 #include <UI/Overlay.hpp>
 #include <UI/TransitionManager.hpp>
@@ -48,8 +47,7 @@ bool isPaused = false;
 bool runOnce = true;
 
 void updateGame() {
-  dt = drawClock.restart()
-           .asSeconds(); // clock.restart() sets time to 0 and returns the last
+  dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
@@ -97,22 +95,13 @@ void updateGame() {
       LawnMower::activateLawnMower(3);
       LawnMower::activateLawnMower(4);*/
     }
-    static bool pPressed = false;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
-      if (!pPressed) {
-        newPause.isOpen = !newPause.isOpen;
-        pPressed = true;
-      }
-    } else {
-      pPressed = false;
-    }
+
     if (newPause.isOpen) {
       newPause.update(*window);
 
       gameWeather.update(dt);
 
-      if (dayLevel.dirtSound &&
-          static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
         dayLevel.dirtSoundStarted = false;
       }
@@ -137,19 +126,19 @@ void updateGame() {
 
       return;
     }
-    if (isPaused) {
-      if (dayLevel.dirtSound &&
-          static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
-        dayLevel.dirtSound->pause();
-        dayLevel.dirtSoundStarted = false;
-      }
-      dayLevel.draw(*window);
-      window->setView(*view);
-      gameWeather.draw(*window);
-      pauseMenu.update();
-      pauseMenu.draw();
-      break;
-    }
+    // if (isPaused) {
+    //   if (dayLevel.dirtSound &&
+    //       static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+    //     dayLevel.dirtSound->pause();
+    //     dayLevel.dirtSoundStarted = false;
+    //   }
+    //   dayLevel.draw(*window);
+    //   window->setView(*view);
+    //   gameWeather.draw(*window);
+    //   pauseMenu.update();
+    //   // pauseMenu.draw();
+    //   break;
+    // }
 
     levelManager.update(dt);
     updateGrid(dt);
@@ -186,8 +175,6 @@ void updateGame() {
 
     LawnMower::updateAll(dt);
 
-    // drawGrid();
-
     Sun::drawAll();
 
     shovel.drawMovingShovel();
@@ -204,11 +191,4 @@ void updateGame() {
     break;
   }
   TransitionManager::draw();
-
-  // EE
-  /*onClick(sf::FloatRect{ {963, 484}, {5, 5} }, 0, []() {
-    static sf::Texture M3ZA_T = getTexture("assets/SelectorScreen/M3ZA.png");
-    static sf::Sprite M3ZA(M3ZA_T);
-    window->draw(M3ZA);
-    }, []() {});*/
 }

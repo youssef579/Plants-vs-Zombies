@@ -5,11 +5,22 @@
 // Returns slider value ranged (0->100)
 float updateSlider(Slider &slider) {
   static bool wasButtonClicked = false;
+  static bool startedClickedInside = false;
+
+  sf::Vector2f  pos = slider.sprite.getPosition();
+  sf::FloatRect  bounds({ pos.x - 25.0f,pos.y - 25.0f }, { 30.0f,30.0f });
+
+  if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) startedClickedInside = false;
+
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    if ((bounds.contains(mousePosition) && !wasButtonClicked) || slider.isHolding) {
+      startedClickedInside=true;
+    }
+  }
 
   // 7eta di m7taga some optimization probably bdl kol el getPosition()'s di
-  if ((slider.sprite.getGlobalBounds().contains(mousePosition) ||
-       slider.isHolding) &&
-      sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) &&
+  if ((bounds.contains(mousePosition) || slider.isHolding) &&
+      startedClickedInside &&
       !wasButtonClicked) {
     slider.isHolding = true;
     wasButtonClicked = true;
@@ -45,7 +56,7 @@ bool updateCheckbox(Checkbox& cb, bool& target) {
   if (cb.box.getGlobalBounds().contains(mousePosition)) {
     //button.setStyle(sf::Text::Bold);
 
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+    if (isMousePressed) {
       if (!wasButtonClicked) {
         //action();
         cb.checked = !cb.checked;
