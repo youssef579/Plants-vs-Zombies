@@ -13,9 +13,9 @@ static float globOffsetX = -300.0f;
 extern sf::View* view;
 
 sf::Vector2f getSelectedSlotPos(int index) {
-  float startX = 85.0f;
-  float startY = 45.0f;
-  float gapX = 52.0f;
+  float startX = 90.0f;
+  float startY = 11.0f;
+  float gapX = 59.0f;
   return { startX + (index * gapX) , startY };
 }
 
@@ -82,7 +82,23 @@ void PlantsSelector::slideOut() {
 }
 
 void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
-  
+
+  static const float animationDuration = 0.5f;
+
+  for (int i = 0; i < 7; i++) {
+    if (!plantSelector.selectedSlot[i].sprite) continue;
+
+    plantSelector.selectedSlot[i].timer += dt;
+    //plantSelector.selectedSlot[i].sprite->setOrigin(plantSelector.selectedSlot[i].sprite->getLocalBounds().size / 2.0f);
+    plantSelector.selectedSlot[i].sprite->setPosition(
+      plantSelector.selectedSlot[i].startPos + (plantSelector.selectedSlot[i].endPos - plantSelector.selectedSlot[i].startPos)
+      * (std::min(plantSelector.selectedSlot[i].timer, animationDuration) / animationDuration)
+    );
+    //std::cout << (std::min(plantSelector.selectedSlot[i].timer, animationSpeed) / animationSpeed) << "\n";
+
+  }
+
+
   sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window), *view);
   if (plantSelector.currX < plantSelector.tarX) {
     plantSelector.currX += plantSelector.speed * dt;
@@ -158,6 +174,11 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
             float gapX = 60.0f;
             plantSelector.selectedSlot[emptySlot].sprite->setPosition({ startX + (emptySlot * gapX), startY });
 
+            //std::cout << "Selected " << i << " -> " << emptySlot << "\n";
+            plantSelector.selectedSlot[emptySlot].startPos = getPacketPosition(i);
+            plantSelector.selectedSlot[emptySlot].endPos = getSelectedSlotPos(emptySlot);
+            plantSelector.selectedSlot[emptySlot].timer = 0.0f;
+
             plantSelector.packets[i].isSelected = true;
             plantSelector.packets[i].sprite->setColor(sf::Color(100, 100, 100));
             plantSelector.currentSelectedCnt++;
@@ -202,6 +223,10 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
             delete plantSelector.selectedSlot[i].sprite;
 
             for (int j = i; j < 6; j++) {
+              //if (j > i) {
+                
+              //}
+
               plantSelector.selectedSlot[j].active = plantSelector.selectedSlot[j + 1].active;
               plantSelector.selectedSlot[j].id = plantSelector.selectedSlot[j + 1].id;
               plantSelector.selectedSlot[j].sprite = plantSelector.selectedSlot[j + 1].sprite;
@@ -209,9 +234,20 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
               if (plantSelector.selectedSlot[j].active && plantSelector.selectedSlot[j].sprite) {
                 float startX = 90.0f;
                 float gapX = 59.0f;
-                plantSelector.selectedSlot[j].sprite->setPosition({ startX + (j * gapX), 11.0f });
+                plantSelector.selectedSlot[j].startPos = plantSelector.selectedSlot[j].sprite->getPosition();
+                plantSelector.selectedSlot[j].endPos = getSelectedSlotPos(j);
+                plantSelector.selectedSlot[j].timer = 0.0f;
+                //plantSelector.selectedSlot[j].sprite->setPosition({ startX + (j * gapX), 11.0f });
+                
               }
+
             }
+            /*for (int j = i + 1; j < 7; j++) {
+              if (!plantSelector.selectedSlot[j].sprite) continue;
+              plantSelector.selectedSlot[j].startPos = getSelectedSlotPos(j);
+              plantSelector.selectedSlot[j].endPos = getSelectedSlotPos(j - 1);
+              plantSelector.selectedSlot[j].timer = 0;
+            }*/
 
             plantSelector.selectedSlot[6].sprite = nullptr;
             plantSelector.selectedSlot[6].active = false;
@@ -251,7 +287,8 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
         float packetScale = 1.15f;
 
         plantSelector.selectedSlot[i].sprite->setScale({ packetScale,packetScale });
-        plantSelector.selectedSlot[i].sprite->setPosition({ baseStartX + (i * gapX), 11.0f });
+        //plantSelector.selectedSlot[i].sprite->setPosition({ baseStartX + (i * gapX), 11.0f});
+        
 
         window.draw(*plantSelector.selectedSlot[i].sprite);
       }

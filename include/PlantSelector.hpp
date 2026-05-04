@@ -16,7 +16,10 @@ struct SelectionPacket {
 struct selectedPacket {
   int id;
   sf::Sprite* sprite = nullptr;
-  bool active = false; 
+  bool active = false;
+  sf::Vector2f startPos;
+  sf::Vector2f endPos;
+  float timer;
 };
 
 struct PlantsSelector {
