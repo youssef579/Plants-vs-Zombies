@@ -1,11 +1,7 @@
 #include <newPauseMenu.hpp>
-<<<<<<< HEAD
-#include <cmath>
-=======
 #include <UI/Pause.hpp>
 #include <LevelManager.hpp>
 #include<cmath>
->>>>>>> temp
 
 
 newPauseMenu newPause;
@@ -146,12 +142,8 @@ void newPauseMenu::init() {
 bool newPauseMenu::handleButtonLogic(sf::Sprite* btn, sf::Vector2f mousePos, bool& actionTriggered, bool& isHovered, float baseScale) {
   if (!btn) return false;
 
-<<<<<<< HEAD
-
-=======
   bool prevActionTriggered = actionTriggered;
   //bool prevclicked = sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
->>>>>>> temp
 
   if (btn->getGlobalBounds().contains(mousePos)) {
     if (!isHovered) {
@@ -258,15 +250,6 @@ void newPauseMenu::draw(sf::RenderWindow& window) {
   if (!isOpen) return;
 
   window.draw(overlay);
-<<<<<<< HEAD
-
-  if (pauseMenu) window.draw(*pauseMenu);
-  if (resumeBtn) window.draw(*resumeBtn);
-  if (restartBtn) window.draw(*restartBtn);
-  if (settingsBtn) window.draw(*settingsBtn);
-  if (menuBtn) window.draw(*menuBtn);
-=======
->>>>>>> temp
 
   if (isSettingsOpen) {
     if (backgroundOptionsS) window.draw(*backgroundOptionsS);

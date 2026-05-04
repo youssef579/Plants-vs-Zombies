@@ -57,8 +57,6 @@ void updateGame() {
   dt *= settings.timeModifier * globalTimeModifier;
 
 
-<<<<<<< HEAD
-=======
   static bool pPressed = false;
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
     if (!pPressed) {
@@ -84,7 +82,6 @@ void updateGame() {
 
     return;
   }
->>>>>>> temp
 
   TransitionManager::update(dt);
 
