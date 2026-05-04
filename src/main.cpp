@@ -26,6 +26,7 @@ int main() {
   ParticleSystem::init();
   pauseMenu.init();
   initGrid();
+  initGameProgress();
   plantSelector.initSelector();
   setWindowMetaData();
 

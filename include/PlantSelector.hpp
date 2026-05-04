@@ -5,7 +5,10 @@
 
 
 extern Array<PlantType> chosenPlants;
-const int packetsNum = 11;
+const int packetsNum = 12;
+extern bool isPlantUnlocked[packetsNum];
+
+void initGameProgress();
 
 struct SelectionPacket {
   int id;

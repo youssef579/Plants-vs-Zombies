@@ -1,3 +1,4 @@
+#include "Array.hpp"
 #include <LevelManager.hpp>
 #include <BackgroundManager.hpp>
 #include <Game.hpp>
@@ -60,7 +61,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   resetLevelProgress();
 
   // Packets
-  fillPackets(Array<PlantType>());
+  Array<PlantType> emptyPackets;
+  fillPackets(emptyPackets);
   //plantSelector.initSelector();
   dayLevel.playBtnClicked = false;
   dayLevel.introSlidingStarted = false;
@@ -83,11 +85,11 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
       plantSelector.selectedSlot[i].sprite = nullptr;
     }
   }
-  
-  
 
 
-  
+
+
+
 
 }
 

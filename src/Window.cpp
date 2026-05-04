@@ -2,7 +2,7 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <BackgroundManager.hpp>
-#include <packets/Packet.hpp> // USED FOR DEV MODE
+#include <Packets/Packet.hpp> // USED FOR DEV MODE
 #include <SunManager.hpp>     // USED FOR DEV MODE
 
 
@@ -139,7 +139,7 @@ void handleEvents() {
       case sf::Keyboard::Key::Grave: { // DEV MODE
         Array<PlantType> types;
         for (auto t : { PEASHOOTER, SUN_FLOWER, WALLNUT, SNOWPEASHOOTER,
-          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH })
+          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH, PUFFSHROOM })
           types.push(t);
         fillPackets(types);
         Sun::sunBalance = 5000;
