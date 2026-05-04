@@ -4,6 +4,7 @@
 #include <BackgroundManager.hpp>
 #include <iostream>
 #include <Packets/Packet.hpp>
+#include <LevelManager.hpp>
 
 bool isPlantUnlocked[packetsNum] = { false };
 
@@ -41,9 +42,9 @@ sf::Vector2f getPacketPosition(int index) {
 }
 
 void PlantsSelector::initSelector() {
-  plantSelector.currX = -600.f;
-  plantSelector.tarX  = -600.f;
-  plantSelector.speed = 1000.f;
+  plantSelector.currX = -650.f;
+  plantSelector.tarX  = -650.f;
+  plantSelector.speed = 950.0f;
   plantSelector.currentSelectedCnt = 0;
   plantSelector.isVisible = false;
   plantSelector.isSlidingOut = false;
@@ -92,7 +93,7 @@ void PlantsSelector::slideIn() {
 }
 
 void PlantsSelector::slideOut() {
-  plantSelector.tarX = -600.0f;
+  plantSelector.tarX = -650.0f;
   plantSelector.isSlidingOut = true;
 }
 
@@ -100,6 +101,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
 
   static const float animationDuration = 0.5f;
 
+  // update position for transitions
   for (int i = 0; i < 7; i++) {
     if (!plantSelector.selectedSlot[i].sprite) continue;
 
@@ -133,8 +135,10 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
     plantSelector.playBtn->setPosition({ plantSelector.currX + 230.f , 570.f });
     if (plantSelector.playBtn->getGlobalBounds().contains(worldPos)) {
       plantSelector.playBtn->setTexture(plantSelector.playBtnHover);
-      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+      if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) { // Play Button pressed
         if (chosenPlants.size > 0) {
+          sounds.play("ButtonClick");
+          levelManager.startLevel(); // starts sun spawn and continues timers
           fillPackets(chosenPlants);
           plantSelector.currentSelectedCnt = 0;
           for (int j = 0; j < packetsNum; j++) {
@@ -206,6 +210,8 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
             plantSelector.selectedSlot[emptySlot].sprite->setPosition({ startX + (emptySlot * gapX), startY });
 
             //std::cout << "Selected " << i << " -> " << emptySlot << "\n";
+            // Set transition variables to go to top (selected)
+            sounds.play("Click");
             plantSelector.selectedSlot[emptySlot].startPos = getPacketPosition(i);
             plantSelector.selectedSlot[emptySlot].endPos = getSelectedSlotPos(emptySlot);
             plantSelector.selectedSlot[emptySlot].timer = 0.0f;
@@ -237,7 +243,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
       if (plantSelector.selectedSlot[i].active && plantSelector.selectedSlot[i].sprite) {
         if (plantSelector.selectedSlot[i].sprite->getGlobalBounds().contains(worldPos)) {
           if (isLeftPressed && !mousePressedLastFrame) {
-
+            sounds.play("Click");
             int removedId = plantSelector.selectedSlot[i].id;
 
             for (int j = 0; j < packetsNum; j++) {
@@ -254,9 +260,6 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
             delete plantSelector.selectedSlot[i].sprite;
 
             for (int j = i; j < 6; j++) {
-              //if (j > i) {
-                
-              //}
 
               plantSelector.selectedSlot[j].active = plantSelector.selectedSlot[j + 1].active;
               plantSelector.selectedSlot[j].id = plantSelector.selectedSlot[j + 1].id;

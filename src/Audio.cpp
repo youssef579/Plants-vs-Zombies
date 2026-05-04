@@ -75,6 +75,7 @@ void Sounds::play(std::string op) {
   else if (op == "Groan4")        sound = new sf::Sound(sounds.buffers.groan4);
   else if (op == "Groan5")        sound = new sf::Sound(sounds.buffers.groan5);
   else if (op == "Groan6")        sound = new sf::Sound(sounds.buffers.groan6);
+  else if (op == "Click")         sound = new sf::Sound(sounds.buffers.click);
   else {
     std::cerr << "FATAL ERROR: Unkown sfx option \"" << op << "\" detected" << std::endl;
     std::system("pause");
@@ -124,6 +125,7 @@ void Sounds::init() {
   sounds.buffers.groan4        = getSoundBuffer(sounds.paths.groan4);
   sounds.buffers.groan5        = getSoundBuffer(sounds.paths.groan5);
   sounds.buffers.groan6        = getSoundBuffer(sounds.paths.groan6);
+  sounds.buffers.click         = getSoundBuffer(sounds.paths.click);
 
 }
 

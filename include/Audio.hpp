@@ -56,7 +56,8 @@ struct Sounds {
       groan3,
       groan4,
       groan5,
-      groan6;
+      groan6,
+      click;
   };
 
   struct Paths {
@@ -94,7 +95,8 @@ struct Sounds {
       groan3          = "assets/sounds/sfx_groan3.ogg",
       groan4          = "assets/sounds/sfx_groan4.ogg",
       groan5          = "assets/sounds/sfx_groan5.ogg",
-      groan6          = "assets/sounds/sfx_groan6.ogg";
+      groan6          = "assets/sounds/sfx_groan6.ogg",
+      click           = "assets/sounds/click.wav";
   };
 
 

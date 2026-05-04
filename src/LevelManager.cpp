@@ -50,8 +50,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   gameView->setCenter({0, 0});
 
   spawningFinished = false;
-  Sun::isSpawning = true;
-  Sun::spawnTimer = -20;
+  Sun::isSpawning = false;
+  Sun::spawnTimer = -15;
 
   // Rewards
   RewardManager::spawnedLevelReward = false;
@@ -129,7 +129,8 @@ void LevelManager::restartLevel() {
 }
 
 void LevelManager::update(float dt) {
-  if(dayLevel.introTimer>5.5f)
+
+  if (dayLevel.introTimer > 5.5f)
     timer += dt;
   static int lastRow = 0;
 
@@ -191,7 +192,7 @@ void LevelManager::update(float dt) {
     currentWave++;
     //zombieSpawnTimer = 0;
     zombiesSpawned = 0;
-    sounds.play("Awooga");
+    if(currWave->isBigWave) sounds.play("Awooga");
     //std::cout << zombieSpawnTimer << "\n";
   }
 
@@ -202,4 +203,17 @@ void LevelManager::update(float dt) {
 
 
 
+}
+
+
+void LevelManager::startLevel() {
+  Sun::isSpawning = true;
+  Sun::spawnTimer = -8.0f;
+}
+
+
+void LevelManager::loadUnlockedPlants() {
+  for (int i = 0; i < maxLevelUnlocked - 1; i++) {
+    isPlantUnlocked[levels[i]->reward] = true;
+  }
 }

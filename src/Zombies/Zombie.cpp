@@ -248,7 +248,7 @@ bool Zombie::update(float dt) {
 
   //std::cout << groanTimer << "\n";
   groanTimer -= dt;
-  if (groanTimer <= 0) {
+  if (groanTimer <= 0 && state != Idle) {
     //std::cout << "Playing Groan\n";
     sounds.play("Groan" + std::to_string(randomRange(1, 6)));
     groanTimer = randomRange(8.0f, 35.0f);

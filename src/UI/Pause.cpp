@@ -121,7 +121,12 @@ void PauseMenu::update() {
     });
 
 // Restart Level Button
-  onClick(*restartLevelBtn, []() {levelManager.restartLevel(); }); // TODO: Add restartLevel()
+  onClick(*restartLevelBtn, []() {
+    TransitionManager::start([](){
+        levelManager.restartLevel();
+      });
+
+    });
 
 
   // Update Sliders

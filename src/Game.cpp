@@ -91,6 +91,8 @@ void updateGame() {
       Zombie::init();
       RewardManager::init();
 
+      levelManager.loadUnlockedPlants();
+
       runOnce = false;
 
       // REMOVE LATER

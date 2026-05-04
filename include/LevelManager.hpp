@@ -37,6 +37,10 @@ struct LevelManager {
   void loadLevelData(int levelNum);
   void restartLevel();
   void update(float dt);
+  void startLevel();
+  void loadUnlockedPlants();
+
+
 
 };
 
