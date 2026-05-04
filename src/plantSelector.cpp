@@ -73,6 +73,7 @@ void PlantsSelector::initSelector() {
   plantSelector.playBtnHover = getTexture("assets/plantsSelector/SeedChooser_Button.png");
 
   if (!plantSelector.playBtn) {
+
     plantSelector.playBtn = new sf::Sprite(getTexture("assets/plantsSelector/SeedChooser_Button_Disabled.png"));
     plantSelector.playBtn->setOrigin(plantSelector.playBtn->getLocalBounds().size / 2.0f);
     //plantSelector.playBtn->setOrigin({ 0.f, plantSelector.playBtn->getLocalBounds().size.y / 2.0f });
@@ -129,6 +130,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
 
     plantSelector.playText->setPosition({ plantSelector.currX + 230.f , 570.f - 5.0f });
 
+    if (plantSelector.currentSelectedCnt > 0) {
     if (plantSelector.playBtn->getGlobalBounds().contains(worldPos)) {
       plantSelector.playBtn->setTexture(plantSelector.playBtnHover);
       plantSelector.playText->setFillColor(sf::Color::Green);
@@ -157,11 +159,18 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
         dayLevel.introTimer = 5.5f;
        // chosenPlants.erase([](PlantType& p) { return true; });
         chosenPlants.size = 0;
+        plantSelector.currentSelectedCnt = 0;
       }
     }
     else {
       plantSelector.playBtn->setTexture(plantSelector.playBtnNormal);
       plantSelector.playText->setFillColor(sf::Color(0, 150, 0));
+    }
+  }
+    else {
+
+      plantSelector.playBtn->setTexture(plantSelector.playBtnNormal);
+      plantSelector.playText->setFillColor(sf::Color(100, 100, 100));
     }
   }
   
