@@ -512,11 +512,11 @@ void Zombie::drawAll() {
 }
 
 
-bool Zombie::isZombieAliveInRow(int row, float startPosX) {
+bool Zombie::isZombieAliveInRow(int row, float startPosX, float range) {
   for (int i = 0; i < zombies[row].size; i++) {
     if (zombies[row][i]->health > 0 && // alive
       zombies[row][i]->reAnimator.getPosition().x >= startPosX && // in front of plant
-      zombies[row][i]->inPlayArea) // inside play area
+      zombies[row][i]->inPlayArea && zombies[row][i]->reAnimator.getPosition().x <= startPosX + range) // inside play area
       return true;
   }
   return false;
