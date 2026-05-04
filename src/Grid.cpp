@@ -3,6 +3,9 @@
 #include <Packets/Shovel.hpp>
 #include <SunManager.hpp>
 
+#include <Zombies/Zombie.hpp>
+#include <Pvp/Peer.hpp>
+
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
 void initGrid(){
@@ -61,6 +64,13 @@ void updateGrid(float dt){
 
 
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
+                if(peer.state == Peer::InGame) {
+                  CMD = Peer::SpawnPlant;
+                  ROW = i;
+                  COL = j;
+                  TYPE = packets[k].plantType;
+                  continue;
+                }
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
                     grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, ReAnimator::getDefinition(REANIM_SUNFLOWER));
@@ -90,6 +100,16 @@ void updateGrid(float dt){
               
               } 
 
+            }
+            if(peer.type == Peer::Zombies) {
+              for(int k = 0; k < zombiePackets.size; k++) {
+                if (zombiePackets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased) {
+                  CMD = Peer::SpawnZombie;
+                  ROW = i;
+                  COL = 8;
+                  TYPE = zombiePackets[k].plantType;
+                }
+              }
             }
           }
       }

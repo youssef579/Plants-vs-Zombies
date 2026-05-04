@@ -10,8 +10,6 @@
 
 sf::Vector2f mousePosition;
 
-
-
 int main() {
   initWindow();
   initFiles();

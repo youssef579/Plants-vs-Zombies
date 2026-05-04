@@ -8,6 +8,8 @@
 #include <globals.hpp>
 #include <cmath>
 
+#include <PvP/Peer.hpp>
+
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
                        "Ali Assem",
@@ -238,6 +240,28 @@ void updateHome() {
             music.play("DayStage");
               gameState = currentLevel;
             });
+          if(currentLevel == 5) {
+            onClick(text, [&]() {
+              peer.type = Peer::Plants;
+            });
+          }
+          if(currentLevel == 4) {
+            onClick(text, [&]() {
+              peer.type = Peer::Zombies;
+            });
+          }
+          if(currentLevel == 3) {
+            onClick(text, [&]() {
+              gameState = 2;
+              peer.state = Peer::Waiting;
+            });
+          }
+          if(currentLevel == 2) {
+            onClick(text, [&]() {
+              gameState = 2;
+              peer.state = Peer::Requesting;
+            });
+          }
         },
         []() {
           if (!isLastPage()) {

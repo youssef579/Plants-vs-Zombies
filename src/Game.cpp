@@ -23,6 +23,8 @@
 #include <Grid.hpp>
 #include <Zombies/Zombie.hpp>
 
+#include <PvP/Peer.hpp>
+
 int gameState = 0;
 /*
   0 -> Home menu
@@ -37,16 +39,34 @@ static bool weatherInited = false;
 
 bool isPaused = false;
 bool runOnce = true;
+bool initonce = true;
+
+Peer peer;
 
 void updateGame() {
-  dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
+  // dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
-  dt *= settings.timeModifier;
+
+  dt = Peer::timePerTick;
 
   switch (gameState) {
   case 0:
+    updateHome();
+    break;
+  case 2:
+    if(initonce) {
+      peer.init();
+      initonce = false;
+    }
+    if(peer.state == Peer::InGame) {
+      gameState = 1;
+      break;
+    }
+    if(peer.state == Peer::Requesting || peer.state == Peer::Accepting) 
+      peer.connect(dt);
+    peer.receive();
     updateHome();
     break;
   default:
@@ -65,18 +85,18 @@ void updateGame() {
       music.play("DayStage");
 
       //Zombie Testing
-      Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular, 2);
+      // Zombie::createZombie(
+      //   grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[2][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Regular, 2);
       Zombie::createZombie(
         grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[1][8].rectangle.getGlobalBounds().getCenter().y,
         Zombie::Type::Conehead, 1);
-      Zombie::createZombie(
-        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Buckethead, 0);
+      // Zombie::createZombie(
+      //   grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
+      //   grid[0][8].rectangle.getGlobalBounds().getCenter().y,
+      //   Zombie::Type::Buckethead, 0);
       Zombie::createZombie(
         grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
         grid[3][8].rectangle.getGlobalBounds().getCenter().y,
@@ -100,7 +120,14 @@ void updateGame() {
       break;
     }
 
-    
+    if(peer.state == Peer::InGame) {
+      peer.fillHistory();
+      auto packet = peer.createPacket();
+      peer.send(packet);
+      peer.receive();
+    }
+
+    dt *= settings.timeModifier;
 
     //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
     /*if (z4.health > 0)
@@ -150,14 +177,15 @@ void updateGame() {
     Zombie::drawAll(dt);
 
     drawUI();
-    shovel.drawBank();
+    if(peer.type == Peer::Plants) shovel.drawBank();
     Sun::manageSuns(dt);
 
     updateSeedPackets(dt);
     drawSeedPackets();
     
+    
 
-    shovel.update();
+    if(peer.type == Peer::Plants) shovel.update();
 
 
 
@@ -167,11 +195,13 @@ void updateGame() {
 
 
 
-    shovel.drawMovingShovel();
+    if(peer.type == Peer::Plants) shovel.drawMovingShovel();
     drawTimeModifier(dt);
 
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
+    for(int i = 0; i < zombiePackets.size; i++)
+      zombiePackets[i].drawSelectedPlant();
     gameWeather.update(dt);
     break;
   }

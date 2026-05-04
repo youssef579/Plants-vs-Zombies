@@ -6,7 +6,10 @@
 #include <Packets/Packet.hpp>
 #include <SunManager.hpp>
 
+#include <PvP/Peer.hpp>
+
 Array<SeedPacket> packets;
+Array<SeedPacket> zombiePackets;
 
 void initPackets() {
   sf::Texture& peashooterTexture = getTexture("assets/Plants/peashooter.png");
@@ -43,6 +46,12 @@ void initPackets() {
   //tallNutSprite.setTextureRect({ {0, 0}, {65, 73} });
   packets.push({ 125, 5, "tallnut", {90 + 59.0f * 5, 11}, tallNutSprite, TALLNUT });
 
+  // Zombies
+
+  sf::Texture& regularZombieTexture = getTexture("assets/Zombies/Regular/zombie.png");
+  sf::Sprite regularZombieSprite(regularZombieTexture);
+  regularZombieSprite.setTextureRect({ {56, 16}, {150, 144}});
+  zombiePackets.push({50, 3, "regular", {90 + 59.0f * 0, 11}, regularZombieSprite, static_cast<PlantType>(0)});
 }
 
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string packetName, sf::Vector2f position, sf::Sprite preview, PlantType plantTypeValue)
@@ -61,6 +70,14 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue, std::string pac
 
   disabledSprite.setPosition(position);
   disabledSprite.setScale({scaleFactor, scaleFactor});
+
+  if(peer.type == Peer::Zombies) {
+    enabledSprite.setTextureRect({ {56, 16}, {150, 144}});
+    enabledSprite.setScale({0.6f, 0.6f});
+
+    disabledSprite.setTextureRect({ {56, 16}, {150, 144}});
+    disabledSprite.setScale({0.6f, 0.6f});
+  }
 
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
 
@@ -99,13 +116,25 @@ void SeedPacket::drawSelectedPlant() {
 
 
 void updateSeedPackets(float dt) {
-  for (int i = 0; i < packets.size; i++) {
-    packets[i].update(dt);
+  if(peer.type == Peer::Plants) {
+    for (int i = 0; i < packets.size; i++) {
+      packets[i].update(dt);
+    }
+  } else {
+    for(int i = 0; i < zombiePackets.size; i++) {
+      zombiePackets[i].update(dt);
+    }
   }
 }
 
 void drawSeedPackets() {
-  for (int i = 0; i < packets.size; i++) {
-    packets[i].draw();
+  if(peer.type == Peer::Plants) {
+    for (int i = 0; i < packets.size; i++) {
+      packets[i].draw();
+    }
+  } else {
+    for(int i = 0; i < zombiePackets.size; i++) {
+      zombiePackets[i].draw();
+    }
   }
 }
