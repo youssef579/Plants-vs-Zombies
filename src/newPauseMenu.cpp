@@ -3,6 +3,7 @@
 #include <UI/Pause.hpp>
 #include <cmath>
 #include <newPauseMenu.hpp>
+#include <UI/TransitionManager.hpp>
 
 newPauseMenu newPause;
 
@@ -248,23 +249,36 @@ void newPauseMenu::update(sf::RenderWindow &window) {
       isOpen = isPaused = gameWeather.isPaused = false;
     }
     if (handleButtonLogic(menuBtn, mousePos, mClicked, menuHovered)) {
+      setCursorMain();
+      TransitionManager::start([&]() {
       isOpen = false;
+        gameState = 0, homeState = 0; //go to home menu not level selector
+        isPaused = false;
+        gameWeather.isPaused = false;
+        levelManager.resetLevelData();
+        sounds.play("ButtonClick"); music.play("Menu");
+        });
+      /*isOpen = false;
       gameState = 0;
       homeState = 0;
       isPaused = false;
 
-      levelManager.resetLevelData();
+      levelManager.resetLevelData();*/
 
       if (clickSound)
         clickSound->play();
-      music.play("Menu");
     }
     if (handleButtonLogic(restartBtn, mousePos, resClicked, restartHovered)) {
-      levelManager.resetLevelData();
+      setCursorMain();
+      TransitionManager::start([&]() {
+        isOpen = false;
+        levelManager.restartLevel();
+        });
+      /*levelManager.resetLevelData();
 
       isPaused = false;
       gameWeather.isPaused = false;
-      isOpen = false;
+      isOpen = false;*/
 
       if (clickSound)
         clickSound->play();
