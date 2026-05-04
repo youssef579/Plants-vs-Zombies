@@ -30,8 +30,7 @@ struct PlantsSelector {
   sf::Texture playBtnNormal;
   sf::Texture playBtnHover;
 
-  sf::Font playFont;
-  sf::Text playText;  
+  sf::Text* playText = nullptr;
 
   float currX;
   float tarX;

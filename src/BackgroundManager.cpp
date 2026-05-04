@@ -471,7 +471,7 @@ rollFiveGrass(dt);
   if (dirtSound) {
     if (anyRolling) {
 
-      dirtSound->setVolume(settings.soundFXVolume * 0.5f);
+      dirtSound->setVolume(settings.soundFXVolume * 0.45f);
       //dirtSound->setVolume(100.f);
 
       if (!dirtSoundStarted) {

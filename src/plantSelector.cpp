@@ -48,15 +48,17 @@ void PlantsSelector::initSelector() {
   plantSelector.isVisible = false;
   plantSelector.isSlidingOut = false;
 
-  if (playFont.openFromFile("assets/font.ttf")) {
-    playText.setFont(playFont);
-    playText.setString("PLAY");
-    playText.setCharacterSize(26);
-    playText.setFillColor(sf::Color(0, 150, 0));
-    sf::FloatRect textRect = playText.getLocalBounds();
-    playText.setOrigin({ textRect.size.x / 2.0f, textRect.size.y / 2.0f });
+  if (!plantSelector.playText) {
+    plantSelector.playText = new sf::Text(assets->font);
   }
 
+  playText->setFont(assets->font);
+  playText->setString("PLAY");
+  playText->setCharacterSize(26);
+  playText->setFillColor(sf::Color(0, 150, 0));
+  sf::FloatRect textRect = playText->getLocalBounds();
+  playText->setOrigin({ textRect.size.x / 2.0f, textRect.size.y / 2.0f });
+  
   if (!plantSelector.backSprite) {
 
     plantSelector.backSprite = new sf::Sprite(getTexture("assets/plantsSelector/selectorBackground.png"));
@@ -124,8 +126,12 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
 
   if (plantSelector.playBtn) {
     plantSelector.playBtn->setPosition({ plantSelector.currX + 230.f , 570.f });
+
+    plantSelector.playText->setPosition({ plantSelector.currX + 230.f , 570.f - 5.0f });
+
     if (plantSelector.playBtn->getGlobalBounds().contains(worldPos)) {
       plantSelector.playBtn->setTexture(plantSelector.playBtnHover);
+      plantSelector.playText->setFillColor(sf::Color::Green);
       if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         if (chosenPlants.size > 0) {
           fillPackets(chosenPlants);
@@ -155,6 +161,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
     }
     else {
       plantSelector.playBtn->setTexture(plantSelector.playBtnNormal);
+      plantSelector.playText->setFillColor(sf::Color(0, 150, 0));
     }
   }
   
@@ -280,7 +287,10 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
         if (plantSelector.packets[i].sprite)
           window.draw(*plantSelector.packets[i].sprite);
       }
-      if (plantSelector.playBtn) window.draw(*plantSelector.playBtn);
+      if (plantSelector.playBtn) {
+        window.draw(*plantSelector.playBtn);
+        window.draw(*plantSelector.playText);
+      }
     }
 
   
