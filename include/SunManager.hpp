@@ -34,7 +34,7 @@ private:
   static constexpr int assetWidth =
       116; // SunAsset width (Used for spawn bounds)
   static constexpr float spawnInterval =
-      8.0f; // Amount of seconds between each sun spawn
+      10.0f; // Amount of seconds between each sun spawn
   static constexpr float acceleration = 400.0f;
   static constexpr float distanceSunFlower =
       50.0f; // the distance the sun will fly above the sunflower

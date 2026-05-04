@@ -9,7 +9,7 @@
 
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
-const int ACTUAL_MAX_LEVELS = 3; // how many level files actually exist
+const int ACTUAL_MAX_LEVELS = 5; // how many level files actually exist
 
 float Settings::musicVolume;
 float Settings::soundFXVolume;
