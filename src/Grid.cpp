@@ -96,8 +96,7 @@ void updateGrid(float dt){
                     grid[i][j].plant = Plant(SQUASH, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SQUASH));
                     break;
                   case PUFFSHROOM:
-                    // الانيميشن ي ابويا
-                    grid[i][j].plant = Plant(PUFFSHROOM, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_PEASHOOTER));
+                    grid[i][j].plant = Plant(PUFFSHROOM, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_PUFFSHROOM));
                     break;
                   default:
                     break;

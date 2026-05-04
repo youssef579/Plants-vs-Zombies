@@ -1279,6 +1279,24 @@ void initReAnimDefs() {
 
 
 
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_puffshroom[] = { "anim_sleep", "anim_shooting", "anim_idle",
+    "anim_face", "PuffShroom_stem", "PuffShroom_tip", "PuffShroom_head",
+    "PuffShroom_eyes", "anim_blink" };
+
+  def->loadFiles("assets/Plants/puffshroom/puffshroom.json", 9, trackNames_puffshroom, {
+      {"IMAGE_REANIM_PUFFSHROOM_BODY",        "assets/Plants/puffshroom/PuffShroom_body.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_STEM",        "assets/Plants/puffshroom/PuffShroom_stem.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_TIP",         "assets/Plants/puffshroom/PuffShroom_tip.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_HEAD",        "assets/Plants/puffshroom/PuffShroom_head.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_BLINK1",      "assets/Plants/puffshroom/PuffShroom_blink1.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_BLINK2",      "assets/Plants/puffshroom/PuffShroom_blink2.png"}
+    });
+  definitions.push(def);
+
+
+
 }
 
 ReAnimationDefinition* ReAnimator::getDefinition(ReAnimationDef defId) {

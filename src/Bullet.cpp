@@ -13,7 +13,10 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   shadow.setFillColor(sf::Color(255, 255, 255, 255));
   shadow.setScale({1.5f, 0.5f});
   shadow.setOrigin(shadow.getLocalBounds().getCenter());
+
   shadow.setPosition({position.x, position.y + 50});
+  if(typeValue == SHROOM)
+    shadow.setPosition({position.x, position.y + 20});
 
   sprite.setOrigin(sprite.getLocalBounds().getCenter());
   sprite.setPosition(position);

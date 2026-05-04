@@ -191,8 +191,6 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
     break;
   case PUFFSHROOM:
     reAnimator.playAnimation("anim_idle");
-    reAnimator.playAnimation("anim_head_idle");
-    reAnimator.animSpeedMulti = 2.0f;
     break;
   }
 }
@@ -241,7 +239,7 @@ void Plant::update(float dt) {
 void Plant::draw() {
   reAnimator.draw();
   //reAnimator.drawHitbox();
-  switch (plantType) {
+  switch (plantType) { // only sunflower is used, rest are for reassurance
     case SUN_FLOWER:
       drawSunFlower(*this);
       break;

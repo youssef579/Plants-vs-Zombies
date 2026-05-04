@@ -6,6 +6,7 @@
 #include <Window.hpp>
 #include <algorithm>
 #include <globals.hpp>
+#include <BackgroundManager.hpp>
 
 Array<SeedPacket> packets;
 
@@ -85,7 +86,7 @@ void fillPackets(Array<PlantType> &types) {
 
     squashSprite.setScale({0.21f, 0.21f});
 
-    puffShroomSprite.setScale({0.21f, 0.21f});
+    puffShroomSprite.setScale({0.13f, 0.13f});
 
     runOnce = false;
   }
@@ -213,8 +214,9 @@ void SeedPacket::update(float dt) {
     (uint8_t)(0 + 255 * (flashTimer / 0.8f))
      )));
 
+
   if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed &&
-      enabledSprite.getGlobalBounds().contains(mousePosition))
+      enabledSprite.getGlobalBounds().contains(mousePosition) && dayLevel.introTimer >= 21.0f)
     selected = true;
 
   if (selected)

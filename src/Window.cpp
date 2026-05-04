@@ -82,8 +82,10 @@ void handleEvents() {
   isMousePressed = isMouseReleased = false;
   while (const std::optional event = window->pollEvent())
   {
-    if (event->is<sf::Event::Closed>()) // Close Game
+    if (event->is<sf::Event::Closed>()) { // Close Game
+      updateFiles(); // save data first
       window->close();
+    }
 
     if (const auto* resized = event->getIf<sf::Event::Resized>()) { // Resize game when window is resized
       getLetterboxView(resized->size.x, resized->size.y);

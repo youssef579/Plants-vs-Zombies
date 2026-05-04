@@ -33,10 +33,10 @@ void updatePuffShroom(Plant& puffShroom, float dt) {
       sf::Vector2f currPOS =
       {
         ((sf::Transform().translate({puffShroom.reAnimator.x, puffShroom.reAnimator.y}))
-          * ReAnimator::transformToSFML(puffShroom.reAnimator.curTransforms[14])).getMatrix()[12] + 50,
+          * ReAnimator::transformToSFML(puffShroom.reAnimator.curTransforms[5])).getMatrix()[12] - 10.0f,
 
           ((sf::Transform().translate({puffShroom.reAnimator.x, puffShroom.reAnimator.y}))
-          * ReAnimator::transformToSFML(puffShroom.reAnimator.curTransforms[14])).getMatrix()[13] + 7
+          * ReAnimator::transformToSFML(puffShroom.reAnimator.curTransforms[5])).getMatrix()[13] + 5.0f
 
       };
 
@@ -49,5 +49,5 @@ void updatePuffShroom(Plant& puffShroom, float dt) {
 }
 
 void drawPuffShroom(Plant& puffShroom) {
-  
+
 }
