@@ -1,34 +1,42 @@
-#include <Packets/Shovel.hpp>
-#include <Packets/Packet.hpp>
+#include <Array.hpp>
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
+#include <BackgroundManager.hpp>
+#include <Bullet.hpp>
 #include <Game.hpp>
+#include <Grid.hpp>
 #include <Home.hpp>
-#include <UI/Overlay.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <Window.hpp>
-#include <globals.hpp>
-#include <Weather.hpp>
-#include <SunManager.hpp>
+#include <LawnMower.hpp>
+#include <LevelManager.hpp>
+#include <LevelProgress.hpp>
+#include <Packets/Packet.hpp>
+#include <Packets/Shovel.hpp>
+#include <ParticleSystem.hpp>
+#include <PlantSelector.hpp>
+#include <Plants/Peashooter.hpp>
+#include <Plants/Plant.hpp>
+#include <Plants/Repeaterpea.hpp>
+#include <Plants/SnowpeaShooter.hpp>
 #include <Plants/SunFlower.hpp>
 #include <Plants/Wallnut.hpp>
-#include <Plants/Peashooter.hpp>
-#include <Plants/SnowpeaShooter.hpp>
-#include <Plants/Repeaterpea.hpp>
+#include <Rewards.hpp>
 #include <SunManager.hpp>
-#include <Array.hpp>
-#include <Bullet.hpp>
-#include <BackgroundManager.hpp>
-#include <globals.hpp>
-#include <Grid.hpp>
+#include <UI/Overlay.hpp>
+#include <UI/TransitionManager.hpp>
+#include <Weather.hpp>
+#include <Window.hpp>
 #include <Zombies/Zombie.hpp>
+#include <globals.hpp>
+#include <newPauseMenu.hpp>
 
+// bool isOpen = false;
 int gameState = 0;
 /*
   0 -> Home menu
 */
+float globalTimeModifier = 1.0f;
 
-Array<Bullet>bullets;
+Array<Bullet> bullets;
 
 sf::Clock drawClock;
 float dt; // Delta Time (time between each frame draw)
@@ -43,7 +51,9 @@ void updateGame() {
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
-  dt *= settings.timeModifier;
+  dt *= settings.timeModifier * globalTimeModifier;
+
+  TransitionManager::update(dt);
 
   switch (gameState) {
   case 0:
@@ -52,120 +62,122 @@ void updateGame() {
   default:
     if (runOnce) {
       shovel.init();
-      initPackets();
-      initGrid();
-      dayLevel.init();
-      gameWeather.isRaining = true;
-      for (int i = 0; i < ROWS_NUMBER; i++){
-        for (int j = 0; j < COLUMNS_NUMBER; j++){
-              // plants just for testing
-              //grid[i][j].plant = Plant(WALLNUT, grid[i][j].plantPosition, 1, ReAnimator::getDefinition(REANIM_WALLNUT));
-        }
-      }
+      Array<PlantType> plantTypes;
+      // plantTypes.push(PEASHOOTER);
+      // plantTypes.push(SUN_FLOWER);
+      // plantTypes.push(WALLNUT);
+      // plantTypes.push(TALLNUT);
+      // plantTypes.push(REPEATERPEA);
+      // plantTypes.push(SNOWPEASHOOTER);
+      // plantTypes.push(CHERRYBOMB);
+      // plantTypes.push(JALAPENO);
+      // plantTypes.push(POTATOMINE);
+      // plantTypes.push(ICESHROOM);
+      // plantTypes.push(SQUASH);
+      fillPackets(plantTypes);
+      // initGrid();
+      plantSelector.initSelector();
+      dayLevel.init(levelManager.levels[levelManager.currentLevel-1]->location);
+      newPause.init();
+     
       music.play("DayStage");
+      //a
+      //gameWeather.init();
+      Zombie::init();
+      RewardManager::init();
 
-      //Zombie Testing
-      Zombie::createZombie(
-        grid[2][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[2][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Regular, 2);
-      Zombie::createZombie(
-        grid[1][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[1][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Conehead, 1);
-      Zombie::createZombie(
-        grid[0][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[0][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Buckethead, 0);
-      Zombie::createZombie(
-        grid[3][8].rectangle.getGlobalBounds().getCenter().x + 300,
-        grid[3][8].rectangle.getGlobalBounds().getCenter().y,
-        Zombie::Type::Flag, 3);
-
+      levelManager.loadUnlockedPlants();
 
       runOnce = false;
 
+      // REMOVE LATER
+      /*LawnMower::activateLawnMower(0);
+      LawnMower::activateLawnMower(1);
+      LawnMower::activateLawnMower(2);
+      LawnMower::activateLawnMower(3);
+      LawnMower::activateLawnMower(4);*/
     }
 
-    if (isPaused) {
+    if (newPause.isOpen) {
+      newPause.update(*window);
+
+      gameWeather.update(dt);
+
       if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
-        dayLevel.dirtSoundStarted = false; 
+        dayLevel.dirtSoundStarted = false;
       }
+
       dayLevel.draw(*window);
+
       window->setView(*view);
+      drawGrid();
+      Zombie::drawAll();
+      Bullet::drawAll();
       gameWeather.draw(*window);
-      pauseMenu.update();
-      pauseMenu.draw();
-      break;
+      drawUI();
+      drawSeedPackets();
+      shovel.drawBank();
+      Sun::drawAll();
+
+      sf::View uiView = window->getView();
+
+      newPause.draw(*window);
+
+      window->setView(uiView);
+
+      return;
     }
+     if (isPaused) {
+       if (dayLevel.dirtSound &&
+           (int)(dayLevel.dirtSound->getStatus()) == 2) {
+         dayLevel.dirtSound->pause();
+         dayLevel.dirtSoundStarted = false;
+       }
+       dayLevel.draw(*window);
+       window->setView(*view);
+       gameWeather.draw(*window);
+       pauseMenu.update();
+       pauseMenu.draw();
+       break;
+     }
 
-    
-
-    //std::cout << "FlagPos: [" << z4.gridPosition.x << "][" << z4.gridPosition.y << "]\n";
-    /*if (z4.health > 0)
-      z4.takeDamage(0.2);
-    if (z3.health > 0)
-      z3.takeDamage(0.2);
-    if (z2.health > 0)
-      z2.takeDamage(0.2);
-    if (z1.health > 0)
-      z1.takeDamage(0.2);*/
-    //static sf::Clock tmpC;
-    //static float tmp = 0;
-    //tmp = tmpC.getElapsedTime().asSeconds();
-    ////std::cout << "state: " << z1.state << "\n";
-    //if (tmp >= 2 && tmp <= 5) {
-    //  //tmp = 0;
-    //  z1.state = Zombie::State::Attacking;
-    //  //tmpC.reset();
-    //}
-    //else if (tmp >= 5 && tmp <= 8) {
-    //  z1.state = Zombie::State::Walking;
-    //}
-    //else if (tmp >= 8) {
-    //  if(z1.health > 0)
-    //    z1.takeDamage(10);
-    //}
-    
-    
-
+    levelManager.update(dt);
     updateGrid(dt);
 
     dayLevel.update(dt);
+    plantSelector.updateSelector(dt, *window);
+
     dayLevel.draw(*window);
     window->setView(*view);
     drawGrid();
-    
-    for (int i = 0; i < bullets.size; i++) {
-      bullets[i].update(dt);
-      bullets[i].draw();
-    }
 
-    bullets.erase([](const Bullet& b) {
-      return b.remove;
-    });
-
+    Bullet::updateAll(dt);
     Zombie::updateAll(dt);
-    Zombie::drawAll(dt);
 
-    drawUI();
+    Zombie::drawAll();
+    Bullet::drawAll();
+    RewardManager::update(dt);
+    ReAnimator::updatePhysicsObjects(dt);
+    ReAnimator::drawPhysicsObjects(window);
+
+    drawUI(dt);
     shovel.drawBank();
     Sun::manageSuns(dt);
 
     updateSeedPackets(dt);
     drawSeedPackets();
-    
 
     shovel.update();
 
+    ParticleSystem::update(dt);
+    ParticleSystem::draw();
+    ReAnimator::updateOrphans(dt);
+    ReAnimator::drawOrphans();
 
-
-    //drawGrid();
+    LawnMower::updateAll(dt);
 
     Sun::drawAll();
-
-
 
     shovel.drawMovingShovel();
     drawTimeModifier(dt);
@@ -173,6 +185,12 @@ void updateGame() {
     for (int i = 0; i < packets.size; i++)
       packets[i].drawSelectedPlant();
     gameWeather.update(dt);
+
+    dayLevel.drawOverlays(*window);
+    RewardManager::draw();
+
+    plantSelector.drawSelector(*window);
     break;
   }
+  TransitionManager::draw();
 }

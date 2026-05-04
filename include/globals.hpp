@@ -2,12 +2,16 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include <Array.hpp>
+
+//extern std::vector<sf::FloatRect> GLOB_RECTS;
 
 extern bool isPaused;
 extern bool isMousePressed, isMouseReleased;
 extern sf::Vector2f mousePosition;
 extern int gameState;
 extern int homeState;
+
 
 void onClick(sf::Text &, std::function<void()>);
 void onClick(sf::Sprite &button, std::function<void()> actionClick,

@@ -33,7 +33,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
     }
     //peashooter.reAnimator.effectiveTransforms
-    if (peashooter.timer <= -10000-0.8) { // -10000 - time after animation start to actual shoot
+    if (peashooter.timer <= -10000-0.4) { // -10000 - time after animation start to actual shoot
       peashooter.timer = GENERATE_BULLET_TIMER;
       /*sf::Vector2f currPOS =
       {
@@ -45,16 +45,18 @@ void updatePeashooter(Plant& peashooter, float dt) {
 
       };*/
 
+      //currTransforms["anim_face"] = currTransforms[14]
       sf::Vector2f currPOS =
       {
         ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[12] + 50,
+          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms[14])).getMatrix()[12] + 50,
 
           ((sf::Transform().translate({peashooter.reAnimator.x, peashooter.reAnimator.y}))
-          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms["anim_face"])).getMatrix()[13] + 7
+          * ReAnimator::transformToSFML(peashooter.reAnimator.curTransforms[14])).getMatrix()[13] + 7
 
       };
 
+      sounds.play((rand()&1) ? "Throw1" : "Throw2");
       Bullet newBullet = { PEA,{currPOS.x,currPOS.y},peashooter.row };
       bullets.push(newBullet);
 
@@ -71,6 +73,7 @@ void updatePeashooter(Plant& peashooter, float dt) {
 }
 
 void drawPeashooter(Plant& peashooter) {
+  //peashooter.reAnimator.drawHitbox();
   //peashooter.reAnimator.drawHitbox();
   //static sf::RectangleShape rec({3, 3});
   //rec.setPosition({300, 300});

@@ -5,7 +5,6 @@
 #include <Files.hpp> // To access settings
 #include <AssetsManager.hpp>
 
-
 struct Music {
   static sf::Music container;
   struct Paths {
@@ -16,6 +15,7 @@ struct Music {
   static Paths paths;
 
   static void play(std::string);
+  static void stop();
 };
 
 struct Sounds {
@@ -30,29 +30,84 @@ struct Sounds {
       tap1,
       tap2,
       sunFlowerPop,
-      shovel;
+      shovel,
+      plant1,
+      plant2,
+      splat1,
+      splat2,
+      splat3,
+      throw1,
+      throw2,
+      throwSnowPea,
+      zombieBite,
+      zombieGulp,
+      cherryBomb,
+      jalapeno,
+      lawnmower,
+      potatoMine,
+      winMusic,
+      loseMusic,
+      iceShroom,
+      squashHmm,
+      squashHmm2,
+      awooga,
+      groan1,
+      groan2,
+      groan3,
+      groan4,
+      groan5,
+      groan6,
+      click;
   };
 
   struct Paths {
-    inline static const std::string
-      collectSun = "assets/sounds/sfx_collectSun.mp3",
-      zombiesComing = "assets/sounds/sfx_zombiesComing.mp3",
-      pauseSound = "assets/sounds/sfx_pause.ogg",
-      buttonClick = "assets/sounds/sfx_buttonClick.ogg",
-      tap1 = "assets/sounds/sfx_tap1.ogg",
-      tap2 = "assets/sounds/sfx_tap2.ogg",
-      sunFlowerPop = "assets/sounds/sfx_sunFlowerPop.wav",
-      shovel = "assets/sounds/sfx_shovel.ogg";
+     const std::string
+      collectSun      = "assets/sounds/sfx_collectSun.mp3",
+      zombiesComing   = "assets/sounds/sfx_zombiesComing.mp3",
+      pauseSound      = "assets/sounds/sfx_pause.ogg",
+      buttonClick     = "assets/sounds/sfx_buttonClick.ogg",
+      tap1            = "assets/sounds/sfx_tap1.ogg",
+      tap2            = "assets/sounds/sfx_tap2.ogg",
+      sunFlowerPop    = "assets/sounds/sfx_sunFlowerPop.wav",
+      shovel          = "assets/sounds/sfx_shovel.ogg",
+      plant1          = "assets/sounds/sfx_plant1.ogg",
+      plant2          = "assets/sounds/sfx_plant2.ogg",
+      splat1          = "assets/sounds/sfx_splat1.ogg",
+      splat2          = "assets/sounds/sfx_splat2.ogg",
+      splat3          = "assets/sounds/sfx_splat3.ogg",
+      throw1          = "assets/sounds/sfx_throw1.ogg",
+      throw2          = "assets/sounds/sfx_throw2.ogg",
+      throwSnowPea    = "assets/sounds/sfx_throwSnowpea.ogg",
+      zombieBite      = "assets/sounds/sfx_zombieBite.ogg",
+      zombieGulp      = "assets/sounds/sfx_zombieGulp.ogg",
+      cherryBomb      = "assets/sounds/sfx_cherryBomb.ogg",
+      jalapeno        = "assets/sounds/sfx_jalapeno.ogg",
+      lawnmower       = "assets/sounds/sfx_lawnmower.ogg",
+      potatoMine      = "assets/sounds/sfx_potatoMine.ogg",
+      winMusic        = "assets/sounds/sfx_winMusic.ogg",
+      loseMusic       = "assets/sounds/sfx_loseMusic.ogg",
+      iceShroom       = "assets/sounds/sfx_iceshroom.mp3",
+      squashHmm       = "assets/sounds/sfx_squashHmm.ogg",
+      squashHmm2      = "assets/sounds/sfx_squashHmm2.ogg",
+      awooga          = "assets/sounds/sfx_awooga.ogg",
+      groan1          = "assets/sounds/sfx_groan1.ogg",
+      groan2          = "assets/sounds/sfx_groan2.ogg",
+      groan3          = "assets/sounds/sfx_groan3.ogg",
+      groan4          = "assets/sounds/sfx_groan4.ogg",
+      groan5          = "assets/sounds/sfx_groan5.ogg",
+      groan6          = "assets/sounds/sfx_groan6.ogg",
+      click           = "assets/sounds/click.wav";
   };
 
 
   static Buffers buffers;
-  static Paths paths;
+  Paths paths;
 
-  static void init();
+  static void init(); // Initialize Sound Buffers from assets
   static void play(std::string);
   static void update();
-  static void updateVolume();
+  static void updateVolume(); // Update Volume settings on all
+  // active sounds (needed when volume setting changes while sound is active)
 
 };
 

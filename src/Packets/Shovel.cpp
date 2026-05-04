@@ -1,3 +1,4 @@
+#include <BackgroundManager.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
 #include <Packets/Shovel.hpp>
@@ -34,7 +35,7 @@ void Shovel::init() {
 }
 
 void Shovel::update() {
-  if (isMousePressed && shovelBank->getGlobalBounds().contains(mousePosition))
+  if (isMousePressed && shovelBank->getGlobalBounds().contains(mousePosition) && !dayLevel.isIntroRunning)
     selected = true;
 
   if (selected)

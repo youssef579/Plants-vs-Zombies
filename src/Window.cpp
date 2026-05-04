@@ -1,8 +1,11 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <Window.hpp>
 #include <globals.hpp>
-#include <iostream> // REMOVE LATER
 #include <BackgroundManager.hpp>
+#include <Packets/Packet.hpp> // USED FOR DEV MODE
+#include <SunManager.hpp>     // USED FOR DEV MODE
+#include <newPauseMenu.hpp>
+
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -24,7 +27,7 @@ void initWindow() {
   gameView->setSize((sf::Vector2f)WINDOW_SIZE);
   gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
 
-  setWindowMetaData();
+
   getLetterboxView(WINDOW_SIZE.x, WINDOW_SIZE.y);
 }
 
@@ -36,7 +39,6 @@ void setWindowMetaData() { // Set icon, cursor and window settings after creatin
 
   sf::Image icon("assets/icon.png");
   window->setIcon(icon.getSize(), icon.getPixelsPtr());
-
   setCursorMain();
 }
 
@@ -58,6 +60,7 @@ void getLetterboxView(int windowWidth, int windowHeight) {
 
     view->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
     dayLevel.camera.setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
+    gameView->setViewport(sf::FloatRect({ posX, posY }, { sizeX, sizeY }));
 }
 
 void setCursorMain() {
@@ -80,8 +83,10 @@ void handleEvents() {
   isMousePressed = isMouseReleased = false;
   while (const std::optional event = window->pollEvent())
   {
-    if (event->is<sf::Event::Closed>()) // Close Game
+    if (event->is<sf::Event::Closed>()) { // Close Game
+      updateFiles(); // save data first
       window->close();
+    }
 
     if (const auto* resized = event->getIf<sf::Event::Resized>()) { // Resize game when window is resized
       getLetterboxView(resized->size.x, resized->size.y);
@@ -100,13 +105,13 @@ void handleEvents() {
     if (const auto* keyPress = event->getIf<sf::Event::KeyPressed>()) {
       switch (keyPress->code) {
       case sf::Keyboard::Key::F11:
-        //isFullscreen = !isFullscreen;
         settings.fullscreen = !settings.fullscreen;
 
         if (settings.fullscreen) {
           window->create(sf::VideoMode::getDesktopMode(), "Plants vs Zombies", sf::Style::None, sf::State::Fullscreen);
           view->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
           dayLevel.camera.setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
+          gameView->setViewport(sf::FloatRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }));
         }
         else {
           window->create(sf::VideoMode(WINDOW_SIZE), "Plants vs Zombies"); // Default is windowed
@@ -117,22 +122,76 @@ void handleEvents() {
         break;
 
       case sf::Keyboard::Key::Escape:
-        if (gameState != 0) { // Pause / UnPause
+        if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
+          //newPause.isOpen = !newPause.isOpen;
+          isPaused = !isPaused;
+          gameWeather.isPaused = !isPaused;
           if (!isPaused) {
             sounds.play("Pause");
-            gameWeather.isPaused = true;
             setCursorMain();
           }
-          else gameWeather.isPaused = false;
+          gameWeather.update(0);
+
+          //isPaused = !isPaused;
+        }
+        break;
+      case sf::Keyboard::Key::P:
+        if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
+          newPause.isOpen = !newPause.isOpen;
+          gameWeather.isPaused = !isPaused;
+          if (!isPaused) {
+            newPause.isSettingsOpen = false; // Close Settings
+            sounds.play("Pause");
+            setCursorMain();
+          }
           gameWeather.update(0);
 
           isPaused = !isPaused;
         }
+
         break;
       case sf::Keyboard::Key::Tab:
-        if(gameState != 0)
+        if(gameState != 0 && !isPaused)
           settings.timeModifier = (settings.timeModifier % 3) + 1; // cycle between {1, 2, 3}
         break;
+      case sf::Keyboard::Key::Grave: { // DEV MODE
+        Array<PlantType> types;
+        for (auto t : { PEASHOOTER, SUN_FLOWER, WALLNUT, SNOWPEASHOOTER,
+          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH, PUFFSHROOM })
+          types.push(t);
+        fillPackets(types);
+        Sun::sunBalance = 5000;
+        for (int i = 0; i < packets.size; i++)
+          packets[i].reloadDuration = 1.0f;
+        break;
+      }
+      //case sf::Keyboard::Key::J: // REMOVE LATER
+      //  testKeybinds("j");
+      //  break;
+      //case sf::Keyboard::Key::K: // REMOVE LATER
+      //  testKeybinds("k");
+      //  break;
+      //case sf::Keyboard::Key::I: // REMOVE LATER
+      //  testKeybinds("i");
+      //  break;
+      //case sf::Keyboard::Key::M: // REMOVE LATER
+      //  testKeybinds("m");
+      //  break;
+      //case sf::Keyboard::Key::Up:
+      //  testKeybinds("up");
+      //  break;
+      //case sf::Keyboard::Key::Down:
+      //  testKeybinds("down");
+      //  break;
+      //case sf::Keyboard::Key::Left:
+      //  testKeybinds("left");
+      //  break;
+      //case sf::Keyboard::Key::Right:
+      //  testKeybinds("right");
+      //  break;
+      //case sf::Keyboard::Key::RShift:
+      //  testKeybinds("sw");
+      //  break;
       }
     }
   }

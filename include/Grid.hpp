@@ -10,7 +10,8 @@
 
 const int ROWS_NUMBER = 5, COLUMNS_NUMBER = 9;
 const float rowLenth[5] = {98.3, 85, 96.4, 94.5, 98.3};
-const float columnLenth[9] = {108.5, 99.5, 113.4, 104.1, 103.5, 105.85, 98.3, 109.5, 120};
+const float dayColumnLenth[9] = {108.5, 99.5, 110, 104.1, 103.5, 103.85, 97.3, 110, 116};
+const float nightColumnLenth[9] = {108.5, 99.5, 110.4, 104.1, 101.5, 100.85, 92, 102, 118};
 
 struct Cell {
   sf::RectangleShape rectangle;
@@ -26,5 +27,7 @@ void initGrid();
 void updateGrid(float dt);
 
 void drawGrid();
+
+void clearGrid();
 
 sf::Vector2i positionToGrid(sf::Vector2f pos);

@@ -1,4 +1,8 @@
 #include <UI/Pause.hpp>
+#include <Zombies/Zombie.hpp>
+#include <Bullet.hpp>
+#include <LevelManager.hpp>
+#include <UI/TransitionManager.hpp>
 
 PauseMenu pauseMenu;
 
@@ -107,13 +111,22 @@ void PauseMenu::update() {
 
   // Main Menu Button
   onClick(*mainMenuBtn, []() {
-    gameState = 0, homeState = 0; //go to home menu not level selector
-    sounds.play("ButtonClick"); music.play("Menu");
-    isPaused = false;
+    TransitionManager::start([]() {
+        gameState = 0, homeState = 0; //go to home menu not level selector
+        isPaused = false;
+        gameWeather.isPaused = false;
+        levelManager.resetLevelData();
+        sounds.play("ButtonClick"); music.play("Menu");
+      });
     });
 
 // Restart Level Button
-  onClick(*restartLevelBtn, []() {}); // TODO: Add restartLevel()
+  onClick(*restartLevelBtn, []() {
+    TransitionManager::start([](){
+        levelManager.restartLevel();
+      });
+
+    });
 
 
   // Update Sliders
@@ -146,6 +159,10 @@ void PauseMenu::update() {
 }
 
 void PauseMenu::draw() {
+  drawGrid();
+  Bullet::drawAll();
+  Zombie::drawAll();
+
 
   drawUI();
   shovel.drawBank();

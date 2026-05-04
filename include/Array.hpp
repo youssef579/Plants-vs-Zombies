@@ -13,12 +13,35 @@ struct Array {
     data = new std::optional<elementType>[capacity];
   }
 
+  Array(const Array<elementType> &otherArray) {
+    capacity = otherArray.capacity;
+    size = otherArray.size;
+    data = new std::optional<elementType>[capacity];
+
+    for (int i = 0; i < size; i++)
+      data[i] = otherArray.data[i];
+  }
+
   ~Array() {
     delete[] data;
   }
 
   elementType& operator[](int index) {
     return *data[index];
+  }
+
+  Array& operator=(const Array& otherArray) {
+    if (this == &otherArray) return *this; // Avoid assigning the same array
+
+    delete[] data;
+    capacity = otherArray.capacity;
+    size = otherArray.size;
+    data = new std::optional<elementType>[capacity];
+
+    for (int i = 0; i < size; i++)
+      data[i] = otherArray.data[i];
+
+    return *this;
   }
 
   void push(elementType value) {

@@ -8,11 +8,11 @@
 
 const int MAX_TRACKS = 60;
 
-
 enum LoopType {
   PlayOnce,
   Loop,
-  HoldLastFrame
+  HoldLastFrame,
+  LoopTimes // Loops a specific number of times
 };
 
 struct Transform {
@@ -67,17 +67,39 @@ struct ActiveLabel {
   LoopType loop = LoopType::PlayOnce;
   float offset = 0.0f;
   float holdTimer = 0.0f; // Time to hold after animation end
+  int loopCount = 0;      // counts how many loops have passed
+  int targetLoops = 0;
+
+  bool remove = false;
 };
+
+struct PhysicsObject {
+  sf::Vector2f position;
+  sf::Vector2f velocity;
+  sf::Vector2f acceleration;
+  float rotation;
+  float rotationSpeed;
+  float groundY;
+  float dissapearDuration = 0.0001f;
+  float dissapearTimer = 0.0001f;
+  sf::Sprite sprite;
+  bool remove = false;
+
+  void update(float dt);
+  void draw(sf::RenderWindow *window);
+};
+
+static Array<PhysicsObject> physicsObjects;
 
 struct ReAnimationDefinition {
   float fps;
   int frameCount=0;
   int totalTracks=0;
-  std::vector<Label> labels;
-  std::vector<Track> tracks;
+  Array<Label> labels;
+  Array<Track> tracks;
+  Array<sf::Transform> basePoses;  // constant
   std::unordered_map<std::string, sf::Texture *> textureMap;
-  std::unordered_map<std::string, sf::Transform> basePoses;  // constant
-  std::unordered_map<std::string, Track *> trackMap;         // constant
+  //std::unordered_map<std::string, Track *> trackMap;         // constant
 
   sf::FloatRect hitbox = sf::FloatRect({ 0, 0 }, { 0, 0 });
   sf::Vector2f offset = {0, 0}; // to change origin (top left by default)
@@ -87,13 +109,14 @@ struct ReAnimationDefinition {
   void loadFiles(std::string reAnimPath, int tracksNum, std::string tracks[],
     std::unordered_map<std::string, std::string> images);
 
-  void createTrackMap();
+  //void createTrackMap();
 
   sf::Vector2f getBasePose(Track &track);
   void calculateBasePoses();
   Transform getBaseTransform(Track &track);
 
   int getLabelIndex(std::string labelName);
+  int getTrackIndex(std::string name);
 
 
   //void defineAnimation(std::string name, int labelCount, int labels[], bool loop = true);
@@ -111,13 +134,26 @@ enum ReAnimationDef {
   REANIM_REPEATER = 5,
   REANIM_TALLNUT = 6,
   REANIM_ZOMBIE_BASIC = 7,
-  REANIM_FLAGPOLE = 8
+  REANIM_FLAGPOLE = 8,
+  REANIM_CHERRYBOMB = 9,
+  REANIM_ZOMBIE_CHARRED = 10,
+  REANIM_JALAPENO = 11,
+  REANIM_FIRE = 12,
+  REANIM_LAWNMOWER = 13,
+  REANIM_LAWNMOWERED_ZOMBIE = 14,
+  REANIM_POTATO_MINE = 15,
+  REANIM_ICESHROOM = 16,
+  REANIM_SQUASH = 17,
+  REANIM_ZOMBIE_SOCCER = 18,
+  REANIM_PUFFSHROOM = 19,
+  REANIM_SUN_NIGHT = 20 
+
 };
 
 struct ReAnimator {
 
   ReAnimator *child = nullptr;
-  std::string childsParentTrack = "";
+  int childsParentTrackIdx = -1;
   bool hasParent = false;
 
   ReAnimationDefinition *reAnimDef = nullptr;
@@ -126,54 +162,62 @@ struct ReAnimator {
   float animSpeedMulti = 1.0f; // multiplier of animation speed
   float opacityMultiplier=1.0f;
   bool allowMotion = true;
+  float motionMultiplier = 1.0f;
+  sf::Color globalColor = { 255, 255, 255, 255 };
 
 
   sf::Transform rootMatrix;
 
   float timer=0.0f; // Global animTime
-  std::vector<TrackInstance> trackInstances;
+  Array<TrackInstance>     trackInstances;
+  Array<Transform>         curTransforms;
+  Array<bool>              curTransformsValid;
+  Array<sf::Transform>     effectiveBasePoses;
+  Array<bool>              effectiveBasePosesValid;
+  Array<sf::Transform>     effectiveTransforms;
+  Array<bool>              effectiveTransformsValid;
+  Array<ActiveLabel>       activeLabels;
 
 
 
-  std::unordered_map<std::string, sf::Transform> effectiveBasePoses;
-  std::unordered_map<std::string, sf::Transform> effectiveTransforms;
 
 
 
 
 
   void update(float dt);
-
-  float lerp(float a, float b, float t);
-  Transform lerpTransform(Transform a, Transform b, float t);
-
   void draw();
 
-  bool updateLabel(ActiveLabel lab);
+  static float lerp(float a, float b, float t);
+  static Transform lerpTransform(Transform a, Transform b, float t);
+
+
+  bool updateLabel(ActiveLabel &lab);
 
 
 
-  std::vector<ActiveLabel> activeLabels;
 
-  std::unordered_map<std::string, Transform> curTransforms;
 
-  sf::Transform getEffectiveBasePose(std::string trackName);
-  sf::Transform getEffectiveTransform(std::string trackName);
+  sf::Transform getEffectiveBasePose(int trackIndex);
+  sf::Transform getEffectiveTransform(int trackIndex);
   static sf::Transform transformToSFML(Transform t);
   static int getFirstValidIdx(Track &track);
+  sf::Transform getWorldTransform(int trackIdx);
+  sf::Vector2f getWorldCenterPosition(int trackIdx);
 
 
-  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
+  void playLabel(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
+  void playLabel(std::string labelName, LoopType loop, int loopCnt=0);
   void stopLabel(int labelIdx);
 
-  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer=0.0f);
+  void playAnimation(std::string labelName, LoopType loop = LoopType::Loop, float holdTimer = 0.0f);
+  void playAnimation(std::string labelName, LoopType loop, int loopCnt);
   void stopAnimation(std::string labelName);
   //void replaceWithQueueAnimation(std::string labelNameA, std::string labelNameB);
 
   void setTrackVisibility(std::string trackName, bool newVisibility);
-  void setTrackVisibility(std::vector<std::string> trackNames, bool newVisibility);
+  void setTrackVisibility(Array<std::string> &trackNames, bool newVisibility);
 
-  void report();
   void forceSyncAll();
 
   static sf::Color multiplyColor(sf::Color color, float multiplier);
@@ -185,21 +229,31 @@ struct ReAnimator {
   sf::Vector2f getPosition();
   void setPosition(sf::Vector2f newPos);
   sf::FloatRect getGlobalBounds();
-  bool isPlayingAnimation(std::string animName);
+  bool isPlayingAnimation(std::string animName="");
+  void switchDefinition(ReAnimationDef newDefID);
 
   void setOverlayAlpha(float newAlpha);
 
-  void drawHitbox();
+  void separateTrackToPO(int trackIdx, sf::Vector2f velocity,
+    sf::Vector2f acceleration, float groundY,
+    float rotationSpeed, float dissapearDuration); // pop track into separate Physics Object
+
 
   static ReAnimationDefinition* getDefinition(ReAnimationDef defId);
-
+  static void updateOrphans(float dt);
+  static void drawOrphans();
+  static void updatePhysicsObjects(float dt);
+  static void drawPhysicsObjects(sf::RenderWindow *window);
   ReAnimator(ReAnimationDefinition *def, float x, float y, sf::RenderWindow *w);
 
-};
+  static Array<ReAnimator> orphanAnimators;
 
+  // Debugging Functions
+  void drawHitbox();
+  void report();
+};
 
 void debugTransform(const sf::Transform &matrix);
 
 
 void initReAnimDefs();
-

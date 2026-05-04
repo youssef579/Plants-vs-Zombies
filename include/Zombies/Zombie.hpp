@@ -10,29 +10,32 @@ struct Zombie {
 
     static constexpr int numberOfTypes = 5;
 
-    static constexpr float speeds[] = {60, 50, 40, 80}; // not used ?
-    static constexpr float healths[] = {270, 370, 1100, 270 };
-    static constexpr float strengths[] = { 36, 36, 36, 36 };
+    static constexpr float speeds[] = { 1.5, 1.5, 1.5, 1.8, 1.5, 1.5 };
+    static constexpr float healths[] = { 270, 370, 1100, 270, 1290, 1670 };
+    static constexpr float strengths[] = { 36, 36, 36, 36, 36, 50 };
 
     static constexpr float AttackTimer = 0.33f;
-    static constexpr float FreezeTimer = 0.2;
+    static constexpr float FreezeTimer = 10.0f; // time the zombie stays frozen
 
-    enum Type {Regular, Conehead, Buckethead, Flag, Newspaper};
-    enum State {Walking, Attacking, Dying};
+    static int totalZombies;
+    static sf::Vector2f lastZombieDeathPosition;
+
+    enum Type {Regular, Conehead, Buckethead, Flag, Screendoor, Soccer};
+    enum State {Idle, Walking, Attacking, Dying};
 
     // For simple assets access
     static std::string types[];
     static std::string states[];
 
-    static constexpr int frameCount[5][3][2] = {    // [Type][State][Headless / Boom]
-        {{{22}, {18}}, {{21}, {11}}, {{10}, {20}}},
-        {{{21}, {11}}, {{}, {}}, {{}, {}}},
-        {{{15}, {11}}, {{}, {}}, {{}, {}}},
-        {{{12}, {11}}, {{12}, {11}}, {{}, {}}},
-        {{{}, {}}, {{}, {}}, {{}, {}}},
-    };
+    //static constexpr int frameCount[5][3][2] = {    // [Type][State][Headless / Boom]
+    //    {{{22}, {18}}, {{21}, {11}}, {{10}, {20}}},
+    //    {{{21}, {11}}, {{}, {}}, {{}, {}}},
+    //    {{{15}, {11}}, {{}, {}}, {{}, {}}},
+    //    {{{12}, {11}}, {{12}, {11}}, {{}, {}}},
+    //    {{{}, {}}, {{}, {}}, {{}, {}}},
+    //};
 
-    static void createZombie(float x, float y, Type type, int row);
+    static void createZombie(float x, float y, Type type, int ROW, float startDel);
     static void manageZombies(float dt);
 
     //
@@ -48,35 +51,51 @@ struct Zombie {
     sf::Vector2i gridPosition;
     //sf::Vector2f velocity;
     bool onGrid = false;
+    bool inPlayArea = false; // if the zombie is on screen or idle outside
+    int row;
 
     float health;
     float strength;
 
     float attackTimer = 0;
     float freezeTimer = 0;
+    float startDelay  = 0; // time the zombie waits in idle before it starts walking
 
     float corpseDissapearTimer = 0.0f;
+    float groanTimer = 0.0f;
 
 
     bool headless = false;
     bool enraged = false;   // For Newspaper Zombie
     bool remove = false;
 
+    int deathCause = 0;     // 0 -> normal death, 1 -> explosion/fire
+
+
+    sf::Sound sound_zombieBite;
+    sf::Sound sound_zombieGulp;
+    // General variables for all zombies
+    static sf::SoundBuffer soundBuffer_zombieBite;
+    static sf::SoundBuffer soundBuffer_zombieGulp;
+
+
     Zombie(sf::Vector2f pos, ReAnimationDefinition *def, int row);
     bool update(float dt);  // Return True if Zombie is Alive
     void setSprite();
-    void takeDamage(float damage);
+    void takeDamage(float damage, int effect = 0);
     void checkState(float dt);
     void move(float dt);
     void attack(float dt);
-    void die();
+    void die(int effect = 0);
     void updateDeath(float dt);
-    void draw(float dt);
+    void draw();
 
     // General Functions for all zombies
+    static void init();
     static void updateAll(float dt);
-    static void drawAll(float dt);
-    static bool isZombieAliveInRow(int row, float startPosX = 0.0f);
+    static void drawAll();
+    static bool isZombieAliveInRow(int row, float startPosX = 0.0f, float range = 9000.0f);
+    static void updateVolumes();
 };
 
-extern Array<Zombie> zombies[ROWS_NUMBER];
+extern Array<Zombie*> zombies[ROWS_NUMBER];

@@ -8,7 +8,9 @@ Overlay *overlay;
 bool isOverlayChanged = false;
 
 void initOverlay() {
-  sf::RectangleShape rect((sf::Vector2f)WINDOW_SIZE);
+  sf::RectangleShape rect(sf::Vector2f{(float)WINDOW_SIZE.x * 4, (float)WINDOW_SIZE.y * 4});
+  rect.setOrigin((sf::Vector2f)WINDOW_SIZE/2.0f);
+  rect.move({ -(float)WINDOW_SIZE.x, -(float)WINDOW_SIZE.y });
   rect.setFillColor(sf::Color({0, 0, 0, 150}));
 
   int mediumSize = 40, largeSize = 60;

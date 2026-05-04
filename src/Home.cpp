@@ -7,6 +7,8 @@
 #include <Window.hpp>
 #include <globals.hpp>
 #include <cmath>
+#include <LevelManager.hpp>
+#include <UI/TransitionManager.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
@@ -134,10 +136,10 @@ void updateHome() {
 
     selectorScreenButton3.setScale({ 0.8f, 0.8f });
     selectorScreenButton3.setPosition({ (float)WINDOW_SIZE.x - 312.0f, (float)WINDOW_SIZE.y - 280.0f });
-    
+
     selectorScreenButton4.setScale({ 0.8f, 0.8f });
     selectorScreenButton4.setPosition({ (float)WINDOW_SIZE.x - 315.0f, (float)WINDOW_SIZE.y - 222.0f });
-    
+
     selectorScreenButtonOptions.setScale({0.82f, 0.82f});
     selectorScreenButtonOptions.setPosition({ (float)WINDOW_SIZE.x - 192.0f, (float)WINDOW_SIZE.y - 95.0f });
 
@@ -234,9 +236,14 @@ void updateHome() {
           int currentLevel = getLevelFromIndex(i);
 
           if (currentLevel <= maxLevelUnlocked)
-            onClick(text, [&]() {
-            music.play("DayStage");
-              gameState = currentLevel;
+            onClick(text, [=]() { // Play Level
+              TransitionManager::start([=]() {
+                levelManager.loadLevelData(currentLevel);
+                music.play("DayStage");
+                gameState = currentLevel;
+                });
+
+
             });
         },
         []() {
@@ -259,7 +266,7 @@ void updateHome() {
     //pauseMenu.drawOptionsMenu();
   }
 
-  
+
 
   if (homeState != 0 && homeState != 1 && homeState != 3)
     drawOverlay();
@@ -269,7 +276,7 @@ void updateHome() {
 void updateCredits() {
   static int state = 0; // 0 => bounce in , 1 => bounce out (runOnce) , 2 => bounce out
 
-  static sf::Texture creditsNoteT = getTexture("assets/creditsNote3.png");
+  static sf::Texture creditsNoteT = getTexture("assets/creditsNote4.png");
   static sf::Sprite creditsNote(creditsNoteT);
   static sf::Clock creditsClock;
   static float creditsTime;
@@ -322,7 +329,7 @@ void updateCredits() {
     }
   }
   creditsExitButton.setPosition(creditsNote.getPosition() + sf::Vector2f(0, creditsNote.getLocalBounds().size.y - 25.0f));
-  
+
 
   window->draw(creditsNote);
   window->draw(creditsExitButton);

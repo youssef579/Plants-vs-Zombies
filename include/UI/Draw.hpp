@@ -3,4 +3,4 @@
 #include <AssetsManager.hpp>
 #include <SunManager.hpp>
 
-void drawUI();
+void drawUI(float dt = 0);

@@ -1,15 +1,27 @@
 #include <ReAnimation/ReAnimation.hpp>
 #include <ReAnimation/ReAnimationParser.hpp>
+#include <Window.hpp>
 
 const float TO_RAD = 3.141592653589793f / 180.0f;
+const float TO_DEG = 180.0f / 3.141592653589793f;
 
 Array<ReAnimationDefinition*> definitions;
+Array<ReAnimator> ReAnimator::orphanAnimators;
 
 ReAnimator::ReAnimator(ReAnimationDefinition *def, float X, float Y, sf::RenderWindow *w) {
   reAnimDef = def;
   window = w;
   x = X + def->offset.x, y = Y + def->offset.y;
-  trackInstances.resize(reAnimDef->totalTracks);
+  //trackInstances.resize(reAnimDef->totalTracks);
+  for (int i = 0; i < def->totalTracks; i++) { // resize all arrays by adding default values
+    trackInstances.push(TrackInstance());
+    curTransforms.push(Transform());
+    curTransformsValid.push(false);
+    effectiveBasePoses.push(sf::Transform());
+    effectiveBasePosesValid.push(false);
+    effectiveTransforms.push(sf::Transform());
+    effectiveTransformsValid.push(false);
+  }
 }
 
 void ReAnimationDefinition::loadFiles(std::string reAnimPath, int tracksNum, std::string tracks[],
@@ -23,7 +35,7 @@ void ReAnimationDefinition::loadFiles(std::string reAnimPath, int tracksNum, std
 
   ReAnimationParser::parse(*this, reAnimPath);
 
-  createTrackMap();
+  //createTrackMap();
   calculateBasePoses();
   ReAnimationParser::bindAllParents(reAnimPath, *this);
 
@@ -49,11 +61,18 @@ Transform ReAnimator::lerpTransform(Transform a, Transform b, float t) {
 
 void ReAnimator::update(float dt) {
 
-  float lastGroundX;
-  if (curTransforms.count("_ground")) lastGroundX = curTransforms["_ground"].x;
-  else lastGroundX = 0;
+  int groundIdx = reAnimDef->getTrackIndex("_ground");
+  float lastGroundX = 0;
+  if (groundIdx != -1 && curTransformsValid[groundIdx]) {
+    lastGroundX = curTransforms[groundIdx].x;
+  }
 
   timer += (dt * reAnimDef->fps * animSpeedMulti);
+
+  for (int i = 0; i < reAnimDef->totalTracks; i++) { // reset valid states
+    curTransformsValid[i] = false;
+  }
+
   //std::cout << "dt: " << dt << " / fps: " << reAnimDef->fps << " / animSpeedMulti: " << animSpeedMulti << "\n";
     //std::cout << "timer += " << (dt * reAnimDef->fps * animSpeedMulti) << "\n";
   //if(x == 400)
@@ -68,9 +87,9 @@ void ReAnimator::update(float dt) {
 
   //float labelTime = (((int)label.start + (int)timer)%((int)label.end - (int)label.start));
 
-  curTransforms.clear();
+  //curTransforms.clear();
 
-  std::vector<std::string> queuedLabels;
+  /*std::vector<std::string> queuedLabels;
   for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
     if (!updateLabel(*lab)) {
       if (lab->label->next != "") {
@@ -80,21 +99,32 @@ void ReAnimator::update(float dt) {
     }
     else
       lab++;
+  }*/
+  Array<std::string> queuedLabels;
+
+  for (int i = 0; i < activeLabels.size; i++) {
+    if (!updateLabel(activeLabels[i])) {
+      if (activeLabels[i].label->next != "")
+        queuedLabels.push(activeLabels[i].label->next);
+      activeLabels[i].remove = true; // delete current label
+    }
+  }
+  activeLabels.erase([](ActiveLabel &lab) {return lab.remove; });
+
+  for (int i = 0; i < queuedLabels.size; i++)
+    playAnimation(queuedLabels[i], LoopType::PlayOnce);
+
+
+  float deltaGround = 0;
+  if (groundIdx != -1 && curTransformsValid[groundIdx]) {
+    deltaGround = curTransforms[groundIdx].x - lastGroundX;
   }
 
-  for (auto ql : queuedLabels)
-    playAnimation(ql, LoopType::Loop);
-
-
-  float deltaGround;
-  if (curTransforms.count("_ground"))
-    deltaGround = curTransforms["_ground"].x - lastGroundX;
-  else deltaGround = 0;
+  // TODO: set dg threshold
+  if (deltaGround > 0.0f && allowMotion) x -= deltaGround * motionMultiplier;
 
   //std::cout << "DG: " << deltaGround << "\n";
 
-  // TODO: set dg threshold
-  if(deltaGround > 0.0f && allowMotion) x -= deltaGround;
 
 
   //std::cout << "END\n";
@@ -160,11 +190,20 @@ void ReAnimator::update(float dt) {
 }
 
 
-bool ReAnimator::updateLabel(ActiveLabel lab) {
+bool ReAnimator::updateLabel(ActiveLabel &lab) {
   Label label = *lab.label;
   float labelOffseted = timer - lab.offset;
+  if (labelOffseted > label.end - label.start)
+    lab.loopCount++;
+  //if(lab.label->name == "anim_flame" || lab.label->name == "anim_done") std::cout << "loopCount: " << lab.loopCount << " / targetLoops: " << lab.targetLoops << "\n";
+  if(lab.loop == LoopType::LoopTimes && lab.loopCount >= lab.targetLoops)
+    return false; // Label will be Destroyed
+    
   float labelTime = label.start + std::fmod(labelOffseted, (float)(label.end - label.start));
-
+  if (label.end - label.start == 0) {
+    labelOffseted = 0;
+    labelTime = 0;
+  }
   //std::cout << "offs: " << labelOffseted << " / labEnd: " << label.end << "\n";
   //std::cout << "conditions: " << (labelOffseted >= label.end - 1) << "&" << (lab.loop == LoopType::HoldLastFrame) << "\n";
   if (labelOffseted >= label.end - label.start - 1 && lab.loop == LoopType::HoldLastFrame) {
@@ -180,12 +219,25 @@ bool ReAnimator::updateLabel(ActiveLabel lab) {
   //std::cout << "labelTime: " << labelTime << "\n";
   //std::cout << "Update Label " << label.name << ": " << timer << " / labelTime: " << labelTime << "\n";
 
-  for (auto track : reAnimDef->tracks) {
+  for (int i = 0; i < reAnimDef->tracks.size; i++) {
+    Track &track = reAnimDef->tracks[i];
     if (track.transforms[(int)labelTime].f == -1) continue;
+
+    int nextFrame = (int)labelTime +1;
+    if (nextFrame >= label.end) {
+      if (lab.loop == LoopType::PlayOnce || lab.loop == LoopType::HoldLastFrame) {
+        nextFrame--;
+      }
+      else {
+        nextFrame = label.start;
+      }
+    }
+
+
     //std::cout << "Frame " << labelTime << "\n";
     //std::cout << "lerping (" << (int)labelTime << " -> " << (int)labelTime + 1 << ")\n";
-    curTransforms[track.name] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], labelOffseted - (int)labelOffseted);
-
+    curTransforms[i] = lerpTransform(track.transforms[(int)labelTime], track.transforms[(int)labelTime + 1], labelOffseted - (int)labelOffseted);
+    curTransformsValid[i] = true;
   }
   return true;
 }
@@ -297,85 +349,54 @@ bool ReAnimator::updateLabel(ActiveLabel lab) {
 
 void ReAnimator::draw() {
   if (!hasParent) {
-    rootMatrix = sf::Transform::Identity; // reset root
+    rootMatrix = sf::Transform::Identity;
     rootMatrix.translate({ x, y });
     rootMatrix.scale({ sx, sy });
   }
 
   if (child) {
-    sf::Transform parCur = getEffectiveTransform(childsParentTrack);
-    sf::Transform parBase = getEffectiveBasePose(childsParentTrack);
-
-    // child inherits transformation of difference of parent
-    child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
-
+    if (childsParentTrackIdx == -1) {
+      child->rootMatrix = rootMatrix;
+    }
+    else {
+      sf::Transform parCur = getEffectiveTransform(childsParentTrackIdx);
+      sf::Transform parBase = getEffectiveBasePose(childsParentTrackIdx);
+      child->rootMatrix = rootMatrix * (parCur * parBase.getInverse());
+    }
     child->draw();
   }
 
-  effectiveBasePoses.clear();
-  effectiveTransforms.clear();
+  for (int i = 0; i < reAnimDef->totalTracks; i++) {
+    effectiveBasePosesValid[i] = false;
+    effectiveTransformsValid[i] = false;
+  }
 
-  for (auto &trackDef : reAnimDef->tracks) {
-    const std::string &name = trackDef.name;
+  for (int i = 0; i < reAnimDef->tracks.size; i++) {
+    if (!curTransformsValid[i]) continue;
+    Transform &t = curTransforms[i];
+    if (!t.i || t.a <= 0.0f) continue;
+    if (!trackInstances[i].isVisible) continue;
 
-    auto curIt = curTransforms.find(name);
-    if (curIt == curTransforms.end()) continue;
+    sf::Sprite sprite(*t.i);
+    if (trackInstances[i].imageOverride)
+      sprite.setTexture(*trackInstances[i].imageOverride);
 
-    Transform &t = curIt->second;
-    if (!t.i || t.a <= 0.0f) continue; // Skip no image / invisible
-
-    //change loop later:
-    int idx = 0;
-    for (auto tr : reAnimDef->tracks)
-      if (tr.name == name) {
-        break;
-      }
-      else idx++;
-
-    if (!trackInstances[idx].isVisible) continue;
-
-    //std::cout << "idx: " << idx << "\n";
-    //std::cout << "size: " << trackInstances.size() << "\n";
-
-    sf::Sprite *sprite;
-    if(!trackInstances[idx].imageOverride)
-      sprite = new sf::Sprite(*t.i);
-    else
-      sprite = new sf::Sprite(*trackInstances[idx].imageOverride);
-
-    /*if(trackInstances[idx].colorOverlay.a > 0.0f){
-      uint8_t alpha255 = (uint8_t)(t.a * 255.0f);
-      sprite->setColor(multiplyColor(trackInstances[idx].colorOverlay, trackInstances[idx].colorOverlayIntensity));
-    }*/
-    //else {
-      uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
-      sprite->setColor(sf::Color(255, 255, 255, alpha255));
-    //}
-
-
+    uint8_t alpha255 = (uint8_t)(t.a * 255.0f * opacityMultiplier);
+    sprite.setColor(sf::Color(globalColor.r, globalColor.g, globalColor.b, alpha255));
 
     sf::Transform localMatrix = transformToSFML(t);
     sf::Transform finalLocal = localMatrix;
 
-    if (trackDef.parent) {
-      Track *parent = trackDef.parent;
-      const std::string &pname = parent->name;
+    Track &trackDef = reAnimDef->tracks[i];
 
+    if (trackDef.parent) {
+      int pIdx = reAnimDef->getTrackIndex(trackDef.parent->name);
       if (trackDef.fullInherit) {
-        //if (name == "anim_sprout")
-          //std::cout << "Sprout is inheriting\n";
-        finalLocal = getEffectiveTransform(name);
+        finalLocal = getEffectiveTransform(i);
       }
       else {
-        //if (name == "anim_sprout")
-          //std::cout << "Sprout is NOT inheriting\n";
-        sf::Transform parentCurEff = getEffectiveTransform(pname);
-        sf::Transform parentBaseEff = getEffectiveBasePose(pname);
-
-        //if (name == "anim_face") {
-        //  //std::cout << "Effective Cur for " << pname << ": " << parentCurEff.getMatrix()[12] << ", " << parentCurEff.getMatrix()[13] << "\n";
-        //  //std::cout << "Effective Base for " << pname << ": " << parentBaseEff.getMatrix()[12] << ", " << parentBaseEff.getMatrix()[13] << "\n";
-        //}
+        sf::Transform parentCurEff = getEffectiveTransform(pIdx);
+        sf::Transform parentBaseEff = getEffectiveBasePose(pIdx);
 
         sf::Vector2f parentCurPoint = parentCurEff.transformPoint({ 0.0f, 0.0f });
         sf::Vector2f parentBasePoint = parentBaseEff.transformPoint({ 0.0f, 0.0f });
@@ -388,78 +409,85 @@ void ReAnimator::draw() {
     }
 
     sf::RenderStates states;
-
-    //if (name == "anim_sprout")
-      //debugTransform(finalLocal);
-
     states.transform = rootMatrix * finalLocal;
-    //if(name == "anim_face")
+
     if (window) {
-      window->draw(*sprite, states);
-      if (trackInstances[idx].colorOverlay.a > 0.0f) {
-        sprite->setColor(trackInstances[idx].colorOverlay);
+      window->draw(sprite, states);
+      if (trackInstances[i].colorOverlay.a > 0.0f) {
+        sprite.setColor({
+            trackInstances[i].colorOverlay.r,
+            trackInstances[i].colorOverlay.g,
+            trackInstances[i].colorOverlay.b,
+            (uint8_t)(trackInstances[i].colorOverlay.a * opacityMultiplier)
+          });
         states.blendMode = sf::BlendAdd;
-        window->draw(*sprite, states);
+        window->draw(sprite, states);
       }
     }
-
-    delete sprite;
+    //delete sprite;
   }
-
-  
 }
 
 
 
-sf::Transform ReAnimator::getEffectiveBasePose(std::string trackName) {
+sf::Transform ReAnimator::getEffectiveBasePose(int trackIndex) {
 
-  if (effectiveBasePoses.count(trackName))
-    return effectiveBasePoses[trackName];
-
-
-  Track *track = reAnimDef->trackMap[trackName];
-  sf::Transform base = reAnimDef->basePoses[trackName];
+  //if (effectiveBasePoses.count(trackName))
+    //return effectiveBasePoses[trackName];
+  if (effectiveBasePosesValid[trackIndex]) return effectiveBasePoses[trackIndex];
 
 
-  if (track->parent && reAnimDef->basePoses.find(track->parent->name) != reAnimDef->basePoses.end()) {
-    sf::Transform parentEff = getEffectiveBasePose(track->parent->name);
-    sf::Transform parentBaseInv = reAnimDef->basePoses[track->parent->name].getInverse();
+  Track *track = &reAnimDef->tracks[trackIndex];
+  sf::Transform base = reAnimDef->basePoses[trackIndex];
+
+
+  if (track->parent) {
+    sf::Transform parentEff = getEffectiveBasePose(reAnimDef->getTrackIndex(track->parent->name));
+    sf::Transform parentBaseInv = reAnimDef->basePoses[reAnimDef->getTrackIndex(track->parent->name)].getInverse();
     sf::Transform res = parentEff * parentBaseInv * base;
-    effectiveBasePoses[trackName] = res;
+    effectiveBasePoses[trackIndex] = res;
   }
   else {
-    effectiveBasePoses[trackName] = base;
+    effectiveBasePoses[trackIndex] = base;
   }
-  return effectiveBasePoses[trackName];
+  effectiveBasePosesValid[trackIndex] = true;
+  return effectiveBasePoses[trackIndex];
 }
 
-sf::Transform ReAnimator::getEffectiveTransform(std::string trackName) {
+sf::Transform ReAnimator::getEffectiveTransform(int trackIndex) {
 
-  if (effectiveTransforms.count(trackName)) // if calculated before
-    return effectiveTransforms[trackName];
+  //if (effectiveTransforms.count(trackName)) // if calculated before
+    //return effectiveTransforms[trackName];
 
-  Track *track = reAnimDef->trackMap[trackName];
+  if (effectiveTransformsValid[trackIndex]) return effectiveTransforms[trackIndex];
 
+  //Track *track = reAnimDef->trackMap[trackName];
+  Track *track = &reAnimDef->tracks[trackIndex];
   sf::Transform local;
-  auto curIt = curTransforms.find(trackName);
+
+  /*auto curIt = curTransforms.find(trackName);
   if (curIt != curTransforms.end()) {
     local = transformToSFML(curIt->second);
   }
   else {
     auto baseIt = reAnimDef->basePoses.find(trackName);
     local = (baseIt != reAnimDef->basePoses.end()) ? baseIt->second : sf::Transform();
-  }
+  }*/
+  if(curTransformsValid[trackIndex])
+    local = transformToSFML(curTransforms[trackIndex]);
+  else
+    local = reAnimDef->basePoses[trackIndex];
 
-  if (track->parent && reAnimDef->basePoses.find(track->parent->name) != reAnimDef->basePoses.end()) {
-    sf::Transform parentEff = getEffectiveTransform(track->parent->name);
-    sf::Transform parentBaseInv = reAnimDef->basePoses[track->parent->name].getInverse();
-    sf::Transform res = parentEff * parentBaseInv * local;
-    effectiveTransforms[trackName] = res;
+  if (track->parent) {
+    sf::Transform parentEff = getEffectiveTransform(reAnimDef->getTrackIndex(track->parent->name));
+    sf::Transform parentBaseInv = reAnimDef->basePoses[reAnimDef->getTrackIndex(track->parent->name)].getInverse();
+    effectiveTransforms[trackIndex] = parentEff * parentBaseInv * local;
   }
   else {
-    effectiveTransforms[trackName] = local;
+    effectiveTransforms[trackIndex] = local;
   }
-  return effectiveTransforms[trackName];
+  effectiveTransformsValid[trackIndex] = true;
+  return effectiveTransforms[trackIndex];
 }
 
 
@@ -486,9 +514,9 @@ sf::Vector2f ReAnimationDefinition::getBasePose(Track &track) {
 }
 
 void ReAnimationDefinition::calculateBasePoses() {
-  for (auto &track : tracks) {
+  for (int i = 0; i < tracks.size; i++) {
     //basePoses[track.name] = transformToSFML((Track&)getBasePose(track));
-    basePoses[track.name] = ReAnimator::transformToSFML(getBaseTransform(track));
+    basePoses.push(ReAnimator::transformToSFML(getBaseTransform(tracks[i])));
   }
 }
 
@@ -519,23 +547,89 @@ sf::Transform ReAnimator::transformToSFML(Transform t) {
   );
 }
 
-void ReAnimationDefinition::createTrackMap() {
-  for (auto &track : tracks) {
-    trackMap[track.name] = &track;
+sf::Transform ReAnimator::getWorldTransform(int trackIdx) {
+  sf::Transform localMatrix;
+  Track &trackDef = reAnimDef->tracks[trackIdx];
+
+  if (trackDef.parent) {
+    if (trackDef.fullInherit) {
+      localMatrix = getEffectiveTransform(trackIdx);
+    }
+    else {
+      int pIdx = reAnimDef->getTrackIndex(trackDef.parent->name);
+      sf::Transform parentCurEff = getEffectiveTransform(pIdx);
+      sf::Transform parentBaseEff = getEffectiveBasePose(pIdx);
+
+      sf::Transform attach;
+      attach.translate(parentCurEff.transformPoint({ 0, 0 }) - parentBaseEff.transformPoint({ 0, 0 }));
+
+      sf::Transform localTrack;
+      if (curTransformsValid[trackIdx])
+        localTrack = transformToSFML(curTransforms[trackIdx]);
+      else
+        localTrack = reAnimDef->basePoses[trackIdx];
+
+      localMatrix = attach * localTrack;
+    }
   }
+  else {
+    localMatrix = getEffectiveTransform(trackIdx);
+  }
+
+  sf::Transform currentRoot = rootMatrix;
+  if (!hasParent) {
+    currentRoot = sf::Transform::Identity;
+    currentRoot.translate({ x, y }).scale({ sx, sy });
+  }
+
+  return currentRoot * localMatrix;
 }
 
+sf::Vector2f ReAnimator::getWorldCenterPosition(int trackIdx) {
+  if (!curTransformsValid[trackIdx] || !curTransforms[trackIdx].i) {
+    return getWorldTransform(trackIdx).transformPoint({ 0.0f, 0.0f });
+  }
+
+  sf::Sprite tempSprite(*curTransforms[trackIdx].i);
+  if (trackInstances[trackIdx].imageOverride) {
+    tempSprite.setTexture(*trackInstances[trackIdx].imageOverride, true);
+  }
+
+  sf::Vector2f localCenter = tempSprite.getLocalBounds().size / 2.0f;
+
+  return getWorldTransform(trackIdx).transformPoint(localCenter);
+}
+
+
+//void ReAnimationDefinition::createTrackMap() {
+//  for (auto &track : tracks) {
+//    trackMap[track.name] = &track;
+//  }
+//}
+
 int ReAnimationDefinition::getLabelIndex(std::string labelName) {
-  for (int i = 0; i < labels.size(); i++) {
+  for (int i = 0; i < labels.size; i++) {
     if (labels[i].name == labelName)
       return i;
   }
   return -1; // label not found
 }
 
+int ReAnimationDefinition::getTrackIndex(std::string name) {
+  for (int i = 0; i < tracks.size; i++) {
+    if (tracks[i].name == name) return i;
+  }
+  return -1;
+}
+
 void ReAnimator::playLabel(std::string labelName, LoopType loop, float holdTimer) {
-  activeLabels.push_back({&reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
-    loop, timer, holdTimer});
+  activeLabels.push({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, holdTimer });
+}
+
+void ReAnimator::playLabel(std::string labelName, LoopType loop, int loopCnt) {
+  activeLabels.push({ &reAnimDef->labels[reAnimDef->getLabelIndex(labelName)],
+    loop, timer, 0, 0, loopCnt });
 }
 
 void ReAnimator::stopLabel(int labelIdx) {
@@ -557,35 +651,44 @@ void ReAnimator::stopLabel(int labelIdx) {
 
 void ReAnimator::playAnimation(std::string labelName, LoopType loop, float holdTimer) {
   //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
-  playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
-    loop, holdTimer);
+  /*playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, holdTimer);*/
+  playLabel(labelName, loop, holdTimer);
+}
+void ReAnimator::playAnimation(std::string labelName, LoopType loop, int loopCnt) {
+  //for(auto lab : reAnimDef->labels[getLabelIndex(labelName)].labels)
+  /*playLabel(reAnimDef->labels[reAnimDef->getLabelIndex(labelName)].name,
+    loop, loopCnt);*/
+  playLabel(labelName, loop, loopCnt);
 }
 
 void ReAnimator::stopAnimation(std::string labelName) {
-  for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
+  /*for (auto lab = activeLabels.begin(); lab != activeLabels.end(); ) {
     if (lab->label->name == labelName) {
       lab = activeLabels.erase(lab);
     }
     else
       lab++;
-  }
+  }*/
+  activeLabels.erase([&](ActiveLabel &lab) {
+      return lab.label->name == labelName;
+    });
 }
 
 void ReAnimator::setTrackVisibility(std::string trackName, bool newVisibility) {
-  for(int i=0; i<reAnimDef->tracks.size(); i++)
+  /*for(int i=0; i<reAnimDef->tracks.size(); i++)
     if (reAnimDef->tracks[i].name == trackName) {
       trackInstances[i].isVisible = newVisibility;
       return;
-    }
+    }*/
+  trackInstances[reAnimDef->getTrackIndex(trackName)].isVisible = newVisibility;
 }
 
-void ReAnimator::setTrackVisibility(std::vector<std::string> trackNames, bool newVisibility) {
-  for (int i = 0; i < reAnimDef->tracks.size(); i++)
-    for(auto trackName : trackNames)
-      if (reAnimDef->tracks[i].name == trackName) {
-        trackInstances[i].isVisible = newVisibility;
-        return;
-      }
+void ReAnimator::setTrackVisibility(Array<std::string> &trackNames, bool newVisibility) {
+  for (int i = 0; i < trackNames.size; i++) {
+    trackInstances[reAnimDef->getTrackIndex(trackNames[i])]
+      .isVisible = newVisibility;
+  }
 }
 
 
@@ -623,11 +726,11 @@ void ReAnimator::setTrackVisibility(std::vector<std::string> trackNames, bool ne
 //}
 
 
-void ReAnimator::forceSyncAll() {
-  for (auto &lab : activeLabels) {
-    lab.offset = timer;
-  }
-}
+//void ReAnimator::forceSyncAll() {
+//  for (auto &lab : activeLabels) {
+//    lab.offset = timer;
+//  }
+//}
 
 sf::Color ReAnimator::multiplyColor(sf::Color color, float multiplier) {
   return sf::Color(
@@ -644,31 +747,32 @@ void ReAnimator::setScale(float SX, float SY) {
 
 void ReAnimator::setOpacity(uint8_t newOpacity) {
   opacityMultiplier = newOpacity;
+  if(child) child->setOpacity(newOpacity);
 }
 
 
-void ReAnimator::report() {
-  std::cout << "FPS: " << reAnimDef->fps << "\n";
-
-  std::cout << "Labels:\n";
-  for (auto label : reAnimDef->labels) {
-    std::cout << "Label(" << label.name << "): " << label.start << " -> " << label.end << "\n";
-  }
-
-  std::cout << "\n----------------------------------\nTracks:\n";
-  for (auto track : reAnimDef->tracks) {
-    std::cout << "Track(" << track.name << "):\n";
-    if (track.name != "stalk_bottom") continue;
-    for (auto &frame : track.transforms) {
-      std::cout << "  Transform: x=" << frame.x << ", y=" << frame.y << ", sx=" << frame.sx
-        << ", sy=" << frame.sy << ", kx=" << frame.kx << ", ky=" << frame.ky
-        << ", f=" << frame.f << ", a=" << frame.a
-        << ", i=" << (frame.i ? "Texture Loaded" : "No Texture") << "\n";
-    }
-    std::cout << "\n----------------------------------\n";
-  }
-
-}
+//void ReAnimator::report() {
+//  std::cout << "FPS: " << reAnimDef->fps << "\n";
+//
+//  std::cout << "Labels:\n";
+//  for (auto label : reAnimDef->labels) {
+//    std::cout << "Label(" << label.name << "): " << label.start << " -> " << label.end << "\n";
+//  }
+//
+//  std::cout << "\n----------------------------------\nTracks:\n";
+//  for (auto track : reAnimDef->tracks) {
+//    std::cout << "Track(" << track.name << "):\n";
+//    if (track.name != "stalk_bottom") continue;
+//    for (auto &frame : track.transforms) {
+//      std::cout << "  Transform: x=" << frame.x << ", y=" << frame.y << ", sx=" << frame.sx
+//        << ", sy=" << frame.sy << ", kx=" << frame.kx << ", ky=" << frame.ky
+//        << ", f=" << frame.f << ", a=" << frame.a
+//        << ", i=" << (frame.i ? "Texture Loaded" : "No Texture") << "\n";
+//    }
+//    std::cout << "\n----------------------------------\n";
+//  }
+//
+//}
 
 
 
@@ -909,6 +1013,8 @@ void initReAnimDefs() {
       { "IMAGE_REANIM_ZOMBIE_TONGUE",                   "assets/Zombies/Basic/Zombie_tongue.png" },
       { "IMAGE_REANIM_ZOMBIE_MUSTACHE1",                "assets/Zombies/Basic/Zombie_mustache1.png" },
       { "IMAGE_REANIM_ZOMBIE_SCREENDOOR1",              "assets/Zombies/Basic/Zombie_screendoor1.png" },
+      { "IMAGE_REANIM_ZOMBIE_SCREENDOOR2",              "assets/Zombies/Basic/Zombie_screendoor2.png" },
+      { "IMAGE_REANIM_ZOMBIE_SCREENDOOR3",              "assets/Zombies/Basic/Zombie_screendoor3.png" },
       { "IMAGE_REANIM_ZOMBIE_INNERARM_SCREENDOOR_HAND", "assets/Zombies/Basic/Zombie_innerarm_screendoor_hand.png" },
       { "IMAGE_REANIM_ZOMBIE_OUTERARM_SCREENDOOR",      "assets/Zombies/Basic/Zombie_outerarm_screendoor.png" },
       { "IMAGE_REANIM_ZOMBIE_OUTERARM_HAND",            "assets/Zombies/Basic/Zombie_outerarm_hand.png" },
@@ -939,7 +1045,266 @@ void initReAnimDefs() {
       {"IMAGE_REANIM_ZOMBIE_FLAG3",        "assets/Zombies/Basic/Zombie_flag3.png"}
     });
   definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_cherrybomb[] = { "anim_explode", "anim_idle", "CherryBomb_leftstem", "CherryBomb_left1",
+    "CherryBomb_left3", "CherryBomb_lefteye11", "CherryBomb_lefteye21", "CherryBomb_leftmouth1",
+    "CherryBomb_rightstem", "CherryBomb_right1", "CherryBomb_right3", "CherryBomb_righteye11",
+    "CherryBomb_righteye21", "CherryBomb_rightmouth1", "CherryBomb_leaf3", "CherryBomb_leaf2tip",
+    "CherryBomb_leaf2", "CherryBomb_leaf1", "CherryBomb_leaf1tip" };
+  def->loadFiles("assets/Plants/cherrybomb/cherryBomb.json", 19, trackNames_cherrybomb, {
+      {"IMAGE_REANIM_CHERRYBOMB_LEFTSTEM",        "assets/Plants/cherrybomb/CherryBomb_leftstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT1",          "assets/Plants/cherrybomb/CherryBomb_left1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFT3",          "assets/Plants/cherrybomb/CherryBomb_left3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE11",      "assets/Plants/cherrybomb/CherryBomb_lefteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTEYE21",      "assets/Plants/cherrybomb/CherryBomb_lefteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEFTMOUTH1",     "assets/Plants/cherrybomb/CherryBomb_leftmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTSTEM",      "assets/Plants/cherrybomb/CherryBomb_rightstem.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT1",         "assets/Plants/cherrybomb/CherryBomb_right1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHT3",         "assets/Plants/cherrybomb/CherryBomb_right3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE11",     "assets/Plants/cherrybomb/CherryBomb_righteye11.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTEYE21",     "assets/Plants/cherrybomb/CherryBomb_righteye21.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_RIGHTMOUTH1",    "assets/Plants/cherrybomb/CherryBomb_rightmouth1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF3",          "assets/Plants/cherrybomb/CherryBomb_leaf3.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf2tip.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF2",          "assets/Plants/cherrybomb/CherryBomb_leaf2.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1",          "assets/Plants/cherrybomb/CherryBomb_leaf1.png" },
+      { "IMAGE_REANIM_CHERRYBOMB_LEAF1TIP",       "assets/Plants/cherrybomb/CherryBomb_leaf1tip.png" }
+    });
+  definitions.push(def);
   
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieCharred[] = { "anim_blink", "anim_crumble", "Zombie_charred_body",
+    "Zombie_charred_tail", "Layer 10", "Zombie_charred_pile2", "Zombie_charred_pile2",
+    "Zombie_charred_pile1", "Zombie_charred_pile1.2", "Zombie_charred_head", "Zombie_hair",
+    "Zombie_charred_blink" };
+
+  def->loadFiles("assets/Zombies/Charred/zombie/zombie.json", 12, trackNames_zombieCharred, {
+    {"IMAGE_REANIM_ZOMBIE_CHARRED1",          "assets/Zombies/Charred/zombie/Zombie_charred1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED2",          "assets/Zombies/Charred/zombie/Zombie_charred2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED3",          "assets/Zombies/Charred/zombie/Zombie_charred3.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED4",          "assets/Zombies/Charred/zombie/Zombie_charred4.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED5",          "assets/Zombies/Charred/zombie/Zombie_charred5.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED6",          "assets/Zombies/Charred/zombie/Zombie_charred6.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED7",          "assets/Zombies/Charred/zombie/Zombie_charred7.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED8",          "assets/Zombies/Charred/zombie/Zombie_charred8.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED9",          "assets/Zombies/Charred/zombie/Zombie_charred9.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED10",         "assets/Zombies/Charred/zombie/Zombie_charred10.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_TAIL",      "assets/Zombies/Charred/zombie/Zombie_charred_tail.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE2",     "assets/Zombies/Charred/zombie/Zombie_charred_pile2.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_PILE1",     "assets/Zombies/Charred/zombie/Zombie_charred_pile1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_HEAD",      "assets/Zombies/Charred/zombie/Zombie_charred_head.png"},
+    {"IMAGE_REANIM_ZOMBIE_HAIR",              "assets/Zombies/Charred/zombie/Zombie_hair.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES1",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes1.png"},
+    {"IMAGE_REANIM_ZOMBIE_CHARRED_EYES2",     "assets/Zombies/Charred/zombie/Zombie_charred_eyes2.png"}
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_jalapeno[] = { "anim_blink", "anim_idle", "anim_explode", "Jalapeno_stem",
+    "Jalapeno_body", "Jalapeno_mouth", "Jalapeno_eye1", "Jalapeno_eye2", "Jalapeno_cheek",
+    "Jalapeno_eyebrow1", "Jalapeno_eyebrow2" };
+
+  def->loadFiles("assets/Plants/jalapeno/jalapeno.json", 11, trackNames_jalapeno, {
+      {"IMAGE_REANIM_JALAPENO_STEM",     "assets/Plants/jalapeno/Jalapeno_stem.png"},
+      {"IMAGE_REANIM_JALAPENO_BODY",     "assets/Plants/jalapeno/Jalapeno_body.png"},
+      {"IMAGE_REANIM_JALAPENO_MOUTH",    "assets/Plants/jalapeno/Jalapeno_mouth.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE1",     "assets/Plants/jalapeno/Jalapeno_eye1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYE2",     "assets/Plants/jalapeno/Jalapeno_eye2.png"},
+      {"IMAGE_REANIM_JALAPENO_CHEEK",    "assets/Plants/jalapeno/Jalapeno_cheek.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW1", "assets/Plants/jalapeno/Jalapeno_eyebrow1.png"},
+      {"IMAGE_REANIM_JALAPENO_EYEBROW2", "assets/Plants/jalapeno/Jalapeno_eyebrow2.png"}
+    });
+  definitions.push(def);
+
+  //ReAnimationParser::reportImageMap("assets/Particles/fire/fire.json", "assets/Particles/fire/aaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_fire[] = { "anim_flame", "anim_done", "Layer 1" };
+  def->loadFiles("assets/Particles/fire/fire.json", 3, trackNames_fire, {
+      {"IMAGE_REANIM_FIRE1",       "assets/Particles/fire/fire1.png"},
+      {"IMAGE_REANIM_FIRE2",       "assets/Particles/fire/fire2.png"},
+      {"IMAGE_REANIM_FIRE3",       "assets/Particles/fire/fire3.png"},
+      {"IMAGE_REANIM_FIRE4",       "assets/Particles/fire/fire4.png"},
+      {"IMAGE_REANIM_FIRE4B",      "assets/Particles/fire/fire4b.png"},
+      {"IMAGE_REANIM_FIRE5",       "assets/Particles/fire/fire5.png"},
+      {"IMAGE_REANIM_FIRE5B",      "assets/Particles/fire/fire5b.png"},
+      {"IMAGE_REANIM_FIRE6",       "assets/Particles/fire/fire6.png"},
+      {"IMAGE_REANIM_FIRE6B",      "assets/Particles/fire/fire6b.png"},
+      {"IMAGE_REANIM_FIRE7",       "assets/Particles/fire/fire7.png"},
+      {"IMAGE_REANIM_FIRE7B",      "assets/Particles/fire/fire7b.png"},
+      {"IMAGE_REANIM_FIRE8",       "assets/Particles/fire/fire8.png"}
+    });
+
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  //ReAnimationParser::reportImageMap("assets/Background/LawnMower/lawnmower.json", "assets/Background/LawnMower/aaaaaaa.png");
+  std::string trackNames_lawnmower[] = { "anim_normal", "anim_tricked", "lawnmower_backwheelpiece1",
+    "Lawnmower_backwheel1", "Lawnmower_backwheelshine1", "lawnmower_backwheelpiece2",
+    "Lawnmower_backwheel2", "Lawnmower_backwheelshine2", "LawnMower_dice", "LawnMower_body",
+    "LawnMower_pull", "LawnMower_engine", "lawnmower_frontwheelpiece1", "Lawnmower_frontwheel1",
+    "Lawnmower_wheelshine1", "lawnmower_frontwheelpiece2", "Lawnmower_frontwheel2",
+    "Lawnmower_wheelshine2", "Lawnmower_exhaust" };
+  def->loadFiles("assets/Background/LawnMower/lawnmower.json", 19, trackNames_lawnmower, {
+      {"IMAGE_REANIM_LAWNMOWER_WHEELPIECE",      "assets/Background/LawnMower/LawnMower_wheelpiece.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEEL2",          "assets/Background/LawnMower/LawnMower_wheel2.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEELSHINE",      "assets/Background/LawnMower/LawnMower_wheelshine.png"},
+      {"IMAGE_REANIM_LAWNMOWER_DICE_TRICKED",    "assets/Background/LawnMower/LawnMower_dice_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_BODY",            "assets/Background/LawnMower/LawnMower_body.png"},
+      {"IMAGE_REANIM_LAWNMOWER_BODY_TRICKED",    "assets/Background/LawnMower/LawnMower_body_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_PULL",            "assets/Background/LawnMower/LawnMower_pull.png"},
+      {"IMAGE_REANIM_LAWNMOWER_ENGINE",          "assets/Background/LawnMower/LawnMower_engine.png"},
+      {"IMAGE_REANIM_LAWNMOWER_ENGINE_TRICKED",  "assets/Background/LawnMower/LawnMower_engine_tricked.png"},
+      {"IMAGE_REANIM_LAWNMOWER_WHEEL1",          "assets/Background/LawnMower/LawnMower_wheel1.png"},
+      {"IMAGE_REANIM_LAWNMOWER_EXHAUST",         "assets/Background/LawnMower/LawnMower_exhaust.png"},
+      {"IMAGE_REANIM_LAWNMOWER_EXHAUST_TRICKED", "assets/Background/LawnMower/LawnMower_exhaust_tricked.png"}
+    });
+  definitions.push(def);
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_lawnmoweredZombie[] = { "locator" };
+
+  def->loadFiles("assets/Background/LawnMower/lawnmoweredZombie.json", 1, trackNames_lawnmoweredZombie, {
+    });
+  definitions.push(def);
+
+
+  //ReAnimationParser::reportImageMap("assets/Plants/potatomine/potatomine.json", "assets/Plants/potatomine/aaaaaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_potatoMine[] = { "anim_armed", "anim_rise", "anim_idle", "anim_blink",
+      "anim_mashed", "PotatoMine_rock4", "PotatoMine_rock2", "anim_face", "PotatoMine_stem",
+      "anim_eye", "PotatoMine_blink", "PotatoMine_rock4", "PotatoMine_rock3b", "PotatoMine_rock1b",
+      "PotatoMine_rock6b", "PotatoMine_rock5b", "anim_light", "anim_glow", "PotatoMine_rock6",
+      "PotatoMine_rock1", "PotatoMine_rock3", "PotatoMine_rock5" };
+
+  def->loadFiles("assets/Plants/potatomine/potatomine.json", 22, trackNames_potatoMine, {
+    {"IMAGE_REANIM_POTATOMINE_MASHED",        "assets/Plants/potatomine/PotatoMine_mashed.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK4",         "assets/Plants/potatomine/PotatoMine_rock4.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK2",         "assets/Plants/potatomine/PotatoMine_rock2.png"},
+    {"IMAGE_REANIM_POTATOMINE_BODY",          "assets/Plants/potatomine/PotatoMine_body.png"},
+    {"IMAGE_REANIM_POTATOMINE_STEM",          "assets/Plants/potatomine/PotatoMine_stem.png"},
+    {"IMAGE_REANIM_POTATOMINE_EYES",          "assets/Plants/potatomine/PotatoMine_eyes.png"},
+    {"IMAGE_REANIM_POTATOMINE_BLINK1",        "assets/Plants/potatomine/PotatoMine_blink1.png"},
+    {"IMAGE_REANIM_POTATOMINE_BLINK2",        "assets/Plants/potatomine/PotatoMine_blink2.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK3",         "assets/Plants/potatomine/PotatoMine_rock3.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK1",         "assets/Plants/potatomine/PotatoMine_rock1.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK6",         "assets/Plants/potatomine/PotatoMine_rock6.png"},
+    {"IMAGE_REANIM_POTATOMINE_ROCK5",         "assets/Plants/potatomine/PotatoMine_rock5.png"},
+    {"IMAGE_REANIM_POTATOMINE_LIGHT1",        "assets/Plants/potatomine/PotatoMine_light1.png"},
+    {"IMAGE_REANIM_POTATOMINE_LIGHT2",        "assets/Plants/potatomine/PotatoMine_light2.png"}
+    });
+  definitions.push(def);
+
+  //ReAnimationParser::reportImageMap("assets/Plants/iceshroom/iceshroom.json", "assets/Plants/iceshroom/aaaaaaa.png");
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_iceshroom[] = { "anim_idle", "anim_sleep", "anim_face",
+    "IceShroom_base", "anim_sleep", "anim_blink", "IceShroom_head" };
+
+  def->loadFiles("assets/Plants/iceshroom/iceshroom.json", 7, trackNames_iceshroom, {
+      {"IMAGE_REANIM_ICESHROOM_BODY", "assets/Plants/iceshroom/IceShroom_body.png"},
+      {"IMAGE_REANIM_ICESHROOM_BASE", "assets/Plants/iceshroom/IceShroom_base.png"},
+      {"IMAGE_REANIM_ICESHROOM_BLINK2", "assets/Plants/iceshroom/IceShroom_blink2.png"},
+      {"IMAGE_REANIM_ICESHROOM_BLINK1", "assets/Plants/iceshroom/IceShroom_blink1.png"},
+      {"IMAGE_REANIM_ICESHROOM_HEAD", "assets/Plants/iceshroom/IceShroom_head.png"}
+    });
+  definitions.push(def);
+
+  //ReAnimationParser::reportImageMap("assets/Plants/squash/squash.json", "assets/Plants/squash/aaaa.png");
+  def = new ReAnimationDefinition;
+  std::string trackNames_squash[] = { "anim_jumpdown", "anim_jumpup",
+    "anim_lookright", "anim_lookleft", "anim_idle", "anim_blink", "Squash_stem",
+    "Squash_body", "anim_face", "anim_eye" };
+
+  def->loadFiles("assets/Plants/squash/squash.json", 10, trackNames_squash, {
+      {"IMAGE_REANIM_SQUASH_STEM",     "assets/Plants/squash/Squash_stem.png"},
+      {"IMAGE_REANIM_SQUASH_BODY",     "assets/Plants/squash/Squash_body.png"},
+      {"IMAGE_REANIM_SQUASH_EYES",     "assets/Plants/squash/Squash_eyes.png"},
+      {"IMAGE_REANIM_SQUASH_EYEBROWS", "assets/Plants/squash/Squash_eyebrows.png"}
+    });
+  definitions.push(def);
+
+
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_zombieSoccer[] = { "anim_death", "anim_eat", "anim_walk", "anim_idle",
+    "_ground", "zombie_football_leftarm_upper", "zombie_football_leftleg_foot",
+    "zombie_football_leftleg_lower", "zombie_football_leftleg_upper", "zombie_football_lowerbody",
+    "zombie_football_rightleg_lower", "zombie_football_rightleg_foot",
+    "zombie_football_rightleg_upper", "zombie_football_upperbody2", "zombie_football_leftarm_lower",
+    "zombie_football_upperbody", "anim_hair", "anim_head1", "zombie_football_rightarm_upper",
+    "zombie_football_rightarm_lower", "zombie_football_upperbody3", "anim_head2",
+    "zombie_football_helmet", "zombie_football_leftarm_hand", "zombie_football_rightarm_hand" };
+
+  def->loadFiles("assets/Zombies/Soccer/zombieSoccer.json", 25, trackNames_zombieSoccer, {
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_UPPER",       "assets/Zombies/Soccer/zombie_football_leftarm_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_FOOT",        "assets/Zombies/Soccer/Zombie_football_leftleg_foot.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_LOWER",       "assets/Zombies/Soccer/Zombie_football_leftleg_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTLEG_UPPER",       "assets/Zombies/Soccer/Zombie_football_leftleg_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LOWERBODY",           "assets/Zombies/Soccer/Zombie_football_lowerbody.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_LOWER",      "assets/Zombies/Soccer/Zombie_football_rightleg_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_FOOT",       "assets/Zombies/Soccer/Zombie_football_rightleg_foot.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTLEG_UPPER",      "assets/Zombies/Soccer/Zombie_football_rightleg_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY2",          "assets/Zombies/Soccer/Zombie_football_upperbody2.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_LOWER",       "assets/Zombies/Soccer/Zombie_football_leftarm_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_EATINGLOWER", "assets/Zombies/Soccer/Zombie_football_leftarm_eatinglower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY",           "assets/Zombies/Soccer/Zombie_football_upperbody.png"},
+      {"IMAGE_REANIM_ZOMBIE_HAIR",                         "assets/Zombies/Soccer/Zombie_hair.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HEAD",                "assets/Zombies/Soccer/Zombie_football_head.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_UPPER",      "assets/Zombies/Soccer/zombie_football_rightarm_upper.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_LOWER",      "assets/Zombies/Soccer/zombie_football_rightarm_lower.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_UPPERBODY3",          "assets/Zombies/Soccer/Zombie_football_upperbody3.png"},
+      {"IMAGE_REANIM_ZOMBIE_JAW",                          "assets/Zombies/Soccer/Zombie_jaw.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET",              "assets/Zombies/Soccer/Zombie_football_helmet.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET2",             "assets/Zombies/Soccer/Zombie_football_helmet2.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_HELMET3",             "assets/Zombies/Soccer/Zombie_football_helmet3.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_HAND",        "assets/Zombies/Soccer/Zombie_football_leftarm_hand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_LEFTARM_EATINGHAND",  "assets/Zombies/Soccer/Zombie_football_leftarm_eatinghand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_RIGHTARM_HAND",       "assets/Zombies/Soccer/zombie_football_rightarm_hand.png"},
+      {"IMAGE_REANIM_ZOMBIE_FOOTBALL_OUTERARM_EATINGHAND", "assets/Zombies/Soccer/Zombie_football_outerarm_eatinghand.png"}
+    });
+  definitions.push(def);
+
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_puffshroom[] = { "anim_sleep", "anim_shooting", "anim_idle",
+    "anim_face", "PuffShroom_stem", "PuffShroom_tip", "PuffShroom_head",
+    "PuffShroom_eyes", "anim_blink" };
+
+  def->loadFiles("assets/Plants/puffshroom/puffshroom.json", 9, trackNames_puffshroom, {
+      {"IMAGE_REANIM_PUFFSHROOM_BODY",        "assets/Plants/puffshroom/PuffShroom_body.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_STEM",        "assets/Plants/puffshroom/PuffShroom_stem.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_TIP",         "assets/Plants/puffshroom/PuffShroom_tip.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_HEAD",        "assets/Plants/puffshroom/PuffShroom_head.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_BLINK1",      "assets/Plants/puffshroom/PuffShroom_blink1.png"},
+      {"IMAGE_REANIM_PUFFSHROOM_BLINK2",      "assets/Plants/puffshroom/PuffShroom_blink2.png"}
+    });
+  definitions.push(def);
+
+
+
+  def = new ReAnimationDefinition;
+  std::string trackNames_sunN[] = { "Sun1", "Sun2", "Sun3" };
+  def->loadFiles("assets/Sun/Sun.json", 3, trackNames_sunN, {
+    {"IMAGE_REANIM_SUN3", "assets/Sun/Sun3N.png"}, 
+    {"IMAGE_REANIM_SUN2", "assets/Sun/Sun2N.png"},
+    {"IMAGE_REANIM_SUN1", "assets/Sun/Sun1N.png"}
+    });
+  definitions.push(def);
 
 
 }
@@ -969,9 +1334,11 @@ sf::FloatRect ReAnimator::getGlobalBounds() {
 }
 
 void ReAnimator::setOverlayAlpha(float newAlpha) {
+  if (newAlpha > 1.0f) newAlpha = 1.0f;
+  else if (newAlpha < 0.0f) newAlpha = 0.0f;
   uint8_t castedAlpha = (uint8_t)(newAlpha * 255.0f);
-  for (auto &trackI : trackInstances)
-    trackI.colorOverlay.a = castedAlpha;
+  for (int i=0; i<trackInstances.size; i++)
+    trackInstances[i].colorOverlay.a = castedAlpha;
 }
 
 void ReAnimator::move(sf::Vector2f OFFSET) {
@@ -991,10 +1358,14 @@ void ReAnimator::setPosition(sf::Vector2f newPos) {
 }
 
 bool ReAnimator::isPlayingAnimation(std::string animName) {
-  for (auto lab : activeLabels)
-    if (lab.label->name == animName)
-      return true;
-  return false;
+  if (animName == "")
+    return (activeLabels.size > 0); // if any animation is playing
+
+  for (int i = 0; i < activeLabels.size; i++)
+    if (activeLabels[i].label->name == animName) return true; // anim found
+
+
+  return false; // not playing
 }
 
 
@@ -1002,5 +1373,145 @@ void ReAnimator::drawHitbox() {
   sf::RectangleShape rec(getGlobalBounds().size);
   rec.setPosition({ getGlobalBounds().position.x, getGlobalBounds().position.y });
   rec.setFillColor(sf::Color(255, 0, 0, 100));
+
   window->draw(rec);
+
+  rec.setFillColor(sf::Color::White);
+  rec.setSize({2, 2});
+  rec.setPosition(getPosition());
+
+  window->draw(rec);
+}
+
+
+void ReAnimator::switchDefinition(ReAnimationDef newDefID) {
+  reAnimDef = definitions[newDefID];
+
+  activeLabels.size = 0;
+  trackInstances.size = 0;
+  curTransforms.size = 0;
+  curTransformsValid.size = 0;
+  effectiveBasePoses.size = 0;
+  effectiveBasePosesValid.size = 0;
+  effectiveTransforms.size = 0;
+  effectiveTransformsValid.size = 0;
+
+  for (int i = 0; i < reAnimDef->totalTracks; i++) {
+    trackInstances.push(TrackInstance());
+    curTransforms.push(Transform());
+    curTransformsValid.push(false);
+    effectiveBasePoses.push(sf::Transform());
+    effectiveBasePosesValid.push(false);
+    effectiveTransforms.push(sf::Transform());
+    effectiveTransformsValid.push(false);
+  }
+
+  if (child) child = nullptr;
+}
+
+
+void ReAnimator::updateOrphans(float dt) {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].update(dt);
+  orphanAnimators.erase([](ReAnimator &re) { return !re.isPlayingAnimation(); });
+}
+
+
+void ReAnimator::drawOrphans() {
+  for (int i = 0; i < orphanAnimators.size; i++)
+    orphanAnimators[i].draw();
+}
+
+
+
+void ReAnimator::separateTrackToPO(int trackIdx, sf::Vector2f velocity,
+  sf::Vector2f acceleration, float groundY, float rotationSpeed, float dissapearDuration) {
+
+  if (!trackInstances[trackIdx].isVisible) return; // prevent duplicates
+  // capture state of track before popping
+
+  /*sf::Transform localMatrix = getEffectiveTransform(trackIdx);
+  sf::Transform rootMatrix = sf::Transform::Identity;
+  rootMatrix.translate({ x, y }).scale({ sx, sy });
+  sf::Transform finalMatrix = rootMatrix * localMatrix;*/
+  sf::Transform finalMatrix = getWorldTransform(trackIdx);
+
+  const float *m = finalMatrix.getMatrix();
+
+  sf::Sprite newSprite(*curTransforms[trackIdx].i);
+  if(trackInstances[trackIdx].imageOverride)
+    newSprite.setTexture(*trackInstances[trackIdx].imageOverride);
+  newSprite.setOrigin(newSprite.getLocalBounds().size / 2.0f);
+  newSprite.setScale({
+    std::sqrt(m[0] * m[0] + m[1] * m[1]), // sx
+    std::sqrt(m[4] * m[4] + m[5] * m[5])  // sy
+    });
+
+  PhysicsObject po{
+    getWorldCenterPosition(trackIdx), // position
+    velocity,                               // velocity
+    acceleration,                       // acceleration
+    std::atan2(m[1], m[0]) * TO_DEG,                             // rotation magnitude (ignoring skew direction kx & ky)
+    rotationSpeed,                                          // rotation speed in degrees / second
+    groundY,                                                // ground level
+    dissapearDuration,                                      // dissapear duration
+    dissapearDuration,                                      // dissapear timer
+    newSprite,
+    
+  };
+
+  trackInstances[trackIdx].isVisible = false; // disable track
+  physicsObjects.push(po);
+
+}
+
+
+void PhysicsObject::update(float dt) {
+  velocity += acceleration * dt;
+  position += velocity * dt;
+  rotation += rotationSpeed * dt;
+  if (rotation > 360) rotation -= 360.0f;
+
+  if (position.y > groundY) {
+    position.y = groundY;
+    velocity.y = 0.0f;
+    acceleration.y = 0.0f;
+    rotationSpeed = 0.0f;
+  }
+  if (velocity.x < 0) { // prevent back slide
+    acceleration.x = 0;
+    velocity.x = 0;
+  }
+
+  if (position.y == groundY)
+    dissapearTimer -= dt;
+
+
+  sprite.setColor(sf::Color(255, 255, 255, 255 * (std::max(0.0f, dissapearTimer) / dissapearDuration)));
+  if(dissapearTimer < 0) remove = true;
+    
+
+  sprite.setPosition(position);
+  sprite.setRotation(sf::degrees(rotation));
+}
+
+
+
+void PhysicsObject::draw(sf::RenderWindow *window) {
+  window->draw(sprite);
+}
+
+
+void ReAnimator::updatePhysicsObjects(float dt) {
+  for (int i = 0; i < physicsObjects.size; i++)
+    physicsObjects[i].update(dt);
+  physicsObjects.erase([](PhysicsObject &po) { return po.remove; });
+}
+
+void ReAnimator::drawPhysicsObjects(sf::RenderWindow *window) {
+  sf::View prevView = window->getView();
+  window->setView(*gameView);
+  for (int i = 0; i < physicsObjects.size; i++)
+    physicsObjects[i].draw(window);
+  window->setView(prevView);
 }

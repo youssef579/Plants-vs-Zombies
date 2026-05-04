@@ -26,7 +26,7 @@ void ReAnimationParser::parse(ReAnimationDefinition &reAnimDef, std::string reAn
 
 
   for (auto label : data["labels"]) {
-    reAnimDef.labels.push_back({ label["name"], label["start"], label["end"] });
+    reAnimDef.labels.push({ label["name"], label["start"], label["end"] });
   }
 
   //Transform defaultTrans = { -10000, -10000 , -10000 , -10000 , -10000 , -10000 , -10000 , -10000 , ""};
@@ -73,13 +73,14 @@ void ReAnimationParser::parse(ReAnimationDefinition &reAnimDef, std::string reAn
 
     }
     //std::cout << "PUSHED TRACK: " << t.name << " with " << frameCounter << " Frames\n";
-    reAnimDef.tracks.push_back(t);
+    reAnimDef.tracks.push(t);
   }
 
   //re.report();
   // inherit missing transform data
   Transform prev;
-  for (auto &track : reAnimDef.tracks) {
+  for (int i = 0; i < reAnimDef.tracks.size; i++) {
+    Track &track = reAnimDef.tracks[i];
     prev = { 0, 0, 1, 1, 0, 0, 0, 1, nullptr };
     for (auto &trans : track.transforms) {
       inheritData(prev, trans);
@@ -124,8 +125,12 @@ void ReAnimationParser::bindAllParents(std::string reAnimPath, ReAnimationDefini
     for (auto family : data["families"]) {
       //std::cout << "child: " << family["child"] << "\n";
       //std::cout << "parent: " << family["parent"] << "\n";
-      def.trackMap[family["child"]]->parent = def.trackMap[family["parent"]];
-      def.trackMap[family["child"]]->fullInherit = family["FullInherit"];
+
+      //def.trackMap[family["child"]]->parent = def.trackMap[family["parent"]];
+      //def.trackMap[family["child"]]->fullInherit = family["FullInherit"];
+
+      def.tracks[def.getTrackIndex(family["child"])].parent = &def.tracks[def.getTrackIndex(family["parent"])];
+      def.tracks[def.getTrackIndex(family["child"])].fullInherit = family["FullInherit"];
       //std::cout << "Done\n";
     }
 
@@ -146,6 +151,8 @@ void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string asset
 
   json data = json::parse(file);
 
+  std::vector<int> activeFrames;
+
   std::cout << "Tracks:\n";
   std::cout << "{";
   for (auto track : data["tracks"])
@@ -163,4 +170,21 @@ void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string asset
         seenIMGs.insert(keyF["i"]);
       }
   std::cout << "}\n";
+
+  bool currState;
+  int i;
+  for (auto track : data["tracks"]) {
+    currState = true;
+    i = 0;
+    for (auto kf : track["transforms"]) {
+      if (kf.contains("f") && kf["f"] == 0) currState = true;
+      else if (kf.contains("f") && kf["f"] == -1) currState = false;
+      if (currState) activeFrames.push_back(i);
+      i++;
+    }
+
+    std::cout << "{\"name\" : " << track["name"] << ", \"start\" : " << activeFrames.front() << ", \"end\" : " << activeFrames.back() << "}\n";
+    activeFrames.clear();
+  }
+
 }

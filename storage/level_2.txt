@@ -1,0 +1,32 @@
+Night
+WALLNUT
+7
+21 70 85 112 126 158 164
+54 4 1 4 4 1 8
+3 2 1 2 2 1 5
+1 0 0 0 0 0 1
+
+
+Regular
+Regular
+Regular
+
+
+Regular
+Regular
+
+Conehead
+
+Regular
+Regular
+
+Regular
+Conehead
+
+Flag
+
+Regular
+Regular
+Conehead
+Regular
+Regular
