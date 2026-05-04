@@ -231,7 +231,7 @@ void newPauseMenu::update(sf::RenderWindow& window) {
       music.play("Menu");
     }
     if (handleButtonLogic(restartBtn, mousePos, resClicked, restartHovered)) {
-      levelManager.resetLevelData();
+      levelManager.restartLevel();
 
       isPaused = false;
       gameWeather.isPaused = false;
