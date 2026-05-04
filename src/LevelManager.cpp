@@ -38,7 +38,7 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   if(dayLevel.threeMiddleGrassSprite) dayLevel.threeMiddleGrassSprite->setOrigin({ 0.0f, 0.0f });
   if(dayLevel.fullGrassSprite) dayLevel.fullGrassSprite->setOrigin({ 0.0f, 0.0f });
   globalTimeModifier = 1.0f;
-  dayLevel.init();
+  //std::cout << currentLevel << '\n';
 
 
   // Zombies
@@ -102,17 +102,23 @@ void LevelManager::loadLevelData(int levelNum) {
   resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
-  timer = -20;
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) 
+    timer = 0; 
+  
+  else
+    timer = -25;
 
-  clearGrid();
   Sun::clear();
 
-  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro
+  clearGrid();
+  initGrid();
+  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro a
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
   }
 
+  dayLevel.init(levelManager.levels[currentLevel - 1]->location);
    LawnMower::init();
   //static bool runOnce = [](){
       //return true;

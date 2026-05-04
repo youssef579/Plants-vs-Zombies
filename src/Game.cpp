@@ -77,7 +77,7 @@ void updateGame() {
       fillPackets(plantTypes);
       // initGrid();
       plantSelector.initSelector();
-      dayLevel.init();
+      dayLevel.init(levelManager.levels[levelManager.currentLevel-1]->location);
       newPause.init();
       gameWeather.isRaining = true;
 
