@@ -1,13 +1,17 @@
 Day
-SUN_FLOWER
+SNOWPEASHOOTER
 3
 1 45 80
-1 1 1
-1 1 1
+0 4 8
+1 2 4
 1 1 1
 
 Regular
 
 Regular
+Regular
 
+Regular
+Regular
+Regular
 Regular
