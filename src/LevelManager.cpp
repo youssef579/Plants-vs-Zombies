@@ -51,7 +51,6 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
   spawningFinished = false;
   Sun::isSpawning = false;
-  Sun::spawnTimer = -15;
 
   // Rewards
   RewardManager::spawnedLevelReward = false;
@@ -102,13 +101,17 @@ void LevelManager::loadLevelData(int levelNum) {
   resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
-  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) 
-    timer = 0; 
-  
-  else
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = -5;
+    timer = 0;
+  }
+  else {
+    Sun::spawnTimer = -15;
     timer = -25;
-
+  }
   Sun::clear();
+
+ 
 
   clearGrid();
   initGrid();
@@ -213,7 +216,12 @@ void LevelManager::update(float dt) {
 
 void LevelManager::startLevel() {
   Sun::isSpawning = true;
-  Sun::spawnTimer = -8.0f;
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = 0;
+  }
+  else {
+    Sun::spawnTimer = -8;
+  }
 }
 
 

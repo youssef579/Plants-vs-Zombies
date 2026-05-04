@@ -2,6 +2,7 @@
 #include <globals.hpp>
 #include <SunManager.hpp>
 #include <cmath>
+#include  <LevelManager.hpp>
 
 
 Array<Sun> Sun::sunArray;
@@ -9,6 +10,7 @@ int Sun::sunBalance = 50; // initialized for testing
 float Sun::spawnTimer = -20; // negative values delay the first spawn
 bool Sun::hovering = false;
 bool Sun::isSpawning = true;
+bool Sun::isDay = true;
 
 void Sun::manageSuns(float dt, State s) {
   if(Sun::isSpawning) spawnTimer += dt;
@@ -118,9 +120,16 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
   if (isSunFlower) {
     sun = new Sun({val, Sun::State::FreeFalling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, float(pos.y), sqrtf(2.0f * acceleration * distanceSunFlower) , ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window)});
     sun->reAnimator.setScale(0, 0);
-  } else
-    sun = new Sun({val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window)});
+  }
+  else {
+    if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Day) {
+      sun = new Sun({ val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
+    }
+    else {
+      sun = new Sun({ val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN_NIGHT), pos.x, pos.y, window) });
 
+    }
+  }
   //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;
   sun->reAnimator.setPosition(pos);
