@@ -1,45 +1,43 @@
-#include <LevelProgress.hpp>
-#include <Plants/Plant.hpp>
-#include <Packets/Shovel.hpp>
-#include <Packets/Packet.hpp>
+#include <Array.hpp>
 #include <AssetsManager.hpp>
 #include <Audio.hpp>
-#include <Game.hpp>
-#include <Home.hpp>
-#include <UI/Overlay.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <Window.hpp>
-#include <globals.hpp>
-#include <Weather.hpp>
-#include <SunManager.hpp>
-#include <Plants/SunFlower.hpp>
-#include <Plants/Wallnut.hpp>
-#include <Plants/Peashooter.hpp>
-#include <Plants/SnowpeaShooter.hpp>
-#include <Plants/Repeaterpea.hpp>
-#include <SunManager.hpp>
-#include <Array.hpp>
-#include <Bullet.hpp>
 #include <BackgroundManager.hpp>
-#include <globals.hpp>
+#include <Bullet.hpp>
+#include <Game.hpp>
 #include <Grid.hpp>
-#include <Zombies/Zombie.hpp>
-#include <ParticleSystem.hpp>
+#include <Home.hpp>
 #include <LawnMower.hpp>
 #include <LevelManager.hpp>
-#include <Rewards.hpp>
-#include <newPauseMenu.hpp>
-#include <UI/TransitionManager.hpp>
+#include <LevelProgress.hpp>
+#include <Packets/Packet.hpp>
+#include <Packets/Shovel.hpp>
+#include <ParticleSystem.hpp>
 #include <PlantSelector.hpp>
+#include <Plants/Peashooter.hpp>
+#include <Plants/Plant.hpp>
+#include <Plants/Repeaterpea.hpp>
+#include <Plants/SnowpeaShooter.hpp>
+#include <Plants/SunFlower.hpp>
+#include <Plants/Wallnut.hpp>
+#include <Rewards.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SunManager.hpp>
+#include <UI/Overlay.hpp>
+#include <UI/TransitionManager.hpp>
+#include <Weather.hpp>
+#include <Window.hpp>
+#include <Zombies/Zombie.hpp>
+#include <globals.hpp>
+#include <newPauseMenu.hpp>
 
-//bool isOpen = false;
+// bool isOpen = false;
 int gameState = 0;
 /*
   0 -> Home menu
 */
 float globalTimeModifier = 1.0f;
 
-Array<Bullet>bullets;
+Array<Bullet> bullets;
 
 sf::Clock drawClock;
 float dt; // Delta Time (time between each frame draw)
@@ -50,13 +48,12 @@ bool isPaused = false;
 bool runOnce = true;
 
 void updateGame() {
-  dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
+  dt = drawClock.restart()
+           .asSeconds(); // clock.restart() sets time to 0 and returns the last
                          // time before modifying it
   // calling dt = clock.restart() each frame returns the time between frames
   // (dt)
   dt *= settings.timeModifier * globalTimeModifier;
-
-
 
   TransitionManager::update(dt);
 
@@ -68,19 +65,19 @@ void updateGame() {
     if (runOnce) {
       shovel.init();
       Array<PlantType> plantTypes;
-      //plantTypes.push(PEASHOOTER);
-      //plantTypes.push(SUN_FLOWER);
-      //plantTypes.push(WALLNUT);
-      //plantTypes.push(TALLNUT);
-      //plantTypes.push(REPEATERPEA);
-      //plantTypes.push(SNOWPEASHOOTER);
-      //plantTypes.push(CHERRYBOMB);
-      //plantTypes.push(JALAPENO);
-      //plantTypes.push(POTATOMINE);
-      //plantTypes.push(ICESHROOM);
-      //plantTypes.push(SQUASH);
+      // plantTypes.push(PEASHOOTER);
+      // plantTypes.push(SUN_FLOWER);
+      // plantTypes.push(WALLNUT);
+      // plantTypes.push(TALLNUT);
+      // plantTypes.push(REPEATERPEA);
+      // plantTypes.push(SNOWPEASHOOTER);
+      // plantTypes.push(CHERRYBOMB);
+      // plantTypes.push(JALAPENO);
+      // plantTypes.push(POTATOMINE);
+      // plantTypes.push(ICESHROOM);
+      // plantTypes.push(SQUASH);
       fillPackets(plantTypes);
-      //initGrid();
+      // initGrid();
       plantSelector.initSelector();
       dayLevel.init();
       newPause.init();
@@ -99,7 +96,6 @@ void updateGame() {
       LawnMower::activateLawnMower(2);
       LawnMower::activateLawnMower(3);
       LawnMower::activateLawnMower(4);*/
-
     }
     static bool pPressed = false;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
@@ -107,17 +103,16 @@ void updateGame() {
         newPause.isOpen = !newPause.isOpen;
         pPressed = true;
       }
-    }
-    else {
+    } else {
       pPressed = false;
     }
     if (newPause.isOpen) {
       newPause.update(*window);
 
-
       gameWeather.update(dt);
 
-      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+      if (dayLevel.dirtSound &&
+          static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
         dayLevel.dirtSoundStarted = false;
       }
@@ -126,14 +121,13 @@ void updateGame() {
 
       window->setView(*view);
       drawGrid();
-      Bullet::drawAll();
       Zombie::drawAll();
+      Bullet::drawAll();
       gameWeather.draw(*window);
       drawUI();
       drawSeedPackets();
       shovel.drawBank();
       Sun::drawAll();
-
 
       sf::View uiView = window->getView();
 
@@ -144,7 +138,8 @@ void updateGame() {
       return;
     }
     if (isPaused) {
-      if (dayLevel.dirtSound && static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
+      if (dayLevel.dirtSound &&
+          static_cast<int>(dayLevel.dirtSound->getStatus()) == 2) {
         dayLevel.dirtSound->pause();
         dayLevel.dirtSoundStarted = false;
       }
@@ -167,11 +162,10 @@ void updateGame() {
     drawGrid();
 
     Bullet::updateAll(dt);
-    Bullet::drawAll();
-
-
     Zombie::updateAll(dt);
+
     Zombie::drawAll();
+    Bullet::drawAll();
     RewardManager::update(dt);
     ReAnimator::updatePhysicsObjects(dt);
     ReAnimator::drawPhysicsObjects(window);
@@ -183,7 +177,6 @@ void updateGame() {
     updateSeedPackets(dt);
     drawSeedPackets();
 
-
     shovel.update();
 
     ParticleSystem::update(dt);
@@ -193,12 +186,9 @@ void updateGame() {
 
     LawnMower::updateAll(dt);
 
-
-    //drawGrid();
+    // drawGrid();
 
     Sun::drawAll();
-
-
 
     shovel.drawMovingShovel();
     drawTimeModifier(dt);
@@ -207,7 +197,6 @@ void updateGame() {
       packets[i].drawSelectedPlant();
     gameWeather.update(dt);
 
-
     dayLevel.drawOverlays(*window);
     RewardManager::draw();
 
@@ -215,7 +204,6 @@ void updateGame() {
     break;
   }
   TransitionManager::draw();
-
 
   // EE
   /*onClick(sf::FloatRect{ {963, 484}, {5, 5} }, 0, []() {
