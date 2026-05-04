@@ -5,7 +5,7 @@
 #include <PlantSelector.hpp>
 
 
-sf::Texture RewardManager::packetTextures[11] = {}; // change value according to number of plants LATER
+sf::Texture RewardManager::packetTextures[packetsNum] = {}; // change value according to number of plants LATER
 Array<RewardManager::Reward> RewardManager::rewards;
 RewardManager::CollectedPacket RewardManager::collectedPacket;
 bool RewardManager::isPacketCollected = false;

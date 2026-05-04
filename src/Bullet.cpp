@@ -6,7 +6,9 @@
 #include <Zombies/Zombie.hpp>
 
 Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
-    : sprite(typeValue == PEA ? getTexture("assets/bullets/pea.png") : getTexture("assets/bullets/peaice.png")) {
+    : sprite(typeValue == PEA ? getTexture("assets/bullets/pea.png")
+      : (typeValue == SNOWPEA ? getTexture("assets/bullets/peaice.png")
+        : getTexture("assets/bullets/shroom.png"))) {
   shadow.setRadius(8);
   shadow.setFillColor(sf::Color(255, 255, 255, 255));
   shadow.setScale({1.5f, 0.5f});
@@ -23,7 +25,7 @@ Bullet::Bullet(BulletType typeValue, sf::Vector2f position, int rowValue)
   damage = 20;
   remove = false;
 
-  if(type == BulletType::PEA) effect = 0;
+  if(type == BulletType::PEA || type == BulletType::SHROOM) effect = 0;
   else if (type == BulletType::SNOWPEA) effect = 1;
 
 }
@@ -50,28 +52,23 @@ void Bullet::update(float deltaTime) {
         zombies[row][i]->takeDamage(damage, effect);
         particleTimer = PARTICLE_DEFAULT_TIMER;
 
-        if (type == PEA)
+        if (type == PEA) {
           sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
-        else if (type == SNOWPEA)
+          sprite.setTextureRect(sf::IntRect({ 24 * randomRange(0, 3), 0 }, { 24, 24 }));
+        }
+        else if (type == SNOWPEA) {
           sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
+          sprite.setTextureRect(sf::IntRect({ 24 * randomRange(0, 3), 0 }, { 24, 24 }));
+        }
+        else if(type == SHROOM)
+          sprite.setTexture(getTexture("assets/bullets/shroom_particles.png"));
 
-        sprite.setTextureRect(sf::IntRect({ 24 * randomRange(0, 3), 0 }, { 24, 24 }));
       }
 
     }
 
     if (sprite.getPosition().x > WINDOW_SIZE.x) { // Bullet out of bounds
       remove = true;
-    }
-    else if (sprite.getPosition().x > 1600) { // This is only made to show the particles effect, will be removed later
-      particleTimer = PARTICLE_DEFAULT_TIMER;
-
-      if (type == PEA)
-        sprite.setTexture(getTexture("assets/bullets/pea_particles.png"));
-      else if (type == SNOWPEA)
-        sprite.setTexture(getTexture("assets/bullets/peaice_particles.png"));
-
-      sprite.setTextureRect(sf::IntRect({24 * randomRange(0, 3), 0}, {24, 24})); // Select random particle
     }
   } else { // Bullet particles
     particleTimer -= deltaTime;

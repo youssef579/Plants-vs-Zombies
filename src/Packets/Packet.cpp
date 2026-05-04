@@ -54,6 +54,10 @@ void fillPackets(Array<PlantType> &types) {
     getTexture("assets/Plants/squash.png");
   static sf::Sprite squashSprite(squashTexture);
 
+  static sf::Texture &puffShroomTexture =
+    getTexture("assets/Plants/puff_shroom.png");
+  static sf::Sprite puffShroomSprite(puffShroomTexture);
+
   if (runOnce) {
     peashooterSprite.setTextureRect({{0, 0}, {348, 359}});
     peashooterSprite.setScale({0.225, 0.225});
@@ -80,6 +84,8 @@ void fillPackets(Array<PlantType> &types) {
     iceShroomSprite.setScale({0.8f, 0.8f});
 
     squashSprite.setScale({0.21f, 0.21f});
+
+    puffShroomSprite.setScale({0.21f, 0.21f});
 
     runOnce = false;
   }
@@ -153,6 +159,11 @@ void fillPackets(Array<PlantType> &types) {
       packets.push({ 50, 30.0f, "squash",
                     {posX, 11},
                     squashSprite, SQUASH });
+      break;
+    case PUFFSHROOM:
+      packets.push({ 0, 7.5f, "puffshroom",
+                    {posX, 11},
+                    puffShroomSprite, PUFFSHROOM });
       break;
     }
   }

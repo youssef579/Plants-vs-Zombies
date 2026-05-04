@@ -139,7 +139,7 @@ void handleEvents() {
       case sf::Keyboard::Key::Grave: { // DEV MODE
         Array<PlantType> types;
         for (auto t : { PEASHOOTER, SUN_FLOWER, WALLNUT, SNOWPEASHOOTER,
-          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH })
+          REPEATERPEA, TALLNUT, CHERRYBOMB, JALAPENO, POTATOMINE, ICESHROOM, SQUASH, PUFFSHROOM })
           types.push(t);
         fillPackets(types);
         Sun::sunBalance = 5000;
