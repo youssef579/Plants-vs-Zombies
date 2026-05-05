@@ -9,12 +9,13 @@
 #include <cmath>
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
+#include <PvP/Peer.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
                        "Ali Assem",
                        "Mohammed Abdelhalim",
-                       "Mohammed Ahmed",
+                       "Mohamed Ahmed",
                        "Ather Hossam",
                        "Mohammed Soliman"};
 
@@ -137,7 +138,8 @@ void updateHome() {
     selectorScreenButton3.setScale({ 0.8f, 0.8f });
     selectorScreenButton3.setPosition({ (float)WINDOW_SIZE.x - 312.0f, (float)WINDOW_SIZE.y - 280.0f });
 
-    selectorScreenButton4.setScale({ 0.8f, 0.8f });
+    selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
     selectorScreenButton4.setPosition({ (float)WINDOW_SIZE.x - 315.0f, (float)WINDOW_SIZE.y - 222.0f });
 
     selectorScreenButtonOptions.setScale({0.82f, 0.82f});
@@ -177,6 +179,9 @@ void updateHome() {
     selectorScreenButtonOptions.setTexture(selectorScreenButtonOptionsT0);
     selectorScreenButtonQuit.setTexture(selectorScreenButtonQuitT0);
 
+    selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
+
     onClick(selectorScreenHitbox1, 8, []() {
       // Play
       sounds.play("Tap1");
@@ -194,9 +199,16 @@ void updateHome() {
       runOnceCredits = true;
       }, []() {selectorScreenButton3.setTexture(selectorScreenButton3T1); });
     onClick(selectorScreenHitbox4, 13, []() {
-      // Button 4
+      // Multiplayer
       sounds.play("Tap1");
-      }, []() {selectorScreenButton4.setTexture(selectorScreenButton4T1); });
+      // gameState = 67;
+      if(peer.type == Peer::Plants) peer.state = Peer::Waiting;
+      else peer.state = Peer::Requesting;
+      }, []() {
+        selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T1.getSize().x, 0.8 * 122.f / selectorScreenButton4T1.getSize().y});
+        selectorScreenButton4.setTexture(selectorScreenButton4T1);
+       });
 
     onClick(selectorScreenButtonOptions, []() {
       // Options

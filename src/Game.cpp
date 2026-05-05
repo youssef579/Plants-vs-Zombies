@@ -28,6 +28,7 @@
 #include <Zombies/Zombie.hpp>
 #include <globals.hpp>
 #include <newPauseMenu.hpp>
+#include <PvP/Peer.hpp>
 
 // bool isOpen = false;
 int gameState = 0;
@@ -53,11 +54,78 @@ void updateGame() {
   // (dt)
   dt *= settings.timeModifier * globalTimeModifier;
 
+  dt = Peer::timePerTick;
+
   TransitionManager::update(dt);
 
   switch (gameState) {
   case 0:
+    if(peer.state != Peer::OffGame) {
+      if(peer.state == Peer::Requesting || peer.state == Peer::Accepting)
+        peer.connect(dt);
+      peer.receive();
+    }
+    if(peer.state == Peer::InGame)
+      gameState = 67;
     updateHome();
+    break;
+  case 67:
+    static sf::Texture& backgroundTexture = getTexture("assets/Background/background_night.png");
+    static sf::Sprite backgroundSprite(backgroundTexture);
+    static sf::View camera;
+    if(runOnce) {
+      Zombie::init();
+      shovel.init();
+      backgroundSprite.setPosition({0, 0});
+      camera.setSize(sf::Vector2f(800.f, 600.f));
+      camera.setCenter(sf::Vector2f(490.f, 312.f));
+      gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+      
+      Array<PlantType> plantTypes;
+      plantTypes.push(PEASHOOTER);
+      plantTypes.push(SUN_FLOWER);
+      plantTypes.push(WALLNUT);
+      fillPackets(plantTypes);
+      music.play("DayStage");
+      runOnce = false;
+    }
+
+    peer.fillHistory();
+    peer.send(peer.createPacket());
+    peer.receive();
+
+    dt *= settings.timeModifier;
+
+    window->setView(camera);
+    window->draw(backgroundSprite);
+
+    updateGrid(dt);
+
+    window->setView(*view);
+
+    drawGrid();
+
+    Bullet::updateAll(dt);
+    Zombie::updateAll(dt);
+
+    Zombie::drawAll();
+    Bullet::drawAll();
+
+    drawUI(dt);
+
+    Sun::manageSuns(dt);
+
+    updateSeedPackets(dt);
+    drawSeedPackets();
+
+    Sun::drawAll();
+
+    for (int i = 0; i < packets.size; i++)
+      packets[i].drawSelectedPlant();
+    
+    for(int i = 0; i < zombiePackets.size; i++)
+      zombiePackets[i].drawSelectedPlant();
+    
     break;
   default:
     if (runOnce) {
