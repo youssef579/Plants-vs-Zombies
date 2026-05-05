@@ -1,4 +1,5 @@
-#include "Array.hpp"
+#include "Zombies/Zombie.hpp"
+#include <Array.hpp>
 #include <LevelManager.hpp>
 #include <BackgroundManager.hpp>
 #include <Game.hpp>
@@ -57,8 +58,6 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   RewardManager::isPacketCollected = false;
   RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
 
-  resetLevelProgress();
-
   // Packets
   Array<PlantType> emptyPackets;
   fillPackets(emptyPackets);
@@ -111,7 +110,7 @@ void LevelManager::loadLevelData(int levelNum) {
   }
   Sun::clear();
 
- 
+
 
   clearGrid();
   initGrid();
@@ -119,6 +118,11 @@ void LevelManager::loadLevelData(int levelNum) {
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
+    for (int i = 0; i < ROWS_NUMBER; i++) {
+      zombies[i].sort([](Zombie *zombie1, Zombie *zombie2) {
+        return zombie1->position.y < zombie2->position.y;
+      });
+    }
   }
   if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night) {
     gameWeather.isRaining = true;
@@ -214,7 +218,7 @@ void LevelManager::update(float dt) {
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
-  
+
 
 
 
