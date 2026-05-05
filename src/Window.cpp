@@ -84,6 +84,7 @@ void handleEvents() {
   while (const std::optional event = window->pollEvent())
   {
     if (event->is<sf::Event::Closed>()) { // Close Game
+      //std::cout << "Closing game..\n";
       updateFiles(); // save data first
       window->close();
     }

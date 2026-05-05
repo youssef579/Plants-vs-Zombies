@@ -52,7 +52,7 @@ int main() {
 
   }
 
-  updateFiles();
+  //updateFiles();
   delete window;
   delete view;
   delete assets;

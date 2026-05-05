@@ -14,13 +14,16 @@ bool RewardManager::spawnedLevelReward = false;
 
 void RewardManager::init() {
   packetTextures[SUN_FLOWER]       = getTexture("assets/packets/sunflower.png");
+  packetTextures[CHERRYBOMB]       = getTexture("assets/packets/cherrybomb.png");
   packetTextures[WALLNUT]          = getTexture("assets/packets/wallnut.png");
   packetTextures[SNOWPEASHOOTER]   = getTexture("assets/packets/peaice.png");
-  packetTextures[REPEATERPEA]      = getTexture("assets/packets/repeated.png");
-  packetTextures[TALLNUT]          = getTexture("assets/packets/tallnut.png");
-  packetTextures[CHERRYBOMB]       = getTexture("assets/packets/cherrybomb.png");
-  packetTextures[JALAPENO]         = getTexture("assets/packets/jalapeno.png");
   packetTextures[POTATOMINE]       = getTexture("assets/packets/potatomine.png");
+  packetTextures[REPEATERPEA]      = getTexture("assets/packets/repeated.png");
+  packetTextures[JALAPENO]         = getTexture("assets/packets/jalapeno.png");
+  packetTextures[ICESHROOM]        = getTexture("assets/packets/iceshroom.png");
+  packetTextures[SQUASH]           = getTexture("assets/packets/squash.png");
+  packetTextures[TALLNUT]          = getTexture("assets/packets/tallnut.png");
+  packetTextures[PUFFSHROOM]       = getTexture("assets/packets/puffshroom.png");
 }
 
 
