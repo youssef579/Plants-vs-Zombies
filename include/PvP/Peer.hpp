@@ -2,8 +2,6 @@
 
 #include <SFML/Network.hpp>
 
-#include <deque>
-
 struct Peer {
 
   enum State {OffGame, Waiting, Requesting, Accepting, InGame};
@@ -33,8 +31,6 @@ struct Peer {
   std::optional<sf::IpAddress> opponentIP;
   unsigned short opponentPort;
   unsigned short localPort;
-
-  std::deque<Tick> history;
 
   Tick arrBuffer[100] = {};
   Tick myArrBuffer[100] = {};
