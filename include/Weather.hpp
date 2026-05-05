@@ -41,7 +41,7 @@ struct WeatherSystem {
     float nextStrikeIn = 5.0f;       // Random delay (seconds) until the next lightning strike
     bool isFlashing = false;         // True if the screen is currently being lit by lightning
     sf::RectangleShape flashOverlay; // White transparent rectangle to simulate lightning flash
-    std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                    // change vector
+    std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                 
 
 
     void init();

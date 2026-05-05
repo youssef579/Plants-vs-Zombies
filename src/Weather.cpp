@@ -20,7 +20,7 @@ void WeatherSystem::init() {
 
 
     flashOverlay.setSize(sf::Vector2f(2000.0f , 2000.0f));   // Handle Screen Size
-    flashOverlay.setFillColor(sf::Color::Transparent);                                            // Start invisible
+    flashOverlay.setFillColor(sf::Color::Transparent);       // Start invisible
 
 
     // --- Rain System ---
