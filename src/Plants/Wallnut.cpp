@@ -4,14 +4,11 @@
 #include <Plants/Wallnut.hpp>
 
 void updateWallnut(Plant &wallNut, float dt){
-  //animateSpritesheet(wallNut.sheet, dt);
   wallNut.reAnimator.update(dt);
-  //wallNut.health -= dt * 5;
   wallNut.blinkTimer -= dt;
 
   if (wallNut.blinkTimer <= 0) {
     int numberOfBlinks = randomRange(2, 3);
-    //std::cout << "Playing " << numberOfBlinks << " blinks\n";
     switch (numberOfBlinks) {
     case 2:
       wallNut.reAnimator.playAnimation("anim_blink_twice", LoopType::PlayOnce);
@@ -30,14 +27,12 @@ void updateWallnut(Plant &wallNut, float dt){
     wallNut.reAnimator.playAnimation("anim_blink_twitch", LoopType::PlayOnce);
 
     wallNut.timer = 1;
-    
   }else if (wallNut.health <= WALLNUT_CRACK2_HEALTH && wallNut.timer == 1){
     wallNut.reAnimator.trackInstances[2].imageOverride
       = wallNut.reAnimator.reAnimDef->textureMap["IMAGE_REANIM_WALLNUT_CRACKED2"];
     wallNut.reAnimator.playAnimation("anim_blink_twitch", LoopType::PlayOnce);
 
     wallNut.timer = 2;
-    
   }
 }
 
