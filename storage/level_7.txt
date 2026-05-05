@@ -3,7 +3,7 @@ SQUASH
 21
 20 45 61 79 105 125 136 153 165 210 228 240 253 265 280 295 310 315 330 360 365
 1 1 1 1 5 5 7 7 5 10 5 5 5 5 7 7 7 7 7 1 12
-1 1 1 1 2 2 3 3 2 8 2 3 3 3 4 5 5 4 4 1 14
+1 1 1 1 2 2 3 3 2 8 2 3 3 3 4 5 5 5 4 1 14
 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0
 
 
@@ -36,7 +36,7 @@ Flag
 Regular
 Buckethead
 Regular
-Conehead
+Screendoor
 Regular
 Regular
 Conehead
@@ -59,21 +59,22 @@ Regular
 Regular
 Buckethead
 Regular
+Conehead
+
 Regular
+Regular
+Screendoor
+Regular
+Conehead
 
 Regular
 Regular
 Conehead
 Regular
-Regular
-
-Regular
-Regular
-Conehead
-Regular
 Conehead
 
 Regular
+Screendoor
 Buckethead
 Conehead
 Regular
@@ -87,12 +88,12 @@ Flag
 
 Buckethead
 Regular
-Regular
+Screendoor
 Regular
 Conehead
 Regular
 Soccer
-Regular
+Buckethead
 Conehead
 Regular
 Conehead
