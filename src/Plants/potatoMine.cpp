@@ -6,15 +6,12 @@
 
 void updatePotatoMine(Plant &potatoMine, float dt) {
 
-  //the animation here
   potatoMine.reAnimator.update(dt);
   if (potatoMine.timer > 0){
     potatoMine.timer -= dt;
   }
 
   if (potatoMine.timer <= 0 && !potatoMine.state){ // init rise animation
-    // صوت بطاطس بتطلع مش عارف موجود في اللعبة ولا لا
-    //انيميشن بطاطس بتطلع + تثبت
     potatoMine.reAnimator.stopAnimation("anim_idle");
     potatoMine.reAnimator.playAnimation("anim_rise", LoopType::PlayOnce);
 
@@ -36,16 +33,13 @@ void updatePotatoMine(Plant &potatoMine, float dt) {
       if (zombie->health <= 0) continue;
 
       float dx = std::abs(zombie->reAnimator.getPosition().x - potatoMine.reAnimator.getPosition().x);
-      if (dx <= 65.f /*&& dx >= -30.0f*/) { // dx = abs(posZombie - posPotMine), always positive :/
+      if (dx <= 65.f) { // dx = abs(posZombie - posPotMine), always positive :/
         is_explosion = 1;
         zombie->takeDamage(5000.f, 2);
       }
     }
 
     if (is_explosion){
-      // LATER
-      // صوت انفجار
-      // انيميشن الانفجار
       sounds.play("PotatoMine");
       ParticleSystem::spawnParticleEffect(PEFF_POWIE, potatoMine.reAnimator.getPosition());
       potatoMine.health = 0;

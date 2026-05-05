@@ -106,31 +106,6 @@ float getPlantTimer(PlantType type){
 
 Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimationDefinition *def)
   : reAnimator(def, position.x, position.y, window){
-
-  //ReAnimationDef defName;
-  //switch (type) {
-  //  case SUN_FLOWER:
-  //    defName = REANIM_SUNFLOWER;
-  //    break;
-  //  case WALLNUT:
-  //    defName = REANIM_WALLNUT;
-  //    break;
-  //  case PEASHOOTER:
-  //    defName = REANIM_PEASHOOTER;
-  //    break;
-    /*case SNOWPEASHOOTER:
-      defName = REANIM_SUNFLOWER;
-      break;
-    case REPEATERPEA:
-      defName = REANIM_SUNFLOWER;
-      break;*/
-  //}
-
-
-  /*reAnimator = (ReAnimator::ReAnimator(
-    ReAnimator::getDefinition(defName),
-    position.x, position.y, window));*/
-
   health = getPlantHealth(type);
   plantType = type;
   timer = getPlantTimer(type);
@@ -139,14 +114,6 @@ Plant::Plant(PlantType type, sf::Vector2f position, int Row, int Col, ReAnimatio
   col = Col;
   state = 0;
 
-  
-  //float speed = 0.07f * 16.0f / numberOfFrames;
-  //sheet = Spritesheet{&sprite, width, height, numberOfFrames, speed};
-
-  //sprite.setOrigin(sprite.getLocalBounds().size / 2.0f);
-  //sprite.setPosition({position.x, position.y});
-  //reAnimator.x = position.x;
-  //reAnimator.y = position.y;
   reAnimator.setPosition(position);
   switch (plantType) {
   case SUN_FLOWER:

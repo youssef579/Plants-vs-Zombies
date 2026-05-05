@@ -3,7 +3,7 @@ POTATOMINE
 10
 17 44 65 88 104 120 134 154 166 202
 1 1 1 4 4 1 4 6 4 10
-1 1 1 2 2 1 2 3 2 8
+1 1 1 2 2 1 2 3 2 9
 1 0 0 0 0 0 0 0 0 1
 
 
@@ -16,7 +16,7 @@ Regular
 Regular
 Regular
 
-Regular
+Conehead
 Regular
 
 Buckethead
@@ -37,5 +37,6 @@ Regular
 Buckethead
 Regular
 Regular
+Conehead
 Conehead
 Regular
