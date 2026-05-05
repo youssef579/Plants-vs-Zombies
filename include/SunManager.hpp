@@ -25,7 +25,7 @@ struct Sun {
 private:
   static constexpr float fallSpeed =
       60.0f; // Changes vertical speed while falling
-  static constexpr float groundY = 560.0f; // y-position of ground
+  static constexpr float groundY = 480.0f; // y-position of ground
   static constexpr float groundDuration =
       3.0f; // Time stayed on ground before auto-collect
   static constexpr float collectionSpeed =

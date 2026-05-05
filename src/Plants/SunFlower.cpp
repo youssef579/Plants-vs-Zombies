@@ -9,7 +9,10 @@ void updateSunFlower(Plant &sunFlower, float dt){
   sunFlower.blinkTimer -= dt;
   if (sunFlower.timer <= 0){
     Sounds::play("sunFlowerPop");
-    Sun::generate({sunFlower.reAnimator.getPosition()}, 25, 1);
+    Sun::generate({
+      sunFlower.reAnimator.getPosition().x - 10.0f,
+      sunFlower.reAnimator.getPosition().y
+      }, 25, 1);
     sunFlower.timer = GENERATE_SUN_FLOWER_INTERVAL;
   }
   
@@ -21,9 +24,9 @@ void updateSunFlower(Plant &sunFlower, float dt){
 
 void drawSunFlower(Plant &sunFlower){
   if (sunFlower.timer <= 2.5f) {// glow up
-    sunFlower.reAnimator.setOverlayAlpha(1 - sunFlower.timer / 2.5f);
+    sunFlower.reAnimator.setOverlayAlpha(1 - sunFlower.timer / SHINE_TIME);
   }
-else if (sunFlower.timer >= 9.0f) { // glow down
-    sunFlower.reAnimator.setOverlayAlpha(1 - (10.0f - sunFlower.timer) / 1.0f);
+else if (sunFlower.timer >= 14.0f) { // glow down
+    sunFlower.reAnimator.setOverlayAlpha(1 - (15.0f - sunFlower.timer) / 1.0f);
   }
 }

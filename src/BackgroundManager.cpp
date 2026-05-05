@@ -46,7 +46,7 @@ void BackgroundManager::init(LevelManager::Level::Location Type) {
 
       if (type == LevelManager::Level::Night) return; 
 
-      if (dirtTexture.loadFromFile("assets/BackGround/dirtsmall.png")) {
+      if (dirtTexture.loadFromFile("assets/Background/dirtsmall.png")) {
         dirtPool.clear(); 
         for (int i = 0; i < 250; i++) {
           DirtParticle p;
@@ -385,7 +385,7 @@ rollFiveGrass(dt);
 bool anyRolling = (isRolling[2] || isThreeMiddleRunning || isFullGrassRunning);
 if (dirtSound) {
   if (anyRolling) {
-    dirtSound->setVolume(settings.soundFXVolume * 0.45f);
+    dirtSound->setVolume(settings.soundFXVolume);
 
     if (!dirtSoundStarted) {
       dirtSound->play();
