@@ -44,7 +44,7 @@ void BackgroundManager::init(LevelManager::Level::Location Type) {
       camera.setCenter(sf::Vector2f(490.f, 312.f));
       gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
 
-      if (type == LevelManager::Level::Night) return; 
+      if (type == LevelManager::Level::Night) return;
 
       if (dirtTexture.loadFromFile("assets/Background/dirtsmall.png")) {
         dirtPool.clear(); 
@@ -97,7 +97,7 @@ void BackgroundManager::init(LevelManager::Level::Location Type) {
         }
 
         if (!rollSprites[i]) rollSprites[i] = new sf::Sprite(rollTexture);
-        rollSprites[i]->setOrigin(sf::Vector2f(0.0f, (float)rollTexture.getSize().y / 2.0f));    
+        rollSprites[i]->setOrigin(sf::Vector2f(0.0f, (float)rollTexture.getSize().y / 2.0f));
         rollSprites[i]->setScale(sf::Vector2f(rollSize, rollSize));
 
         if (!capSprites[i]) capSprites[i] = new sf::Sprite(capTexture);
@@ -120,7 +120,7 @@ void BackgroundManager::init(LevelManager::Level::Location Type) {
     }
   }
 }
-  
+
 
 /* =====================================================================
  * FUNCTION: BackgroundManager::spawnDirt
@@ -136,7 +136,7 @@ void BackgroundManager::spawnDirt(sf::Vector2f position) {
       p.active = true;
 
       // Generate a random horizontal offset between -20 and +19 to make the dirt spawn in a scattered area
-      float offsetX = static_cast<float>(rand() % 40 - 20);   
+      float offsetX = static_cast<float>(rand() % 40 - 20);
       p.sprite->setPosition(sf::Vector2f(position.x + offsetX, position.y));
 
       // Generate a random horizontal velocity (X-axis) between -200 (left) and +199 (right)
@@ -180,7 +180,7 @@ void BackgroundManager::updateDirt(float dt) {
 
 
       if (p.lifetime < 0.3f) {
-        sf::Color c = p.sprite->getColor();          // current dirt particle color 
+        sf::Color c = p.sprite->getColor();          // current dirt particle color
         c.a = static_cast<unsigned char>((p.lifetime / 0.3f) * 255);  // a(alpha(transparency degree [0]-->[255]))
         p.sprite->setColor(c);
       }
@@ -213,8 +213,8 @@ void BackgroundManager::rollOneGrass(float dt) {
 
     float rollSize = 0.7f;
     float finalX = 200.0f + (currentX[2] * grassSizeX);        // roll final pos to be compatible with grass
-    float centerY = groundY[2] + (grassTexture.getSize().y * 0.82f) / 2.0f; 
-    float scaleM = std::max(0.35f, 1.0f - (currentX[2] / targetX)); 
+    float centerY = groundY[2] + (grassTexture.getSize().y * 0.82f) / 2.0f;
+    float scaleM = std::max(0.35f, 1.0f - (currentX[2] / targetX));
     float rollW = rollTexture.getSize().x * (scaleM * rollSize);
 
     rollSprites[2]->setPosition({ finalX - (rollW * 0.1f), centerY - rollSize });
@@ -334,51 +334,51 @@ void BackgroundManager::update(float dt) {
   }
 
   if (!isWaitingForPlay) introTimer += dt;
- 
+
 
   if (isIntroRunning) {
-   
+
     if (introTimer < 1.5f) { //zoomm in
       float currentZoom = 1 - (std::max(introTimer, 0.0f) / 1.5f)*0.075f; // allows negative values for delays
       camera.setSize({800.0f * currentZoom, 600.0f * currentZoom});
     }
-    else if (introTimer >= 1.5f && introTimer < 2.2f) { // right 
+    else if (introTimer >= 1.5f && introTimer < 2.2f) { // right
       camera.setSize({800.0f * 0.925f, 600.0f * 0.925f});
       camera.setCenter({ 490.f + ((introTimer - 1.5f) * 400.f), 312.f });
       gameView->setCenter({ 575.f + ((introTimer - 1.5f) * 600.f), 303.f });
 
-     
+
       if (introTimer >= 2.15f && !introSlidingStarted) {
         plantSelector.slideIn();
         introSlidingStarted = true;
         isWaitingForPlay = true;
       }
-     
+
     }
-   
+
     plantSelector.updateSelector(dt, *window);
 
     if (introTimer >= 5.5f && introTimer < 6.2f) { // left
       camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
       gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
-     
+
     }
     else if (introTimer >= 8.5f) {
       camera.setCenter({ 770.f - ((std::min(introTimer,6.15f) - 5.5f) * 400.f), 312.f});
       gameView->setCenter({ 995.f - ((std::min(introTimer,6.15f) - 5.5f) * 600.f), 303.f });
-     
+
       isIntroRunning = false;
 
       if (type == LevelManager::Level::Night) {
         if(introTimer <=20.f)
-          introTimer = 20.0f; 
+          introTimer = 20.0f;
         return;
       }
       startPlanting();
     }
   }
 
-rollOneGrass(dt);            
+rollOneGrass(dt);
 rollThreeGrass(dt);
 rollFiveGrass(dt);
 
@@ -468,7 +468,7 @@ void BackgroundManager::startPlanting() {
   isRolling[2] = true;
   shouldStartRolling[2] = true;
 
-  dirtSoundStarted = false; 
+  dirtSoundStarted = false;
 
   // Kill Dummy Zombies
   for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie *z) { return true; });
@@ -610,7 +610,7 @@ void BackgroundManager::updateGameOverScreen(float dt) {
         music.play("Menu");
         });
     }
-    
+
   }
 
 }
@@ -690,7 +690,7 @@ void testKeybinds(std::string key) {
       sp->setScale(sp->getScale() + sf::Vector2f{ x * sF, 0 });
     if (key == "left")
       sp->setScale(sp->getScale() + sf::Vector2f{ -x * sF, 0 });
-  
+
     std::cout << "Full Grass--------------------------------------------\n";
     std::cout << "FG_Pos (" << sp->getPosition().x << ", " << sp->getPosition().y << ")\n";
     std::cout << "FG_Size(" << sp->getScale().x << ", " << sp->getScale().y << ")\n";
