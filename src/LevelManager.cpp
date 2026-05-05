@@ -120,7 +120,7 @@ void LevelManager::loadLevelData(int levelNum) {
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
     for (int i = 0; i < ROWS_NUMBER; i++) {
       zombies[i].sort([](Zombie *zombie1, Zombie *zombie2) {
-        return zombie1->position.y < zombie2->position.y;
+        return zombie1->position.y < zombie2->position.y; // If a zombie has smaller y position, make it first
       });
     }
   }

@@ -32,10 +32,10 @@ struct Array {
   }
 
   void sort(std::function<bool(elementType &value1, elementType &value2)> compare) {
-    for (int i = 0; i < size; i++) {
-      for (int j = i + 1; j < size; j++) {
-        if (compare(*data[j], *data[i]))
-          std::swap(data[i], data[j]);
+    for (int i = 0; i < size - 1; i++) {
+      for (int j = 0; j < size - 1 - i; j++) {
+        if (compare(*data[j + 1], *data[j]))
+          std::swap(data[j + 1], data[j]);
       }
     }
   }
