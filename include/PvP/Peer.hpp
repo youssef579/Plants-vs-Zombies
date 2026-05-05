@@ -2,7 +2,6 @@
 
 #include <SFML/Network.hpp>
 
-#include <map>
 #include <deque>
 
 struct Peer {
@@ -12,7 +11,7 @@ struct Peer {
   enum playerType {Plants, Zombies};
 
   struct Tick {
-    int tickNumber;
+    int tickNumber = -1;
     Peer::Command cmd = Heartbeat;
     int row, col, type, cost;
   };
@@ -35,9 +34,11 @@ struct Peer {
   unsigned short opponentPort;
   unsigned short localPort;
 
-  std::map<int, Tick> buffer;
-  std::map<int, Tick> myBuffer;
   std::deque<Tick> history;
+
+  Tick arrBuffer[100] = {};
+  Tick myArrBuffer[100] = {};
+  Tick arrHistory[100] = {};
 
   void init();
   void fillHistory();

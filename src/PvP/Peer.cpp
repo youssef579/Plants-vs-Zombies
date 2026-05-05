@@ -10,8 +10,6 @@
 Peer::Command CMD = Peer::Heartbeat;
 int ROW = -1, COL = -1, TYPE = -1, COST = -1;
 
-short unsigned PORT[2] = {53000, 53001};
-
 void Peer::init() {
   socket.setBlocking(false);
   socket.bind(localPort);
@@ -36,15 +34,11 @@ void Peer::connect(float dt) {
 }
 
 void Peer::fillHistory() {
-  if(!history.empty() && history.back().tickNumber == currentTick + tickDelay) return;
+  if(arrHistory[currentTick % 100].tickNumber == currentTick + tickDelay) return;
   Tick tick = {currentTick + tickDelay, CMD, ROW, COL, TYPE, COST};
-  history.push_back(tick);
+  arrHistory[(currentTick + tickDelay) % 100] = tick;
 
-  if(history.size() > 20) {
-    history.pop_front();
-  }
-
-  myBuffer[currentTick + tickDelay] = tick;
+  myArrBuffer[(currentTick + tickDelay) % 100] = tick;
 
   CMD = Heartbeat;
   ROW = COL = TYPE = -1;
@@ -52,17 +46,24 @@ void Peer::fillHistory() {
 
 sf::Packet Peer::createPacket() {
   sf::Packet packet;
-  int size = history.size();
+  int size = std::min(20, currentTick - tickDelay - 1);
+  if(size <= 0) {
+    packet << 1 << currentTick << Heartbeat << 0 << 0 << 0 << 0;
+    return packet;
+  }
   packet << size;
-  for(auto& tick : history) {
+  int currIdx = (currentTick) % 100;
+  while(size--) {
+    if(currIdx == -1) currIdx = 99;
+    auto tick = arrHistory[currIdx];
     packet << tick.tickNumber << tick.cmd << tick.row << tick.col << tick.type << tick.cost;
+    currIdx--;
   }
   return packet;
 }
 
 void Peer::send(sf::Packet packet) {
   // if(opponentIP.has_value()) std::cout << "Sending!" << '\n';
-  // else std::cout << "A7A" << '\n';
   socket.send(packet, opponentIP.value(), opponentPort);
 }
 
@@ -75,7 +76,7 @@ void Peer::receive() {
     packet.clear();
     if(socket.receive(packet, ip, port) == sf::Socket::Status::Done) {
       int size;
-      packet >> size;
+      if(!(packet >> size)) continue;
 
       if(size == -1) {
         int cmdInt;
@@ -101,7 +102,7 @@ void Peer::receive() {
         // std::cout << "Size: " << history.size() << '\n';
         tick.cmd = static_cast<Command>(cmdInt);
         if(tick.tickNumber >= currentTick) {
-          buffer[tick.tickNumber] = tick;
+          arrBuffer[tick.tickNumber % 100] = tick;
         }
         if(tick.tickNumber >= 0) state = InGame;
       }
@@ -111,20 +112,17 @@ void Peer::receive() {
 }
 
 void Peer::update() {
-  if(!buffer.count(currentTick) && currentTick > tickDelay) {
+  if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
     settings.timeModifier = 0;
     return;
   }
   settings.timeModifier = 1;
   
-  Tick tick = buffer[currentTick];
-  Tick myTick = myBuffer[currentTick];
+  Tick tick = arrBuffer[currentTick % 100];
+  Tick myTick = myArrBuffer[currentTick % 100];
 
   if(tick.cmd == SpawnPlant || tick.cmd == SpawnZombie) apply(tick, false);
   if(myTick.cmd == SpawnPlant || myTick.cmd == SpawnZombie) apply(myTick, true);
-
-  buffer.erase(currentTick);
-  myBuffer.erase(currentTick);
   
   currentTick++;
 }
