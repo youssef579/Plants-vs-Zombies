@@ -2,8 +2,8 @@ Night
 JALAPENO
 10
 20 90 105 120 150 160 175 205 210 225
-65 4 4 1 3 3 3 1 6 6
-3 2 2 1 2 2 2 1 6 5
+65 4 4 1 3 3 3 1 7 6
+3 2 2 1 2 2 2 1 8 6
 1 0 0 0 0 0 0 1 0 0
 
 
@@ -17,7 +17,7 @@ Conehead
 Regular
 Regular
 
-Conehead
+Buckethead
 
 Screendoor
 Regular
@@ -36,7 +36,7 @@ Screendoor
 Buckethead
 Regular
 Buckethead
-Regular
+Conehead
 Regular
 
 Regular
@@ -44,3 +44,4 @@ Buckethead
 Screendoor
 Regular
 Conehead
+Regular
