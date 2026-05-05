@@ -45,9 +45,9 @@ struct Peer {
   void send(sf::Packet);
   void receive();
   void update();
-  void apply(Tick&);
-  void spawnZombie(int row, int col, int type, int cost);
-  void spawnPlant(int row, int col, int type, int cost);
+  void apply(Tick&, bool mine);
+  void spawnZombie(int row, int col, int type, int cost, bool mine);
+  void spawnPlant(int row, int col, int type, int cost, bool mine);
 
 };
 

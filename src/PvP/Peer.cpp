@@ -14,7 +14,7 @@ short unsigned PORT[2] = {53000, 53001};
 
 void Peer::init() {
   socket.setBlocking(false);
-  socket.bind(PORT[type]);
+  socket.bind(localPort);
 }
 
 void Peer::connect(float dt) {
@@ -22,17 +22,17 @@ void Peer::connect(float dt) {
   if(nextSendTimer < sendDelay) return;
   nextSendTimer = 0;
   
-  if(type == Zombies) CMD = GameRequest;
+  if(state == Requesting) CMD = GameRequest;
   else CMD = GameAccept;
 
   sf::Packet packet;
   packet << -1 << CMD;
 
-  opponentIP = sf::IpAddress::LocalHost;
-  opponentPort = PORT[type ^ 1];
+  opponentIP = sf::IpAddress::Broadcast;
+  opponentPort = (localPort == 53000 ? 54000 : 53000);
   
   send(packet);
-  std::cout << "Sent!" << '\n';
+  // std::cout << "Sent!" << '\n';
 }
 
 void Peer::fillHistory() {
@@ -83,8 +83,8 @@ void Peer::receive() {
         Command cmd = static_cast<Command>(cmdInt);
         // std::cout << "Receiving!" << '\n';
         if(state == Waiting && cmd == GameRequest) {
-          // opponentIP = ip;
-          // opponentPort = port;
+          opponentIP = ip;
+          opponentPort = port;
           state = Accepting;
         } else if(state == Requesting && cmd == GameAccept) {
           state = InGame;
@@ -97,7 +97,7 @@ void Peer::receive() {
         int cmdInt;
         packet >> tick.tickNumber >> cmdInt >> tick.row >> tick.col >> tick.type >> tick.cost;
         // std::cout << "Have: " << " " << tick.tickNumber << '\n';
-        std::cout << "Current: " << currentTick << '\n';
+        // std::cout << "Current: " << currentTick << '\n';
         // std::cout << "Size: " << history.size() << '\n';
         tick.cmd = static_cast<Command>(cmdInt);
         if(tick.tickNumber >= currentTick) {
@@ -120,8 +120,8 @@ void Peer::update() {
   Tick tick = buffer[currentTick];
   Tick myTick = myBuffer[currentTick];
 
-  if(tick.cmd == SpawnPlant || tick.cmd == SpawnZombie) apply(tick);
-  if(myTick.cmd == SpawnPlant || myTick.cmd == SpawnZombie) apply(myTick);
+  if(tick.cmd == SpawnPlant || tick.cmd == SpawnZombie) apply(tick, false);
+  if(myTick.cmd == SpawnPlant || myTick.cmd == SpawnZombie) apply(myTick, true);
 
   buffer.erase(currentTick);
   myBuffer.erase(currentTick);
@@ -129,12 +129,12 @@ void Peer::update() {
   currentTick++;
 }
 
-void Peer::apply(Tick& tick) {
-  if(tick.cmd == SpawnZombie) spawnZombie(tick.row, tick.col, tick.type, tick.cost);
-  else spawnPlant(tick.row, tick.col, tick.type, tick.cost);
+void Peer::apply(Tick& tick, bool mine) {
+  if(tick.cmd == SpawnZombie) spawnZombie(tick.row, tick.col, tick.type, tick.cost, mine);
+  else spawnPlant(tick.row, tick.col, tick.type, tick.cost, mine);
 }
 
-void Peer::spawnPlant(int row, int col, int type, int cost) {
+void Peer::spawnPlant(int row, int col, int type, int cost, bool mine) {
   int i = row, j = col;
   switch (type){
     case SUN_FLOWER:
@@ -151,13 +151,13 @@ void Peer::spawnPlant(int row, int col, int type, int cost) {
   }
   grid[i][j].therePlantInBounders = 0;
   sounds.play((rand() & 1) ? "Plant1" : "Plant2");
-  Sun::sunBalance -= cost;
+  if(mine) Sun::sunBalance -= cost;
 }
 
-void Peer::spawnZombie(int row, int col, int type, int cost) {
+void Peer::spawnZombie(int row, int col, int type, int cost, bool mine) {
   Zombie::createZombie(
       grid[row][8].rectangle.getGlobalBounds().getCenter().x,
       grid[row][8].rectangle.getGlobalBounds().getCenter().y,
       static_cast<Zombie::Type>(type), row, 0);
-  Sun::sunBalance -= cost;
+  if(mine) Sun::sunBalance -= cost;
 }

@@ -33,11 +33,11 @@ int main() {
   plantSelector.initSelector();
   setWindowMetaData();
 
-  bool isPlants; std::cin >> isPlants;
-  if(isPlants == 0) peer.type = Peer::Plants;
-  else peer.type = Peer::Zombies;
+  // bool isPlants; std::cin >> isPlants;
+  // if(isPlants == 0) peer.type = Peer::Plants;
+  // else peer.type = Peer::Zombies;
 
-  peer.init();
+  // peer.init();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));

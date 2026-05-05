@@ -74,6 +74,7 @@ void updateGame() {
     static sf::Sprite backgroundSprite(backgroundTexture);
     static sf::View camera;
     if(runOnce) {
+      TransitionManager::start([]() {});
       Zombie::init();
       shovel.init();
       backgroundSprite.setPosition({0, 0});
