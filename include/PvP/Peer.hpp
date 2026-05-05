@@ -20,6 +20,7 @@ struct Peer {
   static constexpr float timePerTick = 1.f / 60;
   static constexpr int tickDelay = 5;
   static constexpr int sendDelay = 1; // s
+  static constexpr int gameTime = 300; // s
 
   float nextSendTimer = sendDelay;
 

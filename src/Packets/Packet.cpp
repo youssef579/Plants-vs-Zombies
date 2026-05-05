@@ -97,11 +97,11 @@ void fillPackets(Array<PlantType> &types) {
     coneheadZombieSprite.setTextureRect({{56, 16}, {90, 144}});
     bucketheadZombieSprite.setTextureRect({{56, 16}, {90, 144}});
 
-    regularZombieSprite.setScale({0.5, 0.5});
-    coneheadZombieSprite.setScale({0.5, 0.5});
-    bucketheadZombieSprite.setScale({0.5, 0.5});
+    regularZombieSprite.setScale({0.8, 0.8});
+    coneheadZombieSprite.setScale({0.8, 0.8});
+    bucketheadZombieSprite.setScale({0.8, 0.8});
 
-    float shift = 630;
+    float shift = 650;
 
     zombiePackets.push({100, 5, "regular", {90.0f + (59.0f * 0) + shift, 11}, regularZombieSprite, static_cast<PlantType>(0)});
     zombiePackets.push({150, 5, "conehead", {90.0f + (59.0f * 1) + shift, 11}, coneheadZombieSprite, static_cast<PlantType>(1)});
@@ -187,7 +187,7 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
 
-  sf::Vector2f scale = {50.f / 864 , 70.f / 1210};
+  sf::Vector2f scale = {1.1 * 50.f / 864 , 1.1 * 70.f / 1210};
   if(packetName == "regular") {
     enabledSprite.scale(scale);
     disabledSprite.scale(scale);

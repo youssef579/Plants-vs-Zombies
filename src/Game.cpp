@@ -54,7 +54,7 @@ void updateGame() {
   // (dt)
   dt *= settings.timeModifier * globalTimeModifier;
 
-  dt = Peer::timePerTick;
+  if(peer.state == Peer::InGame) dt = Peer::timePerTick;
 
   TransitionManager::update(dt);
 
@@ -73,6 +73,8 @@ void updateGame() {
     static sf::Texture& backgroundTexture = getTexture("assets/Background/background_night.png");
     static sf::Sprite backgroundSprite(backgroundTexture);
     static sf::View camera;
+    static sf::Text runningClock(assets->font, "", 24);
+    static float currGameTime = Peer::gameTime;
     if(runOnce) {
       TransitionManager::start([]() {});
       Zombie::init();
@@ -81,6 +83,8 @@ void updateGame() {
       camera.setSize(sf::Vector2f(800.f, 600.f));
       camera.setCenter(sf::Vector2f(490.f, 312.f));
       gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+
+      runningClock.setPosition({1150 / 2, 560});
       
       Array<PlantType> plantTypes;
       plantTypes.push(PEASHOOTER);
@@ -91,11 +95,19 @@ void updateGame() {
       runOnce = false;
     }
 
+    currGameTime -= 0.0003;
+
+    runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
+
     peer.fillHistory();
     peer.send(peer.createPacket());
     peer.receive();
 
     dt *= settings.timeModifier;
+
+    currGameTime = std::max(0.f, currGameTime - dt / 2);
+
+    runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
 
     window->setView(camera);
     window->draw(backgroundSprite);
@@ -103,6 +115,8 @@ void updateGame() {
     updateGrid(dt);
 
     window->setView(*view);
+
+    window->draw(runningClock);
 
     drawGrid();
 
