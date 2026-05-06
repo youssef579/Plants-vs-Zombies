@@ -9,7 +9,7 @@
 
 // Level Selector
 int maxLevelUnlocked = 1, levelSelectorCurrentPage = 1;
-const int ACTUAL_MAX_LEVELS = 3; // how many level files actually exist
+const int ACTUAL_MAX_LEVELS = 7; // how many level files actually exist
 
 float Settings::musicVolume;
 float Settings::soundFXVolume;
@@ -92,6 +92,7 @@ void loadLevelsFiles() {
     else if (input == "POTATOMINE")      newLevel->reward = POTATOMINE;
     else if (input == "ICESHROOM")       newLevel->reward = ICESHROOM;
     else if (input == "SQUASH")          newLevel->reward = SQUASH;
+    else if (input == "PUFFSHROOM")      newLevel->reward = PUFFSHROOM;
 
 
 
@@ -129,7 +130,7 @@ void loadLevelsFiles() {
       newWave->delay = delays[i];
       newWave->duration = durations[i];
       newWave->isBigWave = bigWaves[i];
-      newWave->waveSprite.setPosition({1100 - 145 * (delays[i] - delays[0]) / (delays[newLevel->numberOfWaves - 1] - delays[0]), 568});
+      newWave->waveSprite.setPosition({1100 - 145 * (delays[i]) / (delays[newLevel->numberOfWaves - 1] + durations[newLevel->numberOfWaves - 1]), 568});
       for (int z = 0; z < numberOfZombies[i]; z++) {
         file >> input; // zombie type
 
@@ -155,12 +156,22 @@ void loadLevelsFiles() {
 
 
 void updateFiles() {
+  //std::cout << "Updating files..\n";
+
   std::ofstream file("storage/playerData.txt");
-  file << maxLevelUnlocked;
+  if(file.is_open())
+    file << maxLevelUnlocked;
+  else
+    std::cout << "Unable to open playerData.txt";
+
   file.close();
 
   // Write settings to file
   std::ofstream settingsFile("storage/settings.txt");
+  if (!settingsFile.is_open()) {
+    std::cout << "Unable to open settings.txt";
+    return;
+  }
   settingsFile << settings.musicVolume << "\n";
   settingsFile << settings.soundFXVolume << "\n";
   settingsFile << settings.weatherFXVolume << "\n";

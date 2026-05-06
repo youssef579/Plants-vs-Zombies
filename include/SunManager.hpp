@@ -25,7 +25,7 @@ struct Sun {
 private:
   static constexpr float fallSpeed =
       60.0f; // Changes vertical speed while falling
-  static constexpr float groundY = 560.0f; // y-position of ground
+  static constexpr float groundY = 480.0f; // y-position of ground
   static constexpr float groundDuration =
       3.0f; // Time stayed on ground before auto-collect
   static constexpr float collectionSpeed =
@@ -34,7 +34,7 @@ private:
   static constexpr int assetWidth =
       116; // SunAsset width (Used for spawn bounds)
   static constexpr float spawnInterval =
-      8.0f; // Amount of seconds between each sun spawn
+      10.0f; // Amount of seconds between each sun spawn
   static constexpr float acceleration = 400.0f;
   static constexpr float distanceSunFlower =
       50.0f; // the distance the sun will fly above the sunflower

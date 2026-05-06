@@ -84,6 +84,7 @@ void handleEvents() {
   while (const std::optional event = window->pollEvent())
   {
     if (event->is<sf::Event::Closed>()) { // Close Game
+      //std::cout << "Closing game..\n";
       updateFiles(); // save data first
       window->close();
     }
@@ -125,7 +126,7 @@ void handleEvents() {
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
           //newPause.isOpen = !newPause.isOpen;
           isPaused = !isPaused;
-          gameWeather.isPaused = !isPaused;
+          gameWeather.isPaused = isPaused;
           if (!isPaused) {
             sounds.play("Pause");
             setCursorMain();

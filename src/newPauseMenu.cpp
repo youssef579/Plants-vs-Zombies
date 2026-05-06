@@ -7,6 +7,16 @@
 
 newPauseMenu newPause;
 
+
+/* =====================================================================
+ * FUNCTION: newPauseMenu::init()
+ * ---------------------------------------------------------------------
+ * Initializes the entire Pause and Settings menu. It loads the necessary
+ * audio buffers for hover and click sounds. It sets up the dark transparent
+ * overlay, loads textures for all buttons, sliders, checkboxes, and
+ * decorative plant sprites, and centers their origins and
+ * positions them on the screen with specific offsets.
+ * ===================================================================== */
 void newPauseMenu::init() {
 
   std::string folder = "assets/newPauseMenu/";
@@ -25,8 +35,8 @@ void newPauseMenu::init() {
       clickSound = new sf::Sound(*clickBuffer);
   }
 
-  overlay.setSize({2000.f, 2000.f});
-  overlay.setFillColor(sf::Color(0, 0, 0, 150));
+  overlay.setSize({2000.f, 2000.f});                      // for bluring behind the pause menu 
+  overlay.setFillColor(sf::Color(0, 0, 0, 150));         //
 
   float offsetX = 50.0f;
   float offsetY = 20.0f;
@@ -157,6 +167,17 @@ void newPauseMenu::init() {
   checkboxFullscreen->mark.setPosition( {checkboxFullscreen->x + 10.0f, checkboxFullscreen->y + 10.0f});
 }
 
+
+
+/* =====================================================================
+ * FUNCTION: newPauseMenu::handleButtonLogic()
+ * ---------------------------------------------------------------------
+ * A highly reusable  function that handles all button states.
+ * It checks if the mouse is hovering over the button, applies a darker
+ * tint and plays a sound if hovered. It shrinks the button when clicked,
+ * and finally returns true only when the mouse is released over the button,
+ * ensuring a complete and proper "click" action.
+ * ===================================================================== */
 bool newPauseMenu::handleButtonLogic(sf::Sprite *btn, sf::Vector2f mousePos,
                                      bool &actionTriggered, bool &isHovered,
                                      float baseScale) {
@@ -196,6 +217,17 @@ bool newPauseMenu::handleButtonLogic(sf::Sprite *btn, sf::Vector2f mousePos,
   return false;
 }
 
+
+
+/* =====================================================================
+ * FUNCTION: newPauseMenu::update()
+ * ---------------------------------------------------------------------
+ * The main logic loop for the menu. Maps mouse coordinates. If the settings
+ * menu is open, it handles slider dragging, fullscreen toggles (re-creating
+ * the window if needed), and the back button. If the main pause menu is open,
+ * it processes clicks on the Resume, Restart, Settings, and Main Menu
+ * buttons, handling game state transitions accordingly.
+ * ===================================================================== */
 void newPauseMenu::update(sf::RenderWindow &window) {
   if (!isOpen)
     return;
@@ -317,10 +349,10 @@ void newPauseMenu::draw(sf::RenderWindow &window) {
     if (menuBtn)
       window.draw(*menuBtn);
 
-    float time = animClock.getElapsedTime().asSeconds();
+    float time = animClock.getElapsedTime().asSeconds();               // for anim 
 
-    if (menuPea) {
-      menuPea->setRotation(sf::degrees(std::sin(time * 2.f) * 3.f));
+    if (menuPea) {                                                     // right and left 3deg
+      menuPea->setRotation(sf::degrees(std::sin(time * 2.f) * 3.f));   
       window.draw(*menuPea);
     }
 
