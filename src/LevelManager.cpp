@@ -86,7 +86,8 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
 
 
-
+  //Sounds
+  sounds.updateVolume();
 
 
 }

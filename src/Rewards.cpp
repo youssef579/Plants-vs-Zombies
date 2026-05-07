@@ -110,6 +110,8 @@ void RewardManager::collectPacket() {
 
   packReward->remove = true; // delete old reward
 
+  gameWeather.rainSound->setVolume(0);
+  gameWeather.thunderSound->setVolume(0);
   music.stop();
   sounds.play("WinMusic");
 
