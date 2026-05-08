@@ -13,17 +13,18 @@ bool RewardManager::spawnedLevelReward = false;
 
 
 void RewardManager::init() {
-  packetTextures[SUN_FLOWER]       = getTexture("assets/packets/sunflower.png");
-  packetTextures[CHERRYBOMB]       = getTexture("assets/packets/cherrybomb.png");
-  packetTextures[WALLNUT]          = getTexture("assets/packets/wallnut.png");
-  packetTextures[SNOWPEASHOOTER]   = getTexture("assets/packets/peaice.png");
-  packetTextures[POTATOMINE]       = getTexture("assets/packets/potatomine.png");
-  packetTextures[REPEATERPEA]      = getTexture("assets/packets/repeated.png");
-  packetTextures[JALAPENO]         = getTexture("assets/packets/jalapeno.png");
-  packetTextures[ICESHROOM]        = getTexture("assets/packets/iceshroom.png");
-  packetTextures[SQUASH]           = getTexture("assets/packets/squash.png");
-  packetTextures[TALLNUT]          = getTexture("assets/packets/tallnut.png");
-  packetTextures[PUFFSHROOM]       = getTexture("assets/packets/puffshroom.png");
+  // Check if these are smooth LATER
+  packetTextures[SUN_FLOWER]       = getTexture("assets/packets/upscaled/sunflower.png");
+  packetTextures[CHERRYBOMB]       = getTexture("assets/packets/upscaled/cherrybomb.png");
+  packetTextures[WALLNUT]          = getTexture("assets/packets/upscaled/wallnut.png");
+  packetTextures[SNOWPEASHOOTER]   = getTexture("assets/packets/upscaled/peaice.png");
+  packetTextures[POTATOMINE]       = getTexture("assets/packets/upscaled/potatomine.png");
+  packetTextures[REPEATERPEA]      = getTexture("assets/packets/upscaled/repeated.png");
+  packetTextures[JALAPENO]         = getTexture("assets/packets/upscaled/jalapeno.png");
+  packetTextures[ICESHROOM]        = getTexture("assets/packets/upscaled/iceshroom.png");
+  packetTextures[SQUASH]           = getTexture("assets/packets/upscaled/squash.png");
+  packetTextures[TALLNUT]          = getTexture("assets/packets/upscaled/tallnut.png");
+  packetTextures[PUFFSHROOM]       = getTexture("assets/packets/upscaled/puffshroom.png");
 }
 
 
@@ -35,6 +36,7 @@ void RewardManager::spawnReward(sf::Vector2f pos, sf::Vector2f vInitial, PlantTy
   rewards.push({RewardManager::Reward::RewardType::Packet,
     type, pos, vInitial, {0, 1500} , pos.y-30.0f, sf::Sprite(packetTextures[type])});
   rewards[rewards.size - 1].sprite.setOrigin(rewards[rewards.size - 1].sprite.getLocalBounds().size / 2.0f);
+  rewards[rewards.size - 1].sprite.setScale({ 1.15 * 0.5f , 1.15 * 0.5f });
 }
 
 

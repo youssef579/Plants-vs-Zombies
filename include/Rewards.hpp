@@ -41,8 +41,8 @@ struct RewardManager {
 
     float timer = 0;
     float duration = 3;
-    sf::Vector2f startScale = {1, 1};
-    sf::Vector2f endScale   = {3, 3};
+    sf::Vector2f startScale = { 1.15 * 0.5f, 1.15 * 0.5f };
+    sf::Vector2f endScale = { 1.15 * 0.5f * 2.3f, 1.15 * 0.5f * 2.3f };
 
 
     void update(float dt);
