@@ -135,8 +135,8 @@ void RewardManager::CollectedPacket::update(float dt) {
   collectedPacket.sprite->setScale(
     startScale + (endScale - startScale) * lerpF);
 
-  collectedPacket.whiteOverlay.setFillColor(sf::Color(255, 255, 255,
-    0 + (255 - 0) * lerpF));
+  collectedPacket.whiteOverlay.setFillColor(sf::Color(0, 0, 0,
+    0 + (220 - 0) * lerpF));
 
   if (collectedPacket.timer >= collectedPacket.duration + 0.3f) {
     onClick(*collectedPacket.sprite, []() {

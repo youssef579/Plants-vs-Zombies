@@ -151,6 +151,10 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
   
   getTexture("assets/packets/upscaled/" + packetName + ".png").setSmooth(true); // remove artifacts
 
+  if (plantType == CHERRYBOMB) {
+    disabledSprite.setTexture(getTexture("assets/packets/upscaled/" + packetName + "_disabled.png"));
+    //getTexture("assets/packets/upscaled" + packetName + "_disabled.png");
+  }
   disabledSprite.setPosition(position);
   disabledSprite.setScale({ scaleFactor, scaleFactor });
 
@@ -192,7 +196,7 @@ void SeedPacket::update(float dt) {
     selected = false;
   }
 
-  if (reloadTimer > 0)
+  if (reloadTimer > 0) // no fallback for dt jumps LATER
     enabledSprite.setTextureRect(
         {{0, 0},
          {100, (int)(140 * (reloadDuration - reloadTimer) / reloadDuration)}});

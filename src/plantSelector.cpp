@@ -83,10 +83,11 @@ void PlantsSelector::initSelector() {
 
   for (int i = 0; i < packetsNum; i++) {
     plantSelector.packets[i].id = i;
-    sf::Texture& tex = getTexture("assets/packets/" + std::to_string(i) + ".png");
+    sf::Texture& tex = getTexture("assets/packets/upscaled/" + std::to_string(i) + ".png");
+    tex.setSmooth(true);
    // std::cout << i << '\n';
     if(!plantSelector.packets[i].sprite) plantSelector.packets[i].sprite = new sf::Sprite(tex);
-    plantSelector.packets[i].sprite->setScale({ 1.2f , 1.2f });
+    plantSelector.packets[i].sprite->setScale({ 1.2f*0.5f , 1.2f*0.5f});
 
    // std::cout << "Plant ID: " << i << " | Is Unlocked? " << isPlantUnlocked[i] << "\n";
 
@@ -347,7 +348,7 @@ void PlantsSelector::updateSelector(float dt , sf::RenderWindow& window){
       if (plantSelector.selectedSlot[i].active && plantSelector.selectedSlot[i].sprite) {
         float baseStartX = 90.0f; 
         float gapX = 59.0f;
-        float packetScale = 1.15f;
+        float packetScale = 1.15f*0.5f;
 
         plantSelector.selectedSlot[i].sprite->setScale({ packetScale,packetScale });
         //plantSelector.selectedSlot[i].sprite->setPosition({ baseStartX + (i * gapX), 11.0f});
