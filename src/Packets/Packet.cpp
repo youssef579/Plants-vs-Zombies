@@ -8,10 +8,8 @@
 #include <algorithm>
 #include <globals.hpp>
 #include <BackgroundManager.hpp>
-#include <PvP/Peer.hpp>
 
 Array<SeedPacket> packets;
-Array<SeedPacket> zombiePackets;
 
 void fillPackets(Array<PlantType> &types) {
 
@@ -52,15 +50,6 @@ void fillPackets(Array<PlantType> &types) {
   static sf::Texture &puffShroomTexture = getTexture("assets/Plants/puff_shroom.png");
   static sf::Sprite puffShroomSprite(puffShroomTexture);
 
-  static sf::Texture &regularZombieTexture = getTexture("assets/Zombies/Regular/zombie.png");
-  static sf::Sprite regularZombieSprite(regularZombieTexture);
-
-  static sf::Texture &coneheadZombieTexture = getTexture("assets/Zombies/Conehead/zombie.png");
-  static sf::Sprite coneheadZombieSprite(coneheadZombieTexture);
-
-  static sf::Texture &bucketheadZombieTexture = getTexture("assets/Zombies/Buckethead/zombie.png");
-  static sf::Sprite bucketheadZombieSprite(bucketheadZombieTexture);
-
   if (runOnce) {
     peashooterSprite.setTextureRect({{0, 0}, {348, 359}});
     peashooterSprite.setScale({0.225, 0.225});
@@ -89,23 +78,6 @@ void fillPackets(Array<PlantType> &types) {
     squashSprite.setScale({0.21f, 0.21f});
 
     puffShroomSprite.setScale({0.13f, 0.13f});
-
-
-    // Zombies
-
-    regularZombieSprite.setTextureRect({{56, 16}, {90, 144}});
-    coneheadZombieSprite.setTextureRect({{56, 16}, {90, 144}});
-    bucketheadZombieSprite.setTextureRect({{56, 16}, {90, 144}});
-
-    regularZombieSprite.setScale({0.8, 0.8});
-    coneheadZombieSprite.setScale({0.8, 0.8});
-    bucketheadZombieSprite.setScale({0.8, 0.8});
-
-    float shift = 650;
-
-    zombiePackets.push({100, 5, "regular", {90.0f + (59.0f * 0) + shift, 11}, regularZombieSprite, static_cast<PlantType>(0)});
-    zombiePackets.push({150, 5, "conehead", {90.0f + (59.0f * 1) + shift, 11}, coneheadZombieSprite, static_cast<PlantType>(1)});
-    zombiePackets.push({200, 5, "buckethead", {90.0f + (59.0f * 2) + shift, 11}, bucketheadZombieSprite, static_cast<PlantType>(2)});
 
     runOnce = false;
   }
@@ -173,7 +145,7 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
       reloadDuration(reloadDurationValue),
       packetFlash(getTexture("assets/packets/PacketFlash.png")) {
 
-  float scaleFactor = 1.0;
+  float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
   enabledSprite.setScale({scaleFactor, scaleFactor});
 
@@ -186,22 +158,6 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
   plantSprite.setOrigin(plantSprite.getLocalBounds().getCenter());
 
   plantShadow.setOrigin(plantShadow.getLocalBounds().size / 2.0f);
-
-  sf::Vector2f scale = {1.1 * 50.f / 864 , 1.1 * 70.f / 1210};
-  if(packetName == "regular") {
-    enabledSprite.scale(scale);
-    disabledSprite.scale(scale);
-  }
-  if(packetName == "conehead") {
-    enabledSprite.scale(scale);
-    disabledSprite.scale(scale);
-  }
-  if(packetName == "buckethead") {
-    enabledSprite.scale(scale);
-    disabledSprite.scale(scale);
-  }
-
-  
 
   if (plantType == ICESHROOM)
     plantShadow.setColor(sf::Color{255, 255, 255, 150});
@@ -224,7 +180,7 @@ void SeedPacket::update(float dt) {
 
 
   if (Sun::sunBalance >= cost && reloadTimer == 0 && isMousePressed &&
-      enabledSprite.getGlobalBounds().contains(mousePosition) && /*dayLevel.introTimer >= 21.0f*/true)
+      enabledSprite.getGlobalBounds().contains(mousePosition) && dayLevel.introTimer >= 21.0f)
     selected = true;
 
   if (selected)
@@ -254,25 +210,13 @@ void SeedPacket::drawSelectedPlant() {
 }
 
 void updateSeedPackets(float dt) {
-  if(peer.type == Peer::Plants) {
-    for (int i = 0; i < packets.size; i++) {
-      packets[i].update(dt);
-    }
-  } else {
-    for (int i = 0; i < zombiePackets.size; i++) {
-      zombiePackets[i].update(dt);
-    }
+  for (int i = 0; i < packets.size; i++) {
+    packets[i].update(dt);
   }
 }
 
 void drawSeedPackets() {
-  if(peer.type == Peer::Plants) {
-    for (int i = 0; i < packets.size; i++) {
-      packets[i].draw();
-    }
-  } else {
-    for (int i = 0; i < zombiePackets.size; i++) {
-      zombiePackets[i].draw();
-    }
+  for (int i = 0; i < packets.size; i++) {
+    packets[i].draw();
   }
 }

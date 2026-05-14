@@ -10,9 +10,6 @@
 #include <ParticleSystem.hpp>
 #include <Grid.hpp>
 #include <PlantSelector.hpp>
-#include <PvP/Peer.hpp>
-
-Peer peer;
 
 sf::Vector2f mousePosition;
 
@@ -32,12 +29,6 @@ int main() {
   initGameProgress();
   plantSelector.initSelector();
   setWindowMetaData();
-
-  // bool isPlants; std::cin >> isPlants;
-  // if(isPlants == 0) peer.type = Peer::Plants;
-  // else peer.type = Peer::Zombies;
-
-  // peer.init();
 
   while (window->isOpen()) {
     mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));

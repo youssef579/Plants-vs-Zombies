@@ -5,7 +5,6 @@
 #include <Packets/Packet.hpp> // USED FOR DEV MODE
 #include <SunManager.hpp>     // USED FOR DEV MODE
 #include <newPauseMenu.hpp>
-#include <PvP/Peer.hpp>
 
 
 sf::RenderWindow *window;
@@ -135,10 +134,6 @@ void handleEvents() {
           gameWeather.update(0);
 
           //isPaused = !isPaused;
-        }
-        if(homeState == 4 && gameState == 0) {
-          homeState = 0;
-          peer.state = Peer::OffGame;
         }
         break;
       case sf::Keyboard::Key::P:

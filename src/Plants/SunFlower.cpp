@@ -1,15 +1,12 @@
 #include <Plants/SunFlower.hpp>
 #include <SunManager.hpp>
 #include <Plants/Plant.hpp>
-#include <PvP/Peer.hpp>
 
 void updateSunFlower(Plant &sunFlower, float dt){
   sunFlower.reAnimator.update(dt);
 
-  if(peer.state == Peer::OffGame || peer.type == Peer::Plants) {
-    sunFlower.timer -= dt;
-    sunFlower.blinkTimer -= dt;
-  }
+  sunFlower.timer -= dt;
+  sunFlower.blinkTimer -= dt;
   if (sunFlower.timer <= 0){
     Sounds::play("sunFlowerPop");
     Sun::generate({

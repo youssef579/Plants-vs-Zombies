@@ -28,7 +28,6 @@
 #include <Zombies/Zombie.hpp>
 #include <globals.hpp>
 #include <newPauseMenu.hpp>
-#include <PvP/Peer.hpp>
 
 // bool isOpen = false;
 int gameState = 0;
@@ -54,93 +53,11 @@ void updateGame() {
   // (dt)
   dt *= settings.timeModifier * globalTimeModifier;
 
-  if(peer.state == Peer::InGame) dt = Peer::timePerTick;
-
   TransitionManager::update(dt);
 
   switch (gameState) {
   case 0:
-    if(peer.state != Peer::OffGame) {
-      if(peer.state == Peer::Requesting || peer.state == Peer::Accepting)
-        peer.connect(dt);
-      peer.receive();
-    }
-    if(peer.state == Peer::InGame)
-      gameState = 67;
     updateHome();
-    break;
-  case 67:
-    static sf::Texture& backgroundTexture = getTexture("assets/Background/background_night.png");
-    static sf::Sprite backgroundSprite(backgroundTexture);
-    static sf::View camera;
-    static sf::Text runningClock(assets->font, "", 24);
-    static float currGameTime = Peer::gameTime;
-    if(runOnce) {
-      TransitionManager::start([]() {});
-      Zombie::init();
-      shovel.init();
-      backgroundSprite.setPosition({0, 0});
-      camera.setSize(sf::Vector2f(800.f, 600.f));
-      camera.setCenter(sf::Vector2f(490.f, 312.f));
-      gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
-
-      runningClock.setPosition({1150 / 2, 560});
-      
-      Array<PlantType> plantTypes;
-      plantTypes.push(PEASHOOTER);
-      plantTypes.push(SUN_FLOWER);
-      plantTypes.push(WALLNUT);
-      fillPackets(plantTypes);
-      music.play("DayStage");
-      runOnce = false;
-    }
-
-    currGameTime -= 0.0003;
-
-    runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
-
-    peer.fillHistory();
-    peer.send(peer.createPacket());
-    peer.receive();
-
-    dt *= settings.timeModifier;
-
-    currGameTime = std::max(0.f, currGameTime - dt / 2);
-
-    runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
-
-    window->setView(camera);
-    window->draw(backgroundSprite);
-
-    updateGrid(dt);
-
-    window->setView(*view);
-
-    window->draw(runningClock);
-
-    drawGrid();
-
-    Bullet::updateAll(dt);
-    Zombie::updateAll(dt);
-
-    Zombie::drawAll();
-    Bullet::drawAll();
-
-    drawUI(dt);
-
-    Sun::manageSuns(dt);
-
-    updateSeedPackets(dt);
-    drawSeedPackets();
-
-    Sun::drawAll();
-
-    for (int i = 0; i < packets.size; i++)
-      packets[i].drawSelectedPlant();
-    
-    for(int i = 0; i < zombiePackets.size; i++)
-      zombiePackets[i].drawSelectedPlant();
-    
     break;
   default:
     if (runOnce) {
