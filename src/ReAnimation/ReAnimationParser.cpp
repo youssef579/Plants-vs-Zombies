@@ -146,7 +146,7 @@ void ReAnimationParser::bindAllParents(std::string reAnimPath, ReAnimationDefini
 
 }
 
-void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string assetPath) {
+void ReAnimationParser::reportImageMap(std::string reAnimPath, std::string assetPath) { // change STLs LATER
   std::ifstream file(reAnimPath);
 
   json data = json::parse(file);

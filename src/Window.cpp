@@ -5,7 +5,7 @@
 #include <Packets/Packet.hpp> // USED FOR DEV MODE
 #include <SunManager.hpp>     // USED FOR DEV MODE
 #include <newPauseMenu.hpp>
-
+#include <Rewards.hpp>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -123,7 +123,7 @@ void handleEvents() {
         break;
 
       case sf::Keyboard::Key::Escape:
-        if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
+        if (gameState != 0 && dayLevel.state != dayLevel.GameOver && !RewardManager::isPacketCollected) { // Pause / UnPause
           //newPause.isOpen = !newPause.isOpen;
           isPaused = !isPaused;
           gameWeather.isPaused = isPaused;

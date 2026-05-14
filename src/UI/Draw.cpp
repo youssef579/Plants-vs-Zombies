@@ -3,6 +3,7 @@
 #include <Packets/Shovel.hpp>
 #include <LevelProgress.hpp>
 #include <PlantSelector.hpp>
+#include <Game.hpp>
 
 void drawUI(float dt) {
   static bool runOnce = true;
@@ -33,4 +34,5 @@ void drawUI(float dt) {
     packets[i].draw();
   drawLevelProgress(dt);
   plantSelector.drawSelector(*window);
+  drawTimeModifier(dt);
 }

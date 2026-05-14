@@ -3,6 +3,7 @@
 #include <Bullet.hpp>
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
+#include <Rewards.hpp>
 
 PauseMenu pauseMenu;
 
@@ -168,6 +169,7 @@ void PauseMenu::draw() {
   shovel.drawBank();
   drawSeedPackets();
   Sun::drawAll();
+  RewardManager::draw();
 
   window->draw(overlay->overlayRect);
   window->draw(*backgroundS);
@@ -194,23 +196,21 @@ void PauseMenu::draw() {
 
 void PauseMenu::updateOptionsMenu() {
 
-  // Done Button
-  onClick(*doneBtn, []() {
-      sounds.play("ButtonClick");
-      setCursorMain();
-      //isPaused = false;
-      homeState = 0;
-    });
-
-  // Main Menu Button
-  //onClick(*mainMenuBtn, []() {
-  //  gameState = 0, homeState = 0; //go to home menu not level selector
-  //  sounds.play("ButtonClick"); music.play("Menu");
-  //  isPaused = false;
+   //Done Button
+  //onClick(*doneBtn, []() {
+  //    sounds.play("ButtonClick");
+  //    setCursorMain();
+  //    //isPaused = false;
+  //    homeState = 0;
   //  });
-
-// Restart Level Button
-  //onClick(*restartLevelBtn, []() {}); // TODO: Add restartLevel()
+  static sf::FloatRect doneHitbox = { {410, 450}, {320, 70} };
+  doneBtn->setStyle(sf::Text::Regular);
+  onClick(doneHitbox, 0, []() {
+      sounds.play("ButtonClick");
+      homeState = 0;
+    }, [&]() {
+      doneBtn->setStyle(sf::Text::Bold);
+      });
 
 
   // Update Sliders
@@ -231,25 +231,17 @@ void PauseMenu::updateOptionsMenu() {
 
   sounds.updateVolume();
 
-  //drawUI();
-  // draw plants
 
   drawOptionsMenu();
 }
 
 void PauseMenu::drawOptionsMenu() {
 
-  //Sun::manageSuns(0, Sun::State::Paused); // draw only mode
-  //drawUI();
-
   window->draw(overlay->overlayRect);
   window->draw(*backgroundOptionsS);
 
   //Buttons
   window->draw(*doneBtn);
-  //window->draw(*backToGameBtn);
-  //window->draw(*mainMenuBtn);
-  //window->draw(*restartLevelBtn);
   //Sliders
   window->draw(sliderMusic->sprite);
   window->draw(sliderSFX->sprite);
@@ -260,5 +252,6 @@ void PauseMenu::drawOptionsMenu() {
 
   window->draw(checkboxFullscreen->box);
   if (checkboxFullscreen->checked) window->draw(checkboxFullscreen->mark);
+
 }
 

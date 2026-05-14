@@ -61,7 +61,7 @@ void fillPackets(Array<PlantType> &types) {
     icepeaSprite.setTextureRect({{0, 0}, {353, 368}});
     icepeaSprite.setScale({0.218, 0.217});
 
-    repeaterpeaTexture.setSmooth(true);
+    //repeaterpeaTexture.setSmooth(true);
     repeaterpeaSprite.setTextureRect({{0, 0}, {73, 71}});
 
     tallNutSprite.setScale({0.8f, 0.8f});
@@ -137,7 +137,7 @@ void fillPackets(Array<PlantType> &types) {
 SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
                        std::string packetName, sf::Vector2f position,
                        sf::Sprite preview, PlantType plantTypeValue)
-    : enabledSprite(getTexture("assets/packets/" + packetName + ".png")),
+    : enabledSprite(getTexture("assets/packets/upscaled/" + packetName + ".png")),
       disabledSprite(
           getTexture("assets/packets/" + packetName + "_disabled.png")),
       plantSprite(preview), plantShadow(preview), cost(costValue),
@@ -147,7 +147,9 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
 
   float scaleFactor = 1.15;
   enabledSprite.setPosition(position);
-  enabledSprite.setScale({scaleFactor, scaleFactor});
+  enabledSprite.setScale({scaleFactor*0.5f, scaleFactor*0.5f});
+  
+  getTexture("assets/packets/upscaled/" + packetName + ".png").setSmooth(true); // remove artifacts
 
   disabledSprite.setPosition(position);
   disabledSprite.setScale({ scaleFactor, scaleFactor });
@@ -193,7 +195,7 @@ void SeedPacket::update(float dt) {
   if (reloadTimer > 0)
     enabledSprite.setTextureRect(
         {{0, 0},
-         {50, (int)(70 * (reloadDuration - reloadTimer) / reloadDuration)}});
+         {100, (int)(140 * (reloadDuration - reloadTimer) / reloadDuration)}});
 }
 
 void SeedPacket::draw() {
