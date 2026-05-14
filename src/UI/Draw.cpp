@@ -3,6 +3,7 @@
 #include <Packets/Shovel.hpp>
 #include <LevelProgress.hpp>
 #include <PlantSelector.hpp>
+#include <PvP/Peer.hpp>
 
 void drawUI(float dt) {
   static bool runOnce = true;
@@ -25,12 +26,17 @@ void drawUI(float dt) {
     runOnce = false;
   }
 
+  if(peer.state == Peer::InGame && peer.type == Peer::Zombies) {
+    float shift = 1150 - sunBank.getGlobalBounds().size.x;
+    SunBalanceText.setPosition({ 45 + shift, 83 });
+    sunBank.setPosition({ shift, 0 });
+  }
 
-  gameWeather.draw(*window);
+  // gameWeather.draw(*window);
   window->draw(sunBank); // Draw order matters
   window->draw(SunBalanceText);
-  for (int i = 0; i < packets.size; i++)
-    packets[i].draw();
-  drawLevelProgress(dt);
-  plantSelector.drawSelector(*window);
+  // for (int i = 0; i < packets.size; i++)
+  //   packets[i].draw();
+  // drawLevelProgress(dt);
+  // plantSelector.drawSelector(*window);
 }

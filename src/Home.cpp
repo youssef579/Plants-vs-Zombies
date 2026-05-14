@@ -9,12 +9,13 @@
 #include <cmath>
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
+#include <PvP/Peer.hpp>
 
 std::string names[] = {"Youssef Ragaey (Team Lead)",
                        "Anton Bakhet",
                        "Ali Assem",
                        "Mohammed Abdelhalim",
-                       "Mohammed Ahmed",
+                       "Mohamed Ahmed",
                        "Ather Hossam",
                        "Mohammed Soliman"};
 
@@ -68,6 +69,12 @@ void updateHome() {
   static sf::Texture selectorScreenButtonQuitT1 = getTexture("assets/SelectorScreen/SelectorScreen_Quit1.png");
   static sf::Sprite selectorScreenButtonQuit(selectorScreenButtonQuitT0);
 
+  static sf::Texture& mpTexture = getTexture("assets/plantsSelector/selectorBackground.png");
+  static sf::Sprite mpSprite(mpTexture);
+
+  static sf::Text mpHost(assets->font, "Host", 32);
+  static sf::Text mpJoin(assets->font, "Join", 32);
+
   // Selector Screen button hitboxes
   static sf::FloatRect selectorScreenHitbox1 = {
     { (float)WINDOW_SIZE.x - 310.0f, (float)WINDOW_SIZE.y - 430.0f }, // pos
@@ -108,7 +115,6 @@ void updateHome() {
         levelSelectorCurrentPage == 1 ? "Back" : "Prev");
   };
 
-
   static bool runOnce = true;
   if (runOnce) {
     float scaleHeader = 0.5;
@@ -137,7 +143,8 @@ void updateHome() {
     selectorScreenButton3.setScale({ 0.8f, 0.8f });
     selectorScreenButton3.setPosition({ (float)WINDOW_SIZE.x - 312.0f, (float)WINDOW_SIZE.y - 280.0f });
 
-    selectorScreenButton4.setScale({ 0.8f, 0.8f });
+    selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
     selectorScreenButton4.setPosition({ (float)WINDOW_SIZE.x - 315.0f, (float)WINDOW_SIZE.y - 222.0f });
 
     selectorScreenButtonOptions.setScale({0.82f, 0.82f});
@@ -145,6 +152,12 @@ void updateHome() {
 
     selectorScreenButtonQuit.setScale({ 0.92f, 0.92f });
     selectorScreenButtonQuit.setPosition({ (float)WINDOW_SIZE.x - 70.0f, (float)WINDOW_SIZE.y - 80.0f });
+
+    mpSprite.scale({1, 0.2});
+    mpSprite.setPosition({350, 270});
+
+    mpHost.setPosition({450, 300});
+    mpJoin.setPosition({650, 300});
 
     /*playButton.setPosition({ 1000, 400 });
     optionsButton.setPosition({ 1000, 460 });
@@ -177,6 +190,9 @@ void updateHome() {
     selectorScreenButtonOptions.setTexture(selectorScreenButtonOptionsT0);
     selectorScreenButtonQuit.setTexture(selectorScreenButtonQuitT0);
 
+    selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
+
     onClick(selectorScreenHitbox1, 8, []() {
       // Play
       sounds.play("Tap1");
@@ -193,10 +209,15 @@ void updateHome() {
       homeState = 1;
       runOnceCredits = true;
       }, []() {selectorScreenButton3.setTexture(selectorScreenButton3T1); });
-    onClick(selectorScreenHitbox4, 13, []() {
-      // Button 4
+    onClick(selectorScreenHitbox4, 13, [&]() {
+      // Multiplayer
       sounds.play("Tap1");
-      }, []() {selectorScreenButton4.setTexture(selectorScreenButton4T1); });
+      homeState = 4;
+      }, []() {
+        selectorScreenButton4.setScale({
+           0.8 * 286.f / selectorScreenButton4T1.getSize().x, 0.8 * 122.f / selectorScreenButton4T1.getSize().y});
+        selectorScreenButton4.setTexture(selectorScreenButton4T1);
+       });
 
     onClick(selectorScreenButtonOptions, []() {
       // Options
@@ -265,6 +286,26 @@ void updateHome() {
   else if (homeState == 3) {
     pauseMenu.updateOptionsMenu();
     //pauseMenu.drawOptionsMenu();
+  } else if(homeState == 4) {
+    window->draw(mpSprite);
+    window->draw(mpHost);
+    window->draw(mpJoin);
+
+    onClick(mpHost, []() {
+      peer.localPort = 53000;
+      peer.type = Peer::Plants;
+      peer.socket.unbind();
+      peer.init();
+      peer.state = Peer::Waiting;
+    });
+
+    onClick(mpJoin, []() {
+      peer.localPort = 54000;
+      peer.type = Peer::Zombies;
+      peer.socket.unbind();
+      peer.init();
+      peer.state = Peer::Requesting;
+    });
   }
 
 

@@ -34,3 +34,4 @@ void drawSeedPackets();
 
 extern Array<SeedPacket> packets;
 extern Array<PlantType> chosenPlants;
+extern Array<SeedPacket> zombiePackets;
