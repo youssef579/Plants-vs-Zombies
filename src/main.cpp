@@ -24,11 +24,11 @@ int main() {
   initFiles();
   initAudio();
   initOverlay();
-  initWeather();
+  //initWeather();
   initReAnimDefs();
   ParticleSystem::init();
   pauseMenu.init();
-  initGrid();
+  //initGrid();
   initGameProgress();
   plantSelector.initSelector();
   setWindowMetaData();
@@ -61,7 +61,7 @@ int main() {
 
   }
 
-  updateFiles();
+  //updateFiles();
   delete window;
   delete view;
   delete assets;

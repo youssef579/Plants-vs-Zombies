@@ -15,7 +15,6 @@ void updateIceShroom(Plant& iceShroom, float dt) {
   }
 
   if (iceShroom.timer <= 0 && iceShroom.health > 0) {
-    // صوت انفجار متلج
     sounds.play("IceShroom");
     ParticleSystem::spawnParticleEffect(PEFF_ICEEXPLOSION, iceShroom.reAnimator.getPosition());
     dayLevel.iceFlashTimer = dayLevel.iceFlashDuration;

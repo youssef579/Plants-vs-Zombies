@@ -1,5 +1,6 @@
 #include <Window.hpp>
 #include <cmath>
+#include <LevelManager.hpp>
 
 WeatherSystem gameWeather;
 
@@ -19,7 +20,7 @@ void WeatherSystem::init() {
 
 
     flashOverlay.setSize(sf::Vector2f(2000.0f , 2000.0f));   // Handle Screen Size
-    flashOverlay.setFillColor(sf::Color::Transparent);                                            // Start invisible
+    flashOverlay.setFillColor(sf::Color::Transparent);       // Start invisible
 
 
     // --- Rain System ---
@@ -110,5 +111,10 @@ void WeatherSystem::draw(sf::RenderWindow& targetWindow) {      // Rendering fun
 
 void initWeather() {
   gameWeather.init();
-  gameWeather.isRaining = false;
+  if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night) {
+    gameWeather.isRaining = true;
+  }
+  else {
+    gameWeather.isRaining = false;
+  }
 }

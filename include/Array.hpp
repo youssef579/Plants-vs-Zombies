@@ -1,6 +1,7 @@
 #pragma once
 #include <optional>
 #include <functional>
+#include <utility>
 
 template <typename elementType>
 
@@ -28,6 +29,15 @@ struct Array {
 
   elementType& operator[](int index) {
     return *data[index];
+  }
+
+  void sort(std::function<bool(elementType &value1, elementType &value2)> compare) {
+    for (int i = 0; i < size - 1; i++) {
+      for (int j = 0; j < size - 1 - i; j++) {
+        if (compare(*data[j + 1], *data[j]))
+          std::swap(data[j + 1], data[j]);
+      }
+    }
   }
 
   Array& operator=(const Array& otherArray) {

@@ -1297,6 +1297,16 @@ void initReAnimDefs() {
 
 
 
+  def = new ReAnimationDefinition;
+  std::string trackNames_sunN[] = { "Sun1", "Sun2", "Sun3" };
+  def->loadFiles("assets/Sun/Sun.json", 3, trackNames_sunN, {
+    {"IMAGE_REANIM_SUN3", "assets/Sun/Sun3N.png"}, 
+    {"IMAGE_REANIM_SUN2", "assets/Sun/Sun2N.png"},
+    {"IMAGE_REANIM_SUN1", "assets/Sun/Sun1N.png"}
+    });
+  definitions.push(def);
+
+
 }
 
 ReAnimationDefinition* ReAnimator::getDefinition(ReAnimationDef defId) {

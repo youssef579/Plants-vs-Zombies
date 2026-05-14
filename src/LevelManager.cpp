@@ -1,4 +1,5 @@
-#include "Array.hpp"
+#include "Zombies/Zombie.hpp"
+#include <Array.hpp>
 #include <LevelManager.hpp>
 #include <BackgroundManager.hpp>
 #include <Game.hpp>
@@ -38,7 +39,7 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
   if(dayLevel.threeMiddleGrassSprite) dayLevel.threeMiddleGrassSprite->setOrigin({ 0.0f, 0.0f });
   if(dayLevel.fullGrassSprite) dayLevel.fullGrassSprite->setOrigin({ 0.0f, 0.0f });
   globalTimeModifier = 1.0f;
-  dayLevel.init();
+  //std::cout << currentLevel << '\n';
 
 
   // Zombies
@@ -51,14 +52,11 @@ void LevelManager::resetLevelData() { // reset all variables and timers for clea
 
   spawningFinished = false;
   Sun::isSpawning = false;
-  Sun::spawnTimer = -15;
 
   // Rewards
   RewardManager::spawnedLevelReward = false;
   RewardManager::isPacketCollected = false;
   RewardManager::rewards.erase([](RewardManager::Reward &r) {return true; });
-
-  resetLevelProgress();
 
   // Packets
   Array<PlantType> emptyPackets;
@@ -102,17 +100,39 @@ void LevelManager::loadLevelData(int levelNum) {
   resetLevelData();
   currentLevel = levelNum;
   currentWave = 0;
-  timer = -20;
-
-  clearGrid();
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = -5;
+    timer = 0;
+  }
+  else {
+    Sun::spawnTimer = -15;
+    timer = -25;
+  }
   Sun::clear();
 
-  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro
+
+
+  clearGrid();
+  initGrid();
+  for (int i = 0; i < 8; i++) { // spawn dummy zombies for intro a
     int R = rand() % ROWS_NUMBER;
     float cent = grid[R][0].rectangle.getGlobalBounds().getCenter().y;
     Zombie::createZombie(randomRange(1250, 1250 + 150), randomRange(cent-30, cent+30), ((Zombie::Type)(rand() % 4)), R, 1000.0f);
+    for (int i = 0; i < ROWS_NUMBER; i++) {
+      zombies[i].sort([](Zombie *zombie1, Zombie *zombie2) {
+        return zombie1->position.y < zombie2->position.y; // If a zombie has smaller y position, make it first
+      });
+    }
   }
+  if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night) {
+    gameWeather.isRaining = true;
+  }
+  else {
+    gameWeather.isRaining = false;
+  }
+  gameWeather.init();
 
+  dayLevel.init(levelManager.levels[currentLevel - 1]->location);
    LawnMower::init();
   //static bool runOnce = [](){
       //return true;
@@ -198,7 +218,7 @@ void LevelManager::update(float dt) {
 
   if (currentWave == levels[currentLevel - 1]->waves.size)
     spawningFinished = true;
-  
+
 
 
 
@@ -207,7 +227,12 @@ void LevelManager::update(float dt) {
 
 void LevelManager::startLevel() {
   Sun::isSpawning = true;
-  Sun::spawnTimer = -8.0f;
+  if (levels[currentLevel - 1]->location == LevelManager::Level::Night) {
+    Sun::spawnTimer = 0;
+  }
+  else {
+    Sun::spawnTimer = -8;
+  }
 }
 
 

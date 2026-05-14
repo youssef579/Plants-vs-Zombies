@@ -23,15 +23,14 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
     repeaterpea.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
+  
   if (repeaterpea.timer <= 0.4f && repeaterpea.state == 0) {
     repeaterpea.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
     repeaterpea.state = 1;
   }
 
+  //generate first bullet
   if (repeaterpea.timer <= 0 && repeaterpea.state == 1) {
-    //sf::Vector2f currPOS = repeaterpea.sprite.getPosition();
-    //repeaterpea.reAnimator.playAnimation("anim_shooting", false);
-    //currTransforms["anim_face"] = currTransforms[19]
     sf::Vector2f currPOS =
     {
       ((sf::Transform().translate({repeaterpea.reAnimator.x, repeaterpea.reAnimator.y}))
@@ -48,12 +47,9 @@ void updateRepeaterpea(Plant& repeaterpea, float dt) {
     repeaterpea.state = 2;
     repeaterpea.timer = GENERATE_SECOND_REPEATERBULLET_TIMER;
   }
+  
+  //generate second bullet
   if (repeaterpea.timer <= 0 && repeaterpea.state == 2){
-    //repeaterpea.reAnimator.stopAnimation("anim_shooting");
-    //repeaterpea.reAnimator.playAnimation("anim_shooting", false);
-    //sf::Vector2f currPOS = repeaterpea.sprite.getPosition();
-    //currTransforms["anim_face"] = currTransforms[19]
-
     sf::Vector2f currPOS =
     {
       ((sf::Transform().translate({repeaterpea.reAnimator.x, repeaterpea.reAnimator.y}))

@@ -4,7 +4,6 @@
 #include <Zombies/Zombie.hpp>
 
 void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
-  //animateSpritesheet(snowpeaShooter.sheet, dt);
   snowpeaShooter.reAnimator.update(dt);
 
   // Zombie detection
@@ -17,22 +16,22 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
 
   snowpeaShooter.blinkTimer -= dt;
 
+  // blink
   if (snowpeaShooter.blinkTimer <= 0) {
     snowpeaShooter.reAnimator.playAnimation("anim_blink", LoopType::PlayOnce);
     snowpeaShooter.blinkTimer = randomRange(3.0f, 4.5f);
   }
 
-  if (snowpeaShooter.timer <= 0) {
-    //peashooter.timer = GENERATE_BULLET_TIMER;
+  //generate bullet
+  if (snowpeaShooter.timer <= 0) {  
     if (snowpeaShooter.timer > -1000) {
       snowpeaShooter.reAnimator.playAnimation("anim_shooting", LoopType::PlayOnce);
       snowpeaShooter.timer = -10000;
 
     }
-    //peashooter.reAnimator.effectiveTransforms
+    
     if (snowpeaShooter.timer <= -10000 - 0.4) { // -10000 - time after animation start to actual shoot
       snowpeaShooter.timer = GENERATE_SNOWBULLET_TIMER;
-      //currTransforms["anim_face"] = currTransforms[16]
       sf::Vector2f currPOS =
       {
         ((sf::Transform().translate({snowpeaShooter.reAnimator.x, snowpeaShooter.reAnimator.y}))
@@ -42,7 +41,6 @@ void updateSnowpeaShooter(Plant& snowpeaShooter, float dt) {
           * ReAnimator::transformToSFML(snowpeaShooter.reAnimator.curTransforms[16])).getMatrix()[13] + 7
 
       };
-      //sounds.play((rand() & 1) ? "Throw1" : "Throw2");
       sounds.play("ThrowSnowPea");
       Bullet newBullet = { SNOWPEA,{currPOS.x,currPOS.y},snowpeaShooter.row };
       bullets.push(newBullet);

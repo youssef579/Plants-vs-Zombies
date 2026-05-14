@@ -1,16 +1,23 @@
 Day
-SNOWPEASHOOTER
-3
-1 45 80
-0 4 8
-1 2 4
-1 1 1
+CHERRYBOMB
+4
+40 88 104 133
+33 4 4 8
+3 2 2 5
+1 0 0 1
 
+
+Regular
+Regular
+Regular
+
+
+Regular
 Regular
 
 Regular
-Regular
 
+Flag
 Regular
 Regular
 Regular

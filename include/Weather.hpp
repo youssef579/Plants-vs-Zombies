@@ -14,7 +14,7 @@ struct WeatherSystem {
     //  Lightning Volume = settings.weatherFXVolume
     //  Rain Volume = Lightning Volume * RAIN_VOLUME_MULTIPLIER
 
-    bool isRaining = false;                              // If the current level contains rain
+    bool isRaining ;                              // If the current level contains rain
     bool isPaused = false;                               // If rain is paused (in pause menu)
     static constexpr float RAIN_VOLUME_MULTIPLIER = 0.2f;
     static constexpr float RAIN_ANGLE = 15.0f;           // Angle of Rain (deg) from y-axis
@@ -41,7 +41,7 @@ struct WeatherSystem {
     float nextStrikeIn = 5.0f;       // Random delay (seconds) until the next lightning strike
     bool isFlashing = false;         // True if the screen is currently being lit by lightning
     sf::RectangleShape flashOverlay; // White transparent rectangle to simulate lightning flash
-    std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                    // change vector
+    std::vector<RainDrop> drops;     // Container holding all 150 raindrop objects                 
 
 
     void init();

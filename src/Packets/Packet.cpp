@@ -171,7 +171,7 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
       plantSprite(preview), plantShadow(preview), cost(costValue),
       plantType(plantTypeValue), selected(false), reloadTimer(0),
       reloadDuration(reloadDurationValue),
-  packetFlash(getTexture("assets/packets/PacketFlash.png")) {
+      packetFlash(getTexture("assets/packets/PacketFlash.png")) {
 
   float scaleFactor = 1.0;
   enabledSprite.setPosition(position);

@@ -226,6 +226,7 @@ void updateHome() {
 
     onClick(selectorScreenButtonQuit, []() {
       // Quit
+      updateFiles(); // save data first
       window->close();
       }, []() {selectorScreenButtonQuit.setTexture(selectorScreenButtonQuitT1); });
 
