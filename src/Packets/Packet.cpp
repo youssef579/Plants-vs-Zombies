@@ -61,6 +61,9 @@ void fillPackets(Array<PlantType> &types) {
   static sf::Texture &bucketheadZombieTexture = getTexture("assets/Zombies/Buckethead/zombie.png");
   static sf::Sprite bucketheadZombieSprite(bucketheadZombieTexture);
 
+  static sf::Texture &soccerZombieTexture = getTexture("assets/Zombies/Regular/soccer.png");
+  static sf::Sprite soccerZombieSprite(soccerZombieTexture);
+
   if (runOnce) {
     peashooterSprite.setTextureRect({{0, 0}, {348, 359}});
     peashooterSprite.setScale({0.225, 0.225});
@@ -100,12 +103,14 @@ void fillPackets(Array<PlantType> &types) {
     regularZombieSprite.setScale({0.8, 0.8});
     coneheadZombieSprite.setScale({0.8, 0.8});
     bucketheadZombieSprite.setScale({0.8, 0.8});
+    soccerZombieSprite.setScale({0.5, 0.5});
 
     float shift = 650;
 
     zombiePackets.push({100, 5, "regular", {90.0f + (59.0f * 0) + shift, 11}, regularZombieSprite, static_cast<PlantType>(0)});
     zombiePackets.push({150, 5, "conehead", {90.0f + (59.0f * 1) + shift, 11}, coneheadZombieSprite, static_cast<PlantType>(1)});
     zombiePackets.push({200, 5, "buckethead", {90.0f + (59.0f * 2) + shift, 11}, bucketheadZombieSprite, static_cast<PlantType>(2)});
+    zombiePackets.push({250, 5, "soccer", {90.0f + (59.0f * 3) + shift, 11}, soccerZombieSprite, static_cast<PlantType>(5)});
 
     runOnce = false;
   }
@@ -197,6 +202,10 @@ SeedPacket::SeedPacket(int costValue, float reloadDurationValue,
     disabledSprite.scale(scale);
   }
   if(packetName == "buckethead") {
+    enabledSprite.scale(scale);
+    disabledSprite.scale(scale);
+  }
+  if(packetName == "soccer") {
     enabledSprite.scale(scale);
     disabledSprite.scale(scale);
   }

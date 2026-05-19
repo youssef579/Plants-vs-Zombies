@@ -90,6 +90,10 @@ void updateGame() {
       plantTypes.push(PEASHOOTER);
       plantTypes.push(SUN_FLOWER);
       plantTypes.push(WALLNUT);
+      plantTypes.push(JALAPENO);
+      plantTypes.push(CHERRYBOMB);
+      plantTypes.push(REPEATERPEA);
+      plantTypes.push(SNOWPEASHOOTER);
       fillPackets(plantTypes);
       music.play("DayStage");
       runOnce = false;
@@ -127,6 +131,14 @@ void updateGame() {
 
     Zombie::drawAll();
     Bullet::drawAll();
+
+    ReAnimator::updatePhysicsObjects(dt);
+    ReAnimator::drawPhysicsObjects(window);
+
+    ParticleSystem::update(dt);
+    ParticleSystem::draw();
+    ReAnimator::updateOrphans(dt);
+    ReAnimator::drawOrphans();
 
     drawUI(dt);
 

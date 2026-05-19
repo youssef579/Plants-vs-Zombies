@@ -144,6 +144,18 @@ void Peer::spawnPlant(int row, int col, int type, int cost, bool mine) {
     case PEASHOOTER:
       grid[i][j].plant = Plant(PEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_PEASHOOTER));
       break;
+    case SNOWPEASHOOTER:
+      grid[i][j].plant = Plant(SNOWPEASHOOTER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SNOWPEA));
+      break;
+    case REPEATERPEA:
+      grid[i][j].plant = Plant(REPEATERPEA, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_REPEATER));
+      break;
+    case CHERRYBOMB:
+      grid[i][j].plant = Plant(CHERRYBOMB, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_CHERRYBOMB));
+      break;
+    case JALAPENO:
+      grid[i][j].plant = Plant(JALAPENO, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_JALAPENO));
+      break;
     default:
       break;
   }
