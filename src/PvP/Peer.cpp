@@ -26,7 +26,7 @@ void Peer::connect(float dt) {
   sf::Packet packet;
   packet << -1 << CMD;
 
-  opponentIP = sf::IpAddress::Broadcast;
+  opponentIP = sf::IpAddress::LocalHost;
   opponentPort = (localPort == 53000 ? 54000 : 53000);
   
   send(packet);
