@@ -11,6 +11,7 @@
 const int ROWS_NUMBER = 5, COLUMNS_NUMBER = 9;
 const float rowLenth[5] = {98.3, 85, 96.4, 94.5, 98.3};
 const float columnLenth[9] = {108.5, 99.5, 113.4, 104.1, 103.5, 105.85, 98.3, 109.5, 120};
+const float nightColumnLenth[9] = {108.5, 99.5, 110.4, 94.5, 101.5, 100.85, 92, 102, 118};
 
 struct Cell {
   sf::RectangleShape rectangle;

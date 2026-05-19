@@ -2,6 +2,7 @@
 #include <globals.hpp>
 #include <SunManager.hpp>
 #include <cmath>
+#include <PvP/Peer.hpp>
 
 
 Array<Sun> Sun::sunArray;
@@ -145,7 +146,9 @@ void Sun::draw() {
 
 void Sun::collect() {
   // Vector from sun to collection site
-  direction = collectionSite - reAnimator.getPosition();
+  static sf::Vector2f tempCollectionSite;
+  tempCollectionSite = (peer.type == Peer::Plants ? collectionSite : collectionSiteZombies);
+  direction = tempCollectionSite - reAnimator.getPosition();
   // Get length before normalizing
   distanceToCollection = direction.length();
   // Normalize length to control speed

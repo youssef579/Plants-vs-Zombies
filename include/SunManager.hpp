@@ -41,6 +41,8 @@ private:
 
   static constexpr sf::Vector2f collectionSite = {
       43, 41}; // Position of sun collection site
+  static constexpr sf::Vector2f collectionSiteZombies = {
+      700, 41};
   // Shared Variables
 public:
   static Array<Sun> sunArray; // Array containing all Sun objects

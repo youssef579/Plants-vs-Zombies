@@ -69,7 +69,7 @@ void updateGame() {
       gameState = 67;
     updateHome();
     break;
-  case 67:
+  case 67: {
     static sf::Texture& backgroundTexture = getTexture("assets/Background/background_night.png");
     static sf::Sprite backgroundSprite(backgroundTexture);
     static sf::View camera;
@@ -93,6 +93,8 @@ void updateGame() {
       fillPackets(plantTypes);
       music.play("DayStage");
       runOnce = false;
+
+      gameWeather.isRaining = true;
     }
 
     currGameTime -= 0.0003;
@@ -141,7 +143,10 @@ void updateGame() {
     for(int i = 0; i < zombiePackets.size; i++)
       zombiePackets[i].drawSelectedPlant();
     
+    gameWeather.update(dt);
+    gameWeather.draw(*window);
     break;
+  }
   default:
     if (runOnce) {
       shovel.init();

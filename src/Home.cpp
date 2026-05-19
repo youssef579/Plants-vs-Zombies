@@ -144,7 +144,7 @@ void updateHome() {
     selectorScreenButton3.setPosition({ (float)WINDOW_SIZE.x - 312.0f, (float)WINDOW_SIZE.y - 280.0f });
 
     selectorScreenButton4.setScale({
-           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
+           0.8f * 286.f / selectorScreenButton4T0.getSize().x, 0.8f * 122.f / selectorScreenButton4T0.getSize().y});
     selectorScreenButton4.setPosition({ (float)WINDOW_SIZE.x - 315.0f, (float)WINDOW_SIZE.y - 222.0f });
 
     selectorScreenButtonOptions.setScale({0.82f, 0.82f});
@@ -190,9 +190,6 @@ void updateHome() {
     selectorScreenButtonOptions.setTexture(selectorScreenButtonOptionsT0);
     selectorScreenButtonQuit.setTexture(selectorScreenButtonQuitT0);
 
-    selectorScreenButton4.setScale({
-           0.8 * 286.f / selectorScreenButton4T0.getSize().x, 0.8 * 122.f / selectorScreenButton4T0.getSize().y});
-
     onClick(selectorScreenHitbox1, 8, []() {
       // Play
       sounds.play("Tap1");
@@ -214,9 +211,9 @@ void updateHome() {
       sounds.play("Tap1");
       homeState = 4;
       }, []() {
-        selectorScreenButton4.setScale({
-           0.8 * 286.f / selectorScreenButton4T1.getSize().x, 0.8 * 122.f / selectorScreenButton4T1.getSize().y});
         selectorScreenButton4.setTexture(selectorScreenButton4T1);
+        // selectorScreenButton4.scale({
+        //    0.8f * 286.f / selectorScreenButton4T1.getSize().x, 0.8f * 122.f / selectorScreenButton4T1.getSize().y});
        });
 
     onClick(selectorScreenButtonOptions, []() {
