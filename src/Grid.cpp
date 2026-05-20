@@ -10,14 +10,14 @@ void initGrid(){
   float y = 120;
   const float offsetY = -12, offsetX = 0;
   for (int i = 0; i < ROWS_NUMBER; i++){
-    float x = 150;
+    float x = 174;
     for (int j = 0; j < COLUMNS_NUMBER; j++){
       grid[i][j].rectangle.setSize({nightColumnLenth[j], rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + nightColumnLenth[j] / 2, y + rowLenth[i] / 2});
-      // grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      // grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
-      // grid[i][j].rectangle.setOutlineThickness(1);
+      //grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
+      //grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
+      //grid[i][j].rectangle.setOutlineThickness(1);
       grid[i][j].plantPosition = {x + nightColumnLenth[j] / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += nightColumnLenth[j];
@@ -147,7 +147,7 @@ void drawGrid(){
   window->setView(*gameView);
   for (int i = 0; i < ROWS_NUMBER; i++){
     for (int j = 0; j < COLUMNS_NUMBER; j++){
-      // window->draw(grid[i][j].rectangle);
+      //window->draw(grid[i][j].rectangle);
       if (grid[i][j].plant.has_value()){
 
         grid[i][j].plant.value().draw();
