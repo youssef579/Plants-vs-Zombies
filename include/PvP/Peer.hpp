@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <deque>
 
 struct Peer {
 
@@ -35,6 +36,10 @@ struct Peer {
   Tick arrBuffer[100] = {};
   Tick myArrBuffer[100] = {};
   Tick arrHistory[100] = {};
+
+  std::map<int, Tick> buffer;
+  std::map<int, Tick> myBuffer;
+  std::deque<Tick> history;
 
   void init();
   void fillHistory();

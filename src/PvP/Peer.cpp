@@ -34,11 +34,16 @@ void Peer::connect(float dt) {
 }
 
 void Peer::fillHistory() {
-  if(arrHistory[currentTick % 100].tickNumber == currentTick + tickDelay) return;
-  Tick tick = {currentTick + tickDelay, CMD, ROW, COL, TYPE, COST};
-  arrHistory[(currentTick + tickDelay) % 100] = tick;
+  // if(arrHistory[currentTick % 100].tickNumber == currentTick + tickDelay) return;
+  if(!history.empty() && history.back().tickNumber == currentTick + tickDelay) return;
 
-  myArrBuffer[(currentTick + tickDelay) % 100] = tick;
+  Tick tick = {currentTick + tickDelay, CMD, ROW, COL, TYPE, COST};
+  // arrHistory[(currentTick + tickDelay) % 100] = tick;
+  history.push_back(tick);
+  if(history.size() > 20) history.pop_front();
+
+  // myArrBuffer[(currentTick + tickDelay) % 100] = tick;
+  myBuffer[currentTick + tickDelay] = tick;
 
   CMD = Heartbeat;
   ROW = COL = TYPE = -1;
@@ -46,25 +51,32 @@ void Peer::fillHistory() {
 
 sf::Packet Peer::createPacket() {
   sf::Packet packet;
-  int size = std::min(20, currentTick - tickDelay - 1);
-  if(size <= 0) {
-    packet << 1 << currentTick << Heartbeat << 0 << 0 << 0 << 0;
-    return packet;
-  }
-  packet << size;
-  int currIdx = (currentTick) % 100;
-  while(size--) {
-    if(currIdx == -1) currIdx = 99;
-    auto tick = arrHistory[currIdx];
+  packet << (int)history.size();
+  // std::cout << history.size() << '\n';
+  for(auto tick : history) 
     packet << tick.tickNumber << tick.cmd << tick.row << tick.col << tick.type << tick.cost;
-    currIdx--;
-  }
+  // std::cout << history.size() << '\n';
+  // int size = std::min(20, currentTick - tickDelay - 1);
+  // if(size <= 0) {
+  //   packet << 1 << currentTick << Heartbeat << 0 << 0 << 0 << 0;
+  //   return packet;
+  // }
+  // packet << size;
+  // int currIdx = (currentTick) % 100;
+  // while(size--) {
+  //   if(currIdx == -1) currIdx = 99;
+  //   auto tick = arrHistory[currIdx];
+  //   packet << tick.tickNumber << tick.cmd << tick.row << tick.col << tick.type << tick.cost;
+  //   currIdx--;
+  // }
   return packet;
 }
 
 void Peer::send(sf::Packet packet) {
   // if(opponentIP.has_value()) std::cout << "Sending!" << '\n';
   socket.send(packet, opponentIP.value(), opponentPort);
+  // int temp1, temp2; packet >> temp1;
+  // std::cout << temp1 << '\n';
 }
 
 void Peer::receive() {
@@ -102,7 +114,8 @@ void Peer::receive() {
         // std::cout << "Size: " << history.size() << '\n';
         tick.cmd = static_cast<Command>(cmdInt);
         if(tick.tickNumber >= currentTick) {
-          arrBuffer[tick.tickNumber % 100] = tick;
+          // arrBuffer[tick.tickNumber % 100] = tick;
+          buffer[tick.tickNumber] = tick;
         }
         if(tick.tickNumber >= 0) state = InGame;
       }
@@ -112,18 +125,27 @@ void Peer::receive() {
 }
 
 void Peer::update() {
-  if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
+  // if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
+  //   settings.timeModifier = 0;
+  //   return;
+  // }
+  if(!buffer.count(currentTick) && currentTick > tickDelay) {
     settings.timeModifier = 0;
     return;
   }
   settings.timeModifier = 1;
   
-  Tick tick = arrBuffer[currentTick % 100];
-  Tick myTick = myArrBuffer[currentTick % 100];
+  // Tick tick = arrBuffer[currentTick % 100];
+  // Tick myTick = myArrBuffer[currentTick % 100];
+
+  Tick tick = buffer[currentTick];
+  Tick myTick = myBuffer[currentTick];
 
   if(tick.cmd == SpawnPlant || tick.cmd == SpawnZombie) apply(tick, false);
   if(myTick.cmd == SpawnPlant || myTick.cmd == SpawnZombie) apply(myTick, true);
   
+  buffer.erase(currentTick);
+  myBuffer.erase(currentTick);
   currentTick++;
 }
 
