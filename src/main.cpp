@@ -10,6 +10,9 @@
 #include <ParticleSystem.hpp>
 #include <Grid.hpp>
 #include <PlantSelector.hpp>
+#include <PvP/Peer.hpp>
+
+Peer peer;
 
 sf::Vector2f mousePosition;
 

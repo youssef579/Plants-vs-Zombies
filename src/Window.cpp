@@ -135,6 +135,9 @@ void handleEvents() {
 
           //isPaused = !isPaused;
         }
+        if(gameState == 0 && homeState == 4) {
+          homeState = 0;
+        }
         break;
       case sf::Keyboard::Key::P:
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause

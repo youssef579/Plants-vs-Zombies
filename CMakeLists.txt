@@ -53,6 +53,7 @@ target_link_options(PlantsVsZombies PRIVATE $<$<CONFIG:DEBUG>:-fsanitize=address
 target_link_libraries(PlantsVsZombies PRIVATE
 SFML::Graphics
 SFML::Audio
+SFML::Network
 nlohmann_json::nlohmann_json)
 target_include_directories(PlantsVsZombies PRIVATE include)
 

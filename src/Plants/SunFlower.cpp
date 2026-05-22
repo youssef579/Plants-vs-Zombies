@@ -1,24 +1,27 @@
 #include <Plants/SunFlower.hpp>
 #include <SunManager.hpp>
 #include <Plants/Plant.hpp>
+#include <PvP/Peer.hpp>
 
 void updateSunFlower(Plant &sunFlower, float dt){
   sunFlower.reAnimator.update(dt);
 
-  sunFlower.timer -= dt;
-  sunFlower.blinkTimer -= dt;
-  if (sunFlower.timer <= 0){
-    Sounds::play("sunFlowerPop");
-    Sun::generate({
-      sunFlower.reAnimator.getPosition().x - 10.0f,
-      sunFlower.reAnimator.getPosition().y
-      }, 25, 1);
-    sunFlower.timer = GENERATE_SUN_FLOWER_INTERVAL;
-  }
-  
-  if (sunFlower.blinkTimer <= 0) {
-    sunFlower.reAnimator.playAnimation("blink", LoopType::PlayOnce);
-    sunFlower.blinkTimer = randomRange(1.5f, 3.0f);
+  if(peer.state == Peer::InGame && peer.type == Peer::Plants) {
+    sunFlower.timer -= dt;
+    sunFlower.blinkTimer -= dt;
+    if (sunFlower.timer <= 0){
+      Sounds::play("sunFlowerPop");
+      Sun::generate({
+        sunFlower.reAnimator.getPosition().x - 10.0f,
+        sunFlower.reAnimator.getPosition().y
+        }, 25, 1);
+      sunFlower.timer = GENERATE_SUN_FLOWER_INTERVAL;
+    }
+    
+    if (sunFlower.blinkTimer <= 0) {
+      sunFlower.reAnimator.playAnimation("blink", LoopType::PlayOnce);
+      sunFlower.blinkTimer = randomRange(1.5f, 3.0f);
+    }
   }
 }
 

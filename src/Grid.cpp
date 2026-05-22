@@ -4,6 +4,7 @@
 #include <SunManager.hpp>
 #include <BackgroundManager.hpp>
 #include <LevelManager.hpp>
+#include <PvP/Peer.hpp>
 
 Cell grid[ROWS_NUMBER][COLUMNS_NUMBER];
 
@@ -14,16 +15,16 @@ void initGrid(){
   for (int i = 0; i < ROWS_NUMBER; i++){
     float x = 134;
     for (int j = 0; j < COLUMNS_NUMBER; j++){
-      float columnLenth = dayColumnLenth[j];
+      float columnLenth = nightColumnLenth[j];
 
-      if(levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night)
-        columnLenth = nightColumnLenth[j];  // change it by type of level in level manager
+      // if(levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Night)
+      //   columnLenth = nightColumnLenth[j];  // change it by type of level in level manager
       grid[i][j].rectangle.setSize({columnLenth, rowLenth[i]});
       grid[i][j].rectangle.setOrigin(grid[i][j].rectangle.getLocalBounds().size / 2.0f);
       grid[i][j].rectangle.setPosition({x + columnLenth / 2, y + rowLenth[i] / 2});
       grid[i][j].rectangle.setFillColor(sf::Color({0, 0, 0, 0}));
-      //grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
-      //grid[i][j].rectangle.setOutlineThickness(1);
+      grid[i][j].rectangle.setOutlineColor(sf::Color::Black);
+      grid[i][j].rectangle.setOutlineThickness(1);
       grid[i][j].plantPosition = {x + columnLenth / 2 + offsetX, y + rowLenth[i] / 2 + offsetY};
       grid[i][j].therePlantInBounders = 0;
       x += columnLenth;
@@ -68,6 +69,14 @@ void updateGrid(float dt){
 
 
               if (packets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased){
+                if(peer.state == Peer::InGame) {
+                  CMD = Peer::SpawnPlant;
+                  ROW = i;
+                  COL = j;
+                  TYPE = packets[k].plantType;
+                  COST = packets[k].cost;
+                  continue;
+                }
                 switch (packets[k].plantType){
                   case SUN_FLOWER:
                     grid[i][j].plant = Plant(SUN_FLOWER, grid[i][j].plantPosition, i, j, ReAnimator::getDefinition(REANIM_SUNFLOWER));
@@ -116,6 +125,16 @@ void updateGrid(float dt){
               
               } 
 
+            }
+          }
+          if(peer.state == Peer::InGame && peer.type == Peer::Zombies) {
+            for(int k = 0; k < zombiePackets.size; k++) {
+              if (zombiePackets[k].selected && grid[i][j].rectangle.getGlobalBounds().contains(mousePosition) && isMouseReleased) {
+                CMD = Peer::SpawnZombie;
+                ROW = i;
+                TYPE = zombiePackets[k].plantType;
+                COST = zombiePackets[k].cost;
+              }
             }
           }
       }
