@@ -6,6 +6,8 @@
 #include <Grid.hpp>
 #include <Zombies/Zombie.hpp>
 #include <SunManager.hpp>
+#include <Bullet.hpp>
+#include <PlantSelector.hpp>
 
 Peer::Command CMD = Peer::Heartbeat;
 int ROW = -1, COL = -1, TYPE = -1, COST = -1;
@@ -26,11 +28,11 @@ void Peer::connect(float dt) {
   sf::Packet packet;
   packet << -1 << CMD;
 
-  opponentIP = sf::IpAddress::LocalHost;
+  opponentIP = (state == Requesting ? sf::IpAddress::Broadcast : opponentIP.value());
   opponentPort = (localPort == 53000 ? 54000 : 53000);
   
   send(packet);
-  // std::cout << "Sent!" << '\n';
+  std::cout << "Sent!" << '\n';
 }
 
 void Peer::fillHistory() {
@@ -131,9 +133,11 @@ void Peer::update() {
   // }
   if(!buffer.count(currentTick) && currentTick > tickDelay) {
     settings.timeModifier = 0;
+    patienceTimer++;
     return;
   }
   settings.timeModifier = 1;
+  patienceTimer = 0;
   
   // Tick tick = arrBuffer[currentTick % 100];
   // Tick myTick = myArrBuffer[currentTick % 100];
@@ -192,4 +196,45 @@ void Peer::spawnZombie(int row, int col, int type, int cost, bool mine) {
       grid[row][8].rectangle.getGlobalBounds().getCenter().y,
       static_cast<Zombie::Type>(type), row, 0);
   if(mine) Sun::sunBalance -= cost;
+}
+
+void Peer::exitMatch() {
+  state = OffGame;
+  gameState = homeState = 0;
+  patienceTimer = 0;
+  currentTick = 0;
+  nextSendTimer = sendDelay;
+  buffer.clear();
+  myBuffer.clear();
+  history.clear();
+  settings.timeModifier = 1;
+  initialized = false;
+  isPaused = false;
+  matchResult = Ongoing;
+  outroTimer = 0;
+  peer.socket.unbind();
+  music.play("Menu");
+
+
+  for (int r = 0; r < ROWS_NUMBER; r++) zombies[r].erase([](Zombie *z) { return true; });
+  Zombie::totalZombies = 0;
+
+  bullets.erase([](Bullet &b) {return true; });
+  Sun::isSpawning = false;
+  Sun::clear();
+
+  for (int j = 0; j < packetsNum; j++) {
+    plantSelector.packets[j].isSelected = false;
+    plantSelector.packets[j].sprite->setColor(sf::Color::White);
+  }
+
+  for (int i = 0; i < 7; i++) {
+    plantSelector.selectedSlot[i].active = false;
+    if (plantSelector.selectedSlot[i].sprite) {
+      delete plantSelector.selectedSlot[i].sprite;
+      plantSelector.selectedSlot[i].sprite = nullptr;
+    }
+  }
+
+  clearGrid();
 }

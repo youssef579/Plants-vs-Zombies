@@ -31,6 +31,9 @@ void drawUI(float dt) {
     float shift = 1150 - sunBank.getGlobalBounds().size.x;
     SunBalanceText.setPosition({ 45 + shift, 83 });
     sunBank.setPosition({ shift, 0 });
+  } else {
+    SunBalanceText.setPosition({ 45, 83 });
+    sunBank.setPosition({ 0, 0 });
   }
 
 

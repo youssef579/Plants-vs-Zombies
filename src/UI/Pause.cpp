@@ -4,6 +4,7 @@
 #include <LevelManager.hpp>
 #include <UI/TransitionManager.hpp>
 #include <Rewards.hpp>
+#include <PvP/Peer.hpp>
 
 PauseMenu pauseMenu;
 
@@ -112,14 +113,18 @@ void PauseMenu::update() {
 
   // Main Menu Button
   onClick(*mainMenuBtn, []() {
+    if(peer.state == Peer::InGame) {
+        peer.state = Peer::OffGame;
+        return;
+    }
     TransitionManager::start([]() {
         gameState = 0, homeState = 0; //go to home menu not level selector
         isPaused = false;
         gameWeather.isPaused = false;
         levelManager.resetLevelData();
         sounds.play("ButtonClick"); music.play("Menu");
-      });
     });
+  });
 
 // Restart Level Button
   onClick(*restartLevelBtn, []() {

@@ -46,6 +46,8 @@ static bool weatherInited = false;
 
 bool isPaused = false;
 bool runOnce = true;
+bool runOncePVP = true;
+bool runOnceGlobal = true;
 
 void updateGame() {
   dt = drawClock.restart() .asSeconds(); // clock.restart() sets time to 0 and returns the last
@@ -74,20 +76,33 @@ void updateGame() {
     static sf::Sprite backgroundSprite(backgroundTexture);
     static sf::View camera;
     static sf::Text runningClock(assets->font, "", 24);
-    static float currGameTime = Peer::gameTime;
-    if(runOnce) {
-      Sun::sunBalance = 5000;
+    static float currGameTime;
+    static float clockPace;
+    static sf::Texture& ZombiesWonMatchTexture = getTexture("assets/ZombiesWonMatch.png");
+    static sf::Texture& PlantsWonMatchTexture = getTexture("assets/PlantsWonMatch.png");
+    static sf::Sprite ZombiesWonMatchSprite(ZombiesWonMatchTexture);
+    static sf::Sprite PlantsWonMatchSprite(PlantsWonMatchTexture);
+    if(runOnceGlobal) {
+      music.play("DayStage");
       TransitionManager::start([]() {});
       Zombie::init();
       shovel.init();
-      initGrid();
-      backgroundSprite.setPosition({0, 0});
-      camera.setSize(0.95f * sf::Vector2f(800.f, 600.f));
-      camera.setCenter(sf::Vector2f(490.f, 312.f));
-      gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+      runOnceGlobal = false;
+    }
+    if(runOncePVP) {
+      ZombiesWonMatchSprite.scale({1.5, 1.5});
+      ZombiesWonMatchSprite.move({50, 0});
+      PlantsWonMatchSprite.scale({1.5, 1.5});
+      PlantsWonMatchSprite.move({50, 0});
+    
+      runOncePVP = false;
+    }
 
-      runningClock.setPosition({1150 / 2, 560});
-      
+    if(peer.initialized == false) {
+      Sun::sunBalance = 5000;
+      Sun::isSpawning = false;
+      currGameTime = 30;
+
       Array<PlantType> plantTypes;
       plantTypes.push(PEASHOOTER);
       plantTypes.push(SUN_FLOWER);
@@ -97,23 +112,57 @@ void updateGame() {
       plantTypes.push(REPEATERPEA);
       plantTypes.push(SNOWPEASHOOTER);
       fillPackets(plantTypes);
-      // music.play("DayStage");
-      runOnce = false;
 
-      // gameWeather.isRaining = true;
+      backgroundSprite.setPosition({0, 0});
+      camera.setSize(0.95f * sf::Vector2f(800.f, 600.f));
+      camera.setCenter(sf::Vector2f(490.f, 312.f));
+      gameView->setSize(sf::Vector2f(WINDOW_SIZE.x, WINDOW_SIZE.y));
+      gameView->setCenter((sf::Vector2f)WINDOW_SIZE / 2.0f);
+
+      runningClock.setPosition({1150 / 2, 560});
+
+      peer.initialized = true;
     }
 
-    currGameTime -= 0.0003;
+    if(peer.patienceTimer >= Peer::patience) {
+      peer.state = Peer::OffGame;
+    }
 
-    runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
+    if(peer.state == Peer::OffGame) {
+        peer.exitMatch();
+        return;
+    }
+
+    clockPace = (dt / 2) * settings.timeModifier;
+
+    if(peer.matchResult != Peer::Ongoing) {
+      clockPace = 0;
+      if(++peer.outroTimer == Peer::outro) {
+        peer.exitMatch();
+        return;
+      }
+    }
+
+    int minutes = currGameTime / 60;
+    int seconds = currGameTime - 60 * minutes;
+    std::string mm = std::to_string(minutes);
+    std::string ss = std::to_string(seconds);
+    std::string extra = "";
+    if(seconds < 10) extra = "0";
+
+    runningClock.setString(mm + std::string(":") + extra + ss);
 
     peer.fillHistory();
     peer.send(peer.createPacket());
     peer.receive();
 
-    dt *= settings.timeModifier;
+    currGameTime = std::max(0.f, currGameTime - clockPace);
 
-    currGameTime = std::max(0.f, currGameTime - dt / 2);
+    if(currGameTime <= 0) {
+      peer.matchResult = Peer::PlantsWon;
+    }
+
+    dt *= settings.timeModifier;
 
     runningClock.setString(std::to_string(int(currGameTime / 60)) + ":" + std::to_string(int(currGameTime - 60 * int(currGameTime / 60))));
 
@@ -159,9 +208,27 @@ void updateGame() {
     
     // gameWeather.update(dt);
     // gameWeather.draw(*window);
+
+    if(peer.matchResult == Peer::ZombiesWon)
+      window->draw(ZombiesWonMatchSprite);
+    else if(peer.matchResult == Peer::PlantsWon)
+      window->draw(PlantsWonMatchSprite);
+
+    if(isPaused) {
+      pauseMenu.update();
+      pauseMenu.draw();
+    }
+
     break;
   }
   default:
+    if(runOnceGlobal) {
+      music.play("DayStage");
+      TransitionManager::start([]() {});
+      Zombie::init();
+      shovel.init();
+      runOnceGlobal = false;
+    }
     if (runOnce) {
       shovel.init();
       Array<PlantType> plantTypes;
@@ -182,10 +249,8 @@ void updateGame() {
       dayLevel.init(levelManager.levels[levelManager.currentLevel-1]->location);
       newPause.init();
      
-      music.play("DayStage");
       //a
       //gameWeather.init();
-      Zombie::init();
       RewardManager::init();
 
       levelManager.loadUnlockedPlants();

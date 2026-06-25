@@ -72,8 +72,8 @@ void updateHome() {
   static sf::Texture& mpTexture = getTexture("assets/plantsSelector/selectorBackground.png");
   static sf::Sprite mpSprite(mpTexture);
 
-  static sf::Text mpHost(assets->font, "Host", 32);
-  static sf::Text mpJoin(assets->font, "Join", 32);
+  static sf::Text mpHost(assets->font, "Plants", 32);
+  static sf::Text mpJoin(assets->font, "Zombies", 32);
 
   // Selector Screen button hitboxes
   static sf::FloatRect selectorScreenHitbox1 = {
@@ -157,8 +157,8 @@ void updateHome() {
     mpSprite.scale({1, 0.2});
     mpSprite.setPosition({350, 270});
 
-    mpHost.setPosition({450, 300});
-    mpJoin.setPosition({650, 300});
+    mpHost.setPosition({420, 300});
+    mpJoin.setPosition({620, 300});
 
     /*playButton.setPosition({ 1000, 400 });
     optionsButton.setPosition({ 1000, 460 });
@@ -288,7 +288,6 @@ void updateHome() {
     onClick(mpHost, []() {
       peer.localPort = 53000;
       peer.type = Peer::Plants;
-      peer.socket.unbind();
       peer.init();
       peer.state = Peer::Waiting;
     });
@@ -296,7 +295,6 @@ void updateHome() {
     onClick(mpJoin, []() {
       peer.localPort = 54000;
       peer.type = Peer::Zombies;
-      peer.socket.unbind();
       peer.init();
       peer.state = Peer::Requesting;
     });

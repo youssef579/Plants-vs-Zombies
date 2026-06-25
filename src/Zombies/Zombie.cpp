@@ -3,6 +3,7 @@
 #include <BackgroundManager.hpp>
 #include <LawnMower.hpp>
 #include <Rewards.hpp>
+#include <PvP/Peer.hpp>
 
 Array<Zombie*> zombies[ROWS_NUMBER];
 
@@ -229,10 +230,16 @@ bool Zombie::update(float dt) {
 
   if (inPlayArea || reAnimator.getPosition().x <= 1130 + 15)
     inPlayArea = true;
-  if (reAnimator.getPosition().x <= 150) // activate lawnmower
-    LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
-  if (reAnimator.getPosition().x <= 100)
-    dayLevel.playGameOverScreen(row);
+  if(peer.state == Peer::OffGame) {
+    if (reAnimator.getPosition().x <= 150) // activate lawnmower
+      LawnMower::activateLawnMower(positionToGrid({500, reAnimator.getPosition().y}).x);
+  }
+  if (reAnimator.getPosition().x <= 100) {
+    if(peer.state == Peer::OffGame)
+      dayLevel.playGameOverScreen(row);
+    else if(peer.matchResult == Peer::Ongoing)
+      peer.matchResult = Peer::ZombiesWon;
+  }
     //std::system("pause");
 
   if (freezeTimer > 0) {

@@ -8,6 +8,7 @@ struct Peer {
   enum State {OffGame, Waiting, Requesting, Accepting, InGame};
   enum Command {Heartbeat, SpawnPlant, SpawnZombie, GameRequest, GameAccept};
   enum playerType {Plants, Zombies};
+  enum Result {PlantsWon, ZombiesWon, Ongoing};
 
   struct Tick {
     int tickNumber = -1;
@@ -18,14 +19,22 @@ struct Peer {
   static constexpr float timePerTick = 1.f / 90;
   static constexpr int tickDelay = 5;
   static constexpr int sendDelay = 1; // s
+  static constexpr int outro = 500;
   static constexpr int gameTime = 300; // s
+  static constexpr int patience = 500;
 
   float nextSendTimer = sendDelay;
 
   int currentTick = 0;
+  int patienceTimer = 0;
+  int outroTimer = 0;
 
   State state = OffGame;
   playerType type = Plants;
+
+  bool initialized = false;
+
+  Result matchResult = Ongoing;
 
   sf::UdpSocket socket;
 
@@ -51,7 +60,7 @@ struct Peer {
   void apply(Tick&, bool mine);
   void spawnZombie(int row, int col, int type, int cost, bool mine);
   void spawnPlant(int row, int col, int type, int cost, bool mine);
-
+  void exitMatch();
 };
 
 extern Peer peer;

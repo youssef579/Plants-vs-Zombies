@@ -6,7 +6,7 @@
 void updateSunFlower(Plant &sunFlower, float dt){
   sunFlower.reAnimator.update(dt);
 
-  if(peer.state == Peer::InGame && peer.type == Peer::Plants) {
+  if(peer.type == Peer::Plants || peer.state == Peer::OffGame) {
     sunFlower.timer -= dt;
     sunFlower.blinkTimer -= dt;
     if (sunFlower.timer <= 0){

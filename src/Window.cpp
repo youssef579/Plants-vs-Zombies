@@ -6,6 +6,7 @@
 #include <SunManager.hpp>     // USED FOR DEV MODE
 #include <newPauseMenu.hpp>
 #include <Rewards.hpp>
+#include <PvP/Peer.hpp>
 
 sf::RenderWindow *window;
 sf::View *view;
@@ -138,6 +139,8 @@ void handleEvents() {
         if(gameState == 0 && homeState == 4) {
           homeState = 0;
         }
+        // if(gameState == 67)
+        //   peer.state = Peer::OffGame;
         break;
       case sf::Keyboard::Key::P:
         if (gameState != 0 && dayLevel.state != dayLevel.GameOver) { // Pause / UnPause
