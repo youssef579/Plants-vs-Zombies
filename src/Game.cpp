@@ -121,6 +121,8 @@ void updateGame() {
 
       runningClock.setPosition({1150 / 2, 560});
 
+      clearGrid();
+
       peer.initialized = true;
     }
 

@@ -44,8 +44,8 @@ void Peer::fillHistory() {
   history.push_back(tick);
   if(history.size() > 20) history.pop_front();
 
-  // myArrBuffer[(currentTick + tickDelay) % 100] = tick;
-  myBuffer[currentTick + tickDelay] = tick;
+  myArrBuffer[(currentTick + tickDelay) % 100] = tick;
+  // myBuffer[currentTick + tickDelay] = tick;
 
   CMD = Heartbeat;
   ROW = COL = TYPE = -1;
@@ -116,8 +116,8 @@ void Peer::receive() {
         // std::cout << "Size: " << history.size() << '\n';
         tick.cmd = static_cast<Command>(cmdInt);
         if(tick.tickNumber >= currentTick) {
-          // arrBuffer[tick.tickNumber % 100] = tick;
-          buffer[tick.tickNumber] = tick;
+          arrBuffer[tick.tickNumber % 100] = tick;
+          // buffer[tick.tickNumber] = tick;
         }
         if(tick.tickNumber >= 0) state = InGame;
       }
@@ -127,29 +127,30 @@ void Peer::receive() {
 }
 
 void Peer::update() {
-  // if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
-  //   settings.timeModifier = 0;
-  //   return;
-  // }
-  if(!buffer.count(currentTick) && currentTick > tickDelay) {
+  if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
     settings.timeModifier = 0;
-    patienceTimer++;
+    patienceTimer = 0;
     return;
   }
+  // if(!buffer.count(currentTick) && currentTick > tickDelay) {
+  //   settings.timeModifier = 0;
+  //   patienceTimer++;
+  //   return;
+  // }
   settings.timeModifier = 1;
   patienceTimer = 0;
   
-  // Tick tick = arrBuffer[currentTick % 100];
-  // Tick myTick = myArrBuffer[currentTick % 100];
+  Tick tick = arrBuffer[currentTick % 100];
+  Tick myTick = myArrBuffer[currentTick % 100];
 
-  Tick tick = buffer[currentTick];
-  Tick myTick = myBuffer[currentTick];
+  // Tick tick = buffer[currentTick];
+  // Tick myTick = myBuffer[currentTick];
 
   if(tick.cmd == SpawnPlant || tick.cmd == SpawnZombie) apply(tick, false);
   if(myTick.cmd == SpawnPlant || myTick.cmd == SpawnZombie) apply(myTick, true);
   
-  buffer.erase(currentTick);
-  myBuffer.erase(currentTick);
+  // buffer.erase(currentTick);
+  // myBuffer.erase(currentTick);
   currentTick++;
 }
 
@@ -204,8 +205,11 @@ void Peer::exitMatch() {
   patienceTimer = 0;
   currentTick = 0;
   nextSendTimer = sendDelay;
-  buffer.clear();
-  myBuffer.clear();
+  // buffer.clear();
+  // myBuffer.clear();
+  for(int i = 0; i < 100; i++) {
+    arrBuffer[i] = myArrBuffer[i] = {-1, Heartbeat};
+  }
   history.clear();
   settings.timeModifier = 1;
   initialized = false;

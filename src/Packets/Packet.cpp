@@ -260,7 +260,7 @@ void SeedPacket::drawSelectedPlant() {
 }
 
 void updateSeedPackets(float dt) {
-  if(peer.type == Peer::Plants) {
+  if(peer.state == Peer::OffGame || peer.type == Peer::Plants) {
     for (int i = 0; i < packets.size; i++) {
       packets[i].update(dt);
     }
@@ -272,7 +272,7 @@ void updateSeedPackets(float dt) {
 }
 
 void drawSeedPackets() {
-  if(peer.type == Peer::Plants) {
+  if(peer.state == Peer::OffGame || peer.type == Peer::Plants) {
     for (int i = 0; i < packets.size; i++) {
       packets[i].draw();
     }
