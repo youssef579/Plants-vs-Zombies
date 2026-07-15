@@ -24,7 +24,7 @@ int main() {
   initFiles();
   initAudio();
   initOverlay();
-  //initWeather();
+  // initWeather();
   initReAnimDefs();
   ParticleSystem::init();
   pauseMenu.init();

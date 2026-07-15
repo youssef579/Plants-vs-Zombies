@@ -123,13 +123,12 @@ void Sun::generate(sf::Vector2f pos, int val, bool isSunFlower) {
     sun->reAnimator.setScale(0, 0);
   }
   else {
-    // if (levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Day) {
-    //   sun = new Sun({ val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
-    // }
-    // else {
+    if (peer.state == Peer::OffGame && levelManager.levels[levelManager.currentLevel - 1]->location == LevelManager::Level::Day) {
+      sun = new Sun({ val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN), pos.x, pos.y, window) });
+    }
+    else {
       sun = new Sun({ val, Sun::State::Falling, groundDuration, 0.0, {0.0, 0.0}, 0.0f, groundY, fallSpeed, ReAnimator(ReAnimator::getDefinition(ReAnimationDef::REANIM_SUN_NIGHT), pos.x, pos.y, window) });
-
-    // }
+    }
   }
   //sun->sheet = Spritesheet{ &sun->sprite, 77, 77, 30, 0.03f }; //Initialize spritesheet
   //sun->reAnimator.x = pos.x, sun->reAnimator.y = pos.y;

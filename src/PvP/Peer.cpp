@@ -129,7 +129,7 @@ void Peer::receive() {
 void Peer::update() {
   if(arrBuffer[currentTick % 100].tickNumber != currentTick && currentTick > tickDelay) {
     settings.timeModifier = 0;
-    patienceTimer = 0;
+    patienceTimer++;
     return;
   }
   // if(!buffer.count(currentTick) && currentTick > tickDelay) {

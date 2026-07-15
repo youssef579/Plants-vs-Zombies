@@ -148,11 +148,10 @@ void updateGame() {
     int minutes = currGameTime / 60;
     int seconds = currGameTime - 60 * minutes;
     std::string mm = std::to_string(minutes);
-    std::string ss = std::to_string(seconds);
-    std::string extra = "";
-    if(seconds < 10) extra = "0";
+    std::string ss = (seconds < 10 ? "0" : "") + std::to_string(seconds);
+    std::string full = mm + ":" + ss;
 
-    runningClock.setString(mm + std::string(":") + extra + ss);
+    runningClock.setString(full);
 
     peer.fillHistory();
     peer.send(peer.createPacket());
@@ -252,7 +251,7 @@ void updateGame() {
       newPause.init();
      
       //a
-      //gameWeather.init();
+      gameWeather.init();
       RewardManager::init();
 
       levelManager.loadUnlockedPlants();

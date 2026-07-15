@@ -37,12 +37,14 @@ void drawUI(float dt) {
   }
 
 
-  // gameWeather.draw(*window);
+  if(peer.state == Peer::OffGame)
+    gameWeather.draw(*window);
   window->draw(sunBank); // Draw order matters
   window->draw(SunBalanceText);
   // for (int i = 0; i < packets.size; i++)
   //   packets[i].draw();
-  // drawLevelProgress(dt);
+  if(peer.state == Peer::OffGame)
+    drawLevelProgress(dt);
   // plantSelector.drawSelector(*window);
   // drawTimeModifier(dt);
 }
