@@ -6,7 +6,7 @@
 
 
 Array<Sun> Sun::sunArray;
-int Sun::sunBalance = 50; // initialized for testing
+int Sun::sunBalance = Sun::startingSun; // initialized for testing
 float Sun::spawnTimer = -20; // negative values delay the first spawn
 bool Sun::hovering = false;
 bool Sun::isSpawning = true;
@@ -196,7 +196,7 @@ void Sun::drawAll() {
 
 void Sun::clear() {
   sunArray.erase([](Sun &s) {return true; });
-  sunBalance = 50;
+  sunBalance = Sun::startingSun;
   spawnTimer = -20;
   hovering = false;
 }

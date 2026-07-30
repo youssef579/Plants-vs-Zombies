@@ -7,3 +7,5 @@ out
 run.sh
 storage/playerData.txt
 storage/settings.txt
+/include/full_codebase_includes.txt
+/src/full_codebase_source_files.txt

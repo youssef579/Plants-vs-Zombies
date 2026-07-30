@@ -48,7 +48,8 @@ public:
   static float spawnTimer;    // Keeps track of time between last spawn
   static bool hovering;
   static bool isSpawning;
-  static bool isDay; 
+  static bool isDay;
+  static const int startingSun = 600;
   // Personal Functions (Related to current Sun struct)
   void collect();
   void draw();
